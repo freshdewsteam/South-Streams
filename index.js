@@ -1,13 +1,11 @@
 const { addonBuilder, serveHTTP } = require('stremio-addon-sdk');
 const { scrapeMalayalam, scrapeTamil } = require('./scraper');
 
-// ─── MANIFEST ────────────────────────────────────────────────────────────────
 const manifest = {
   id: 'community.mollywood.ott.catalogue',
-  version: '1.0.2',
-  name: '🎬 Mollywood & Kollywood OTT',
-  description: 'Malayalam & Tamil OTT releases from 91mobiles. Sorted by release date (newest first). Filters out theatre-only.',
-  logo: 'https://i.imgur.com/fBESjol.png',
+  version: '1.0.3',
+  name: '🎬 Mollywood & Kollywood OTT (Debug)',
+  description: 'Debug version - Testing data extraction',
   resources: ['catalog'],
   types: ['movie', 'series'],
   catalogs: [
@@ -16,10 +14,9 @@ const manifest = {
     { type: 'movie', id: 'tamil-movies', name: '🎭 Tamil OTT Movies' },
     { type: 'series', id: 'tamil-series', name: '🎭 Tamil OTT Series' },
   ],
-  idPrefixes: ['91mob_'],
+  idPrefixes: ['tt_'],
 };
 
-// ─── SIMPLE CACHE (3 hours) ─────────────────────────────────────────────────
 const cache = {
   'malayalam-movies': null,
   'malayalam-series': null,
@@ -27,36 +24,33 @@ const cache = {
   'tamil-series': null,
   lastFetch: null,
 };
-const CACHE_MINUTES = 180; // 3 hours
+const CACHE_MINUTES = 180;
 
 async function getCachedOrFetch(catalogId, fetchFn) {
   const now = Date.now();
   
-  // Return cached data if still fresh
   if (cache[catalogId] && cache.lastFetch && (now - cache.lastFetch) < CACHE_MINUTES * 60 * 1000) {
     console.log(`[cache] Using cached ${catalogId} (${cache[catalogId].length} items)`);
     return cache[catalogId];
   }
   
-  // Fetch fresh data
   console.log(`[cache] Fetching fresh data for ${catalogId}...`);
   try {
     const data = await fetchFn();
+    console.log(`[cache] Got ${data.length} items for ${catalogId}`);
     cache[catalogId] = data;
     cache.lastFetch = now;
-    console.log(`[cache] Cached ${data.length} items for ${catalogId}`);
     return data;
   } catch (err) {
     console.error(`[cache] Error fetching ${catalogId}:`, err.message);
-    // Return stale cache if available, otherwise empty array
     return cache[catalogId] || [];
   }
 }
 
-// ─── ADDON BUILDER ────────────────────────────────────────────────────────────
 const builder = new addonBuilder(manifest);
 
 builder.defineCatalogHandler(async ({ type, id }) => {
+  console.log(`[catalog] Request for: ${id}`);
   let metas = [];
   
   try {
@@ -72,17 +66,14 @@ builder.defineCatalogHandler(async ({ type, id }) => {
     
     console.log(`[catalog] Returning ${metas.length} items for ${id}`);
   } catch (err) {
-    console.error(`[catalog] Error for ${id}:`, err.message);
+    console.error(`[catalog] Error:`, err.message);
     metas = [];
   }
   
-  // Return up to 100 items (Stremio limit per page)
-  return { metas: metas.slice(0, 100) };
+  return { metas };
 });
 
-// ─── START SERVER ────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 7000;
 serveHTTP(builder.getInterface(), { port: PORT });
-console.log(`\n✅ Mollywood & Kollywood OTT addon running!`);
-console.log(`   Install URL: http://localhost:${PORT}/manifest.json`);
-console.log(`   For Render: https://your-app-name.onrender.com/manifest.json\n`);
+console.log(`\n✅ Debug addon running on port ${PORT}`);
+console.log(`   URL: http://localhost:${PORT}/manifest.json\n`);
