@@ -4,142 +4,85 @@ const { scrapeMalayalam, scrapeTamil } = require('./scraper');
 // ─── MANIFEST ────────────────────────────────────────────────────────────────
 const manifest = {
   id: 'community.mollywood.ott.catalogue',
-  version: '1.0.0',
+  version: '1.0.2',
   name: '🎬 Mollywood & Kollywood OTT',
-  description:
-    'Malayalam & Tamil OTT releases sourced from 91mobiles.com/entertainment. ' +
-    'Filters out theatre-only listings. Two separate catalogues — one for each language. ' +
-    'Built for the Kerala community 🌴',
+  description: 'Malayalam & Tamil OTT releases from 91mobiles. Sorted by release date (newest first). Filters out theatre-only.',
   logo: 'https://i.imgur.com/fBESjol.png',
-  background: 'https://i.imgur.com/5pEhPuS.jpg',
-  resources: ['catalog', 'meta'],
+  resources: ['catalog'],
   types: ['movie', 'series'],
   catalogs: [
-    {
-      type: 'movie',
-      id: 'malayalam-ott-movies',
-      name: '🌴 Malayalam OTT Movies',
-      extra: [{ name: 'skip', isRequired: false }],
-    },
-    {
-      type: 'series',
-      id: 'malayalam-ott-series',
-      name: '🌴 Malayalam OTT Series',
-      extra: [{ name: 'skip', isRequired: false }],
-    },
-    {
-      type: 'movie',
-      id: 'tamil-ott-movies',
-      name: '🎭 Tamil OTT Movies',
-      extra: [{ name: 'skip', isRequired: false }],
-    },
-    {
-      type: 'series',
-      id: 'tamil-ott-series',
-      name: '🎭 Tamil OTT Series',
-      extra: [{ name: 'skip', isRequired: false }],
-    },
+    { type: 'movie', id: 'malayalam-movies', name: '🌴 Malayalam OTT Movies' },
+    { type: 'series', id: 'malayalam-series', name: '🌴 Malayalam OTT Series' },
+    { type: 'movie', id: 'tamil-movies', name: '🎭 Tamil OTT Movies' },
+    { type: 'series', id: 'tamil-series', name: '🎭 Tamil OTT Series' },
   ],
   idPrefixes: ['91mob_'],
-  behaviorHints: { adult: false, p2p: false },
 };
 
-// ─── CACHE (refreshes every 3 hours, even without visitors) ──────────────────
-const CACHE_TTL_MS = 3 * 60 * 60 * 1000; // 3 hours
-const cache = {};
+// ─── SIMPLE CACHE (3 hours) ─────────────────────────────────────────────────
+const cache = {
+  'malayalam-movies': null,
+  'malayalam-series': null,
+  'tamil-movies': null,
+  'tamil-series': null,
+  lastFetch: null,
+};
+const CACHE_MINUTES = 180; // 3 hours
 
-// All catalogue keys and their fetch functions
-const CATALOGUE_FETCHERS = [
-  { key: 'mal-movies',  fn: () => scrapeMalayalam('movie')  },
-  { key: 'mal-series',  fn: () => scrapeMalayalam('series') },
-  { key: 'tam-movies',  fn: () => scrapeTamil('movie')      },
-  { key: 'tam-series',  fn: () => scrapeTamil('series')     },
-];
-
-async function refreshCache(key, fetchFn) {
-  console.log(`[cache] Refreshing "${key}"...`);
+async function getCachedOrFetch(catalogId, fetchFn) {
+  const now = Date.now();
+  
+  // Return cached data if still fresh
+  if (cache[catalogId] && cache.lastFetch && (now - cache.lastFetch) < CACHE_MINUTES * 60 * 1000) {
+    console.log(`[cache] Using cached ${catalogId} (${cache[catalogId].length} items)`);
+    return cache[catalogId];
+  }
+  
+  // Fetch fresh data
+  console.log(`[cache] Fetching fresh data for ${catalogId}...`);
   try {
     const data = await fetchFn();
-    cache[key] = { ts: Date.now(), data };
-    console.log(`[cache] "${key}" updated — ${data.length} items`);
+    cache[catalogId] = data;
+    cache.lastFetch = now;
+    console.log(`[cache] Cached ${data.length} items for ${catalogId}`);
+    return data;
   } catch (err) {
-    console.error(`[cache] Failed to refresh "${key}":`, err.message);
-    // Keep stale data if we have it
+    console.error(`[cache] Error fetching ${catalogId}:`, err.message);
+    // Return stale cache if available, otherwise empty array
+    return cache[catalogId] || [];
   }
-}
-
-async function getCached(key, fetchFn) {
-  const now = Date.now();
-  if (!cache[key] || now - cache[key].ts > CACHE_TTL_MS) {
-    await refreshCache(key, fetchFn);
-  }
-  return cache[key] ? cache[key].data : [];
-}
-
-// ── Background refresh: warm up all caches on startup, then every 3 hours ────
-async function warmUpAll() {
-  console.log('[cache] Warming up all catalogues on startup...');
-  for (const { key, fn } of CATALOGUE_FETCHERS) {
-    await refreshCache(key, fn);
-    // Small delay between scrapes to be polite to 91mobiles
-    await new Promise((r) => setTimeout(r, 5000));
-  }
-  console.log('[cache] All catalogues warmed up ✅');
-}
-
-// Refresh all caches every 3 hours in the background
-function startBackgroundRefresh() {
-  setInterval(async () => {
-    console.log('[cache] Background refresh triggered...');
-    for (const { key, fn } of CATALOGUE_FETCHERS) {
-      await refreshCache(key, fn);
-      await new Promise((r) => setTimeout(r, 5000));
-    }
-  }, CACHE_TTL_MS);
 }
 
 // ─── ADDON BUILDER ────────────────────────────────────────────────────────────
 const builder = new addonBuilder(manifest);
 
-builder.defineCatalogHandler(async ({ type, id, extra }) => {
-  const skip = parseInt(extra && extra.skip) || 0;
+builder.defineCatalogHandler(async ({ type, id }) => {
   let metas = [];
-
-  if (id === 'malayalam-ott-movies') {
-    const all = await getCached('mal-movies', () => scrapeMalayalam('movie'));
-    metas = all.slice(skip, skip + 50);
-  } else if (id === 'malayalam-ott-series') {
-    const all = await getCached('mal-series', () => scrapeMalayalam('series'));
-    metas = all.slice(skip, skip + 50);
-  } else if (id === 'tamil-ott-movies') {
-    const all = await getCached('tam-movies', () => scrapeTamil('movie'));
-    metas = all.slice(skip, skip + 50);
-  } else if (id === 'tamil-ott-series') {
-    const all = await getCached('tam-series', () => scrapeTamil('series'));
-    metas = all.slice(skip, skip + 50);
-  }
-
-  return { metas };
-});
-
-builder.defineMetaHandler(async ({ type, id }) => {
-  if (!id.startsWith('91mob_')) return { meta: null };
-
-  const allKeys = ['mal-movies', 'mal-series', 'tam-movies', 'tam-series'];
-  for (const key of allKeys) {
-    if (cache[key]) {
-      const found = cache[key].data.find((m) => m.id === id);
-      if (found) return { meta: found };
+  
+  try {
+    if (id === 'malayalam-movies') {
+      metas = await getCachedOrFetch(id, () => scrapeMalayalam('movie'));
+    } else if (id === 'malayalam-series') {
+      metas = await getCachedOrFetch(id, () => scrapeMalayalam('series'));
+    } else if (id === 'tamil-movies') {
+      metas = await getCachedOrFetch(id, () => scrapeTamil('movie'));
+    } else if (id === 'tamil-series') {
+      metas = await getCachedOrFetch(id, () => scrapeTamil('series'));
     }
+    
+    console.log(`[catalog] Returning ${metas.length} items for ${id}`);
+  } catch (err) {
+    console.error(`[catalog] Error for ${id}:`, err.message);
+    metas = [];
   }
-  return { meta: null };
+  
+  // Return up to 100 items (Stremio limit per page)
+  return { metas: metas.slice(0, 100) };
 });
 
-// ─── START ────────────────────────────────────────────────────────────────────
+// ─── START SERVER ────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 7000;
 serveHTTP(builder.getInterface(), { port: PORT });
 console.log(`\n✅ Mollywood & Kollywood OTT addon running!`);
-console.log(`   Install URL: http://localhost:${PORT}/manifest.json\n`);
-
-// Warm up cache on startup (non-blocking) then start background refresh
-warmUpAll().then(() => startBackgroundRefresh()).catch(console.error);
+console.log(`   Install URL: http://localhost:${PORT}/manifest.json`);
+console.log(`   For Render: https://your-app-name.onrender.com/manifest.json\n`);
