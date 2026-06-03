@@ -1,12 +1,11 @@
 /**
- * scraper.js - UPDATED SELECTORS for current 91mobiles layout
- * Fetches Malayalam & Tamil OTT releases from 91mobiles.com/entertainment
+ * scraper.js - Uses Next.js JSON API directly
+ * No HTML parsing needed - gets clean data from 91mobiles' internal API
  */
 
 const fetch = require('node-fetch');
-const cheerio = require('cheerio');
 
-// URLs to scrape
+// URLs to scrape (the actual page URLs)
 const URLS = {
   'mal-movie': 'https://www.91mobiles.com/entertainment/new-malayalam-movies',
   'mal-series': 'https://www.91mobiles.com/entertainment/new-malayalam-web-series',
@@ -20,7 +19,7 @@ const THEATRE_KEYWORDS = [
   'cinema', 'pvr', 'inox', 'cinepolis'
 ];
 
-// Month mapping
+// Month mapping for date parsing
 const MONTHS = {
   'jan': 0, 'january': 0, 'feb': 1, 'february': 1,
   'mar': 2, 'march': 2, 'apr': 3, 'april': 3,
@@ -34,7 +33,7 @@ const MONTHS = {
 const imdbCache = new Map();
 
 async function searchIMDb(title, type, year) {
-  const cacheKey = `${title.toLowerCase()}_${type}_${year || ''}`;
+  const cacheKey = `${title.toLowerCase()}_${year || ''}`;
   if (imdbCache.has(cacheKey)) {
     return imdbCache.get(cacheKey);
   }
@@ -61,6 +60,7 @@ async function searchIMDb(title, type, year) {
           let imdbId = bestMatch.id;
           if (!imdbId.startsWith('tt')) imdbId = `tt${imdbId}`;
           imdbCache.set(cacheKey, imdbId);
+          console.log(`[IMDb] Found: ${title} -> ${imdbId}`);
           return imdbId;
         }
       }
@@ -75,30 +75,18 @@ async function searchIMDb(title, type, year) {
 function parseDate(dateStr) {
   if (!dateStr) return null;
   
-  const str = dateStr.toLowerCase().trim();
+  const str = dateStr.toString().toLowerCase().trim();
   
   if (/coming|soon|tba|announced|upcoming|expected/i.test(str)) {
     return '9999-12-31';
   }
   
-  // Format: "29 May 2026" or "29 May 2026 (OTT)"
+  // Format: "29 May 2026"
   let match = str.match(/(\d{1,2})\s+([a-z]+)\s+(\d{4})/i);
   if (match) {
     const month = MONTHS[match[2].toLowerCase().slice(0, 3)];
     if (month !== undefined) {
       const date = new Date(parseInt(match[3]), month, parseInt(match[1]));
-      if (!isNaN(date.getTime())) {
-        return date.toISOString().split('T')[0];
-      }
-    }
-  }
-  
-  // Format: "May 29, 2026"
-  match = str.match(/([a-z]+)\s+(\d{1,2}),?\s+(\d{4})/i);
-  if (match) {
-    const month = MONTHS[match[1].toLowerCase().slice(0, 3)];
-    if (month !== undefined) {
-      const date = new Date(parseInt(match[3]), month, parseInt(match[2]));
       if (!isNaN(date.getTime())) {
         return date.toISOString().split('T')[0];
       }
@@ -118,6 +106,10 @@ function isTheatreOnly(platformText) {
   return allAreTheatre;
 }
 
+/**
+ * Extract the Next.js JSON data from the page HTML
+ * Next.js embeds data in a script tag with id="__NEXT_DATA__"
+ */
 async function scrapePage(url, type) {
   try {
     console.log(`[scraper] Fetching: ${url}`);
@@ -135,118 +127,124 @@ async function scrapePage(url, type) {
     }
     
     const html = await response.text();
-    const $ = cheerio.load(html);
+    
+    // Extract Next.js JSON data from script tag
+    const jsonMatch = html.match(/<script id="__NEXT_DATA__" type="application\/json">(.*?)<\/script>/s);
+    
+    if (!jsonMatch) {
+      console.log(`[scraper] No Next.js data found, trying fallback method...`);
+      return await scrapePageFallback(html, url, type);
+    }
+    
+    const jsonData = JSON.parse(jsonMatch[1]);
+    
+    // Navigate through Next.js props to find movie data
+    // The structure varies, so we need to search recursively
+    let movieData = null;
+    
+    function findMovieData(obj, depth = 0) {
+      if (depth > 10) return null;
+      if (!obj || typeof obj !== 'object') return null;
+      
+      // Look for arrays that contain movie-like objects
+      if (Array.isArray(obj) && obj.length > 0) {
+        // Check if this array has movie items
+        const firstItem = obj[0];
+        if (firstItem && typeof firstItem === 'object') {
+          if (firstItem.title || firstItem.name || firstItem.heading || 
+              (firstItem.url && firstItem.url.includes('/entertainment/'))) {
+            return obj;
+          }
+        }
+      }
+      
+      // Search recursively
+      for (const key in obj) {
+        if (key === 'props' || key === 'pageProps' || key === 'initialState' || 
+            key === 'movies' || key === 'contents' || key === 'items' || key === 'data') {
+          const result = findMovieData(obj[key], depth + 1);
+          if (result) return result;
+        } else if (typeof obj[key] === 'object') {
+          const result = findMovieData(obj[key], depth + 1);
+          if (result) return result;
+        }
+      }
+      
+      return null;
+    }
+    
+    movieData = findMovieData(jsonData);
+    
+    if (!movieData || !Array.isArray(movieData)) {
+      console.log(`[scraper] Could not extract movie data from JSON`);
+      return [];
+    }
+    
+    console.log(`[scraper] Found ${movieData.length} items in JSON data`);
     
     const items = [];
     
-    // UPDATED SELECTORS for current 91mobiles layout
-    // Looking at your screenshot, movies are in divs with movie/show information
-    
-    // Try multiple selectors to find movie cards
-    let cards = [];
-    
-    // Selector 1: Look for article or div that contains movie details
-    cards = $('article, .movie-item, .content-item, [class*="movie-card"], [class*="content-card"]').toArray();
-    
-    // Selector 2: Look for divs that have both title and OTT platform info
-    if (cards.length < 2) {
-      cards = $('div').filter((i, el) => {
-        const $el = $(el);
-        const hasTitle = $el.find('h1, h2, h3, [class*="title"]').length > 0;
-        const hasPlatform = $el.text().match(/(Prime Video|Netflix|Hotstar|SunNxt|ZEE5|SonyLIV|JioCinema|Aha|ManoramaMAX)/i);
-        return hasTitle && hasPlatform && $el.text().length > 50;
-      }).toArray();
-    }
-    
-    // Selector 3: Look for list items in the main content
-    if (cards.length < 2) {
-      cards = $('.main-content li, .content-wrapper li, .listing li').toArray();
-    }
-    
-    console.log(`[scraper] Found ${cards.length} potential cards`);
-    
-    for (const card of cards) {
-      const $card = $(card);
-      
-      // Extract title - look for heading elements
-      let title = $card.find('h1, h2, h3, [class*="title"], [class*="name"]').first().text().trim();
-      if (!title) {
-        // Try getting text from a link
-        title = $card.find('a[href*="/entertainment/"]').first().text().trim();
+    for (const item of movieData) {
+      // Extract title - try different possible field names
+      let title = item.title || item.name || item.heading || item.movieName || item.contentName;
+      if (!title && item.url) {
+        // Extract from URL slug
+        const urlMatch = item.url.match(/\/entertainment\/([^\/?#]+)/);
+        if (urlMatch) {
+          title = urlMatch[1].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
       }
-      if (!title || title.length < 2) continue;
+      if (!title) continue;
       
-      // Clean title (remove extra spaces and special chars)
       title = title.replace(/\s+/g, ' ').trim();
+      if (title.length < 2) continue;
       
-      // Extract OTT platform - look for platform name or button/link
-      let platformText = '';
-      
-      // Look for "Where To Stream" section or platform buttons
-      const platformEl = $card.find('[class*="platform"], [class*="ott"], [class*="stream"], button a, .streaming-service');
-      if (platformEl.length > 0) {
-        platformText = platformEl.first().text().trim();
-      }
-      
-      if (!platformText) {
-        // Look for known platform names in the card text
-        const cardHtml = $card.html();
-        const platformMatch = cardHtml.match(/(Prime Video|Netflix|Amazon|Hotstar|Disney\+|ZEE5|SonyLIV|JioCinema|MX Player|Aha|Sun Nxt|SunNxt|ManoramaMAX|Koode)/i);
-        if (platformMatch) platformText = platformMatch[0];
+      // Extract OTT platform
+      let platformText = item.platform || item.ott || item.streamingOn || item.provider;
+      if (!platformText && item.tags && Array.isArray(item.tags)) {
+        const ottTag = item.tags.find(t => 
+          ['Netflix', 'Prime', 'Hotstar', 'SunNxt', 'ZEE5', 'SonyLIV', 'JioCinema', 'Aha', 'ManoramaMAX'].some(p => 
+            typeof t === 'string' && t.includes(p)
+          )
+        );
+        if (ottTag) platformText = ottTag;
       }
       
       // Filter out theatre-only
       if (isTheatreOnly(platformText)) continue;
       
-      // Extract poster - look for image
-      let poster = $card.find('img').first().attr('data-src') || 
-                   $card.find('img').first().attr('src') || 
-                   $card.find('picture img').attr('src') || 
-                   null;
-      if (poster && !poster.startsWith('http')) {
+      // Extract poster
+      let poster = item.image || item.poster || item.thumbnail || item.img;
+      if (poster && typeof poster === 'string' && !poster.startsWith('http')) {
         if (poster.startsWith('/')) {
           poster = 'https://www.91mobiles.com' + poster;
         }
       }
       
-      // Extract release date - look for date pattern
-      let releaseDate = '';
-      const cardText = $card.text();
-      const dateMatch = cardText.match(/(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{4})/i);
-      if (dateMatch) {
-        releaseDate = dateMatch[0];
+      // Extract release date
+      let releaseDate = item.releaseDate || item.date || item.publishDate;
+      if (releaseDate && typeof releaseDate === 'string') {
+        // Clean up date string
+        releaseDate = releaseDate.replace(/\s*\([^)]*\)/, '').trim();
       }
       
-      if (!releaseDate) {
-        const altDateMatch = cardText.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2}),?\s+(\d{4})/i);
-        if (altDateMatch) releaseDate = altDateMatch[0];
-      }
-      
-      // Extract year for IMDb
+      // Parse year
       let year = null;
       if (releaseDate) {
         const yearMatch = releaseDate.match(/\d{4}/);
         if (yearMatch) year = parseInt(yearMatch[0]);
       }
       
-      // Extract description/synopsis
-      let description = '';
-      const descEl = $card.find('[class*="desc"], [class*="synopsis"], [class*="plot"], p').first();
-      if (descEl.length > 0) {
-        description = descEl.text().trim();
-      }
-      if (!description || description.length < 10) {
-        // Try getting from a longer text block
-        const textBlocks = $card.find('p, div').filter((i, el) => $(el).text().length > 50).first();
-        if (textBlocks.length > 0) {
-          description = textBlocks.text().trim();
-        }
+      // Extract description
+      let description = item.description || item.synopsis || item.excerpt || item.summary;
+      if (description && typeof description === 'string') {
+        description = description.trim();
       }
       
       // Parse sort date
       const sortDate = parseDate(releaseDate);
       
-      // Search IMDb
+      // Search for IMDb ID
       let imdbId = await searchIMDb(title, type, year);
       const finalId = imdbId || `tt_${title.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
       
@@ -255,7 +253,9 @@ async function scrapePage(url, type) {
       if (platformText) fullDesc += `📺 Available on: ${platformText}\n`;
       if (releaseDate) fullDesc += `📅 Release: ${releaseDate}\n`;
       if (imdbId) fullDesc += `🎬 IMDb: https://www.imdb.com/title/${imdbId}/\n`;
-      if (description && description.length > 10) fullDesc += `\n${description.slice(0, 400)}`;
+      if (description && typeof description === 'string' && description.length > 10) {
+        fullDesc += `\n${description.slice(0, 400)}`;
+      }
       
       items.push({
         id: finalId,
@@ -264,12 +264,11 @@ async function scrapePage(url, type) {
         poster: poster || undefined,
         releaseInfo: releaseDate || undefined,
         description: fullDesc.trim() || undefined,
-        sortDate: sortDate,
-        _platform: platformText
+        sortDate: sortDate
       });
     }
     
-    // Remove duplicates by title
+    // Remove duplicates
     const unique = [];
     const seen = new Set();
     for (const item of items) {
@@ -280,7 +279,7 @@ async function scrapePage(url, type) {
       }
     }
     
-    // Sort by date (newest first)
+    // Sort by date
     unique.sort((a, b) => {
       if (!a.sortDate && !b.sortDate) return 0;
       if (!a.sortDate) return 1;
@@ -289,13 +288,12 @@ async function scrapePage(url, type) {
     });
     
     // Clean up
-    unique.forEach(item => {
-      delete item.sortDate;
-      delete item._platform;
-    });
+    unique.forEach(item => delete item.sortDate);
     
-    const withImdb = items.filter(i => i._imdbId).length;
-    console.log(`[scraper] ✅ ${unique.length} unique items (${unique.slice(0, 3).map(i => i.name).join(', ')})`);
+    console.log(`[scraper] ✅ ${unique.length} unique items found`);
+    if (unique.length > 0) {
+      console.log(`[scraper] 📅 First 3: ${unique.slice(0, 3).map(i => `${i.name} (${i.releaseInfo || 'No date'})`).join(', ')}`);
+    }
     
     return unique;
     
@@ -303,6 +301,45 @@ async function scrapePage(url, type) {
     console.error(`[scraper] ❌ Error:`, error.message);
     return [];
   }
+}
+
+/**
+ * Fallback scraper that tries to extract data from HTML structure
+ */
+async function scrapePageFallback(html, url, type) {
+  console.log(`[scraper] Using fallback HTML parsing for ${url}`);
+  const cheerio = require('cheerio');
+  const $ = cheerio.load(html);
+  
+  const items = [];
+  
+  // Look for any links to entertainment content
+  $('a[href*="/entertainment/"]').each((i, el) => {
+    const $el = $(el);
+    let title = $el.text().trim();
+    const href = $el.attr('href');
+    
+    if (!title || title.length < 2) {
+      // Try to get title from parent
+      title = $el.parent().find('h1, h2, h3, h4').first().text().trim();
+    }
+    
+    if (title && title.length > 2 && title.length < 100) {
+      // Avoid duplicate entries
+      const existing = items.find(i => i.name === title);
+      if (!existing) {
+        items.push({
+          id: `tt_${title.toLowerCase().replace(/[^a-z0-9]/g, '_')}`,
+          type: type,
+          name: title,
+          description: `Found on 91mobiles\nURL: ${href || url}`,
+        });
+      }
+    }
+  });
+  
+  console.log(`[scraper] Fallback found ${items.length} items`);
+  return items;
 }
 
 async function scrapeMalayalam(type) {
