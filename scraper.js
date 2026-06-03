@@ -1,6 +1,5 @@
 /**
- * scraper.js - CLEAN VERSION
- * Just IMDb IDs and streaming info. No extra links.
+ * scraper.js - Direct IMDb fallback when TMDB fails
  */
 
 const https = require('https');
@@ -83,97 +82,151 @@ function cleanTitle(title) {
   return cleaned;
 }
 
+// Direct IMDb search using IMDb's suggestion API
+async function searchDirectIMDb(title, year = null) {
+  try {
+    const searchTitle = encodeURIComponent(title.toLowerCase());
+    const firstLetter = searchTitle[0];
+    const imdbUrl = `https://v2.sg.media-imdb.com/suggestion/${firstLetter}/${searchTitle}.json`;
+    
+    const response = await fetchUrl(imdbUrl);
+    const data = JSON.parse(response);
+    
+    if (data.d && data.d.length > 0) {
+      let bestMatch = data.d[0];
+      let bestScore = 0;
+      
+      for (const item of data.d) {
+        let score = 0;
+        const itemTitle = (item.l || '').toLowerCase();
+        const searchTitleLower = title.toLowerCase();
+        
+        if (itemTitle === searchTitleLower) score += 50;
+        else if (itemTitle.includes(searchTitleLower)) score += 30;
+        else if (searchTitleLower.includes(itemTitle)) score += 20;
+        
+        if (year && item.y && item.y.toString() === year.toString()) score += 40;
+        
+        if (score > bestScore) {
+          bestScore = score;
+          bestMatch = item;
+        }
+      }
+      
+      if (bestMatch && bestMatch.id && bestScore > 10) {
+        let imdbId = bestMatch.id;
+        if (!imdbId.startsWith('tt')) imdbId = 'tt' + imdbId;
+        console.log(`[IMDb] Direct search found: ${title} -> ${imdbId}`);
+        return {
+          imdbId: imdbId,
+          poster: null,
+          backdrop: null,
+          overview: null,
+          rating: null,
+          releaseYear: bestMatch.y ? bestMatch.y.toString() : null,
+        };
+      }
+    }
+    return null;
+  } catch (e) {
+    console.warn('[IMDb] Direct search failed: ' + e.message);
+    return null;
+  }
+}
+
 async function getImdbId(title, type, langCode, year = null) {
   const cacheKey = `${title}_${type}`;
   if (tmdbCache.has(cacheKey)) {
     return tmdbCache.get(cacheKey);
   }
   
-  if (!TMDB_KEY) {
-    return { imdbId: null, poster: null, backdrop: null, overview: null, rating: null, releaseYear: null };
-  }
+  let result = { imdbId: null, poster: null, backdrop: null, overview: null, rating: null, releaseYear: null };
   
-  try {
-    const endpoint = type === 'series' ? 'tv' : 'movie';
-    const cleanTitle = title.split('(')[0].split('-')[0].split(':')[0].trim();
-    const query = encodeURIComponent(cleanTitle);
-    
-    let searchUrl = 'https://api.themoviedb.org/3/search/' + endpoint +
-      '?api_key=' + TMDB_KEY +
-      '&query=' + query +
-      '&language=en-US&page=1';
-    
-    if (langCode) {
-      searchUrl += '&with_original_language=' + langCode;
-    }
-    
-    let searchData = await fetchJson(searchUrl);
-    
-    if (!searchData.results || searchData.results.length === 0) {
-      const fallbackUrl = 'https://api.themoviedb.org/3/search/' + endpoint +
+  // Try TMDB first
+  if (TMDB_KEY) {
+    try {
+      const endpoint = type === 'series' ? 'tv' : 'movie';
+      const cleanTitle = title.split('(')[0].split('-')[0].split(':')[0].trim();
+      const query = encodeURIComponent(cleanTitle);
+      
+      let searchUrl = 'https://api.themoviedb.org/3/search/' + endpoint +
         '?api_key=' + TMDB_KEY +
         '&query=' + query +
         '&language=en-US&page=1';
-      searchData = await fetchJson(fallbackUrl);
-    }
-    
-    if (!searchData.results || searchData.results.length === 0) {
-      const result = { imdbId: null, poster: null, backdrop: null, overview: null, rating: null, releaseYear: null };
-      tmdbCache.set(cacheKey, result);
-      return result;
-    }
-    
-    let bestMatch = null;
-    let bestScore = 0;
-    
-    for (const result of searchData.results) {
-      let score = 0;
-      const resultTitle = (result.title || result.name || '').toLowerCase();
-      const searchTitle = cleanTitle.toLowerCase();
       
-      if (resultTitle === searchTitle) score += 50;
-      else if (resultTitle.includes(searchTitle)) score += 30;
-      else if (searchTitle.includes(resultTitle)) score += 20;
-      
-      if (result.original_language === langCode) score += 40;
-      if (result.origin_country && result.origin_country.includes('IN')) score += 20;
-      if (result.popularity) score += Math.min(result.popularity / 10, 10);
-      
-      if (score > bestScore) {
-        bestScore = score;
-        bestMatch = result;
+      if (langCode) {
+        searchUrl += '&with_original_language=' + langCode;
       }
+      
+      let searchData = await fetchJson(searchUrl);
+      
+      if (!searchData.results || searchData.results.length === 0) {
+        const fallbackUrl = 'https://api.themoviedb.org/3/search/' + endpoint +
+          '?api_key=' + TMDB_KEY +
+          '&query=' + query +
+          '&language=en-US&page=1';
+        searchData = await fetchJson(fallbackUrl);
+      }
+      
+      if (searchData.results && searchData.results.length > 0) {
+        let bestMatch = null;
+        let bestScore = 0;
+        
+        for (const res of searchData.results) {
+          let score = 0;
+          const resultTitle = (res.title || res.name || '').toLowerCase();
+          const searchTitle = cleanTitle.toLowerCase();
+          
+          if (resultTitle === searchTitle) score += 50;
+          else if (resultTitle.includes(searchTitle)) score += 30;
+          else if (searchTitle.includes(resultTitle)) score += 20;
+          
+          if (res.original_language === langCode) score += 40;
+          if (res.origin_country && res.origin_country.includes('IN')) score += 20;
+          if (res.popularity) score += Math.min(res.popularity / 10, 10);
+          
+          if (score > bestScore) {
+            bestScore = score;
+            bestMatch = res;
+          }
+        }
+        
+        if (bestMatch && bestScore >= 15) {
+          const detailsUrl = 'https://api.themoviedb.org/3/' + endpoint + '/' + bestMatch.id +
+            '?api_key=' + TMDB_KEY;
+          const details = await fetchJson(detailsUrl);
+          
+          if (details.imdb_id) {
+            result = {
+              imdbId: details.imdb_id,
+              poster: details.poster_path ? 'https://image.tmdb.org/t/p/w500' + details.poster_path : null,
+              backdrop: details.backdrop_path ? 'https://image.tmdb.org/t/p/w1280' + details.backdrop_path : null,
+              overview: details.overview || null,
+              rating: details.vote_average ? details.vote_average.toFixed(1) : null,
+              releaseYear: details.release_date ? details.release_date.split('-')[0] : (details.first_air_date ? details.first_air_date.split('-')[0] : null),
+            };
+            console.log(`[TMDB] Found IMDb: ${result.imdbId} for "${title}"`);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('[TMDB] Error: ' + e.message);
     }
-    
-    if (!bestMatch || bestScore < 15) {
-      const result = { imdbId: null, poster: null, backdrop: null, overview: null, rating: null, releaseYear: null };
-      tmdbCache.set(cacheKey, result);
-      return result;
-    }
-    
-    const detailsUrl = 'https://api.themoviedb.org/3/' + endpoint + '/' + bestMatch.id +
-      '?api_key=' + TMDB_KEY;
-    const details = await fetchJson(detailsUrl);
-    
-    const result = {
-      imdbId: details.imdb_id || null,
-      poster: details.poster_path ? 'https://image.tmdb.org/t/p/w500' + details.poster_path : null,
-      backdrop: details.backdrop_path ? 'https://image.tmdb.org/t/p/w1280' + details.backdrop_path : null,
-      overview: details.overview || null,
-      rating: details.vote_average ? details.vote_average.toFixed(1) : null,
-      releaseYear: details.release_date ? details.release_date.split('-')[0] : (details.first_air_date ? details.first_air_date.split('-')[0] : null),
-    };
-    
-    tmdbCache.set(cacheKey, result);
-    console.log(`[TMDB] ${result.imdbId ? '✅ IMDb: ' + result.imdbId : '❌ No IMDb'} for "${title}"`);
-    return result;
-    
-  } catch (e) {
-    console.warn('[TMDB] Failed: ' + e.message);
-    const result = { imdbId: null, poster: null, backdrop: null, overview: null, rating: null, releaseYear: null };
-    tmdbCache.set(cacheKey, result);
-    return result;
   }
+  
+  // If TMDB didn't find an IMDb ID, try direct IMDb search
+  if (!result.imdbId) {
+    console.log(`[IMDb] TMDB failed for "${title}", trying direct IMDb search...`);
+    const directResult = await searchDirectIMDb(title, year);
+    if (directResult && directResult.imdbId) {
+      result.imdbId = directResult.imdbId;
+      result.releaseYear = directResult.releaseYear || result.releaseYear;
+      console.log(`[IMDb] Direct search success: ${result.imdbId}`);
+    }
+  }
+  
+  tmdbCache.set(cacheKey, result);
+  return result;
 }
 
 function getFallbackPoster(title) {
@@ -286,15 +339,17 @@ async function scrapePage(urlKey, type) {
   const metas = [];
   const itemsToProcess = unique.slice(0, 30);
   
-  console.log('[TMDB] Fetching data...');
+  console.log('[Search] Fetching IMDb IDs...');
   
   for (let idx = 0; idx < itemsToProcess.length; idx++) {
     const item = itemsToProcess[idx];
     console.log(`[${idx + 1}/${itemsToProcess.length}] ${item.title}`);
     
-    const tmdbData = await getImdbId(item.title, type, langCode);
+    const yearMatch = item.releaseDate?.match(/\d{4}/);
+    const year = yearMatch ? yearMatch[0] : null;
     
-    // Build description - clean and simple
+    const tmdbData = await getImdbId(item.title, type, langCode, year);
+    
     let description = '';
     if (tmdbData?.overview) {
       description += tmdbData.overview + '\n\n';
@@ -307,13 +362,16 @@ async function scrapePage(urlKey, type) {
       description += `\n⭐ **Rating:** ${tmdbData.rating}/10`;
     }
     
-    // Generate ID
+    // Use IMDb ID if found (from TMDB or direct IMDb search)
     let finalId;
     if (tmdbData?.imdbId) {
-      finalId = tmdbData.imdbId;  // Real IMDb ID
+      finalId = tmdbData.imdbId;
+      console.log(`✅ IMDb ID found: ${finalId}`);
     } else {
+      // Last resort - title-based ID
       const titleSlug = item.title.toLowerCase().replace(/[^a-z0-9]/g, '_');
       finalId = `search_${titleSlug}`;
+      console.log(`⚠️ No IMDb ID for: ${item.title}`);
     }
     
     const meta = {
