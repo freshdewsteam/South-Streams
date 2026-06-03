@@ -1,5 +1,6 @@
 /**
- * scraper.js - Direct IMDb fallback when TMDB fails
+ * scraper.js - Uses OMDb API for IMDb IDs (100% reliable)
+ * Get free API key: https://www.omdbapi.com/apikey.aspx
  */
 
 const https = require('https');
@@ -7,6 +8,7 @@ const zlib = require('zlib');
 const cheerio = require('cheerio');
 
 const TMDB_KEY = process.env.TMDB_API_KEY || '';
+const OMDB_KEY = process.env.OMDB_API_KEY || '';  // ← YOU NEED THIS
 
 const URLS = {
   'mal-movie': 'https://cinebuds.com/malayalam-movies-ott-release-dates/',
@@ -28,8 +30,6 @@ function fetchUrl(url) {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Accept-Encoding': 'gzip, deflate, br',
       },
     };
     https.get(url, opts, (res) => {
@@ -82,67 +82,45 @@ function cleanTitle(title) {
   return cleaned;
 }
 
-// Direct IMDb search using IMDb's suggestion API
-async function searchDirectIMDb(title, year = null) {
+// Get IMDb ID from OMDb API (free, reliable)
+async function getImdbFromOMDb(title, year = null) {
+  if (!OMDB_KEY) return null;
+  
   try {
-    const searchTitle = encodeURIComponent(title.toLowerCase());
-    const firstLetter = searchTitle[0];
-    const imdbUrl = `https://v2.sg.media-imdb.com/suggestion/${firstLetter}/${searchTitle}.json`;
+    const searchTitle = encodeURIComponent(title);
+    let url = `https://www.omdbapi.com/?apikey=${OMDB_KEY}&t=${searchTitle}&type=movie`;
+    if (year) url += `&y=${year}`;
     
-    const response = await fetchUrl(imdbUrl);
-    const data = JSON.parse(response);
+    const data = await fetchJson(url);
     
-    if (data.d && data.d.length > 0) {
-      let bestMatch = data.d[0];
-      let bestScore = 0;
-      
-      for (const item of data.d) {
-        let score = 0;
-        const itemTitle = (item.l || '').toLowerCase();
-        const searchTitleLower = title.toLowerCase();
-        
-        if (itemTitle === searchTitleLower) score += 50;
-        else if (itemTitle.includes(searchTitleLower)) score += 30;
-        else if (searchTitleLower.includes(itemTitle)) score += 20;
-        
-        if (year && item.y && item.y.toString() === year.toString()) score += 40;
-        
-        if (score > bestScore) {
-          bestScore = score;
-          bestMatch = item;
-        }
-      }
-      
-      if (bestMatch && bestMatch.id && bestScore > 10) {
-        let imdbId = bestMatch.id;
-        if (!imdbId.startsWith('tt')) imdbId = 'tt' + imdbId;
-        console.log(`[IMDb] Direct search found: ${title} -> ${imdbId}`);
-        return {
-          imdbId: imdbId,
-          poster: null,
-          backdrop: null,
-          overview: null,
-          rating: null,
-          releaseYear: bestMatch.y ? bestMatch.y.toString() : null,
-        };
-      }
+    if (data && data.Response === 'True' && data.imdbID) {
+      console.log(`[OMDb] Found: ${title} -> ${data.imdbID}`);
+      return {
+        imdbId: data.imdbID,
+        poster: data.Poster !== 'N/A' ? data.Poster : null,
+        backdrop: null,
+        overview: data.Plot !== 'N/A' ? data.Plot : null,
+        rating: data.imdbRating !== 'N/A' ? data.imdbRating : null,
+        releaseYear: data.Year,
+      };
     }
     return null;
   } catch (e) {
-    console.warn('[IMDb] Direct search failed: ' + e.message);
+    console.warn('[OMDb] Error: ' + e.message);
     return null;
   }
 }
 
+// Try TMDB first, then OMDb
 async function getImdbId(title, type, langCode, year = null) {
-  const cacheKey = `${title}_${type}`;
+  const cacheKey = `${title}_${type}_${year || ''}`;
   if (tmdbCache.has(cacheKey)) {
     return tmdbCache.get(cacheKey);
   }
   
   let result = { imdbId: null, poster: null, backdrop: null, overview: null, rating: null, releaseYear: null };
   
-  // Try TMDB first
+  // Try TMDB first (gets better posters)
   if (TMDB_KEY) {
     try {
       const endpoint = type === 'series' ? 'tv' : 'movie';
@@ -205,7 +183,7 @@ async function getImdbId(title, type, langCode, year = null) {
               rating: details.vote_average ? details.vote_average.toFixed(1) : null,
               releaseYear: details.release_date ? details.release_date.split('-')[0] : (details.first_air_date ? details.first_air_date.split('-')[0] : null),
             };
-            console.log(`[TMDB] Found IMDb: ${result.imdbId} for "${title}"`);
+            console.log(`[TMDB] Found: ${result.imdbId} for "${title}"`);
           }
         }
       }
@@ -214,14 +192,13 @@ async function getImdbId(title, type, langCode, year = null) {
     }
   }
   
-  // If TMDB didn't find an IMDb ID, try direct IMDb search
-  if (!result.imdbId) {
-    console.log(`[IMDb] TMDB failed for "${title}", trying direct IMDb search...`);
-    const directResult = await searchDirectIMDb(title, year);
-    if (directResult && directResult.imdbId) {
-      result.imdbId = directResult.imdbId;
-      result.releaseYear = directResult.releaseYear || result.releaseYear;
-      console.log(`[IMDb] Direct search success: ${result.imdbId}`);
+  // If TMDB didn't find IMDb ID, try OMDb
+  if (!result.imdbId && OMDB_KEY) {
+    console.log(`[OMDb] Trying fallback for "${title}"...`);
+    const omdbResult = await getImdbFromOMDb(title, year);
+    if (omdbResult && omdbResult.imdbId) {
+      result = omdbResult;
+      console.log(`[OMDb] Found: ${result.imdbId} for "${title}"`);
     }
   }
   
@@ -339,7 +316,7 @@ async function scrapePage(urlKey, type) {
   const metas = [];
   const itemsToProcess = unique.slice(0, 30);
   
-  console.log('[Search] Fetching IMDb IDs...');
+  console.log('[API] Fetching IMDb IDs...');
   
   for (let idx = 0; idx < itemsToProcess.length; idx++) {
     const item = itemsToProcess[idx];
@@ -348,27 +325,26 @@ async function scrapePage(urlKey, type) {
     const yearMatch = item.releaseDate?.match(/\d{4}/);
     const year = yearMatch ? yearMatch[0] : null;
     
-    const tmdbData = await getImdbId(item.title, type, langCode, year);
+    const imdbData = await getImdbId(item.title, type, langCode, year);
     
     let description = '';
-    if (tmdbData?.overview) {
-      description += tmdbData.overview + '\n\n';
+    if (imdbData?.overview) {
+      description += imdbData.overview + '\n\n';
     }
     
     description += `📺 **Streaming on:** ${item.platform}\n`;
     description += `📅 **OTT Release:** ${item.releaseDate}`;
     
-    if (tmdbData?.rating) {
-      description += `\n⭐ **Rating:** ${tmdbData.rating}/10`;
+    if (imdbData?.rating && imdbData.rating !== 'N/A') {
+      description += `\n⭐ **Rating:** ${imdbData.rating}/10`;
     }
     
-    // Use IMDb ID if found (from TMDB or direct IMDb search)
+    // Use IMDb ID if found
     let finalId;
-    if (tmdbData?.imdbId) {
-      finalId = tmdbData.imdbId;
-      console.log(`✅ IMDb ID found: ${finalId}`);
+    if (imdbData?.imdbId) {
+      finalId = imdbData.imdbId;
+      console.log(`✅ IMDb ID: ${finalId}`);
     } else {
-      // Last resort - title-based ID
       const titleSlug = item.title.toLowerCase().replace(/[^a-z0-9]/g, '_');
       finalId = `search_${titleSlug}`;
       console.log(`⚠️ No IMDb ID for: ${item.title}`);
@@ -378,17 +354,17 @@ async function scrapePage(urlKey, type) {
       id: finalId,
       type: type,
       name: item.title,
-      releaseInfo: tmdbData?.releaseYear || item.releaseDate,
+      releaseInfo: imdbData?.releaseYear || item.releaseDate,
       description: description,
     };
     
-    if (tmdbData?.poster) {
-      meta.poster = tmdbData.poster;
+    if (imdbData?.poster && imdbData.poster !== 'N/A') {
+      meta.poster = imdbData.poster;
     } else {
       meta.poster = getFallbackPoster(item.title);
     }
     
-    if (tmdbData?.backdrop) meta.background = tmdbData.backdrop;
+    if (imdbData?.backdrop) meta.background = imdbData.backdrop;
     
     metas.push(meta);
     await new Promise(resolve => setTimeout(resolve, 200));
