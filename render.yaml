@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: mollywood-stremio-addon
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: RENDER
+        value: "true"
+    healthCheckPath: /manifest.json
