@@ -1,7 +1,7 @@
 {
   "name": "mollywood-stremio-addon",
   "version": "2.0.0",
-  "description": "Stremio addon for Malayalam & Tamil OTT releases from 91mobiles.com/entertainment",
+  "description": "Stremio addon for Malayalam & Tamil OTT releases - One click streaming with Torrentio",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -10,9 +10,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "cheerio": "^1.0.0",
-    "stremio-addon-sdk": "^1.6.10"
-  },
-  "keywords": ["stremio", "addon", "malayalam", "mollywood", "tamil", "kollywood", "ott", "kerala"],
-  "license": "MIT"
+    "stremio-addon-sdk": "^1.6.10",
+    "cheerio": "^1.0.0"
+  }
 }
