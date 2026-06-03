@@ -1,11 +1,12 @@
 /**
- * scraper.js - Uses Next.js JSON API directly
- * No HTML parsing needed - gets clean data from 91mobiles' internal API
+ * scraper.js - Option B: IMDb lookup ONLY for recent movies (last 30 days)
+ * Filters out UI garbage text properly
+ * Sorted by release date (newest first)
  */
 
 const fetch = require('node-fetch');
+const cheerio = require('cheerio');
 
-// URLs to scrape (the actual page URLs)
 const URLS = {
   'mal-movie': 'https://www.91mobiles.com/entertainment/new-malayalam-movies',
   'mal-series': 'https://www.91mobiles.com/entertainment/new-malayalam-web-series',
@@ -13,13 +14,19 @@ const URLS = {
   'tam-series': 'https://www.91mobiles.com/entertainment/best-tamil-web-series',
 };
 
-// Theatre keywords to filter out
-const THEATRE_KEYWORDS = [
-  'bookmyshow', 'book my show', 'theatre', 'theater', 
-  'cinema', 'pvr', 'inox', 'cinepolis'
+// Keywords to FILTER OUT (garbage UI text)
+const GARBAGE_KEYWORDS = [
+  'latest and trending', 'movies', 'web series', 'ott this week', 'view all',
+  'more', 'trending', 'popular', 'recommended', 'you may also like',
+  'iohotsta', 'streaming pr', 'new malaysia', 'new tamil'
 ];
 
-// Month mapping for date parsing
+// Theatre keywords to filter out
+const THEATRE_KEYWORDS = [
+  'bookmyshow', 'theatre', 'theater', 'cinema', 'pvr', 'inox', 'cinepolis'
+];
+
+// Month mapping
 const MONTHS = {
   'jan': 0, 'january': 0, 'feb': 1, 'february': 1,
   'mar': 2, 'march': 2, 'apr': 3, 'april': 3,
@@ -31,6 +38,10 @@ const MONTHS = {
 
 // IMDb cache
 const imdbCache = new Map();
+
+// Calculate date 30 days ago
+const THIRTY_DAYS_AGO = new Date();
+THIRTY_DAYS_AGO.setDate(THIRTY_DAYS_AGO.getDate() - 30);
 
 async function searchIMDb(title, type, year) {
   const cacheKey = `${title.toLowerCase()}_${year || ''}`;
@@ -60,7 +71,7 @@ async function searchIMDb(title, type, year) {
           let imdbId = bestMatch.id;
           if (!imdbId.startsWith('tt')) imdbId = `tt${imdbId}`;
           imdbCache.set(cacheKey, imdbId);
-          console.log(`[IMDb] Found: ${title} -> ${imdbId}`);
+          console.log(`[IMDb] ✅ Found: ${title} -> ${imdbId}`);
           return imdbId;
         }
       }
@@ -106,10 +117,12 @@ function isTheatreOnly(platformText) {
   return allAreTheatre;
 }
 
-/**
- * Extract the Next.js JSON data from the page HTML
- * Next.js embeds data in a script tag with id="__NEXT_DATA__"
- */
+function isGarbageText(title) {
+  if (!title) return true;
+  const lower = title.toLowerCase();
+  return GARBAGE_KEYWORDS.some(keyword => lower === keyword || lower.includes(keyword));
+}
+
 async function scrapePage(url, type) {
   try {
     console.log(`[scraper] Fetching: ${url}`);
@@ -128,40 +141,37 @@ async function scrapePage(url, type) {
     
     const html = await response.text();
     
-    // Extract Next.js JSON data from script tag
+    // Extract Next.js JSON data
     const jsonMatch = html.match(/<script id="__NEXT_DATA__" type="application\/json">(.*?)<\/script>/s);
     
     if (!jsonMatch) {
-      console.log(`[scraper] No Next.js data found, trying fallback method...`);
-      return await scrapePageFallback(html, url, type);
+      console.log(`[scraper] No Next.js data found`);
+      return [];
     }
     
     const jsonData = JSON.parse(jsonMatch[1]);
     
-    // Navigate through Next.js props to find movie data
-    // The structure varies, so we need to search recursively
+    // Find movie data recursively
     let movieData = null;
     
     function findMovieData(obj, depth = 0) {
-      if (depth > 10) return null;
+      if (depth > 15) return null;
       if (!obj || typeof obj !== 'object') return null;
       
-      // Look for arrays that contain movie-like objects
       if (Array.isArray(obj) && obj.length > 0) {
-        // Check if this array has movie items
         const firstItem = obj[0];
         if (firstItem && typeof firstItem === 'object') {
-          if (firstItem.title || firstItem.name || firstItem.heading || 
-              (firstItem.url && firstItem.url.includes('/entertainment/'))) {
+          // Look for actual movie data (has title and not garbage)
+          if ((firstItem.title || firstItem.name) && 
+              !isGarbageText(firstItem.title || firstItem.name)) {
             return obj;
           }
         }
       }
       
-      // Search recursively
       for (const key in obj) {
-        if (key === 'props' || key === 'pageProps' || key === 'initialState' || 
-            key === 'movies' || key === 'contents' || key === 'items' || key === 'data') {
+        if (key === 'props' || key === 'pageProps' || key === 'initialProps' ||
+            key === 'movies' || key === 'items' || key === 'data' || key === 'contents') {
           const result = findMovieData(obj[key], depth + 1);
           if (result) return result;
         } else if (typeof obj[key] === 'object') {
@@ -169,42 +179,38 @@ async function scrapePage(url, type) {
           if (result) return result;
         }
       }
-      
       return null;
     }
     
     movieData = findMovieData(jsonData);
     
     if (!movieData || !Array.isArray(movieData)) {
-      console.log(`[scraper] Could not extract movie data from JSON`);
+      console.log(`[scraper] Could not extract movie data`);
       return [];
     }
     
-    console.log(`[scraper] Found ${movieData.length} items in JSON data`);
+    console.log(`[scraper] Found ${movieData.length} raw items in JSON`);
     
     const items = [];
     
     for (const item of movieData) {
-      // Extract title - try different possible field names
+      // Extract title
       let title = item.title || item.name || item.heading || item.movieName || item.contentName;
-      if (!title && item.url) {
-        // Extract from URL slug
-        const urlMatch = item.url.match(/\/entertainment\/([^\/?#]+)/);
-        if (urlMatch) {
-          title = urlMatch[1].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        }
-      }
-      if (!title) continue;
+      if (!title || typeof title !== 'string') continue;
       
       title = title.replace(/\s+/g, ' ').trim();
+      
+      // Filter out garbage titles
+      if (isGarbageText(title)) continue;
       if (title.length < 2) continue;
       
       // Extract OTT platform
-      let platformText = item.platform || item.ott || item.streamingOn || item.provider;
+      let platformText = item.platform || item.ott || item.streamingOn || item.provider || '';
       if (!platformText && item.tags && Array.isArray(item.tags)) {
         const ottTag = item.tags.find(t => 
+          typeof t === 'string' && 
           ['Netflix', 'Prime', 'Hotstar', 'SunNxt', 'ZEE5', 'SonyLIV', 'JioCinema', 'Aha', 'ManoramaMAX'].some(p => 
-            typeof t === 'string' && t.includes(p)
+            t.toLowerCase().includes(p.toLowerCase())
           )
         );
         if (ottTag) platformText = ottTag;
@@ -222,30 +228,41 @@ async function scrapePage(url, type) {
       }
       
       // Extract release date
-      let releaseDate = item.releaseDate || item.date || item.publishDate;
+      let releaseDate = item.releaseDate || item.date || item.publishDate || '';
       if (releaseDate && typeof releaseDate === 'string') {
-        // Clean up date string
         releaseDate = releaseDate.replace(/\s*\([^)]*\)/, '').trim();
       }
       
-      // Parse year
+      // Parse year and sort date
       let year = null;
+      let sortDate = null;
       if (releaseDate) {
         const yearMatch = releaseDate.match(/\d{4}/);
         if (yearMatch) year = parseInt(yearMatch[0]);
+        sortDate = parseDate(releaseDate);
       }
       
       // Extract description
-      let description = item.description || item.synopsis || item.excerpt || item.summary;
+      let description = item.description || item.synopsis || item.excerpt || '';
       if (description && typeof description === 'string') {
         description = description.trim();
       }
       
-      // Parse sort date
-      const sortDate = parseDate(releaseDate);
+      // 🔍 IMDb lookup ONLY for recent movies (last 30 days)
+      let imdbId = null;
+      let isRecent = false;
       
-      // Search for IMDb ID
-      let imdbId = await searchIMDb(title, type, year);
+      if (sortDate && sortDate !== '9999-12-31') {
+        const movieDate = new Date(sortDate);
+        if (!isNaN(movieDate.getTime()) && movieDate >= THIRTY_DAYS_AGO) {
+          isRecent = true;
+          console.log(`[IMDb] Recent movie (${sortDate}): ${title}`);
+          imdbId = await searchIMDb(title, type, year);
+          // Add delay to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+      
       const finalId = imdbId || `tt_${title.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
       
       // Build description
@@ -253,8 +270,9 @@ async function scrapePage(url, type) {
       if (platformText) fullDesc += `📺 Available on: ${platformText}\n`;
       if (releaseDate) fullDesc += `📅 Release: ${releaseDate}\n`;
       if (imdbId) fullDesc += `🎬 IMDb: https://www.imdb.com/title/${imdbId}/\n`;
+      if (!imdbId && isRecent) fullDesc += `🔍 Try searching "${title}" in Stremio\n`;
       if (description && typeof description === 'string' && description.length > 10) {
-        fullDesc += `\n${description.slice(0, 400)}`;
+        fullDesc += `\n${description.slice(0, 300)}`;
       }
       
       items.push({
@@ -264,11 +282,12 @@ async function scrapePage(url, type) {
         poster: poster || undefined,
         releaseInfo: releaseDate || undefined,
         description: fullDesc.trim() || undefined,
-        sortDate: sortDate
+        sortDate: sortDate,
+        isRecent: isRecent
       });
     }
     
-    // Remove duplicates
+    // Remove duplicates by name
     const unique = [];
     const seen = new Set();
     for (const item of items) {
@@ -279,7 +298,7 @@ async function scrapePage(url, type) {
       }
     }
     
-    // Sort by date
+    // Sort by date (newest first)
     unique.sort((a, b) => {
       if (!a.sortDate && !b.sortDate) return 0;
       if (!a.sortDate) return 1;
@@ -287,59 +306,26 @@ async function scrapePage(url, type) {
       return b.sortDate.localeCompare(a.sortDate);
     });
     
-    // Clean up
-    unique.forEach(item => delete item.sortDate);
+    // Clean up and limit to 20 items per category
+    const finalItems = unique.slice(0, 20);
+    finalItems.forEach(item => {
+      delete item.sortDate;
+      delete item.isRecent;
+    });
     
-    console.log(`[scraper] ✅ ${unique.length} unique items found`);
-    if (unique.length > 0) {
-      console.log(`[scraper] 📅 First 3: ${unique.slice(0, 3).map(i => `${i.name} (${i.releaseInfo || 'No date'})`).join(', ')}`);
+    const imdbCount = finalItems.filter(i => i.id.startsWith('tt') && !i.id.startsWith('tt_')).length;
+    console.log(`[scraper] ✅ ${finalItems.length} items (${imdbCount} with real IMDb IDs)`);
+    
+    if (finalItems.length > 0) {
+      console.log(`[scraper] 📅 Newest: ${finalItems[0].name} (${finalItems[0].releaseInfo || 'No date'})`);
     }
     
-    return unique;
+    return finalItems;
     
   } catch (error) {
     console.error(`[scraper] ❌ Error:`, error.message);
     return [];
   }
-}
-
-/**
- * Fallback scraper that tries to extract data from HTML structure
- */
-async function scrapePageFallback(html, url, type) {
-  console.log(`[scraper] Using fallback HTML parsing for ${url}`);
-  const cheerio = require('cheerio');
-  const $ = cheerio.load(html);
-  
-  const items = [];
-  
-  // Look for any links to entertainment content
-  $('a[href*="/entertainment/"]').each((i, el) => {
-    const $el = $(el);
-    let title = $el.text().trim();
-    const href = $el.attr('href');
-    
-    if (!title || title.length < 2) {
-      // Try to get title from parent
-      title = $el.parent().find('h1, h2, h3, h4').first().text().trim();
-    }
-    
-    if (title && title.length > 2 && title.length < 100) {
-      // Avoid duplicate entries
-      const existing = items.find(i => i.name === title);
-      if (!existing) {
-        items.push({
-          id: `tt_${title.toLowerCase().replace(/[^a-z0-9]/g, '_')}`,
-          type: type,
-          name: title,
-          description: `Found on 91mobiles\nURL: ${href || url}`,
-        });
-      }
-    }
-  });
-  
-  console.log(`[scraper] Fallback found ${items.length} items`);
-  return items;
 }
 
 async function scrapeMalayalam(type) {
