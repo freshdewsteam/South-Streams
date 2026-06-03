@@ -1,9 +1,10 @@
 /**
- * scraper.js - DEBUG VERSION
- * Logs every step so we can see why no data is showing
+ * scraper.js - HTML PARSER VERSION
+ * Extracts movie data directly from HTML structure
  */
 
 const fetch = require('node-fetch');
+const cheerio = require('cheerio');
 
 const URLS = {
   'mal-movie': 'https://www.91mobiles.com/entertainment/new-malayalam-movies',
@@ -12,155 +13,127 @@ const URLS = {
   'tam-series': 'https://www.91mobiles.com/entertainment/best-tamil-web-series',
 };
 
-// Minimum viable scraper - just get ANY data
+// Keywords to filter out (garbage UI text)
+const GARBAGE_TITLES = [
+  'latest and trending', 'view all', 'more', 'movies', 'web series', 
+  'ott this week', 'trending', 'popular', 'recommended', 'iohotsta',
+  'streaming pr', 'new malaysia', 'new tamil', 'kerala', 'malayalam'
+];
+
 async function scrapePage(url, type) {
-  console.log(`[DEBUG] Starting scrape for: ${url}`);
+  console.log(`[scraper] Fetching: ${url}`);
   
   try {
-    // Step 1: Fetch the page
-    console.log(`[DEBUG] Fetching page...`);
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9',
       },
-      timeout: 30000
+      timeout: 20000
     });
     
-    console.log(`[DEBUG] Response status: ${response.status}`);
-    
     if (!response.ok) {
-      console.log(`[DEBUG] HTTP error: ${response.status}`);
+      console.log(`[scraper] HTTP error: ${response.status}`);
       return [];
     }
     
     const html = await response.text();
-    console.log(`[DEBUG] HTML length: ${html.length} characters`);
+    const $ = cheerio.load(html);
     
-    // Step 2: Look for Next.js data
-    console.log(`[DEBUG] Looking for __NEXT_DATA__ script tag...`);
-    const jsonMatch = html.match(/<script id="__NEXT_DATA__" type="application\/json">(.*?)<\/script>/s);
+    const items = [];
     
-    if (!jsonMatch) {
-      console.log(`[DEBUG] ❌ No __NEXT_DATA__ found!`);
-      console.log(`[DEBUG] First 500 chars of HTML: ${html.substring(0, 500)}`);
-      return [];
-    }
+    // Look for movie cards - based on your screenshot structure
+    // They appear to be in divs with certain classes
     
-    console.log(`[DEBUG] ✅ Found __NEXT_DATA__ (${jsonMatch[1].length} chars)`);
-    
-    // Step 3: Parse JSON
-    console.log(`[DEBUG] Parsing JSON...`);
-    let jsonData;
-    try {
-      jsonData = JSON.parse(jsonMatch[1]);
-      console.log(`[DEBUG] JSON parsed successfully`);
-    } catch (e) {
-      console.log(`[DEBUG] JSON parse error: ${e.message}`);
-      return [];
-    }
-    
-    // Step 4: Find ANY array that might contain movies
-    console.log(`[DEBUG] Searching for movie data in JSON...`);
-    
-    let allArrays = [];
-    
-    function findArrays(obj, path = 'root') {
-      if (!obj || typeof obj !== 'object') return;
+    // Method 1: Look for links that go to movie pages
+    $('a[href*="/entertainment/"]').each((i, el) => {
+      const $el = $(el);
+      let title = $el.text().trim();
+      const href = $el.attr('href');
       
-      if (Array.isArray(obj)) {
-        console.log(`[DEBUG] Found array at ${path} with ${obj.length} items`);
-        if (obj.length > 0) {
-          allArrays.push({ path, array: obj, length: obj.length });
-        }
+      // Skip if no title or too short
+      if (!title || title.length < 2) return;
+      if (title.length > 100) return;
+      
+      // Skip if href is for category pages
+      if (href && (href.includes('/new-') || href.includes('/best-') || href === '/entertainment')) {
+        return;
       }
       
-      for (const key in obj) {
-        if (typeof obj[key] === 'object') {
-          findArrays(obj[key], `${path}.${key}`);
-        }
+      // Skip garbage titles
+      const lowerTitle = title.toLowerCase();
+      if (GARBAGE_TITLES.some(garbage => lowerTitle === garbage || lowerTitle.includes(garbage))) {
+        return;
       }
-    }
-    
-    findArrays(jsonData);
-    
-    if (allArrays.length === 0) {
-      console.log(`[DEBUG] ❌ No arrays found in JSON!`);
-      return [];
-    }
-    
-    console.log(`[DEBUG] Found ${allArrays.length} total arrays`);
-    
-    // Step 5: Try each array to find movie titles
-    let allTitles = [];
-    
-    for (const { path, array } of allArrays) {
-      for (const item of array) {
-        if (item && typeof item === 'object') {
-          // Look for title fields
-          let title = item.title || item.name || item.heading || item.movieName;
-          if (title && typeof title === 'string' && title.length > 2 && title.length < 100) {
-            // Skip obvious garbage
-            const garbageWords = ['latest', 'trending', 'view all', 'more', 'movies', 'series', 'ott'];
-            const isGarbage = garbageWords.some(word => title.toLowerCase() === word || title.toLowerCase().includes(word));
-            
-            if (!isGarbage) {
-              allTitles.push({
-                title: title,
-                platform: item.platform || item.ott || '',
-                date: item.releaseDate || item.date || '',
-                path: path
-              });
-            }
-          }
-        }
+      
+      // Skip if title is just a number or single character
+      if (/^\d+$/.test(title)) return;
+      if (title.length < 3) return;
+      
+      // Try to find parent container for additional info
+      const $parent = $el.closest('div');
+      
+      // Look for date
+      let releaseDate = '';
+      const dateText = $parent.find('[class*="date"], [class*="release"], time').first().text().trim();
+      if (dateText) {
+        const dateMatch = dateText.match(/(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4})/i);
+        if (dateMatch) releaseDate = dateMatch[0];
       }
-    }
-    
-    console.log(`[DEBUG] Found ${allTitles.length} potential movie titles`);
-    
-    if (allTitles.length > 0) {
-      console.log(`[DEBUG] Sample titles: ${allTitles.slice(0, 5).map(t => t.title).join(', ')}`);
-    }
-    
-    // Step 6: Convert to Stremio format
-    const items = allTitles.slice(0, 20).map((item, idx) => {
-      const id = `tt_${item.title.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
       
-      let description = '';
-      if (item.platform) description += `📺 ${item.platform}\n`;
-      if (item.date) description += `📅 ${item.date}`;
+      // Look for platform
+      let platform = '';
+      const platformText = $parent.text().match(/(Netflix|Prime Video|Amazon|Hotstar|Disney|ZEE5|SonyLIV|JioCinema|Aha|SunNxt|ManoramaMAX)/i);
+      if (platformText) platform = platformText[0];
       
-      return {
+      // Create ID
+      const id = `tt_${title.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+      
+      items.push({
         id: id,
         type: type,
-        name: item.title,
-        releaseInfo: item.date || undefined,
-        description: description || undefined,
-      };
+        name: title,
+        releaseInfo: releaseDate || undefined,
+        description: platform ? `📺 Available on: ${platform}` : undefined,
+      });
     });
     
-    console.log(`[DEBUG] ✅ Returning ${items.length} items`);
-    return items;
+    // Remove duplicates by title
+    const unique = [];
+    const seen = new Set();
+    for (const item of items) {
+      const key = item.name.toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        unique.push(item);
+      }
+    }
+    
+    // Limit to 20 items
+    const finalItems = unique.slice(0, 20);
+    
+    console.log(`[scraper] Found ${finalItems.length} movies (from ${items.length} raw links)`);
+    
+    if (finalItems.length > 0) {
+      console.log(`[scraper] Sample: ${finalItems.slice(0, 3).map(i => i.name).join(', ')}`);
+    }
+    
+    return finalItems;
     
   } catch (error) {
-    console.error(`[DEBUG] ❌ Error:`, error.message);
-    console.error(`[DEBUG] Stack:`, error.stack);
+    console.error(`[scraper] Error:`, error.message);
     return [];
   }
 }
 
 async function scrapeMalayalam(type) {
   const key = type === 'movie' ? 'mal-movie' : 'mal-series';
-  const result = await scrapePage(URLS[key], type);
-  console.log(`[DEBUG] scrapeMalayalam(${type}) returning ${result.length} items`);
-  return result;
+  return scrapePage(URLS[key], type);
 }
 
 async function scrapeTamil(type) {
   const key = type === 'movie' ? 'tam-movie' : 'tam-series';
-  const result = await scrapePage(URLS[key], type);
-  console.log(`[DEBUG] scrapeTamil(${type}) returning ${result.length} items`);
-  return result;
+  return scrapePage(URLS[key], type);
 }
 
 module.exports = { scrapeMalayalam, scrapeTamil };
