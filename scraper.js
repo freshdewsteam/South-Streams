@@ -1,6 +1,5 @@
 /**
- * scraper.js - ONE-CLICK WORKING VERSION
- * Fetches real IMDb IDs so Torrentio finds streams automatically
+ * scraper.js - FIXED: Handles missing IMDb IDs and posters gracefully
  */
 
 const https = require('https');
@@ -21,7 +20,6 @@ const LANG_CODE = {
   'tam-movie': 'ta', 'tam-series': 'ta',
 };
 
-// Cache for TMDB results to avoid duplicate API calls
 const tmdbCache = new Map();
 
 function fetchUrl(url) {
@@ -76,41 +74,52 @@ function isAlreadyReleased(dateStr) {
 function cleanTitle(title) {
   if (!title) return '';
   let cleaned = title.replace(/\s+/g, ' ').trim();
-  // Remove extra parenthetical content but keep year
   cleaned = cleaned.replace(/\s*\([^)]*\)/g, (match) => {
     if (match.match(/\d{4}/)) return match;
     return '';
   });
-  // Remove common suffixes
   cleaned = cleaned.replace(/\([^)]*\)/g, '').replace(/\[[^\]]*\]/g, '').trim();
   return cleaned;
 }
 
-// Get REAL IMDb ID from TMDB
+// Try multiple search strategies for IMDb ID
 async function getImdbId(title, type, langCode, year = null) {
   const cacheKey = `${title}_${type}`;
   if (tmdbCache.has(cacheKey)) {
     return tmdbCache.get(cacheKey);
   }
   
-  if (!TMDB_KEY) return null;
+  if (!TMDB_KEY) return { imdbId: null, poster: null, backdrop: null, overview: null, rating: null };
   
   try {
     const endpoint = type === 'series' ? 'tv' : 'movie';
     const cleanTitle = title.split('(')[0].split('-')[0].split(':')[0].trim();
     const query = encodeURIComponent(cleanTitle);
     
-    // Search TMDB
-    const searchUrl = 'https://api.themoviedb.org/3/search/' + endpoint +
+    // Strategy 1: Search with original language filter
+    let searchUrl = 'https://api.themoviedb.org/3/search/' + endpoint +
       '?api_key=' + TMDB_KEY +
       '&query=' + query +
       '&language=en-US&page=1';
     
-    const searchData = await fetchJson(searchUrl);
+    if (langCode) {
+      searchUrl += '&with_original_language=' + langCode;
+    }
+    
+    let searchData = await fetchJson(searchUrl);
+    
+    // Strategy 2: If no results, try without language filter
+    if (!searchData.results || searchData.results.length === 0) {
+      const fallbackUrl = 'https://api.themoviedb.org/3/search/' + endpoint +
+        '?api_key=' + TMDB_KEY +
+        '&query=' + query +
+        '&language=en-US&page=1';
+      searchData = await fetchJson(fallbackUrl);
+    }
     
     if (!searchData.results || searchData.results.length === 0) {
-      tmdbCache.set(cacheKey, null);
-      return null;
+      tmdbCache.set(cacheKey, { imdbId: null, poster: null, backdrop: null, overview: null, rating: null });
+      return { imdbId: null, poster: null, backdrop: null, overview: null, rating: null };
     }
     
     // Find best match
@@ -136,40 +145,45 @@ async function getImdbId(title, type, langCode, year = null) {
       }
     }
     
-    if (!bestMatch || bestScore < 20) {
-      tmdbCache.set(cacheKey, null);
-      return null;
+    if (!bestMatch || bestScore < 15) {
+      tmdbCache.set(cacheKey, { imdbId: null, poster: null, backdrop: null, overview: null, rating: null });
+      return { imdbId: null, poster: null, backdrop: null, overview: null, rating: null };
     }
     
-    // Get details to fetch IMDb ID
+    // Get details for IMDb ID
     const detailsUrl = 'https://api.themoviedb.org/3/' + endpoint + '/' + bestMatch.id +
       '?api_key=' + TMDB_KEY;
     const details = await fetchJson(detailsUrl);
     
-    const imdbId = details.imdb_id;
-    const poster = details.poster_path ? 'https://image.tmdb.org/t/p/w500' + details.poster_path : null;
-    const backdrop = details.backdrop_path ? 'https://image.tmdb.org/t/p/w1280' + details.backdrop_path : null;
-    const overview = details.overview || null;
-    const rating = details.vote_average ? details.vote_average.toFixed(1) : null;
-    const releaseYear = details.release_date ? details.release_date.split('-')[0] : (details.first_air_date ? details.first_air_date.split('-')[0] : null);
+    const result = {
+      imdbId: details.imdb_id || null,
+      poster: details.poster_path ? 'https://image.tmdb.org/t/p/w500' + details.poster_path : null,
+      backdrop: details.backdrop_path ? 'https://image.tmdb.org/t/p/w1280' + details.backdrop_path : null,
+      overview: details.overview || null,
+      rating: details.vote_average ? details.vote_average.toFixed(1) : null,
+      releaseYear: details.release_date ? details.release_date.split('-')[0] : (details.first_air_date ? details.first_air_date.split('-')[0] : null),
+    };
     
-    const result = { imdbId, poster, backdrop, overview, rating, releaseYear };
     tmdbCache.set(cacheKey, result);
-    console.log(`[IMDb] Found: ${title} -> ${imdbId}`);
+    console.log(`[TMDB] ${result.imdbId ? '✅ Found: ' + result.imdbId : '❌ No IMDb ID for'} "${title}"`);
     return result;
     
   } catch (e) {
     console.warn('[TMDB] Failed for ' + title + ': ' + e.message);
-    tmdbCache.set(cacheKey, null);
-    return null;
+    tmdbCache.set(cacheKey, { imdbId: null, poster: null, backdrop: null, overview: null, rating: null });
+    return { imdbId: null, poster: null, backdrop: null, overview: null, rating: null };
   }
+}
+
+// Fallback poster from placeholder service
+function getFallbackPoster(title) {
+  return `https://via.placeholder.com/500x750/1a1a2e/ffffff?text=${encodeURIComponent(title)}`;
 }
 
 function parseCinebudsTable(html) {
   const $ = cheerio.load(html);
   const items = [];
 
-  // Remove junk elements
   $('script, style, iframe, nav, header, footer, aside, .sidebar, .comments, .advertisement, .widget').remove();
 
   $('table').each((_, table) => {
@@ -212,7 +226,6 @@ function parseCinebudsTable(html) {
       title = cleanTitle(title);
       if (!title || title.length < 2) return;
       if (/^\d+$/.test(title)) return;
-      if (title.length > 0 && title[0] === title[0].toLowerCase() && title.length < 8) return;
       
       platform = platform.replace(/\[.*?\]/g, '').replace(/\s+/g, ' ').trim();
       if (!platform) return;
@@ -270,35 +283,50 @@ async function scrapePage(urlKey, type) {
     return 0;
   });
 
-  // Process items one by one to get IMDb IDs (limited to 20 for speed)
+  // Process items
   const metas = [];
-  const itemsToProcess = unique.slice(0, 20);
+  const itemsToProcess = unique.slice(0, 25);
   
-  console.log('[IMDb] Fetching IDs for ' + itemsToProcess.length + ' items...');
+  console.log('[TMDB] Fetching data for ' + itemsToProcess.length + ' items...');
   
   for (let idx = 0; idx < itemsToProcess.length; idx++) {
     const item = itemsToProcess[idx];
-    console.log(`[IMDb] ${idx + 1}/${itemsToProcess.length}: ${item.title}`);
+    console.log(`[TMDB] ${idx + 1}/${itemsToProcess.length}: ${item.title}`);
     
-    // Get real IMDb ID
     const tmdbData = await getImdbId(item.title, type, langCode);
     
-    // Use REAL IMDb ID if found, otherwise generate a fallback
+    // Use IMDb ID if found, otherwise use title-based ID (Torrentio can still search by title)
     const imdbId = tmdbData?.imdbId;
-    const finalId = imdbId || `tt_${item.title.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+    let finalId;
     
-    // Build description with streaming info
+    if (imdbId) {
+      finalId = imdbId;  // Real IMDb ID - best for Torrentio
+    } else {
+      // Fallback: Create a searchable ID with the title
+      const titleSlug = item.title.toLowerCase().replace(/[^a-z0-9]/g, '_');
+      finalId = `tt_search_${titleSlug}`;
+      console.log(`[TMDB] ⚠️ No IMDb ID for "${item.title}", using searchable fallback`);
+    }
+    
+    // Build description - include helpful info even without IMDb ID
     let description = '';
     if (tmdbData?.overview) {
       description += tmdbData.overview + '\n\n';
+    } else {
+      description += `🎬 **${item.title}**\n\n`;
     }
-    description += `🎬 **Streaming on:** ${item.platform}\n`;
+    
+    description += `📺 **Streaming on:** ${item.platform}\n`;
     description += `📅 **OTT Release:** ${item.releaseDate}\n`;
+    
     if (tmdbData?.rating) {
-      description += `⭐ **IMDb Rating:** ${tmdbData.rating}/10\n`;
+      description += `⭐ **TMDB Rating:** ${tmdbData.rating}/10\n`;
     }
+    
     if (imdbId) {
-      description += `\n🔗 **IMDb Link:** https://www.imdb.com/title/${imdbId}/`;
+      description += `\n🔗 **IMDb:** https://www.imdb.com/title/${imdbId}/`;
+    } else {
+      description += `\n🔍 **Tip:** If no streams appear, search "${item.title}" in Stremio search bar`;
     }
     
     const meta = {
@@ -309,16 +337,26 @@ async function scrapePage(urlKey, type) {
       description: description,
     };
     
-    if (tmdbData?.poster) meta.poster = tmdbData.poster;
+    // Use TMDB poster if available, otherwise fallback
+    if (tmdbData?.poster) {
+      meta.poster = tmdbData.poster;
+    } else {
+      // Try to construct a poster URL from IMDb ID or use placeholder
+      if (imdbId) {
+        meta.poster = `https://img.omdbapi.com/?i=${imdbId}&apikey=YOUR_OMDB_KEY`; // Optional
+      } else {
+        meta.poster = getFallbackPoster(item.title);
+      }
+    }
+    
     if (tmdbData?.backdrop) meta.background = tmdbData.backdrop;
     
     metas.push(meta);
-    
-    // Small delay to avoid rate limiting
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise(resolve => setTimeout(resolve, 200));
   }
   
-  console.log(`[scraper] Completed: ${metas.filter(m => m.id.startsWith('tt') && !m.id.startsWith('tt_')).length} real IMDb IDs found`);
+  const foundCount = metas.filter(m => m.id && m.id.startsWith('tt') && !m.id.includes('search')).length;
+  console.log(`[scraper] ✅ ${metas.length} items (${foundCount} with real IMDb IDs, ${metas.length - foundCount} with searchable fallbacks)`);
   
   metas.forEach(m => {
     Object.keys(m).forEach(k => m[k] === undefined && delete m[k]);
