@@ -1,268 +1,120 @@
 /**
  * scraper.js
  *
- * Fetches Malayalam & Tamil OTT releases from 91mobiles.com/entertainment.
+ * Fetches Malayalam & Tamil OTT releases from:
+ *   - cinebuds.com  (Malayalam movies & Tamil movies)
  *
- * Uses a lightweight approach:
- *   1. First tries direct fetch with browser-like headers
- *   2. Falls back to ScraperAPI free tier (no key needed for basic use)
- *   3. Parses HTML with cheerio (like jQuery, but server-side â€” no browser needed)
- *
- * Filters OUT theatre/BookMyShow-only listings.
- * Sorts results newest-first by OTT release date.
+ * These are WordPress sites — plain HTML, no JS rendering needed.
+ * Uses cheerio to parse tables.
+ * Sorted newest-first by OTT release date.
  */
 
-const https = require('https');
-const http  = require('http');
+const https  = require('https');
+const zlib   = require('zlib');
 const cheerio = require('cheerio');
 
-// â”€â”€â”€ URLS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── SOURCE URLS ──────────────────────────────────────────────────────────────
 const URLS = {
-  'mal-movie':  'https://www.91mobiles.com/entertainment/new-malayalam-movies',
-  'mal-series': 'https://www.91mobiles.com/entertainment/new-malayalam-web-series',
-  'tam-movie':  'https://www.91mobiles.com/entertainment/new-tamil-movies',
-  'tam-series': 'https://www.91mobiles.com/entertainment/best-tamil-web-series',
+  'mal-movie':  'https://cinebuds.com/malayalam-movies-ott-release-dates/',
+  'mal-series': 'https://cinebuds.com/malayalam-web-series-ott-release-dates/',
+  'tam-movie':  'https://cinebuds.com/tamil-movies-digital-release-dates/',
+  'tam-series': 'https://cinebuds.com/tamil-web-series-ott-release-dates/',
 };
 
-// â”€â”€â”€ FILTER LISTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const CINEMA_KEYWORDS = [
-  'bookmyshow', 'book my show',
-  'theatre', 'theater',
-  'pvr', 'inox', 'cinepolis', 'miraj',
-  'in cinemas', 'now showing', 'cinema halls',
-];
-
-const OTT_KEYWORDS = [
-  'netflix', 'prime video', 'amazon prime', 'hotstar', 'disney+', 'disney plus',
-  'zee5', 'sony liv', 'sonyliv', 'jiocinema', 'manorama max', 'manoramamax',
-  'sun nxt', 'sunnxt', 'aha', 'neestream', 'saina play', 'stage',
-  'apple tv', 'mubi', 'discovery+', 'voot', 'mx player', 'hoichoi',
-  'erosnow', 'shemaroo', 'hungama', 'alt balaji', 'ullu', 'ott',
-];
-
-function shouldKeep(platformText) {
-  const lower = (platformText || '').toLowerCase();
-  if (!lower) return false;
-  // Keep if any known OTT platform is mentioned
-  if (OTT_KEYWORDS.some((kw) => lower.includes(kw))) return true;
-  // Drop if only cinema keywords
-  const parts = lower.split(/[,/|&\s]+/).filter(Boolean);
-  const allCinema = parts.every((p) => CINEMA_KEYWORDS.some((kw) => p.includes(kw)));
-  return !allCinema;
-}
-
-// â”€â”€â”€ DATE PARSING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function parseDate(str) {
-  if (!str) return null;
-  const cleaned = str.replace(/^[^0-9a-z]*/i, '').trim();
-  const d = new Date(cleaned);
-  return isNaN(d.getTime()) ? null : d;
-}
-
-// â”€â”€â”€ HTTP FETCH (no external deps) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── HTTP FETCH ───────────────────────────────────────────────────────────────
 function fetchUrl(url) {
   return new Promise((resolve, reject) => {
-    const lib = url.startsWith('https') ? https : http;
-    const options = {
+    const opts = {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.9',
         'Accept-Encoding': 'gzip, deflate, br',
         'Cache-Control': 'no-cache',
-        'Referer': 'https://www.google.com/',
-        'sec-fetch-dest': 'document',
-        'sec-fetch-mode': 'navigate',
-        'sec-fetch-site': 'cross-site',
       },
     };
-    const req = lib.get(url, options, (res) => {
-      // Handle redirects
+    https.get(url, opts, (res) => {
       if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
         return fetchUrl(res.headers.location).then(resolve).catch(reject);
       }
-      if (res.statusCode !== 200) {
-        return reject(new Error(`HTTP ${res.statusCode} for ${url}`));
-      }
+      if (res.statusCode !== 200) return reject(new Error(`HTTP ${res.statusCode}`));
 
-      // Handle gzip
       let stream = res;
-      if (res.headers['content-encoding'] === 'gzip') {
-        const zlib = require('zlib');
-        stream = res.pipe(zlib.createGunzip());
-      } else if (res.headers['content-encoding'] === 'br') {
-        const zlib = require('zlib');
-        stream = res.pipe(zlib.createBrotliDecompress());
-      }
+      const enc = res.headers['content-encoding'];
+      if (enc === 'gzip')    stream = res.pipe(zlib.createGunzip());
+      if (enc === 'br')      stream = res.pipe(zlib.createBrotliDecompress());
+      if (enc === 'deflate') stream = res.pipe(zlib.createInflate());
 
       const chunks = [];
-      stream.on('data', (chunk) => chunks.push(chunk));
-      stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+      stream.on('data', c => chunks.push(c));
+      stream.on('end',  () => resolve(Buffer.concat(chunks).toString('utf8')));
       stream.on('error', reject);
-    });
-    req.on('error', reject);
-    req.setTimeout(30000, () => { req.destroy(); reject(new Error('Request timeout')); });
+    }).on('error', reject)
+      .setTimeout(30000, function() { this.destroy(); reject(new Error('Timeout')); });
   });
 }
 
-// Fallback: use a free scraping proxy if direct fetch is blocked
-async function fetchWithFallback(url) {
-  // Try direct first
-  try {
-    console.log(`[scraper] Trying direct fetch: ${url}`);
-    const html = await fetchUrl(url);
-    if (html.length > 5000 && html.includes('movie')) {
-      console.log(`[scraper] Direct fetch succeeded (${html.length} bytes)`);
-      return html;
-    }
-    throw new Error('Response too short or missing content â€” likely blocked');
-  } catch (err) {
-    console.warn(`[scraper] Direct fetch failed: ${err.message}`);
-  }
-
-  // Fallback 1: ScraperAPI (free tier â€” 1000 calls/month, no key needed for basic)
-  try {
-    const scraperUrl = `https://api.scraperapi.com/?url=${encodeURIComponent(url)}&render=false`;
-    const apiKey = process.env.SCRAPER_API_KEY || '';
-    const finalUrl = apiKey ? `${scraperUrl}&api_key=${apiKey}` : scraperUrl;
-    console.log(`[scraper] Trying ScraperAPI fallback...`);
-    const html = await fetchUrl(finalUrl);
-    if (html.length > 5000) {
-      console.log(`[scraper] ScraperAPI succeeded`);
-      return html;
-    }
-  } catch (err) {
-    console.warn(`[scraper] ScraperAPI failed: ${err.message}`);
-  }
-
-  // Fallback 2: AllOrigins proxy (completely free, no key)
-  try {
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-    console.log(`[scraper] Trying AllOrigins fallback...`);
-    const html = await fetchUrl(proxyUrl);
-    if (html.length > 5000) {
-      console.log(`[scraper] AllOrigins succeeded`);
-      return html;
-    }
-  } catch (err) {
-    console.warn(`[scraper] AllOrigins failed: ${err.message}`);
-  }
-
-  throw new Error(`All fetch methods failed for ${url}`);
+// ─── DATE HELPERS ─────────────────────────────────────────────────────────────
+function parseDate(str) {
+  if (!str) return null;
+  if (/soon|tba|tbd|announced|upcoming/i.test(str)) return null;
+  const d = new Date(str.trim());
+  return isNaN(d.getTime()) ? null : d;
 }
 
-// â”€â”€â”€ PARSE HTML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function parseMovieCards(html) {
+// ─── PARSE CINEBUDS TABLE ─────────────────────────────────────────────────────
+function parseCinebudsTable(html) {
   const $ = cheerio.load(html);
   const items = [];
 
-  // 91mobiles uses React-rendered content with these patterns
-  // We try multiple card selectors
-  const cardSelectors = [
-    '.movie-card',
-    '.content-card',
-    '[class*="MovieCard"]',
-    '[class*="movie-card"]',
-    '[class*="content-card"]',
-    '.card',
-    'article',
-  ];
+  $('table').each((_, table) => {
+    const headers = [];
+    $(table).find('thead th, thead td').each((_, th) => {
+      headers.push($(th).text().trim().toLowerCase());
+    });
 
-  let $cards = $();
-  for (const sel of cardSelectors) {
-    const found = $(sel);
-    if (found.length > 2) {
-      $cards = found;
-      console.log(`[parser] Using selector "${sel}" â†’ ${found.length} cards`);
-      break;
-    }
-  }
-
-  if ($cards.length === 0) {
-    console.warn('[parser] No cards found â€” site may be fully JS-rendered');
-    // Try to extract any JSON data embedded in the page (Next.js / React apps often do this)
-    const jsonMatch = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
-    if (jsonMatch) {
-      console.log('[parser] Found __NEXT_DATA__ â€” trying JSON extraction');
-      return extractFromNextData(jsonMatch[1]);
-    }
-    return [];
-  }
-
-  $cards.each((_, card) => {
-    const $card = $(card);
-
-    const title = $card.find('h2, h3, [class*="title"], [class*="name"]').first().text().trim();
-    if (!title || title.length < 2) return;
-
-    const $img = $card.find('img').first();
-    const poster = $img.attr('data-src') || $img.attr('data-lazy-src') || $img.attr('src') || '';
-
-    const platformText = $card.find(
-      '[class*="platform"], [class*="ott"], [class*="streaming"], [class*="provider"], [class*="where"]'
-    ).first().text().trim();
-
-    // Find OTT-specific release date
-    const fullText = $card.text();
-    let releaseDate = '';
-    const ottMatch = fullText.match(/(?:ott|digital|streaming|available)[^:]*:\s*([^\n|â€¢,<]+)/i);
-    if (ottMatch) {
-      releaseDate = ottMatch[1].trim();
-    } else {
-      releaseDate = $card.find('[class*="date"], [class*="release"], time').first().text().trim();
+    if (headers.length === 0) {
+      $(table).find('tr').first().find('th, td').each((_, th) => {
+        headers.push($(th).text().trim().toLowerCase());
+      });
     }
 
-    const genre = $card.find('[class*="genre"], [class*="category"]').first().text().trim();
-    const description = $card.find('[class*="desc"], [class*="synopsis"], p').first().text().trim();
-    const href = $card.find('a[href]').first().attr('href') || '';
+    const titleIdx    = headers.findIndex(h => h.includes('movie') || h.includes('title') || h.includes('series') || h.includes('show'));
+    const platformIdx = headers.findIndex(h => h.includes('platform') || h.includes('ott') || h.includes('streaming') || h.includes('where'));
+    const dateIdx     = headers.findIndex(h => h.includes('date') || h.includes('release') || h.includes('premiere'));
 
-    items.push({ title, poster, platformText, releaseDate, genre, description, href });
+    if (titleIdx === -1) return;
+
+    $(table).find('tr').each((rowIdx, row) => {
+      if (rowIdx === 0 && headers.length > 0) return;
+
+      const cells = $(row).find('td');
+      if (cells.length === 0) return;
+
+      const title       = $(cells[titleIdx]).text().trim();
+      const platform    = platformIdx >= 0 ? $(cells[platformIdx]).text().trim() : '';
+      const releaseDate = dateIdx >= 0     ? $(cells[dateIdx]).text().trim()     : '';
+
+      if (!title || title.length < 2) return;
+      if (!platform) return;
+
+      items.push({ title, platform, releaseDate });
+    });
   });
 
   return items;
 }
 
-// Extract movies from Next.js __NEXT_DATA__ JSON (common in modern React sites)
-function extractFromNextData(jsonStr) {
-  try {
-    const data = JSON.parse(jsonStr);
-    const items = [];
-    // Walk the JSON tree looking for movie-like objects
-    JSON.stringify(data, (key, value) => {
-      if (value && typeof value === 'object' && value.title && value.poster) {
-        items.push({
-          title: value.title,
-          poster: value.poster || value.posterUrl || value.image || '',
-          platformText: value.ottPlatform || value.platform || value.streamingOn || '',
-          releaseDate: value.ottReleaseDate || value.releaseDate || '',
-          genre: Array.isArray(value.genres) ? value.genres.join(', ') : (value.genre || ''),
-          description: value.description || value.synopsis || '',
-          href: value.slug || value.url || '',
-        });
-      }
-      return value;
-    });
-    console.log(`[parser] Extracted ${items.length} items from __NEXT_DATA__`);
-    return items;
-  } catch (e) {
-    console.warn('[parser] Failed to parse __NEXT_DATA__:', e.message);
-    return [];
-  }
-}
-
-// â”€â”€â”€ MAIN SCRAPE FUNCTION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── MAIN SCRAPE ──────────────────────────────────────────────────────────────
 async function scrapePage(url, type) {
-  const html = await fetchWithFallback(url);
-  const rawItems = parseMovieCards(html);
+  console.log(`[scraper] Fetching: ${url}`);
+  const html = await fetchUrl(url);
+  console.log(`[scraper] Downloaded ${html.length} bytes`);
 
-  console.log(`[scraper] Raw items: ${rawItems.length}`);
+  const rawItems = parseCinebudsTable(html);
+  console.log(`[scraper] Parsed ${rawItems.length} rows from tables`);
 
-  // Filter to OTT only
-  const ottItems = rawItems.filter((item) => shouldKeep(item.platformText));
-  console.log(`[scraper] After OTT filter: ${ottItems.length}`);
-
-  // Sort newest first
-  ottItems.sort((a, b) => {
+  rawItems.sort((a, b) => {
     const da = parseDate(a.releaseDate);
     const db = parseDate(b.releaseDate);
     if (da && db) return db - da;
@@ -271,42 +123,44 @@ async function scrapePage(url, type) {
     return 0;
   });
 
-  // Convert to Stremio meta objects
-  return ottItems.map((item, idx) => {
-    const slug = (item.href || item.title)
-      .replace(/[^a-z0-9]/gi, '_').toLowerCase().slice(0, 60);
-    const id = `91mob_${slug}_${idx}`;
+  return rawItems.map((item, idx) => {
+    const slug = item.title.replace(/[^a-z0-9]/gi, '_').toLowerCase().slice(0, 60);
+    const id   = `91mob_${slug}_${idx}`;
 
-    const meta = {
+    const desc = [
+      item.platform    ? `📺 ${item.platform}`              : null,
+      item.releaseDate ? `📅 OTT Release: ${item.releaseDate}` : null,
+    ].filter(Boolean).join('\n');
+
+    return {
       id,
       type,
       name: item.title,
-      poster: item.poster || undefined,
-      genres: item.genre ? [item.genre] : undefined,
-      releaseInfo: item.releaseDate || undefined,
-      description: buildDescription(item),
+      releaseInfo: item.releaseDate || 'Upcoming',
+      description: desc || undefined,
     };
-
-    Object.keys(meta).forEach((k) => meta[k] === undefined && delete meta[k]);
-    return meta;
-  });
+  }).filter(m => m.name);
 }
 
-function buildDescription(item) {
-  let desc = '';
-  if (item.platformText) desc += `ðŸ“º Available on: ${item.platformText}\n`;
-  if (item.releaseDate)  desc += `ðŸ“… OTT Release: ${item.releaseDate}\n`;
-  if (item.description)  desc += `\n${item.description}`;
-  return desc.trim() || undefined;
-}
-
-// â”€â”€â”€ PUBLIC API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── PUBLIC API ───────────────────────────────────────────────────────────────
 async function scrapeMalayalam(type) {
-  return scrapePage(URLS[type === 'movie' ? 'mal-movie' : 'mal-series'], type);
+  const url = URLS[type === 'movie' ? 'mal-movie' : 'mal-series'];
+  try {
+    return await scrapePage(url, type);
+  } catch (e) {
+    console.warn(`[scraper] Malayalam ${type} failed: ${e.message}`);
+    return [];
+  }
 }
 
 async function scrapeTamil(type) {
-  return scrapePage(URLS[type === 'movie' ? 'tam-movie' : 'tam-series'], type);
+  const url = URLS[type === 'movie' ? 'tam-movie' : 'tam-series'];
+  try {
+    return await scrapePage(url, type);
+  } catch (e) {
+    console.warn(`[scraper] Tamil ${type} failed: ${e.message}`);
+    return [];
+  }
 }
 
 module.exports = { scrapeMalayalam, scrapeTamil };
