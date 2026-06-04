@@ -1,9 +1,11 @@
 const { addonBuilder, serveHTTP } = require('stremio-addon-sdk');
 const { scrapeMalayalam, scrapeTamil } = require('./scraper');
+const fs   = require('fs');
+const path = require('path');
 
 const manifest = {
   id: 'community.mollywood.ott.catalogue',
-  version: '1.3.0',
+  version: '1.4.0',
   name: 'Mollywood & Kollywood OTT',
   description:
     'Latest Malayalam & Tamil OTT releases — movies and web series. ' +
@@ -22,10 +24,35 @@ const manifest = {
   behaviorHints: { adult: false, p2p: false },
 };
 
-// ── CACHE ─────────────────────────────────────────────────────────────────────
-const CACHE_TTL_MS = 3 * 60 * 60 * 1000;  // 3 hours — refresh after this
-const STALE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours — max age before we must wait
-const cache = {};
+// ── PERSISTENT CACHE (survives server restarts) ───────────────────────────────
+const CACHE_FILE = path.join('/tmp', 'mollywood_cache.json');
+
+function loadCacheFromDisk() {
+  try {
+    if (fs.existsSync(CACHE_FILE)) {
+      const raw  = fs.readFileSync(CACHE_FILE, 'utf8');
+      const data = JSON.parse(raw);
+      console.log('[cache] Loaded from disk: ' + Object.keys(data).join(', '));
+      return data;
+    }
+  } catch (e) {
+    console.warn('[cache] Could not load from disk: ' + e.message);
+  }
+  return {};
+}
+
+function saveCacheToDisk(cache) {
+  try {
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(cache), 'utf8');
+  } catch (e) {
+    console.warn('[cache] Could not save to disk: ' + e.message);
+  }
+}
+
+const CACHE_TTL_MS = 3  * 60 * 60 * 1000;
+const STALE_TTL_MS = 24 * 60 * 60 * 1000;
+
+const cache      = loadCacheFromDisk();
 const refreshing = new Set();
 
 const FETCHERS = [
@@ -42,7 +69,8 @@ async function refreshCache(key, fetchFn) {
   try {
     const data = await fetchFn();
     cache[key] = { ts: Date.now(), data };
-    console.log('[cache] ' + key + ' -> ' + data.length + ' items');
+    saveCacheToDisk(cache);
+    console.log('[cache] ' + key + ' -> ' + data.length + ' items (saved to disk)');
   } catch (err) {
     console.error('[cache] Failed ' + key + ': ' + err.message);
   } finally {
@@ -50,60 +78,60 @@ async function refreshCache(key, fetchFn) {
   }
 }
 
-// Stale-while-revalidate:
-// Fresh (<3h)     → return immediately ✅
-// Stale (3-24h)   → return old data NOW, refresh in background ✅
-// Empty or ancient → wait for fresh data (only on cold start) ⏳
 async function getCached(key, fetchFn) {
-  const now   = Date.now();
   const entry = cache[key];
-
   if (entry) {
-    const age = now - entry.ts;
-    if (age < CACHE_TTL_MS) {
-      return entry.data; // fresh, return immediately
-    }
+    const age = Date.now() - entry.ts;
+    if (age < CACHE_TTL_MS)  return entry.data;
     if (age < STALE_TTL_MS) {
-      refreshCache(key, fetchFn); // background refresh, don't await
-      return entry.data;          // return stale data instantly
+      refreshCache(key, fetchFn);
+      return entry.data;
     }
   }
-
-  // No cache or very stale — must wait (first ever startup only)
   await refreshCache(key, fetchFn);
   return cache[key] ? cache[key].data : [];
 }
 
 async function warmUpAll() {
-  console.log('[cache] Warming up all catalogues in parallel...');
-  await Promise.allSettled(
-    FETCHERS.map(({ key, fn }) => refreshCache(key, fn))
-  );
+  const now = Date.now();
+  const needsRefresh = FETCHERS.filter(({ key }) => {
+    const entry = cache[key];
+    return !entry || (now - entry.ts) > CACHE_TTL_MS;
+  });
+
+  if (needsRefresh.length === 0) {
+    console.log('[cache] Disk cache is fresh — skipping warm-up');
+    return;
+  }
+
+  console.log('[cache] Warming up ' + needsRefresh.length + ' catalogues in parallel...');
+  await Promise.allSettled(needsRefresh.map(({ key, fn }) => refreshCache(key, fn)));
   console.log('[cache] Warm-up complete');
 }
 
 function startBackgroundRefresh() {
   setInterval(() => {
-    console.log('[cache] Scheduled background refresh...');
-    Promise.allSettled(
-      FETCHERS.map(({ key, fn }) => refreshCache(key, fn))
-    );
+    Promise.allSettled(FETCHERS.map(({ key, fn }) => refreshCache(key, fn)));
   }, CACHE_TTL_MS);
 }
 
-// ── ADDON ─────────────────────────────────────────────────────────────────────
 const builder = new addonBuilder(manifest);
 
 builder.defineCatalogHandler(async ({ type, id, extra }) => {
   const skip = parseInt((extra && extra.skip) || 0);
-  let metas = [];
+  let metas  = [];
 
   if      (id === 'malayalam-ott-movies') metas = await getCached('mal-movies', () => scrapeMalayalam('movie'));
   else if (id === 'malayalam-ott-series') metas = await getCached('mal-series', () => scrapeMalayalam('series'));
   else if (id === 'tamil-ott-movies')     metas = await getCached('tam-movies', () => scrapeTamil('movie'));
   else if (id === 'tamil-ott-series')     metas = await getCached('tam-series', () => scrapeTamil('series'));
 
-  return { metas: metas.slice(skip, skip + 50) };
+  return {
+    metas: metas.slice(skip, skip + 50),
+    cacheMaxAge:     21600,
+    staleRevalidate: 86400,
+    staleError:      86400,
+  };
 });
 
 builder.defineMetaHandler(async ({ type, id }) => {
@@ -117,7 +145,6 @@ builder.defineMetaHandler(async ({ type, id }) => {
   return { meta: null };
 });
 
-// ── START ─────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 7000;
 serveHTTP(builder.getInterface(), { port: PORT });
 console.log('Addon running on port ' + PORT);
