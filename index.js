@@ -3,117 +3,100 @@ const { scrapeMalayalam, scrapeTamil } = require('./scraper');
 
 const manifest = {
   id: 'community.mollywood.ott.catalogue',
-  version: '2.0.1',
-  name: '🎬 Mollywood & Kollywood OTT',
-  description: 'Malayalam & Tamil OTT releases from cinebuds.com. Shows only released content, sorted newest first.',
+  version: '1.2.0',
+  name: 'Mollywood & Kollywood OTT',
+  description:
+    'Latest Malayalam & Tamil OTT releases — movies and web series. ' +
+    'Only shows titles already streaming. Updated every 3 hours.',
   logo: 'https://i.imgur.com/fBESjol.png',
+  background: 'https://i.imgur.com/5pEhPuS.jpg',
   resources: ['catalog', 'meta'],
   types: ['movie', 'series'],
   catalogs: [
-    { type: 'movie', id: 'malayalam-movies', name: '🌴 Malayalam OTT Movies' },
-    { type: 'series', id: 'malayalam-series', name: '🌴 Malayalam OTT Series' },
-    { type: 'movie', id: 'tamil-movies', name: '🎭 Tamil OTT Movies' },
-    { type: 'series', id: 'tamil-series', name: '🎭 Tamil OTT Series' },
+    { type: 'movie',  id: 'malayalam-ott-movies',  name: 'Malayalam OTT Movies',  extra: [{ name: 'skip', isRequired: false }] },
+    { type: 'series', id: 'malayalam-ott-series',  name: 'Malayalam OTT Series',  extra: [{ name: 'skip', isRequired: false }] },
+    { type: 'movie',  id: 'tamil-ott-movies',      name: 'Tamil OTT Movies',      extra: [{ name: 'skip', isRequired: false }] },
+    { type: 'series', id: 'tamil-ott-series',      name: 'Tamil OTT Series',      extra: [{ name: 'skip', isRequired: false }] },
   ],
-  idPrefixes: ['cinebuds_'],
+  idPrefixes: ['tt'],   // ← real IMDb IDs now, not cinebuds_ prefix
+  behaviorHints: { adult: false, p2p: false },
 };
 
-// Cache storage
-const cache = {
-  'malayalam-movies': null,
-  'malayalam-series': null,
-  'tamil-movies': null,
-  'tamil-series': null,
-  'meta': new Map(),
-  lastFetch: null,
-};
-const CACHE_MINUTES = 180;
+const CACHE_TTL_MS = 3 * 60 * 60 * 1000;
+const cache = {};
 
-async function getCachedOrFetch(catalogId, fetchFn) {
-  const now = Date.now();
-  
-  if (cache[catalogId] && cache.lastFetch && (now - cache.lastFetch) < CACHE_MINUTES * 60 * 1000) {
-    console.log(`[cache] Using cached ${catalogId} (${cache[catalogId].length} items)`);
-    return cache[catalogId];
-  }
-  
-  console.log(`[cache] Fetching fresh data for ${catalogId}...`);
+const FETCHERS = [
+  { key: 'mal-movies',  fn: () => scrapeMalayalam('movie')  },
+  { key: 'mal-series',  fn: () => scrapeMalayalam('series') },
+  { key: 'tam-movies',  fn: () => scrapeTamil('movie')      },
+  { key: 'tam-series',  fn: () => scrapeTamil('series')     },
+];
+
+async function refreshCache(key, fetchFn) {
+  console.log('[cache] Refreshing: ' + key);
   try {
     const data = await fetchFn();
-    console.log(`[cache] Got ${data.length} items for ${catalogId}`);
-    cache[catalogId] = data;
-    cache.lastFetch = now;
-    
-    // Also cache individual meta items
-    for (const item of data) {
-      cache.meta.set(item.id, item);
-    }
-    
-    return data;
+    cache[key] = { ts: Date.now(), data };
+    console.log('[cache] ' + key + ' -> ' + data.length + ' items');
   } catch (err) {
-    console.error(`[cache] Error fetching ${catalogId}:`, err.message);
-    return cache[catalogId] || [];
+    console.error('[cache] Failed ' + key + ': ' + err.message);
   }
+}
+
+async function getCached(key, fetchFn) {
+  if (!cache[key] || Date.now() - cache[key].ts > CACHE_TTL_MS) {
+    await refreshCache(key, fetchFn);
+  }
+  return cache[key] ? cache[key].data : [];
+}
+
+async function warmUpAll() {
+  console.log('[cache] Warming up...');
+  for (const { key, fn } of FETCHERS) {
+    await refreshCache(key, fn);
+    await new Promise(r => setTimeout(r, 3000));
+  }
+  console.log('[cache] Done');
+}
+
+function startBackgroundRefresh() {
+  setInterval(async () => {
+    for (const { key, fn } of FETCHERS) {
+      await refreshCache(key, fn);
+      await new Promise(r => setTimeout(r, 3000));
+    }
+  }, CACHE_TTL_MS);
 }
 
 const builder = new addonBuilder(manifest);
 
-// Catalog handler
-builder.defineCatalogHandler(async ({ type, id }) => {
-  console.log(`[catalog] Request for: ${id}`);
+builder.defineCatalogHandler(async ({ type, id, extra }) => {
+  const skip = parseInt((extra && extra.skip) || 0);
   let metas = [];
-  
-  try {
-    if (id === 'malayalam-movies') {
-      metas = await getCachedOrFetch(id, () => scrapeMalayalam('movie'));
-    } else if (id === 'malayalam-series') {
-      metas = await getCachedOrFetch(id, () => scrapeMalayalam('series'));
-    } else if (id === 'tamil-movies') {
-      metas = await getCachedOrFetch(id, () => scrapeTamil('movie'));
-    } else if (id === 'tamil-series') {
-      metas = await getCachedOrFetch(id, () => scrapeTamil('series'));
-    }
-    
-    console.log(`[catalog] Returning ${metas.length} items for ${id}`);
-  } catch (err) {
-    console.error(`[catalog] Error:`, err.message);
-    metas = [];
-  }
-  
-  return { metas };
+
+  if      (id === 'malayalam-ott-movies') metas = await getCached('mal-movies', () => scrapeMalayalam('movie'));
+  else if (id === 'malayalam-ott-series') metas = await getCached('mal-series', () => scrapeMalayalam('series'));
+  else if (id === 'tamil-ott-movies')     metas = await getCached('tam-movies', () => scrapeTamil('movie'));
+  else if (id === 'tamil-ott-series')     metas = await getCached('tam-series', () => scrapeTamil('series'));
+
+  return { metas: metas.slice(skip, skip + 50) };
 });
 
-// Meta handler - THIS FIXES "No data loaded from addon" error
 builder.defineMetaHandler(async ({ type, id }) => {
-  console.log(`[meta] Request for: ${id}`);
-  
-  // Check cache first
-  if (cache.meta.has(id)) {
-    console.log(`[meta] Found in cache: ${id}`);
-    return { meta: cache.meta.get(id) };
+  if (!id.startsWith('tt')) return { meta: null };
+
+  // Search all caches for this IMDb ID
+  for (const { key } of FETCHERS) {
+    if (cache[key]) {
+      const found = cache[key].data.find(m => m.id === id);
+      if (found) return { meta: found };
+    }
   }
-  
-  // If not in cache, search through all catalogs
-  const allCatalogs = [
-    ...(cache['malayalam-movies'] || []),
-    ...(cache['malayalam-series'] || []),
-    ...(cache['tamil-movies'] || []),
-    ...(cache['tamil-series'] || []),
-  ];
-  
-  const found = allCatalogs.find(item => item.id === id);
-  
-  if (found) {
-    console.log(`[meta] Found item: ${found.name}`);
-    cache.meta.set(id, found);
-    return { meta: found };
-  }
-  
-  console.log(`[meta] Not found: ${id}`);
   return { meta: null };
 });
 
 const PORT = process.env.PORT || 7000;
 serveHTTP(builder.getInterface(), { port: PORT });
-console.log(`\n✅ Mollywood OTT addon running on port ${PORT}`);
-console.log(`   URL: http://localhost:${PORT}/manifest.json\n`);
+console.log('Addon running on port ' + PORT);
+
+warmUpAll().then(() => startBackgroundRefresh()).catch(console.error);
