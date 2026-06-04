@@ -6,7 +6,7 @@ const path = require('path');
 const manifest = {
   id: 'community.mollywood.ott.catalogue',
   version: '1.4.0',
-  name: 'Mollywood & Kollywood OTT',
+  name: 'Mollywood & Kollywood OTT Releases',
   description:
     'Latest Malayalam & Tamil OTT releases — movies and web series. ' +
     'Only shows titles already streaming. Updated every 3 hours.',
