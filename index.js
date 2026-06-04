@@ -221,4 +221,5 @@ console.log('[server] Addon running on port ' + PORT);
 // 2. Warm up any stale/missing catalogues
 // 3. Schedule IST-aware refreshes going forward
 warmUpAll()
-  .then(() => scheduleISTRe
+  .then(() => scheduleISTRefresh())
+  .catch(console.error);
