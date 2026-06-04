@@ -5,11 +5,11 @@ const path = require('path');
 
 const manifest = {
   id: 'community.mollywood.ott.catalogue',
-  version: '1.4.0',
-  name: 'Mollywood & Kollywood OTT Releases',
+  version: '1.5.0',
+  name: 'Mollywood & Kollywood OTT',
   description:
     'Latest Malayalam & Tamil OTT releases — movies and web series. ' +
-    'Only shows titles already streaming. Updated every 3 hours.',
+    'Only shows titles already streaming. Updated at 12:30 AM, 7 AM, 12:30 PM and 6 PM IST daily.',
   logo: 'https://i.imgur.com/fBESjol.png',
   background: 'https://i.imgur.com/5pEhPuS.jpg',
   resources: ['catalog', 'meta'],
@@ -24,14 +24,14 @@ const manifest = {
   behaviorHints: { adult: false, p2p: false },
 };
 
-// ── PERSISTENT CACHE (survives server restarts) ───────────────────────────────
+// ── PERSISTENT DISK CACHE ─────────────────────────────────────────────────────
+// Survives Render restarts so first user after a restart gets instant response
 const CACHE_FILE = path.join('/tmp', 'mollywood_cache.json');
 
 function loadCacheFromDisk() {
   try {
     if (fs.existsSync(CACHE_FILE)) {
-      const raw  = fs.readFileSync(CACHE_FILE, 'utf8');
-      const data = JSON.parse(raw);
+      const data = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
       console.log('[cache] Loaded from disk: ' + Object.keys(data).join(', '));
       return data;
     }
@@ -41,18 +41,19 @@ function loadCacheFromDisk() {
   return {};
 }
 
-function saveCacheToDisk(cache) {
+function saveCacheToDisk(cacheObj) {
   try {
-    fs.writeFileSync(CACHE_FILE, JSON.stringify(cache), 'utf8');
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(cacheObj), 'utf8');
   } catch (e) {
     console.warn('[cache] Could not save to disk: ' + e.message);
   }
 }
 
-const CACHE_TTL_MS = 3  * 60 * 60 * 1000;
-const STALE_TTL_MS = 24 * 60 * 60 * 1000;
+// ── IN-MEMORY CACHE ───────────────────────────────────────────────────────────
+const CACHE_TTL_MS  = 1  * 60 * 60 * 1000; // 1 hour  — reduced from 3h
+const STALE_TTL_MS  = 24 * 60 * 60 * 1000; // 24 hours — max before must wait
 
-const cache      = loadCacheFromDisk();
+const cache      = loadCacheFromDisk(); // instantly populated from disk on startup
 const refreshing = new Set();
 
 const FETCHERS = [
@@ -63,7 +64,7 @@ const FETCHERS = [
 ];
 
 async function refreshCache(key, fetchFn) {
-  if (refreshing.has(key)) return;
+  if (refreshing.has(key)) return; // already running — don't double-fire
   refreshing.add(key);
   console.log('[cache] Refreshing: ' + key);
   try {
@@ -78,43 +79,109 @@ async function refreshCache(key, fetchFn) {
   }
 }
 
+// Stale-while-revalidate:
+// Fresh (<1h)   → return immediately, no network call
+// Stale (1-24h) → return old data instantly, refresh silently in background
+// Empty/ancient → must wait (only on very first ever boot)
 async function getCached(key, fetchFn) {
   const entry = cache[key];
   if (entry) {
     const age = Date.now() - entry.ts;
     if (age < CACHE_TTL_MS)  return entry.data;
     if (age < STALE_TTL_MS) {
-      refreshCache(key, fetchFn);
-      return entry.data;
+      refreshCache(key, fetchFn); // intentionally not awaited — runs in background
+      return entry.data;          // user gets response immediately
     }
   }
+  // No cache at all — must wait (first ever boot with empty disk)
   await refreshCache(key, fetchFn);
   return cache[key] ? cache[key].data : [];
 }
 
+// ── WARM UP ───────────────────────────────────────────────────────────────────
+// Runs on server start — skips network calls if disk cache is still fresh
 async function warmUpAll() {
-  const now = Date.now();
+  const now          = Date.now();
   const needsRefresh = FETCHERS.filter(({ key }) => {
     const entry = cache[key];
     return !entry || (now - entry.ts) > CACHE_TTL_MS;
   });
 
   if (needsRefresh.length === 0) {
-    console.log('[cache] Disk cache is fresh — skipping warm-up');
+    console.log('[cache] Disk cache is fresh — skipping warm-up network calls');
     return;
   }
 
-  console.log('[cache] Warming up ' + needsRefresh.length + ' catalogues in parallel...');
+  console.log('[cache] Warming up ' + needsRefresh.length + ' stale catalogues in parallel...');
   await Promise.allSettled(needsRefresh.map(({ key, fn }) => refreshCache(key, fn)));
   console.log('[cache] Warm-up complete');
 }
 
-function startBackgroundRefresh() {
-  setInterval(() => {
-    Promise.allSettled(FETCHERS.map(({ key, fn }) => refreshCache(key, fn)));
-  }, CACHE_TTL_MS);
+// ── IST-AWARE SCHEDULER ───────────────────────────────────────────────────────
+// OLD: refreshed every 3 hours from whenever server happened to start
+//      e.g. server starts 2 PM → refreshes 2PM, 5PM, 8PM, 11PM, 2AM...
+//      A midnight OTT drop might not show until 2AM worst case
+//
+// NEW: refreshes at fixed IST times chosen around real OTT drop patterns:
+//   12:30 AM IST — catches midnight drops (Prime, Netflix, Hotstar drop at 12AM IST)
+//    7:00 AM IST — catches dawn drops + early morning cinebuds updates
+//   12:30 PM IST — catches afternoon drops + midday cinebuds edits
+//    6:00 PM IST — catches evening drops + any missed updates
+//
+// Result: Patriot dropping June 5 at 12AM IST → in addon by 12:31 AM IST ✅
+
+const IST_OFFSET_MS    = 5.5 * 60 * 60 * 1000; // IST = UTC + 5:30
+const IST_REFRESH_TIMES = [
+  { hour: 0,  minute: 30 }, // 12:30 AM IST
+  { hour: 7,  minute: 0  }, //  7:00 AM IST
+  { hour: 12, minute: 30 }, // 12:30 PM IST
+  { hour: 18, minute: 0  }, //  6:00 PM IST
+];
+
+function msUntilNextISTRefresh() {
+  const nowIST        = new Date(Date.now() + IST_OFFSET_MS);
+  const currentHour   = nowIST.getUTCHours();
+  const currentMinute = nowIST.getUTCMinutes();
+  const currentTotalMinutes = currentHour * 60 + currentMinute;
+
+  // Find the next scheduled time (in minutes from midnight IST)
+  const scheduledMinutes = IST_REFRESH_TIMES.map(t => t.hour * 60 + t.minute);
+  const next = scheduledMinutes.find(m => m > currentTotalMinutes);
+
+  // If no time today is left, wrap to first slot tomorrow
+  const minutesUntilNext = next !== undefined
+    ? next - currentTotalMinutes
+    : (24 * 60 - currentTotalMinutes) + scheduledMinutes[0];
+
+  return minutesUntilNext * 60 * 1000;
 }
 
+function getNextISTRefreshLabel() {
+  const nowIST        = new Date(Date.now() + IST_OFFSET_MS);
+  const currentHour   = nowIST.getUTCHours();
+  const currentMinute = nowIST.getUTCMinutes();
+  const currentTotal  = currentHour * 60 + currentMinute;
+  const next = IST_REFRESH_TIMES.find(t => (t.hour * 60 + t.minute) > currentTotal)
+               ?? IST_REFRESH_TIMES[0];
+  return next.hour.toString().padStart(2, '0') + ':' +
+         next.minute.toString().padStart(2, '0') + ' IST';
+}
+
+function scheduleISTRefresh() {
+  const delay = msUntilNextISTRefresh();
+  const label = getNextISTRefreshLabel();
+  console.log('[scheduler] Next IST refresh at ' + label +
+              ' (in ' + Math.round(delay / 60000) + ' minutes)');
+
+  setTimeout(async () => {
+    console.log('[scheduler] IST-timed refresh firing...');
+    await Promise.allSettled(FETCHERS.map(({ key, fn }) => refreshCache(key, fn)));
+    console.log('[scheduler] Refresh complete — scheduling next...');
+    scheduleISTRefresh(); // schedule the next one after this completes
+  }, delay);
+}
+
+// ── ADDON ─────────────────────────────────────────────────────────────────────
 const builder = new addonBuilder(manifest);
 
 builder.defineCatalogHandler(async ({ type, id, extra }) => {
@@ -128,9 +195,9 @@ builder.defineCatalogHandler(async ({ type, id, extra }) => {
 
   return {
     metas: metas.slice(skip, skip + 50),
-    cacheMaxAge:     21600,
-    staleRevalidate: 86400,
-    staleError:      86400,
+    cacheMaxAge:     3600,  // 1 hour — reduced from 6h so Stremio client refreshes faster
+    staleRevalidate: 86400, // 24 hours — serve stale while refreshing in background
+    staleError:      86400, // 24 hours — keep showing data even if server errors
   };
 });
 
@@ -145,8 +212,13 @@ builder.defineMetaHandler(async ({ type, id }) => {
   return { meta: null };
 });
 
+// ── START ─────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 7000;
 serveHTTP(builder.getInterface(), { port: PORT });
-console.log('Addon running on port ' + PORT);
+console.log('[server] Addon running on port ' + PORT);
 
-warmUpAll().then(() => startBackgroundRefresh()).catch(console.error);
+// 1. Load disk cache instantly (already done above at const cache = loadCacheFromDisk())
+// 2. Warm up any stale/missing catalogues
+// 3. Schedule IST-aware refreshes going forward
+warmUpAll()
+  .then(() => scheduleISTRe
