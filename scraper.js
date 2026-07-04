@@ -54,7 +54,7 @@ function fetchUrl(url) {
       stream.on('end',  () => resolve(Buffer.concat(chunks).toString('utf8')));
       stream.on('error', reject);
     }).on('error', reject)
-      .setTimeout(30000, function() { this.destroy(); reject(new Error('Timeout')); });
+      .setTimeout(45000, function() { this.destroy(); reject(new Error('Timeout')); });
   });
 }
 
