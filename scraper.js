@@ -1,14 +1,14 @@
 /**
  * scraper.js
  *
- * Scrapes cinebuds.com, filters to OTT-released only,
- * resolves real IMDb IDs via TMDB + OMDb fallback.
- *
- * Movies with no IMDb ID are excluded entirely — better to show
- * fewer correct results than broken ones that fail to load streams.
+ * Scrapes cinebuds.com via proxy (Render blocks direct outbound to cinebuds).
+ * Falls back through multiple free proxies automatically.
+ * Resolves real IMDb IDs via TMDB + OMDb.
+ * Excludes movies with no IMDb ID — fake IDs break stream addons.
  */
 
 const https   = require('https');
+const http    = require('http');
 const zlib    = require('zlib');
 const cheerio = require('cheerio');
 
@@ -27,19 +27,22 @@ const LANG_CODE = {
   'tam-movie': 'ta', 'tam-series': 'ta',
 };
 
-function fetchUrl(url) {
+// ── HTTP FETCH ────────────────────────────────────────────────────────────────
+function fetchRaw(url, timeoutMs) {
   return new Promise((resolve, reject) => {
+    const lib  = url.startsWith('https') ? https : http;
     const opts = {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.9',
         'Accept-Encoding': 'gzip, deflate, br',
+        'Cache-Control': 'no-cache',
       },
     };
-    https.get(url, opts, (res) => {
+    const req = lib.get(url, opts, (res) => {
       if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location)
-        return fetchUrl(res.headers.location).then(resolve).catch(reject);
+        return fetchRaw(res.headers.location, timeoutMs).then(resolve).catch(reject);
       if (res.statusCode !== 200)
         return reject(new Error('HTTP ' + res.statusCode));
 
@@ -53,15 +56,43 @@ function fetchUrl(url) {
       stream.on('data', c => chunks.push(c));
       stream.on('end',  () => resolve(Buffer.concat(chunks).toString('utf8')));
       stream.on('error', reject);
-    }).on('error', reject)
-      .setTimeout(45000, function() { this.destroy(); reject(new Error('Timeout')); });
+    });
+    req.on('error', reject);
+    req.setTimeout(timeoutMs || 30000, function() { this.destroy(); reject(new Error('Timeout after ' + timeoutMs + 'ms')); });
   });
 }
 
-function fetchJson(url) {
-  return fetchUrl(url).then(t => JSON.parse(t));
+// Fetch cinebuds via multiple strategies — direct first, then proxies
+async function fetchCinebuds(targetUrl) {
+  const strategies = [
+    { name: 'direct',    url: targetUrl, timeout: 20000 },
+    { name: 'allorigins', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl), timeout: 30000 },
+    { name: 'corsproxy',  url: 'https://corsproxy.io/?' + encodeURIComponent(targetUrl), timeout: 30000 },
+    { name: 'codetabs',   url: 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(targetUrl), timeout: 30000 },
+  ];
+
+  for (const strategy of strategies) {
+    try {
+      console.log('[fetch] Trying ' + strategy.name);
+      const html = await fetchRaw(strategy.url, strategy.timeout);
+      if (html.length > 10000 && (html.includes('cinebuds') || html.includes('OTT') || html.includes('<table'))) {
+        console.log('[fetch] Success via ' + strategy.name + ' (' + html.length + ' bytes)');
+        return html;
+      }
+      console.warn('[fetch] ' + strategy.name + ' returned suspicious content — trying next');
+    } catch (e) {
+      console.warn('[fetch] ' + strategy.name + ' failed: ' + e.message);
+    }
+  }
+
+  throw new Error('All fetch strategies failed for ' + targetUrl);
 }
 
+function fetchJson(url) {
+  return fetchRaw(url, 15000).then(t => JSON.parse(t));
+}
+
+// ── DATE LOGIC ────────────────────────────────────────────────────────────────
 function parseDate(str) {
   if (!str) return null;
   if (/soon|tba|tbd|announced|upcoming|expected|expect|confirm|tentative|coming soon/i.test(str)) return null;
@@ -74,6 +105,7 @@ function isAlreadyReleased(dateStr) {
   return d ? d <= new Date() : false;
 }
 
+// ── TITLE VARIANTS ────────────────────────────────────────────────────────────
 function getTitleVariants(raw) {
   const base = raw
     .replace(/\s*\([^)]*\)/g, '')
@@ -83,14 +115,15 @@ function getTitleVariants(raw) {
 
   const variants = new Set();
   variants.add(base);
-  if (base.includes(':'))    variants.add(base.split(':')[0].trim());
-  if (base.includes(' - '))  variants.add(base.split(' - ')[0].trim());
+  if (base.includes(':'))   variants.add(base.split(':')[0].trim());
+  if (base.includes(' - ')) variants.add(base.split(' - ')[0].trim());
   const noThe = base.replace(/\b(the|a|an)\b/gi, '').replace(/\s+/g, ' ').trim();
-  if (noThe !== base)        variants.add(noThe);
+  if (noThe !== base)       variants.add(noThe);
 
   return Array.from(variants).filter(v => v.length >= 2);
 }
 
+// ── TMDB SEARCH ───────────────────────────────────────────────────────────────
 async function searchTMDB(title, type, langCode) {
   if (!TMDB_KEY) return null;
   const endpoint = type === 'series' ? 'tv' : 'movie';
@@ -115,9 +148,9 @@ async function searchTMDB(title, type, langCode) {
         else if (rTitle.startsWith(vLow))  score += 35;
         else if (rTitle.includes(vLow))    score += 20;
 
-        if (r.original_language === langCode)    score += 50;
-        else if (r.original_language === 'en')   score -= 30;
-        else                                     score -= 10;
+        if (r.original_language === langCode)  score += 50;
+        else if (r.original_language === 'en') score -= 30;
+        else                                   score -= 10;
 
         if (r.origin_country && r.origin_country.includes('IN')) score += 15;
 
@@ -149,9 +182,10 @@ async function searchTMDB(title, type, langCode) {
   return null;
 }
 
+// ── OMDB FALLBACK ─────────────────────────────────────────────────────────────
 async function searchOMDb(title, type, langCode) {
   if (!OMDB_KEY) return null;
-  const omdbType  = type === 'series' ? 'series' : 'movie';
+  const omdbType   = type === 'series' ? 'series' : 'movie';
   const targetLang = langCode === 'ml' ? 'malayalam' : 'tamil';
 
   for (const variant of getTitleVariants(title)) {
@@ -185,6 +219,7 @@ async function searchOMDb(title, type, langCode) {
   return null;
 }
 
+// ── RESOLVE IMDB ID ───────────────────────────────────────────────────────────
 const resolveCache = new Map();
 
 async function resolveImdbId(title, type, langCode) {
@@ -204,6 +239,7 @@ async function resolveImdbId(title, type, langCode) {
   return result;
 }
 
+// ── PARSE CINEBUDS TABLE ──────────────────────────────────────────────────────
 function parseCinebudsTable(html) {
   const $ = cheerio.load(html);
   const items = [];
@@ -213,9 +249,10 @@ function parseCinebudsTable(html) {
     $(table).find('thead th, thead td').each((_, th) => headers.push($(th).text().trim().toLowerCase()));
     if (headers.length === 0)
       $(table).find('tr').first().find('th, td').each((_, th) => headers.push($(th).text().trim().toLowerCase()));
-    const dateIdx = headers.findIndex(h => h.includes('date') || h.includes('release') || h.includes('premiere') || h.includes('stream') || h.includes('digital'));
-    const platformIdx = headers.findIndex(h => h.includes('platform') || h.includes('ott') || h.includes('streaming') || h.includes('where') || h.includes('service'));
 
+    const titleIdx    = headers.findIndex(h => h.includes('movie') || h.includes('title') || h.includes('series') || h.includes('show') || h.includes('film') || h.includes('name'));
+    const platformIdx = headers.findIndex(h => h.includes('platform') || h.includes('ott') || h.includes('streaming') || h.includes('where') || h.includes('service'));
+    const dateIdx     = headers.findIndex(h => h.includes('date') || h.includes('release') || h.includes('premiere') || h.includes('stream') || h.includes('digital'));
 
     if (titleIdx === -1) return;
 
@@ -237,6 +274,7 @@ function parseCinebudsTable(html) {
   return items;
 }
 
+// ── DEDUPLICATE ───────────────────────────────────────────────────────────────
 function deduplicate(items) {
   const seen = new Map(), result = [];
   for (const item of items) {
@@ -252,13 +290,12 @@ function deduplicate(items) {
   return result;
 }
 
+// ── MAIN SCRAPE ───────────────────────────────────────────────────────────────
 async function scrapePage(urlKey, type) {
   const url      = URLS[urlKey];
   const langCode = LANG_CODE[urlKey];
 
-  console.log('[scraper] Fetching ' + url);
-  const html = await fetchUrl(url);
-
+  const html     = await fetchCinebuds(url);
   const raw      = parseCinebudsTable(html);
   const released = raw.filter(i => isAlreadyReleased(i.releaseDate));
   const unique   = deduplicate(released);
@@ -275,8 +312,6 @@ async function scrapePage(urlKey, type) {
 
   for (const item of unique) {
     const imdb = await resolveImdbId(item.title, type, langCode);
-
-    // Exclude anything without a real IMDb ID — fake IDs break all stream addons
     if (!imdb || !imdb.imdbId) continue;
 
     let desc = '';
@@ -306,6 +341,7 @@ async function scrapePage(urlKey, type) {
   return metas;
 }
 
+// ── PUBLIC API ────────────────────────────────────────────────────────────────
 async function scrapeMalayalam(type) {
   try { return await scrapePage(type === 'movie' ? 'mal-movie' : 'mal-series', type); }
   catch (e) { console.warn('[scraper] Malayalam ' + type + ': ' + e.message); return []; }
