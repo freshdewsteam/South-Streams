@@ -213,8 +213,7 @@ function parseCinebudsTable(html) {
     $(table).find('thead th, thead td').each((_, th) => headers.push($(th).text().trim().toLowerCase()));
     if (headers.length === 0)
       $(table).find('tr').first().find('th, td').each((_, th) => headers.push($(th).text().trim().toLowerCase()));
-
-    const titleIdx    = headers.findIndex(h => h.includes('movie') || h.includes('title') || h.includes('series') || h.includes('show') || h.includes('name'));
+    const dateIdx = headers.findIndex(h => h.includes('date') || h.includes('release') || h.includes('premiere') || h.includes('stream') || h.includes('digital'));
     const platformIdx = headers.findIndex(h => h.includes('platform') || h.includes('ott') || h.includes('streaming') || h.includes('where') || h.includes('service'));
     const dateIdx     = headers.findIndex(h => h.includes('date') || h.includes('release') || h.includes('premiere'));
 
