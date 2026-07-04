@@ -215,7 +215,7 @@ function parseCinebudsTable(html) {
       $(table).find('tr').first().find('th, td').each((_, th) => headers.push($(th).text().trim().toLowerCase()));
     const dateIdx = headers.findIndex(h => h.includes('date') || h.includes('release') || h.includes('premiere') || h.includes('stream') || h.includes('digital'));
     const platformIdx = headers.findIndex(h => h.includes('platform') || h.includes('ott') || h.includes('streaming') || h.includes('where') || h.includes('service'));
-    const dateIdx     = headers.findIndex(h => h.includes('date') || h.includes('release') || h.includes('premiere'));
+
 
     if (titleIdx === -1) return;
 
