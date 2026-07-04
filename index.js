@@ -25,7 +25,6 @@ const manifest = {
 };
 
 // ── PERSISTENT DISK CACHE ─────────────────────────────────────────────────────
-// Survives Render restarts so first user after a restart gets instant response
 const CACHE_FILE = path.join('/tmp', 'mollywood_cache.json');
 
 function loadCacheFromDisk() {
@@ -50,10 +49,10 @@ function saveCacheToDisk(cacheObj) {
 }
 
 // ── IN-MEMORY CACHE ───────────────────────────────────────────────────────────
-const CACHE_TTL_MS  = 1  * 60 * 60 * 1000; // 1 hour  — reduced from 3h
-const STALE_TTL_MS  = 24 * 60 * 60 * 1000; // 24 hours — max before must wait
+const CACHE_TTL_MS = 1  * 60 * 60 * 1000; // 1 hour
+const STALE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-const cache      = loadCacheFromDisk(); // instantly populated from disk on startup
+const cache      = loadCacheFromDisk();
 const refreshing = new Set();
 
 const FETCHERS = [
@@ -64,7 +63,7 @@ const FETCHERS = [
 ];
 
 async function refreshCache(key, fetchFn) {
-  if (refreshing.has(key)) return; // already running — don't double-fire
+  if (refreshing.has(key)) return;
   refreshing.add(key);
   console.log('[cache] Refreshing: ' + key);
   try {
@@ -79,27 +78,21 @@ async function refreshCache(key, fetchFn) {
   }
 }
 
-// Stale-while-revalidate:
-// Fresh (<1h)   → return immediately, no network call
-// Stale (1-24h) → return old data instantly, refresh silently in background
-// Empty/ancient → must wait (only on very first ever boot)
 async function getCached(key, fetchFn) {
   const entry = cache[key];
   if (entry) {
     const age = Date.now() - entry.ts;
-    if (age < CACHE_TTL_MS)  return entry.data;
+    if (age < CACHE_TTL_MS) return entry.data;
     if (age < STALE_TTL_MS) {
-      refreshCache(key, fetchFn); // intentionally not awaited — runs in background
-      return entry.data;          // user gets response immediately
+      refreshCache(key, fetchFn);
+      return entry.data;
     }
   }
-  // No cache at all — must wait (first ever boot with empty disk)
   await refreshCache(key, fetchFn);
   return cache[key] ? cache[key].data : [];
 }
 
 // ── WARM UP ───────────────────────────────────────────────────────────────────
-// Runs on server start — skips network calls if disk cache is still fresh
 async function warmUpAll() {
   const now          = Date.now();
   const needsRefresh = FETCHERS.filter(({ key }) => {
@@ -108,29 +101,22 @@ async function warmUpAll() {
   });
 
   if (needsRefresh.length === 0) {
-    console.log('[cache] Disk cache is fresh — skipping warm-up network calls');
+    console.log('[cache] Disk cache is fresh — skipping warm-up');
     return;
   }
 
-  console.log('[cache] Warming up ' + needsRefresh.length + ' stale catalogues in parallel...');
-  await Promise.allSettled(needsRefresh.map(({ key, fn }) => refreshCache(key, fn)));
+  console.log('[cache] Warming up ' + needsRefresh.length + ' catalogues (staggered)...');
+
+  for (const { key, fn } of needsRefresh) {
+    await refreshCache(key, fn);
+    await new Promise(r => setTimeout(r, 4000));
+  }
+
   console.log('[cache] Warm-up complete');
 }
 
 // ── IST-AWARE SCHEDULER ───────────────────────────────────────────────────────
-// OLD: refreshed every 3 hours from whenever server happened to start
-//      e.g. server starts 2 PM → refreshes 2PM, 5PM, 8PM, 11PM, 2AM...
-//      A midnight OTT drop might not show until 2AM worst case
-//
-// NEW: refreshes at fixed IST times chosen around real OTT drop patterns:
-//   12:30 AM IST — catches midnight drops (Prime, Netflix, Hotstar drop at 12AM IST)
-//    7:00 AM IST — catches dawn drops + early morning cinebuds updates
-//   12:30 PM IST — catches afternoon drops + midday cinebuds edits
-//    6:00 PM IST — catches evening drops + any missed updates
-//
-// Result: Patriot dropping June 5 at 12AM IST → in addon by 12:31 AM IST ✅
-
-const IST_OFFSET_MS    = 5.5 * 60 * 60 * 1000; // IST = UTC + 5:30
+const IST_OFFSET_MS     = 5.5 * 60 * 60 * 1000;
 const IST_REFRESH_TIMES = [
   { hour: 0,  minute: 30 }, // 12:30 AM IST
   { hour: 7,  minute: 0  }, //  7:00 AM IST
@@ -139,16 +125,14 @@ const IST_REFRESH_TIMES = [
 ];
 
 function msUntilNextISTRefresh() {
-  const nowIST        = new Date(Date.now() + IST_OFFSET_MS);
-  const currentHour   = nowIST.getUTCHours();
-  const currentMinute = nowIST.getUTCMinutes();
+  const nowIST              = new Date(Date.now() + IST_OFFSET_MS);
+  const currentHour         = nowIST.getUTCHours();
+  const currentMinute       = nowIST.getUTCMinutes();
   const currentTotalMinutes = currentHour * 60 + currentMinute;
 
-  // Find the next scheduled time (in minutes from midnight IST)
   const scheduledMinutes = IST_REFRESH_TIMES.map(t => t.hour * 60 + t.minute);
-  const next = scheduledMinutes.find(m => m > currentTotalMinutes);
+  const next             = scheduledMinutes.find(m => m > currentTotalMinutes);
 
-  // If no time today is left, wrap to first slot tomorrow
   const minutesUntilNext = next !== undefined
     ? next - currentTotalMinutes
     : (24 * 60 - currentTotalMinutes) + scheduledMinutes[0];
@@ -161,8 +145,8 @@ function getNextISTRefreshLabel() {
   const currentHour   = nowIST.getUTCHours();
   const currentMinute = nowIST.getUTCMinutes();
   const currentTotal  = currentHour * 60 + currentMinute;
-  const next = IST_REFRESH_TIMES.find(t => (t.hour * 60 + t.minute) > currentTotal)
-               ?? IST_REFRESH_TIMES[0];
+  const next          = IST_REFRESH_TIMES.find(t => (t.hour * 60 + t.minute) > currentTotal)
+                        ?? IST_REFRESH_TIMES[0];
   return next.hour.toString().padStart(2, '0') + ':' +
          next.minute.toString().padStart(2, '0') + ' IST';
 }
@@ -175,9 +159,12 @@ function scheduleISTRefresh() {
 
   setTimeout(async () => {
     console.log('[scheduler] IST-timed refresh firing...');
-    await Promise.allSettled(FETCHERS.map(({ key, fn }) => refreshCache(key, fn)));
+    for (const { key, fn } of FETCHERS) {
+      await refreshCache(key, fn);
+      await new Promise(r => setTimeout(r, 4000));
+    }
     console.log('[scheduler] Refresh complete — scheduling next...');
-    scheduleISTRefresh(); // schedule the next one after this completes
+    scheduleISTRefresh();
   }, delay);
 }
 
@@ -195,9 +182,9 @@ builder.defineCatalogHandler(async ({ type, id, extra }) => {
 
   return {
     metas: metas.slice(skip, skip + 50),
-    cacheMaxAge:     3600,  // 1 hour — reduced from 6h so Stremio client refreshes faster
-    staleRevalidate: 86400, // 24 hours — serve stale while refreshing in background
-    staleError:      86400, // 24 hours — keep showing data even if server errors
+    cacheMaxAge:     3600,
+    staleRevalidate: 86400,
+    staleError:      86400,
   };
 });
 
@@ -217,9 +204,6 @@ const PORT = process.env.PORT || 7000;
 serveHTTP(builder.getInterface(), { port: PORT });
 console.log('[server] Addon running on port ' + PORT);
 
-// 1. Load disk cache instantly (already done above at const cache = loadCacheFromDisk())
-// 2. Warm up any stale/missing catalogues
-// 3. Schedule IST-aware refreshes going forward
 warmUpAll()
   .then(() => scheduleISTRefresh())
   .catch(console.error);
