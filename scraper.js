@@ -4,7 +4,7 @@
  * Movies  → cinebuds.com (Malayalam & Tamil)
  * Series  → keralatv.in monthly guide (Malayalam & Tamil)
  *
- * Runs on GitHub Actions — no proxy needed, GitHub IPs not blocked.
+ * Runs on GitHub Actions — GitHub IPs not blocked by either source.
  * Resolves real IMDb IDs via TMDB + OMDb fallback.
  * Excludes anything without a real IMDb ID.
  */
@@ -270,8 +270,6 @@ function parseCinebudsTable(html) {
 }
 
 // ── PARSE KERALATV TABLE (series) ────────────────────────────────────────────
-// keralatv.in monthly guides have a Type column (Movie / Web Series).
-// We keep only Web Series rows here.
 function parseKeralaTVTable(html) {
   const $ = cheerio.load(html);
   const items = [];
@@ -306,7 +304,6 @@ function parseKeralaTVTable(html) {
       if (!title || title.length < 2) return;
       if (!platform) return;
 
-      // Only keep web series rows
       const isSeries = typeRaw.includes('series') || typeRaw.includes('web') || typeRaw.includes('show');
       if (!isSeries) return;
 
