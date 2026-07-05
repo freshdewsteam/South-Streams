@@ -1,10 +1,12 @@
 /**
  * scraper.js
  *
- * Scrapes cinebuds.com via proxy (Render blocks direct outbound to cinebuds).
- * Falls back through multiple free proxies automatically.
- * Resolves real IMDb IDs via TMDB + OMDb.
- * Excludes movies with no IMDb ID — fake IDs break stream addons.
+ * Movies  → cinebuds.com (Malayalam & Tamil)
+ * Series  → keralatv.in monthly guide (Malayalam & Tamil)
+ *
+ * Runs on GitHub Actions — no proxy needed, GitHub IPs not blocked.
+ * Resolves real IMDb IDs via TMDB + OMDb fallback.
+ * Excludes anything without a real IMDb ID.
  */
 
 const https   = require('https');
@@ -15,11 +17,23 @@ const cheerio = require('cheerio');
 const TMDB_KEY = process.env.TMDB_API_KEY || '';
 const OMDB_KEY = process.env.OMDB_API_KEY || '';
 
+// ── DYNAMIC KERALATV URL (auto-switches each month) ───────────────────────────
+function getKeralaTVUrl() {
+  const months = [
+    'january','february','march','april','may','june',
+    'july','august','september','october','november','december'
+  ];
+  const now   = new Date();
+  const month = months[now.getMonth()];
+  const year  = now.getFullYear();
+  return 'https://www.keralatv.in/' + month + '-' + year + '-ott-release-guide/';
+}
+
 const URLS = {
   'mal-movie':  'https://cinebuds.com/malayalam-movies-ott-release-dates/',
-  'mal-series': 'https://cinebuds.com/malayalam-web-series-ott-release-dates/',
+  'mal-series': getKeralaTVUrl(),
   'tam-movie':  'https://cinebuds.com/tamil-movies-digital-release-dates/',
-  'tam-series': 'https://cinebuds.com/tamil-web-series-ott-release-dates/',
+  'tam-series': getKeralaTVUrl(),
 };
 
 const LANG_CODE = {
@@ -58,34 +72,11 @@ function fetchRaw(url, timeoutMs) {
       stream.on('error', reject);
     });
     req.on('error', reject);
-    req.setTimeout(timeoutMs || 30000, function() { this.destroy(); reject(new Error('Timeout after ' + timeoutMs + 'ms')); });
+    req.setTimeout(timeoutMs || 30000, function() {
+      this.destroy();
+      reject(new Error('Timeout after ' + timeoutMs + 'ms'));
+    });
   });
-}
-
-// Fetch cinebuds via multiple strategies — direct first, then proxies
-async function fetchCinebuds(targetUrl) {
-  const strategies = [
-    { name: 'direct',    url: targetUrl, timeout: 20000 },
-    { name: 'allorigins', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl), timeout: 30000 },
-    { name: 'corsproxy',  url: 'https://corsproxy.io/?' + encodeURIComponent(targetUrl), timeout: 30000 },
-    { name: 'codetabs',   url: 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(targetUrl), timeout: 30000 },
-  ];
-
-  for (const strategy of strategies) {
-    try {
-      console.log('[fetch] Trying ' + strategy.name);
-      const html = await fetchRaw(strategy.url, strategy.timeout);
-      if (html.length > 10000 && (html.includes('cinebuds') || html.includes('OTT') || html.includes('<table'))) {
-        console.log('[fetch] Success via ' + strategy.name + ' (' + html.length + ' bytes)');
-        return html;
-      }
-      console.warn('[fetch] ' + strategy.name + ' returned suspicious content — trying next');
-    } catch (e) {
-      console.warn('[fetch] ' + strategy.name + ' failed: ' + e.message);
-    }
-  }
-
-  throw new Error('All fetch strategies failed for ' + targetUrl);
 }
 
 function fetchJson(url) {
@@ -239,16 +230,20 @@ async function resolveImdbId(title, type, langCode) {
   return result;
 }
 
-// ── PARSE CINEBUDS TABLE ──────────────────────────────────────────────────────
+// ── PARSE CINEBUDS TABLE (movies) ────────────────────────────────────────────
 function parseCinebudsTable(html) {
   const $ = cheerio.load(html);
   const items = [];
 
   $('table').each((_, table) => {
     const headers = [];
-    $(table).find('thead th, thead td').each((_, th) => headers.push($(th).text().trim().toLowerCase()));
+    $(table).find('thead th, thead td').each((_, th) =>
+      headers.push($(th).text().trim().toLowerCase())
+    );
     if (headers.length === 0)
-      $(table).find('tr').first().find('th, td').each((_, th) => headers.push($(th).text().trim().toLowerCase()));
+      $(table).find('tr').first().find('th, td').each((_, th) =>
+        headers.push($(th).text().trim().toLowerCase())
+      );
 
     const titleIdx    = headers.findIndex(h => h.includes('movie') || h.includes('title') || h.includes('series') || h.includes('show') || h.includes('film') || h.includes('name'));
     const platformIdx = headers.findIndex(h => h.includes('platform') || h.includes('ott') || h.includes('streaming') || h.includes('where') || h.includes('service'));
@@ -263,10 +258,58 @@ function parseCinebudsTable(html) {
 
       const title       = $(cells[titleIdx]).text().replace(/\s+/g, ' ').trim();
       const platform    = platformIdx >= 0 ? $(cells[platformIdx]).text().replace(/\s+/g, ' ').trim() : '';
-      const releaseDate = dateIdx     >= 0 ? $(cells[dateIdx]).text().replace(/\[.*?\]/g, '').trim()  : '';
+      const releaseDate = dateIdx >= 0     ? $(cells[dateIdx]).text().replace(/\[.*?\]/g, '').trim()  : '';
 
       if (!title || title.length < 2 || /^\d+$/.test(title)) return;
       if (!platform) return;
+      items.push({ title, platform, releaseDate });
+    });
+  });
+
+  return items;
+}
+
+// ── PARSE KERALATV TABLE (series) ────────────────────────────────────────────
+// keralatv.in monthly guides have a Type column (Movie / Web Series).
+// We keep only Web Series rows here.
+function parseKeralaTVTable(html) {
+  const $ = cheerio.load(html);
+  const items = [];
+
+  $('table').each((_, table) => {
+    const headers = [];
+    $(table).find('thead th, thead td').each((_, th) =>
+      headers.push($(th).text().replace(/[^\w\s]/g, '').trim().toLowerCase())
+    );
+    if (headers.length === 0)
+      $(table).find('tr').first().find('th, td').each((_, th) =>
+        headers.push($(th).text().replace(/[^\w\s]/g, '').trim().toLowerCase())
+      );
+
+    const titleIdx    = headers.findIndex(h => h.includes('title') || h.includes('movie') || h.includes('name'));
+    const typeIdx     = headers.findIndex(h => h.includes('type'));
+    const platformIdx = headers.findIndex(h => h.includes('ott') || h.includes('platform') || h.includes('streaming'));
+    const dateIdx     = headers.findIndex(h => h.includes('date') || h.includes('release'));
+
+    if (titleIdx === -1) return;
+
+    $(table).find('tr').each((rowIdx, row) => {
+      if (rowIdx === 0 && headers.length > 0) return;
+      const cells = $(row).find('td');
+      if (cells.length === 0) return;
+
+      const title       = $(cells[titleIdx]).text().replace(/\s+/g, ' ').trim();
+      const typeRaw     = typeIdx >= 0 ? $(cells[typeIdx]).text().toLowerCase() : '';
+      const platform    = platformIdx >= 0 ? $(cells[platformIdx]).text().replace(/\s+/g, ' ').trim() : '';
+      const releaseDate = dateIdx >= 0     ? $(cells[dateIdx]).text().replace(/\[.*?\]/g, '').trim()  : '';
+
+      if (!title || title.length < 2) return;
+      if (!platform) return;
+
+      // Only keep web series rows
+      const isSeries = typeRaw.includes('series') || typeRaw.includes('web') || typeRaw.includes('show');
+      if (!isSeries) return;
+
       items.push({ title, platform, releaseDate });
     });
   });
@@ -295,9 +338,17 @@ async function scrapePage(urlKey, type) {
   const url      = URLS[urlKey];
   const langCode = LANG_CODE[urlKey];
 
-  const html     = await fetchCinebuds(url);
-  const raw      = parseCinebudsTable(html);
-  const released = raw.filter(i => isAlreadyReleased(i.releaseDate));
+  console.log('[scraper] Fetching ' + url);
+  const html = await fetchRaw(url, 45000);
+  console.log('[scraper] Downloaded ' + html.length + ' bytes');
+
+  const rawItems = (type === 'series')
+    ? parseKeralaTVTable(html)
+    : parseCinebudsTable(html);
+
+  console.log('[scraper] Parsed ' + rawItems.length + ' rows');
+
+  const released = rawItems.filter(i => isAlreadyReleased(i.releaseDate));
   const unique   = deduplicate(released);
 
   unique.sort((a, b) => {
