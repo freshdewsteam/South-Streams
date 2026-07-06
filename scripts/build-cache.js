@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { scrapeMalayalam, scrapeTamil } = require('../scraper');
+const { scrapeMalayalam, scrapeTamil } = require('../scraper.js');  // ← Added .js
 
 async function buildCache() {
   console.log('=== Building OTT cache on GitHub Actions ===');
