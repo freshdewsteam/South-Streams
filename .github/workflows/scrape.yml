@@ -11,6 +11,7 @@ on:
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
 
@@ -21,10 +22,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci  # 'npm ci' is faster and more reliable than 'npm install'
 
       - name: Run scraper and save cache
         env:
@@ -37,5 +39,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/cache.json
-          git diff --staged --quiet || git commit -m "chore: update OTT cache $(date -u '+%Y-%m-%d %H:%M UTC')"
-          git push
+          if git diff --staged --quiet; then
+            echo "📭 No changes to cache"
+          else
+            git commit -m "chore: update OTT cache $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push
+            echo "✅ Cache updated and pushed"
+          fi
