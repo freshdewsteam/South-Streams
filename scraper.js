@@ -707,5 +707,191 @@ async function scrapeTamil(type) {
     return [];
   }
 }
+// ── PARSE FUNCTIONS ──────────────────────────────────────────────────────────
+function parseCinebudsTable(html) {
+  let items = parseCinebudsPrimary(html);
+  
+  if (items.length === 0) {
+    console.warn('[Parse] Primary parser failed, trying alternative');
+    items = parseCinebudsAlternative(html);
+  }
+  
+  return items;
+}
 
+function parseCinebudsPrimary(html) {
+  const $ = cheerio.load(html);
+  const items = [];
+
+  $('table').each((_, table) => {
+    const headers = [];
+    $(table).find('thead th, thead td').each((_, th) =>
+      headers.push($(th).text().trim().toLowerCase())
+    );
+    if (headers.length === 0) {
+      $(table).find('tr').first().find('th, td').each((_, th) =>
+        headers.push($(th).text().trim().toLowerCase())
+      );
+    }
+
+    const titleIdx = headers.findIndex(h => 
+      h.includes('movie') || h.includes('title') || h.includes('name')
+    );
+    const platformIdx = headers.findIndex(h => 
+      h.includes('platform') || h.includes('ott') || h.includes('streaming')
+    );
+    const dateIdx = headers.findIndex(h => 
+      h.includes('date') || h.includes('release')
+    );
+
+    if (titleIdx === -1) return;
+
+    $(table).find('tr').each((rowIdx, row) => {
+      if (rowIdx === 0 && headers.length > 0) return;
+      const cells = $(row).find('td');
+      if (cells.length === 0) return;
+
+      const title = $(cells[titleIdx]).text().trim();
+      const platform = platformIdx >= 0 ? $(cells[platformIdx]).text().trim() : '';
+      const releaseDate = dateIdx >= 0 ? $(cells[dateIdx]).text().trim() : '';
+
+      if (!title || title.length < 2) return;
+      if (!platform) return;
+      
+      items.push({ title, platform, releaseDate });
+    });
+  });
+
+  return items;
+}
+
+function parseCinebudsAlternative(html) {
+  const $ = cheerio.load(html);
+  const items = [];
+
+  $('.movie-item, .entry, .post, article').each((_, elem) => {
+    const title = $(elem).find('.title, h2, h3').first().text().trim();
+    const platform = $(elem).find('.platform, .ott, .service').first().text().trim();
+    const releaseDate = $(elem).find('.date, .release').first().text().trim();
+    
+    if (title && title.length >= 2) {
+      items.push({ title, platform: platform || 'Unknown', releaseDate });
+    }
+  });
+
+  return items;
+}
+
+function parseKeralaTVTable(html, wantType) {
+  let items = parseKeralaTVPrimary(html, wantType);
+  
+  if (items.length === 0) {
+    console.warn('[Parse] Primary parser failed, trying alternative');
+    items = parseKeralaTVAlternative(html, wantType);
+  }
+  
+  return items;
+}
+
+function parseKeralaTVPrimary(html, wantType) {
+  const $ = cheerio.load(html);
+  const items = [];
+
+  $('table').each((_, table) => {
+    const headers = [];
+    $(table).find('thead th, thead td').each((_, th) =>
+      headers.push($(th).text().replace(/[^\w\s]/g, '').trim().toLowerCase())
+    );
+    if (headers.length === 0) {
+      $(table).find('tr').first().find('th, td').each((_, th) =>
+        headers.push($(th).text().replace(/[^\w\s]/g, '').trim().toLowerCase())
+      );
+    }
+
+    const titleIdx = headers.findIndex(h => 
+      h.includes('title') || h.includes('movie') || h.includes('name')
+    );
+    const typeIdx = headers.findIndex(h => h.includes('type'));
+    const platformIdx = headers.findIndex(h => 
+      h.includes('ott') || h.includes('platform') || h.includes('streaming')
+    );
+    const dateIdx = headers.findIndex(h => 
+      h.includes('date') || h.includes('release')
+    );
+
+    if (titleIdx === -1) return;
+
+    $(table).find('tr').each((rowIdx, row) => {
+      if (rowIdx === 0 && headers.length > 0) return;
+      const cells = $(row).find('td');
+      if (cells.length === 0) return;
+
+      const title = $(cells[titleIdx]).text().trim();
+      const typeRaw = typeIdx >= 0 ? $(cells[typeIdx]).text().toLowerCase() : '';
+      const platform = platformIdx >= 0 ? $(cells[platformIdx]).text().trim() : '';
+      const releaseDate = dateIdx >= 0 ? $(cells[dateIdx]).text().trim() : '';
+
+      if (!title || title.length < 2) return;
+      if (!platform || /^tba$/i.test(platform)) return;
+
+      const isSeries = typeRaw.includes('series') || typeRaw.includes('web') || typeRaw.includes('show');
+
+      if (typeIdx === -1) {
+        if (wantType === 'series') return;
+        items.push({ title, platform, releaseDate });
+        return;
+      }
+
+      if (wantType === 'series' && !isSeries) return;
+      if (wantType === 'movie' && isSeries) return;
+
+      items.push({ title, platform, releaseDate });
+    });
+  });
+
+  return items;
+}
+
+function parseKeralaTVAlternative(html, wantType) {
+  const $ = cheerio.load(html);
+  const items = [];
+
+  $('.movie-list, .show-list, .entry').each((_, elem) => {
+    const title = $(elem).find('.title, .name').first().text().trim();
+    const platform = $(elem).find('.ott, .platform').first().text().trim();
+    const releaseDate = $(elem).find('.date').first().text().trim();
+    const typeText = $(elem).text().toLowerCase();
+    
+    if (title && title.length >= 2) {
+      const isSeries = typeText.includes('series') || typeText.includes('web series');
+      
+      if (wantType === 'series' && !isSeries) return;
+      if (wantType === 'movie' && isSeries) return;
+      
+      items.push({ title, platform: platform || 'Unknown', releaseDate });
+    }
+  });
+
+  return items;
+}
+
+// ── DEDUPLICATE ──────────────────────────────────────────────────────────────
+function deduplicate(items) {
+  const seen = new Map();
+  const result = [];
+  
+  for (const item of items) {
+    const key = item.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (seen.has(key)) {
+      const ex = result[seen.get(key)];
+      if (!ex.platform.includes(item.platform)) {
+        ex.platform += ', ' + item.platform;
+      }
+    } else {
+      seen.set(key, result.length);
+      result.push({ ...item });
+    }
+  }
+  return result;
+      }
 module.exports = { scrapeMalayalam, scrapeTamil };
