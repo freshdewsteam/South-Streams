@@ -1,16 +1,16 @@
 {
-  "name": "mollywood-stremio-addon",
-  "version": "2.0.0",
-  "description": "Stremio addon for Malayalam & Tamil OTT releases - One click streaming with Torrentio",
+  "name": "mollywood-addon",
+  "version": "1.0.0",
+  "description": "Stremio addon for Malayalam and Tamil content",
   "main": "index.js",
   "scripts": {
+    "build": "node scripts/build-cache.js",
     "start": "node index.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12"
   },
   "engines": {
     "node": ">=18.0.0"
-  },
-  "dependencies": {
-    "stremio-addon-sdk": "^1.6.10",
-    "cheerio": "^1.0.0"
   }
 }
