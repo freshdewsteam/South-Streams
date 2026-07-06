@@ -1,12 +1,13 @@
 /**
  * scraper.js
  *
- * Movies  → cinebuds.com (Malayalam & Tamil)
- * Series  → keralatv.in monthly guide (Malayalam & Tamil)
+ * Movies  → cinebuds.com + keralatv.in monthly guide (movie rows)
+ * Series  → keralatv.in monthly guide (series rows only)
+ *
+ * For new titles not yet in TMDB/OMDb, uses TMDB /find endpoint
+ * to look up by IMDb ID directly (catches brand-new releases).
  *
  * Runs on GitHub Actions — GitHub IPs not blocked by either source.
- * Resolves real IMDb IDs via TMDB + OMDb fallback.
- * Excludes anything without a real IMDb ID.
  */
 
 const https   = require('https');
@@ -17,24 +18,19 @@ const cheerio = require('cheerio');
 const TMDB_KEY = process.env.TMDB_API_KEY || '';
 const OMDB_KEY = process.env.OMDB_API_KEY || '';
 
-// ── DYNAMIC KERALATV URL (auto-switches each month) ───────────────────────────
+// ── DYNAMIC KERALATV URL ──────────────────────────────────────────────────────
 function getKeralaTVUrl() {
   const months = [
     'january','february','march','april','may','june',
     'july','august','september','october','november','december'
   ];
   const now   = new Date();
-  const month = months[now.getMonth()];
-  const year  = now.getFullYear();
-  return 'https://www.keralatv.in/' + month + '-' + year + '-ott-release-guide/';
+  return 'https://www.keralatv.in/' + months[now.getMonth()] + '-' + now.getFullYear() + '-ott-release-guide/';
 }
 
-const URLS = {
-  'mal-movie':  'https://cinebuds.com/malayalam-movies-ott-release-dates/',
-  'mal-series': getKeralaTVUrl(),
-  'tam-movie':  'https://cinebuds.com/tamil-movies-digital-release-dates/',
-  'tam-series': getKeralaTVUrl(),
-};
+const CINEBUDS_MAL = 'https://cinebuds.com/malayalam-movies-ott-release-dates/';
+const CINEBUDS_TAM = 'https://cinebuds.com/tamil-movies-digital-release-dates/';
+const KERALATV_URL = getKeralaTVUrl();
 
 const LANG_CODE = {
   'mal-movie': 'ml', 'mal-series': 'ml',
@@ -86,7 +82,7 @@ function fetchJson(url) {
 // ── DATE LOGIC ────────────────────────────────────────────────────────────────
 function parseDate(str) {
   if (!str) return null;
-  if (/soon|tba|tbd|announced|upcoming|expected|expect|confirm|tentative|coming soon/i.test(str)) return null;
+  if (/soon|tba|tbd|announced|upcoming|expected|expect|confirm|tentative|coming soon|awaiting/i.test(str)) return null;
   const d = new Date(str.replace(/\s*\(.*?\)/g, '').trim());
   return isNaN(d.getTime()) ? null : d;
 }
@@ -114,7 +110,7 @@ function getTitleVariants(raw) {
   return Array.from(variants).filter(v => v.length >= 2);
 }
 
-// ── TMDB SEARCH ───────────────────────────────────────────────────────────────
+// ── TMDB SEARCH BY TITLE ──────────────────────────────────────────────────────
 async function searchTMDB(title, type, langCode) {
   if (!TMDB_KEY) return null;
   const endpoint = type === 'series' ? 'tv' : 'movie';
@@ -156,21 +152,52 @@ async function searchTMDB(title, type, langCode) {
       );
 
       if (!detail.imdb_id) continue;
-
-      return {
-        imdbId:   detail.imdb_id,
-        poster:   detail.poster_path   ? 'https://image.tmdb.org/t/p/w500'  + detail.poster_path   : null,
-        backdrop: detail.backdrop_path ? 'https://image.tmdb.org/t/p/w1280' + detail.backdrop_path : null,
-        overview: detail.overview      || null,
-        rating:   detail.vote_average  ? detail.vote_average.toFixed(1) : null,
-        year:     (detail.release_date || detail.first_air_date || '').slice(0, 4) || null,
-        genres:   (detail.genres || []).map(g => g.name),
-      };
+      return buildTMDBResult(detail);
     } catch (e) {
       console.warn('[TMDB] Error for "' + variant + '": ' + e.message);
     }
   }
   return null;
+}
+
+// ── TMDB LOOKUP BY IMDB ID (catches brand-new titles) ────────────────────────
+async function findTMDBByImdbId(imdbId, type) {
+  if (!TMDB_KEY || !imdbId) return null;
+  try {
+    const data = await fetchJson(
+      'https://api.themoviedb.org/3/find/' + imdbId
+      + '?api_key=' + TMDB_KEY
+      + '&external_source=imdb_id'
+    );
+    const results = type === 'series'
+      ? (data.tv_results || [])
+      : (data.movie_results || []);
+
+    if (results.length === 0) return null;
+
+    const endpoint = type === 'series' ? 'tv' : 'movie';
+    const detail = await fetchJson(
+      'https://api.themoviedb.org/3/' + endpoint + '/' + results[0].id
+      + '?api_key=' + TMDB_KEY
+    );
+
+    return buildTMDBResult(detail, imdbId);
+  } catch (e) {
+    console.warn('[TMDB/find] Error for ' + imdbId + ': ' + e.message);
+    return null;
+  }
+}
+
+function buildTMDBResult(detail, fallbackImdbId) {
+  return {
+    imdbId:   detail.imdb_id || fallbackImdbId || null,
+    poster:   detail.poster_path   ? 'https://image.tmdb.org/t/p/w500'  + detail.poster_path   : null,
+    backdrop: detail.backdrop_path ? 'https://image.tmdb.org/t/p/w1280' + detail.backdrop_path : null,
+    overview: detail.overview      || null,
+    rating:   detail.vote_average  ? detail.vote_average.toFixed(1) : null,
+    year:     (detail.release_date || detail.first_air_date || '').slice(0, 4) || null,
+    genres:   (detail.genres || []).map(g => g.name),
+  };
 }
 
 // ── OMDB FALLBACK ─────────────────────────────────────────────────────────────
@@ -218,9 +245,21 @@ async function resolveImdbId(title, type, langCode) {
   if (resolveCache.has(key)) return resolveCache.get(key);
 
   let result = await searchTMDB(title, type, langCode);
+
   if (!result && OMDB_KEY) {
-    console.log('[OMDb] Trying fallback for "' + title + '"...');
+    console.log('[OMDb] Trying title fallback for "' + title + '"...');
     result = await searchOMDb(title, type, langCode);
+  }
+
+  // If OMDb found an IMDb ID but no poster, try TMDB /find for poster
+  if (result && result.imdbId && !result.poster && TMDB_KEY) {
+    console.log('[TMDB/find] Looking up poster for ' + result.imdbId + '...');
+    const tmdbResult = await findTMDBByImdbId(result.imdbId, type);
+    if (tmdbResult && tmdbResult.poster) {
+      result.poster   = tmdbResult.poster;
+      result.backdrop = tmdbResult.backdrop;
+      result.overview = result.overview || tmdbResult.overview;
+    }
   }
 
   if (result) console.log('[resolve] ' + title + ' -> ' + result.imdbId);
@@ -230,7 +269,7 @@ async function resolveImdbId(title, type, langCode) {
   return result;
 }
 
-// ── PARSE CINEBUDS TABLE (movies) ────────────────────────────────────────────
+// ── PARSE CINEBUDS TABLE ──────────────────────────────────────────────────────
 function parseCinebudsTable(html) {
   const $ = cheerio.load(html);
   const items = [];
@@ -269,8 +308,8 @@ function parseCinebudsTable(html) {
   return items;
 }
 
-// ── PARSE KERALATV TABLE (series) ────────────────────────────────────────────
-function parseKeralaTVTable(html) {
+// ── PARSE KERALATV TABLE ──────────────────────────────────────────────────────
+function parseKeralaTVTable(html, wantType) {
   const $ = cheerio.load(html);
   const items = [];
 
@@ -297,15 +336,23 @@ function parseKeralaTVTable(html) {
       if (cells.length === 0) return;
 
       const title       = $(cells[titleIdx]).text().replace(/\s+/g, ' ').trim();
-      const typeRaw     = typeIdx >= 0 ? $(cells[typeIdx]).text().toLowerCase() : '';
+      const typeRaw     = typeIdx     >= 0 ? $(cells[typeIdx]).text().toLowerCase()                    : '';
       const platform    = platformIdx >= 0 ? $(cells[platformIdx]).text().replace(/\s+/g, ' ').trim() : '';
-      const releaseDate = dateIdx >= 0     ? $(cells[dateIdx]).text().replace(/\[.*?\]/g, '').trim()  : '';
+      const releaseDate = dateIdx     >= 0 ? $(cells[dateIdx]).text().replace(/\[.*?\]/g, '').trim()  : '';
 
       if (!title || title.length < 2) return;
-      if (!platform) return;
+      if (!platform || /^tba$/i.test(platform.trim())) return;
 
       const isSeries = typeRaw.includes('series') || typeRaw.includes('web') || typeRaw.includes('show');
-      if (!isSeries) return;
+
+      if (typeIdx === -1) {
+        if (wantType === 'series') return;
+        items.push({ title, platform, releaseDate });
+        return;
+      }
+
+      if (wantType === 'series' && !isSeries) return;
+      if (wantType === 'movie'  && isSeries)  return;
 
       items.push({ title, platform, releaseDate });
     });
@@ -330,35 +377,11 @@ function deduplicate(items) {
   return result;
 }
 
-// ── MAIN SCRAPE ───────────────────────────────────────────────────────────────
-async function scrapePage(urlKey, type) {
-  const url      = URLS[urlKey];
-  const langCode = LANG_CODE[urlKey];
-
-  console.log('[scraper] Fetching ' + url);
-  const html = await fetchRaw(url, 45000);
-  console.log('[scraper] Downloaded ' + html.length + ' bytes');
-
-  const rawItems = (type === 'series')
-    ? parseKeralaTVTable(html)
-    : parseCinebudsTable(html);
-
-  console.log('[scraper] Parsed ' + rawItems.length + ' rows');
-
-  const released = rawItems.filter(i => isAlreadyReleased(i.releaseDate));
-  const unique   = deduplicate(released);
-
-  unique.sort((a, b) => {
-    const da = parseDate(a.releaseDate), db = parseDate(b.releaseDate);
-    if (da && db) return db - da;
-    return 0;
-  });
-
-  console.log('[scraper] ' + unique.length + ' unique released items — resolving IMDb IDs...');
-
+// ── BUILD METAS ───────────────────────────────────────────────────────────────
+async function buildMetas(items, type, langCode) {
   const metas = [];
 
-  for (const item of unique) {
+  for (const item of items) {
     const imdb = await resolveImdbId(item.title, type, langCode);
     if (!imdb || !imdb.imdbId) continue;
 
@@ -391,13 +414,78 @@ async function scrapePage(urlKey, type) {
 
 // ── PUBLIC API ────────────────────────────────────────────────────────────────
 async function scrapeMalayalam(type) {
-  try { return await scrapePage(type === 'movie' ? 'mal-movie' : 'mal-series', type); }
-  catch (e) { console.warn('[scraper] Malayalam ' + type + ': ' + e.message); return []; }
+  try {
+    if (type === 'movie') {
+      console.log('[scraper] Malayalam movies: fetching cinebuds...');
+      const html1  = await fetchRaw(CINEBUDS_MAL, 45000);
+      const items1 = parseCinebudsTable(html1);
+
+      console.log('[scraper] Malayalam movies: fetching keralatv (' + KERALATV_URL + ')...');
+      const html2  = await fetchRaw(KERALATV_URL, 45000);
+      const items2 = parseKeralaTVTable(html2, 'movie');
+
+      const combined = deduplicate(
+        [...items1, ...items2].filter(i => isAlreadyReleased(i.releaseDate))
+      );
+      combined.sort((a, b) => {
+        const da = parseDate(a.releaseDate), db = parseDate(b.releaseDate);
+        if (da && db) return db - da;
+        return 0;
+      });
+      console.log('[scraper] Malayalam movies combined: ' + combined.length + ' released items (keeping top 50)');
+      return await buildMetas(combined.slice(0, 50), 'movie', 'ml');
+
+    } else {
+      console.log('[scraper] Malayalam series: fetching keralatv (' + KERALATV_URL + ')...');
+      const html    = await fetchRaw(KERALATV_URL, 45000);
+      const items   = parseKeralaTVTable(html, 'series');
+      const released = deduplicate(items.filter(i => isAlreadyReleased(i.releaseDate)));
+      released.sort((a, b) => {
+        const da = parseDate(a.releaseDate), db = parseDate(b.releaseDate);
+        if (da && db) return db - da;
+        return 0;
+      });
+      console.log('[scraper] Malayalam series: ' + released.length + ' released items (keeping top 50)');
+      return await buildMetas(released.slice(0, 50), 'series', 'ml');
+    }
+  } catch (e) {
+    console.warn('[scraper] Malayalam ' + type + ': ' + e.message);
+    return [];
+  }
 }
 
 async function scrapeTamil(type) {
-  try { return await scrapePage(type === 'movie' ? 'tam-movie' : 'tam-series', type); }
-  catch (e) { console.warn('[scraper] Tamil ' + type + ': ' + e.message); return []; }
+  try {
+    if (type === 'movie') {
+      console.log('[scraper] Tamil movies: fetching cinebuds...');
+      const html    = await fetchRaw(CINEBUDS_TAM, 45000);
+      const items   = parseCinebudsTable(html);
+      const released = deduplicate(items.filter(i => isAlreadyReleased(i.releaseDate)));
+      released.sort((a, b) => {
+        const da = parseDate(a.releaseDate), db = parseDate(b.releaseDate);
+        if (da && db) return db - da;
+        return 0;
+      });
+      console.log('[scraper] Tamil movies: ' + released.length + ' released items (keeping top 50)');
+      return await buildMetas(released.slice(0, 50), 'movie', 'ta');
+
+    } else {
+      console.log('[scraper] Tamil series: fetching keralatv (' + KERALATV_URL + ')...');
+      const html    = await fetchRaw(KERALATV_URL, 45000);
+      const items   = parseKeralaTVTable(html, 'series');
+      const released = deduplicate(items.filter(i => isAlreadyReleased(i.releaseDate)));
+      released.sort((a, b) => {
+        const da = parseDate(a.releaseDate), db = parseDate(b.releaseDate);
+        if (da && db) return db - da;
+        return 0;
+      });
+      console.log('[scraper] Tamil series: ' + released.length + ' candidate items (keeping top 50)');
+      return await buildMetas(released.slice(0, 50), 'series', 'ta');
+    }
+  } catch (e) {
+    console.warn('[scraper] Tamil ' + type + ': ' + e.message);
+    return [];
+  }
 }
 
 module.exports = { scrapeMalayalam, scrapeTamil };
