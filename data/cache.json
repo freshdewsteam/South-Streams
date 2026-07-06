@@ -14,14 +14,15 @@
       ]
     },
     {
-      "id": "tt21151596",
+      "id": "tt38721131",
       "type": "movie",
-      "name": "CUP",
-      "releaseInfo": "2024",
-      "description": "CUP - Love All Play follows the journey of Nidhin Babu, a teenager from Vellaramkunnu, Idukki, who dreams of becoming a badminton champion.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 25 Jun 2026\n⭐ Rating: 2.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/hYV50JZ0PtQZWInMxCn3Rm5D4UA.jpg",
+      "name": "Athiradi",
+      "releaseInfo": "2026",
+      "description": "Energetic student Samkutty revives a banned college festival, igniting a fierce rivalry that transforms celebration into chaos.\n\n📺 Streaming on: SonyLIV\n📅 OTT Release: 19 Jun 2026\n⭐ Rating: 6.6/10",
+      "poster": "https://image.tmdb.org/t/p/w500/vbYoC9wmfo2w7EDVXYrnX4PRBWr.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/uZr793pQJJZJBjUJYrY9EC32jUL.jpg",
       "genres": [
-        "Family",
+        "Comedy",
         "Drama"
       ]
     },
@@ -52,15 +53,28 @@
       ]
     },
     {
-      "id": "tt38721131",
+      "id": "tt14113634",
       "type": "movie",
-      "name": "Athiradi",
+      "name": "Drishyam 3",
       "releaseInfo": "2026",
-      "description": "Energetic student Samkutty revives a banned college festival, igniting a fierce rivalry that transforms celebration into chaos.\n\n📺 Streaming on: SonyLIV\n📅 OTT Release: 19 Jun 2026\n⭐ Rating: 6.6/10",
-      "poster": "https://image.tmdb.org/t/p/w500/vbYoC9wmfo2w7EDVXYrnX4PRBWr.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/uZr793pQJJZJBjUJYrY9EC32jUL.jpg",
+      "description": "To protect his family and their dark secret, Georgekutty faces an organized new threat. As walls close in and cracks widen, how much more is he willing to sacrifice ?\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 18 Jun 2026\n⭐ Rating: 7.3/10",
+      "poster": "https://image.tmdb.org/t/p/w500/456FlpiU1iOBnaOxSd783QhZKWw.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/gfRm3ITRJuFm8n6gRJ0L2VLrL5w.jpg",
       "genres": [
-        "Comedy",
+        "Crime",
+        "Drama",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt21151596",
+      "type": "movie",
+      "name": "CUP",
+      "releaseInfo": "2024",
+      "description": "CUP - Love All Play follows the journey of Nidhin Babu, a teenager from Vellaramkunnu, Idukki, who dreams of becoming a badminton champion.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 25 Jun 2026\n⭐ Rating: 2.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/hYV50JZ0PtQZWInMxCn3Rm5D4UA.jpg",
+      "genres": [
+        "Family",
         "Drama"
       ]
     },
@@ -74,20 +88,6 @@
       "genres": [
         "Drama",
         "Comedy"
-      ]
-    },
-    {
-      "id": "tt14113634",
-      "type": "movie",
-      "name": "Drishyam 3",
-      "releaseInfo": "2026",
-      "description": "To protect his family and their dark secret, Georgekutty faces an organized new threat. As walls close in and cracks widen, how much more is he willing to sacrifice ?\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 18 Jun 2026\n⭐ Rating: 7.3/10",
-      "poster": "https://image.tmdb.org/t/p/w500/456FlpiU1iOBnaOxSd783QhZKWw.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/gfRm3ITRJuFm8n6gRJ0L2VLrL5w.jpg",
-      "genres": [
-        "Crime",
-        "Drama",
-        "Thriller"
       ]
     },
     {
@@ -114,33 +114,6 @@
       "genres": [
         "Drama",
         "Horror"
-      ]
-    },
-    {
-      "id": "tt10885444",
-      "type": "movie",
-      "name": "Peeli",
-      "releaseInfo": "2020",
-      "description": "Follows a taxi driver who picks up a girl while he is on the run and ends up in a crazy roller-coaster of events.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 12 Jun 2026\n⭐ Rating: 2.5/10",
-      "poster": "https://m.media-amazon.com/images/M/MV5BZDZkOTkwMzgtZjIwMi00ZGZkLTlmMGMtOTgyMmQyYTE5NmNjXkEyXkFqcGc@._V1_SX300.jpg",
-      "genres": [
-        "Action",
-        "Comedy",
-        "Romance"
-      ]
-    },
-    {
-      "id": "tt33412884",
-      "type": "movie",
-      "name": "Patriot",
-      "releaseInfo": "2026",
-      "description": "When a Malayali DRW analyst tries to expose a corrupt regional politician from Kerala and his malpractices regarding spyware, he goes on the run, becomes a vlogger, and must clear his name of the false allegations levelled against him.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 05 Jun 2026\n⭐ Rating: 7.1/10",
-      "poster": "https://image.tmdb.org/t/p/w500/4cK4Js7yg8wL2YeZh7DWuoz1bgZ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/sUQQLJPQQSD2jEO2EgvchbQ0Yvy.jpg",
-      "genres": [
-        "Action",
-        "Drama",
-        "Thriller"
       ]
     },
     {
@@ -171,6 +144,33 @@
       ]
     },
     {
+      "id": "tt33412884",
+      "type": "movie",
+      "name": "Patriot",
+      "releaseInfo": "2026",
+      "description": "When a Malayali DRW analyst tries to expose a corrupt regional politician from Kerala and his malpractices regarding spyware, he goes on the run, becomes a vlogger, and must clear his name of the false allegations levelled against him.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 05 Jun 2026\n⭐ Rating: 7.1/10",
+      "poster": "https://image.tmdb.org/t/p/w500/4cK4Js7yg8wL2YeZh7DWuoz1bgZ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/sUQQLJPQQSD2jEO2EgvchbQ0Yvy.jpg",
+      "genres": [
+        "Action",
+        "Drama",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt10885444",
+      "type": "movie",
+      "name": "Peeli",
+      "releaseInfo": "2020",
+      "description": "Follows a taxi driver who picks up a girl while he is on the run and ends up in a crazy roller-coaster of events.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 12 Jun 2026\n⭐ Rating: 2.5/10",
+      "poster": "https://m.media-amazon.com/images/M/MV5BZDZkOTkwMzgtZjIwMi00ZGZkLTlmMGMtOTgyMmQyYTE5NmNjXkEyXkFqcGc@._V1_SX300.jpg",
+      "genres": [
+        "Action",
+        "Comedy",
+        "Romance"
+      ]
+    },
+    {
       "id": "tt34172063",
       "type": "movie",
       "name": "Faces",
@@ -184,14 +184,55 @@
       ]
     },
     {
-      "id": "tt38772072",
+      "id": "tt39028247",
       "type": "movie",
-      "name": "Amoz Alexander",
-      "releaseInfo": "2025",
-      "description": "True-crime hosts John and Mary meet brutal offender Amos Alexander at his isolated house, where he promises more confessions. The routine shoot spirals into a chilling face-off that unravels dark truths, forcing Mary to question justice and truth.\n\n📺 Streaming on: Manorama Max, Sun NXT\n📅 OTT Release: 22 May 2026\n⭐ Rating: 2.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/8YbxFiaad48dPqYdrpjj1RXyuZ1.jpg",
+      "name": "SPA",
+      "releaseInfo": "2026",
+      "description": "The narrative follows the intertwined lives of people connected to La Paradise, an urban massage therapy centre. It centres on Mathan, a man struggling to distinguish between the reality of love and its fictionalised ideals. Through a sharp lens of social satire, the story explores adult themes and human behaviour within this unique urban setting.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 28 May 2026\n⭐ Rating: 5.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/sZez7I5ctXVlOP73Js0G4cNgw16.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/AagsTe5J5Q2k55WOkQ44XVP5Y7x.jpg",
       "genres": [
-        "Crime",
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt38781091",
+      "type": "movie",
+      "name": "Madhuvidhu",
+      "releaseInfo": "2026",
+      "description": "When Amrutharaj, a groom from an all-male household repeatedly rejected by brides' families, falls in love with Sneha Marcose, their journey toward marriage ignites a chain of hilarious chaos inside his unruly home.\n\n📺 Streaming on: SonyLIV\n📅 OTT Release: 22 May 2026\n⭐ Rating: 6.3/10",
+      "poster": "https://image.tmdb.org/t/p/w500/jVSnpXklfxi3FchGqweRMvrC8Gd.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/139NrqPcyhJpax9gAGIhtJCFfX9.jpg",
+      "genres": [
+        "Family",
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt27881574",
+      "type": "movie",
+      "name": "Sureshanteyum Sumalathayudeyum Hrudayahariyaya Pranayakadha",
+      "releaseInfo": "2024",
+      "description": "Across three different time periods, a man stages a play to win the heart of his infatuation, Sumalatha, only to face disapproval from her father.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 26 May 2026\n⭐ Rating: 5.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/bBpIvcapUYso04tcCbonZOn8dnz.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/lUHzDPTGQ0H1rLgHZjGwbW0BShl.jpg",
+      "genres": [
+        "Comedy",
+        "Fantasy"
+      ]
+    },
+    {
+      "id": "tt37970069",
+      "type": "movie",
+      "name": "Bhishmar",
+      "releaseInfo": "2026",
+      "description": "Two men meet by chance, setting off a night of chaos with romance and action, as their paths cross and intertwine through various unexpected events.\n\n📺 Streaming on: Sun NXT\n📅 OTT Release: 22 May 2026\n⭐ Rating: 1.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/wkiu7ez8oL1Yme4k5cBxFz0zN4U.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/pkbJDrFuICmwSmksldZnYAjPk5M.jpg",
+      "genres": [
+        "Comedy",
         "Thriller"
       ]
     },
@@ -203,19 +244,6 @@
       "description": "A man makes a startling discovery following his father's sudden hospitalization and attempts to prevent his family's secret from reaching the local townsfolk.\n\n📺 Streaming on: Netflix, Manorama Max\n📅 OTT Release: 22 May 2026\n⭐ Rating: 7.6/10",
       "poster": "https://image.tmdb.org/t/p/w500/btudnkSd6VsQQZ4r6ldp7jRhTwf.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/2nKAQpPZsjhYwT1qOYarpggOVXx.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt39028247",
-      "type": "movie",
-      "name": "SPA",
-      "releaseInfo": "2026",
-      "description": "The narrative follows the intertwined lives of people connected to La Paradise, an urban massage therapy centre. It centres on Mathan, a man struggling to distinguish between the reality of love and its fictionalised ideals. Through a sharp lens of social satire, the story explores adult themes and human behaviour within this unique urban setting.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 28 May 2026\n⭐ Rating: 5.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/sZez7I5ctXVlOP73Js0G4cNgw16.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/AagsTe5J5Q2k55WOkQ44XVP5Y7x.jpg",
       "genres": [
         "Comedy",
         "Drama"
@@ -234,20 +262,6 @@
       ]
     },
     {
-      "id": "tt40430802",
-      "type": "movie",
-      "name": "Derby",
-      "releaseInfo": "2026",
-      "description": "A campus entertainer who follows a group of college students navigating friendship, rivalry, love, and ambition. What begins as carefree fun soon turns into intense competition as campus pride and personal egos come into play.\n\n📺 Streaming on: Prime Video & Manorama Max\n📅 OTT Release: 15 May 2026\n⭐ Rating: 1.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/zaTTuhOJMTzlSRx7kvzVZevc2wQ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/2r4KjntMBwCPITn2R7AvPsxv4wC.jpg",
-      "genres": [
-        "Action",
-        "Comedy",
-        "Romance"
-      ]
-    },
-    {
       "id": "tt34442799",
       "type": "movie",
       "name": "Oru Durooha Saahacharyathil",
@@ -261,69 +275,15 @@
       ]
     },
     {
-      "id": "tt27881574",
+      "id": "tt38772072",
       "type": "movie",
-      "name": "Sureshanteyum Sumalathayudeyum Hrudayahariyaya Pranayakadha",
-      "releaseInfo": "2024",
-      "description": "Across three different time periods, a man stages a play to win the heart of his infatuation, Sumalatha, only to face disapproval from her father.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 26 May 2026\n⭐ Rating: 5.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/bBpIvcapUYso04tcCbonZOn8dnz.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/lUHzDPTGQ0H1rLgHZjGwbW0BShl.jpg",
+      "name": "Amoz Alexander",
+      "releaseInfo": "2025",
+      "description": "True-crime hosts John and Mary meet brutal offender Amos Alexander at his isolated house, where he promises more confessions. The routine shoot spirals into a chilling face-off that unravels dark truths, forcing Mary to question justice and truth.\n\n📺 Streaming on: Manorama Max, Sun NXT\n📅 OTT Release: 22 May 2026\n⭐ Rating: 2.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/8YbxFiaad48dPqYdrpjj1RXyuZ1.jpg",
       "genres": [
-        "Comedy",
-        "Fantasy"
-      ]
-    },
-    {
-      "id": "tt37541677",
-      "type": "movie",
-      "name": "Bharathanatyam 2 Mohiniyattam",
-      "releaseInfo": "2026",
-      "description": "The family's journey to Sreekandapuram to settle the late Bharathan Nair's second wife and son takes a dark turn when an issue from his past resurfaces, leading to an unexpected crime. Forced into a desperate cover-up to protect their future, the family must navigate a treacherous path of secrecy and mounting pressure, determined to overcome any obstacle by any means necessary.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 08 May 2026\n⭐ Rating: 8.2/10",
-      "poster": "https://image.tmdb.org/t/p/w500/lsg0IxNQCUxKqs63YjturEuY0qQ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/g7y8EDiXvlZYrIKDLlhtbcAPnxS.jpg",
-      "genres": [
-        "Comedy",
+        "Crime",
         "Thriller"
-      ]
-    },
-    {
-      "id": "tt38781091",
-      "type": "movie",
-      "name": "Madhuvidhu",
-      "releaseInfo": "2026",
-      "description": "When Amrutharaj, a groom from an all-male household repeatedly rejected by brides' families, falls in love with Sneha Marcose, their journey toward marriage ignites a chain of hilarious chaos inside his unruly home.\n\n📺 Streaming on: SonyLIV\n📅 OTT Release: 22 May 2026\n⭐ Rating: 6.3/10",
-      "poster": "https://image.tmdb.org/t/p/w500/jVSnpXklfxi3FchGqweRMvrC8Gd.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/139NrqPcyhJpax9gAGIhtJCFfX9.jpg",
-      "genres": [
-        "Family",
-        "Comedy",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt37970069",
-      "type": "movie",
-      "name": "Bhishmar",
-      "releaseInfo": "2026",
-      "description": "Two men meet by chance, setting off a night of chaos with romance and action, as their paths cross and intertwine through various unexpected events.\n\n📺 Streaming on: Sun NXT\n📅 OTT Release: 22 May 2026\n⭐ Rating: 1.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/wkiu7ez8oL1Yme4k5cBxFz0zN4U.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/pkbJDrFuICmwSmksldZnYAjPk5M.jpg",
-      "genres": [
-        "Comedy",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt8142672",
-      "type": "movie",
-      "name": "Aadu 3",
-      "releaseInfo": "2026",
-      "description": "Shaji Pappan and Co. opens a Pandora's box of reincarnations and multiple timelines  leading to comic chaos of epic proportions.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 01 May 2026\n⭐ Rating: 6.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/3yqreNY1f4iOXX0vBAqY64ZvxiV.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/jnrv9y9CQEtcyoftIHN4WNLrxtb.jpg",
-      "genres": [
-        "Comedy",
-        "Fantasy"
       ]
     },
     {
@@ -337,6 +297,20 @@
       "genres": [
         "Comedy",
         "Drama"
+      ]
+    },
+    {
+      "id": "tt40430802",
+      "type": "movie",
+      "name": "Derby",
+      "releaseInfo": "2026",
+      "description": "A campus entertainer who follows a group of college students navigating friendship, rivalry, love, and ambition. What begins as carefree fun soon turns into intense competition as campus pride and personal egos come into play.\n\n📺 Streaming on: Prime Video & Manorama Max\n📅 OTT Release: 15 May 2026\n⭐ Rating: 1.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/zaTTuhOJMTzlSRx7kvzVZevc2wQ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/2r4KjntMBwCPITn2R7AvPsxv4wC.jpg",
+      "genres": [
+        "Action",
+        "Comedy",
+        "Romance"
       ]
     },
     {
@@ -376,16 +350,16 @@
       ]
     },
     {
-      "id": "tt37537155",
+      "id": "tt8142672",
       "type": "movie",
-      "name": "Ashakal Aayiram",
+      "name": "Aadu 3",
       "releaseInfo": "2026",
-      "description": "A social media enthusiast chases fame until a major film production arrives in his neighborhood, suddenly bringing his dreams of stardom within reach in ways he never imagined.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 16 Apr 2026\n⭐ Rating: 4.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/dn025nJaG2ZKDA19ymPfZWUwPEH.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/j4YdIxiZwz2MqyqYAdiHeoh0y8V.jpg",
+      "description": "Shaji Pappan and Co. opens a Pandora's box of reincarnations and multiple timelines  leading to comic chaos of epic proportions.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 01 May 2026\n⭐ Rating: 6.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/3yqreNY1f4iOXX0vBAqY64ZvxiV.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/jnrv9y9CQEtcyoftIHN4WNLrxtb.jpg",
       "genres": [
         "Comedy",
-        "Drama"
+        "Fantasy"
       ]
     },
     {
@@ -401,138 +375,28 @@
       ]
     },
     {
-      "id": "tt32104889",
+      "id": "tt37541677",
       "type": "movie",
-      "name": "Haal",
-      "releaseInfo": "2025",
-      "description": "Two young lovers from opposing social classes navigate prejudice and family expectations in modern-day society, as their forbidden romance challenges deep-rooted traditions.\n\n📺 Streaming on: Sun NXT & Manorama Max\n📅 OTT Release: 10 Apr 2026\n⭐ Rating: 2.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/xmDQj0clWvkPiuvsl9LEwkrFjIA.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/6hxpAQE07GeTTvZN965BPFtATEd.jpg",
-      "genres": [
-        "Romance",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt22818604",
-      "type": "movie",
-      "name": "Kaathal The Core",
-      "releaseInfo": "2023",
-      "description": "Mathew Devassy, a retired bank manager decides to enter local panchayat elections. Unexpectedly, his wife Omana, shocks everyone by filing for divorce, claiming that Mathew is gay.\n\n📺 Streaming on: Zee5, Amazon Prime Video\n📅 OTT Release: 15 Apr 2026\n⭐ Rating: 7.1/10",
-      "poster": "https://image.tmdb.org/t/p/w500/uPtqA6uwGqL19gXjzSlmQ31XFn.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/otwvq063nQCWVIBFg2kyHHcm2AP.jpg",
-      "genres": [
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt25505032",
-      "type": "movie",
-      "name": "Aap Kaise Ho",
-      "releaseInfo": "2025",
-      "description": "📺 Streaming on: Saina Play\n📅 OTT Release: 16 Apr 2026",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMGM3MTNiODgtNDYxMi00ZGQ2LTk3ZDctOGU3NjgxZDM4MWJiXkEyXkFqcGc@._V1_SX300.jpg",
-      "genres": [
-        "Comedy"
-      ]
-    },
-    {
-      "id": "tt37049996",
-      "type": "movie",
-      "name": "Valathu Vashathe Kallan",
+      "name": "Bharathanatyam 2 Mohiniyattam",
       "releaseInfo": "2026",
-      "description": "A police officer being investigated for his role in a woman’s death rushes to save his son from her vengeful father.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 27 Mar 2026\n⭐ Rating: 4.3/10",
-      "poster": "https://image.tmdb.org/t/p/w500/ko4cEKcBHcCNbGok2YxnlD4u16N.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/g5uP9JdlWktdBcaj5tZKpWbILqL.jpg",
-      "genres": [
-        "Crime",
-        "Thriller",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt38691185",
-      "type": "movie",
-      "name": "Madhura Kanakku",
-      "releaseInfo": "2025",
-      "description": "A teacher's life unravels when he falls into debt after mortgaging his house to pay for his daughter's wedding.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 04 Apr 2026\n⭐ Rating: 2.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/7kCZoAT0QKBM9RkyX8PSVsWoSeV.jpg",
-      "genres": [
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt34733903",
-      "type": "movie",
-      "name": "Sukran",
-      "releaseInfo": "2026",
-      "description": "Marked by a horoscope that makes him take the blame for things he never did, Nandu grows up carrying the weight of an unfair fate. Years later, the return of his childhood love brings challenges and turning points that change his life forever.\n\n📺 Streaming on: Manorama Max, Sun NXT\n📅 OTT Release: 04 Apr 2026\n⭐ Rating: 2.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/4C2XqtbOE72nRM9icxzztLxHNoM.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/b38UJmNlW4ZSWgtIgk7inlFOaup.jpg",
+      "description": "The family's journey to Sreekandapuram to settle the late Bharathan Nair's second wife and son takes a dark turn when an issue from his past resurfaces, leading to an unexpected crime. Forced into a desperate cover-up to protect their future, the family must navigate a treacherous path of secrecy and mounting pressure, determined to overcome any obstacle by any means necessary.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 08 May 2026\n⭐ Rating: 8.2/10",
+      "poster": "https://image.tmdb.org/t/p/w500/lsg0IxNQCUxKqs63YjturEuY0qQ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/g7y8EDiXvlZYrIKDLlhtbcAPnxS.jpg",
       "genres": [
         "Comedy",
         "Thriller"
       ]
     },
     {
-      "id": "tt36187149",
+      "id": "tt37537155",
       "type": "movie",
-      "name": "Masthishka Maranam",
+      "name": "Ashakal Aayiram",
       "releaseInfo": "2026",
-      "description": "Plunging into a virtual reminiscence challenge to assuage his sorrow, a heartbroken dad uncovers a shocking revelation about Frida Soman, his long-admired icon and globally beloved luminary.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 27 Mar 2026\n⭐ Rating: 5.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/vJrDoDEJzx6jF71dvocT3bgCzFB.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/xaQpm2vKptcy05nxrBuYs0mjnaO.jpg",
+      "description": "A social media enthusiast chases fame until a major film production arrives in his neighborhood, suddenly bringing his dreams of stardom within reach in ways he never imagined.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 16 Apr 2026\n⭐ Rating: 4.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/dn025nJaG2ZKDA19ymPfZWUwPEH.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/j4YdIxiZwz2MqyqYAdiHeoh0y8V.jpg",
       "genres": [
-        "Science Fiction",
         "Comedy",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt33399641",
-      "type": "movie",
-      "name": "Dheeram",
-      "releaseInfo": "2025",
-      "description": "A police officer investigates pattern killings in Calicut, discovering a vengeful killer's scheme. As he unravels the truth, he faces a moral dilemma between law and justice for a bereaved parent.\n\n📺 Streaming on: Manorama Max, Sun NXT\n📅 OTT Release: 21 Mar 2026\n⭐ Rating: 3.7/10",
-      "poster": "https://image.tmdb.org/t/p/w500/wilAY8QRL1tZNcRjnfNKrFRqblD.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/gcceqDCIgY57EUKtr7cq1hNb45y.jpg",
-      "genres": [
-        "Crime",
-        "Mystery",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt28004675",
-      "type": "movie",
-      "name": "Chandranum policeum",
-      "releaseInfo": "2024",
-      "description": "Three police officers accompany a suspected criminal on a day-long journey through challenging terrain, during which they witness a startling incident.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 21 Mar 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/76t9HdDaERMqHxs8jqOzHUsDe9O.jpg"
-    },
-    {
-      "id": "tt27170332",
-      "type": "movie",
-      "name": "Written And Directed By God",
-      "releaseInfo": "2025",
-      "description": "A frustrated filmmaker meets God in person and goes on a transformative journey. When the deity appears to Jijo, they embark on an extraordinary road trip together.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 20 Mar 2026\n⭐ Rating: 3.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/vYCJihP5IQwUw9RMSmeGg7yU1FP.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/2r4Q1bpKkTMCbe7930QCSJmY97V.jpg",
-      "genres": [
-        "Fantasy",
-        "Comedy"
-      ]
-    },
-    {
-      "id": "tt35684951",
-      "type": "movie",
-      "name": "Christina",
-      "releaseInfo": "2026",
-      "description": "Four respected young men in a village face disruption and conflicts after a salesgirl's arrival.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 20 Mar 2026\n⭐ Rating: 1.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/mnXnKqz7eqYX4f1hlXI1Cnxp8ZR.jpg",
-      "genres": [
-        "Crime",
-        "Mystery",
         "Drama"
       ]
     },
@@ -551,28 +415,105 @@
       ]
     },
     {
-      "id": "tt15528720",
+      "id": "tt34733903",
       "type": "movie",
-      "name": "Oru Wayanadan Pranayakadha",
+      "name": "Sukran",
       "releaseInfo": "2026",
-      "description": "Set in the scenic Wayanad, a mischievous student falls for his classmate, sparking playful and heartfelt moments as he navigates her strict father, caring mother, and protective brother. A lighthearted, feel-good story of first love and village life.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 16 Mar 2026\n⭐ Rating: 1.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/tF5b0XHnUB9q5CwvsQfYz6jVYx1.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/lLnTJGdZKJF3PJZoAODUoYQdwxE.jpg",
+      "description": "Marked by a horoscope that makes him take the blame for things he never did, Nandu grows up carrying the weight of an unfair fate. Years later, the return of his childhood love brings challenges and turning points that change his life forever.\n\n📺 Streaming on: Manorama Max, Sun NXT\n📅 OTT Release: 04 Apr 2026\n⭐ Rating: 2.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/4C2XqtbOE72nRM9icxzztLxHNoM.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/b38UJmNlW4ZSWgtIgk7inlFOaup.jpg",
+      "genres": [
+        "Comedy",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt22818604",
+      "type": "movie",
+      "name": "Kaathal The Core",
+      "releaseInfo": "2023",
+      "description": "Mathew Devassy, a retired bank manager decides to enter local panchayat elections. Unexpectedly, his wife Omana, shocks everyone by filing for divorce, claiming that Mathew is gay.\n\n📺 Streaming on: Zee5, Amazon Prime Video\n📅 OTT Release: 15 Apr 2026\n⭐ Rating: 7.1/10",
+      "poster": "https://image.tmdb.org/t/p/w500/uPtqA6uwGqL19gXjzSlmQ31XFn.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/otwvq063nQCWVIBFg2kyHHcm2AP.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt32104889",
+      "type": "movie",
+      "name": "Haal",
+      "releaseInfo": "2025",
+      "description": "Two young lovers from opposing social classes navigate prejudice and family expectations in modern-day society, as their forbidden romance challenges deep-rooted traditions.\n\n📺 Streaming on: Sun NXT & Manorama Max\n📅 OTT Release: 10 Apr 2026\n⭐ Rating: 2.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/xmDQj0clWvkPiuvsl9LEwkrFjIA.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/6hxpAQE07GeTTvZN965BPFtATEd.jpg",
       "genres": [
         "Romance",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt38691185",
+      "type": "movie",
+      "name": "Madhura Kanakku",
+      "releaseInfo": "2025",
+      "description": "A teacher's life unravels when he falls into debt after mortgaging his house to pay for his daughter's wedding.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 04 Apr 2026\n⭐ Rating: 2.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/7kCZoAT0QKBM9RkyX8PSVsWoSeV.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt37049996",
+      "type": "movie",
+      "name": "Valathu Vashathe Kallan",
+      "releaseInfo": "2026",
+      "description": "A police officer being investigated for his role in a woman’s death rushes to save his son from her vengeful father.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 27 Mar 2026\n⭐ Rating: 4.3/10",
+      "poster": "https://image.tmdb.org/t/p/w500/ko4cEKcBHcCNbGok2YxnlD4u16N.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/g5uP9JdlWktdBcaj5tZKpWbILqL.jpg",
+      "genres": [
+        "Crime",
+        "Thriller",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt36187149",
+      "type": "movie",
+      "name": "Masthishka Maranam",
+      "releaseInfo": "2026",
+      "description": "Plunging into a virtual reminiscence challenge to assuage his sorrow, a heartbroken dad uncovers a shocking revelation about Frida Soman, his long-admired icon and globally beloved luminary.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 27 Mar 2026\n⭐ Rating: 5.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/vJrDoDEJzx6jF71dvocT3bgCzFB.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/xaQpm2vKptcy05nxrBuYs0mjnaO.jpg",
+      "genres": [
+        "Science Fiction",
+        "Comedy",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt25505032",
+      "type": "movie",
+      "name": "Aap Kaise Ho",
+      "releaseInfo": "2025",
+      "description": "📺 Streaming on: Saina Play\n📅 OTT Release: 16 Apr 2026",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMGM3MTNiODgtNDYxMi00ZGQ2LTk3ZDctOGU3NjgxZDM4MWJiXkEyXkFqcGc@._V1_SX300.jpg",
+      "genres": [
         "Comedy"
       ]
     },
     {
-      "id": "tt41030131",
+      "id": "tt33399641",
       "type": "movie",
-      "name": "Ponnapurathu Yakshi",
-      "releaseInfo": "2026",
-      "description": "After moving into a historic estate, a family discovers their young daughter has befriended a vengeful spirit. To save her, the father must unearth a century-old atrocity and confront the ghost with an ancient, sanctified weapon.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 16 Mar 2026\n⭐ Rating: 1.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/2cHXC0IoGYc8ECLxCSCCnXOi7sF.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/uaX6qQjMLQtI262706qCLkj2tfj.jpg",
+      "name": "Dheeram",
+      "releaseInfo": "2025",
+      "description": "A police officer investigates pattern killings in Calicut, discovering a vengeful killer's scheme. As he unravels the truth, he faces a moral dilemma between law and justice for a bereaved parent.\n\n📺 Streaming on: Manorama Max, Sun NXT\n📅 OTT Release: 21 Mar 2026\n⭐ Rating: 3.7/10",
+      "poster": "https://image.tmdb.org/t/p/w500/wilAY8QRL1tZNcRjnfNKrFRqblD.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/gcceqDCIgY57EUKtr7cq1hNb45y.jpg",
       "genres": [
-        "Horror"
+        "Crime",
+        "Mystery",
+        "Thriller"
       ]
     },
     {
@@ -589,17 +530,63 @@
       ]
     },
     {
-      "id": "tt36457300",
+      "id": "tt27170332",
       "type": "movie",
-      "name": "Prakambanam",
-      "releaseInfo": "2026",
-      "description": "A group of students' lives are thrown into chaos after one of them is possessed by the spirit of an elderly woman.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 14 Mar 2026\n⭐ Rating: 4.2/10",
-      "poster": "https://image.tmdb.org/t/p/w500/bExPPwAamQzVLtBnwEutiJ53jDZ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/jfzGjZnDYVoID62ogWVRifMdl9m.jpg",
+      "name": "Written And Directed By God",
+      "releaseInfo": "2025",
+      "description": "A frustrated filmmaker meets God in person and goes on a transformative journey. When the deity appears to Jijo, they embark on an extraordinary road trip together.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 20 Mar 2026\n⭐ Rating: 3.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/vYCJihP5IQwUw9RMSmeGg7yU1FP.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/2r4Q1bpKkTMCbe7930QCSJmY97V.jpg",
       "genres": [
-        "Horror",
+        "Fantasy",
         "Comedy"
       ]
+    },
+    {
+      "id": "tt41030131",
+      "type": "movie",
+      "name": "Ponnapurathu Yakshi",
+      "releaseInfo": "2026",
+      "description": "After moving into a historic estate, a family discovers their young daughter has befriended a vengeful spirit. To save her, the father must unearth a century-old atrocity and confront the ghost with an ancient, sanctified weapon.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 16 Mar 2026\n⭐ Rating: 1.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/2cHXC0IoGYc8ECLxCSCCnXOi7sF.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/uaX6qQjMLQtI262706qCLkj2tfj.jpg",
+      "genres": [
+        "Horror"
+      ]
+    },
+    {
+      "id": "tt35684951",
+      "type": "movie",
+      "name": "Christina",
+      "releaseInfo": "2026",
+      "description": "Four respected young men in a village face disruption and conflicts after a salesgirl's arrival.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 20 Mar 2026\n⭐ Rating: 1.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/mnXnKqz7eqYX4f1hlXI1Cnxp8ZR.jpg",
+      "genres": [
+        "Crime",
+        "Mystery",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt15528720",
+      "type": "movie",
+      "name": "Oru Wayanadan Pranayakadha",
+      "releaseInfo": "2026",
+      "description": "Set in the scenic Wayanad, a mischievous student falls for his classmate, sparking playful and heartfelt moments as he navigates her strict father, caring mother, and protective brother. A lighthearted, feel-good story of first love and village life.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 16 Mar 2026\n⭐ Rating: 1.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/tF5b0XHnUB9q5CwvsQfYz6jVYx1.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/lLnTJGdZKJF3PJZoAODUoYQdwxE.jpg",
+      "genres": [
+        "Romance",
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tt28004675",
+      "type": "movie",
+      "name": "Chandranum policeum",
+      "releaseInfo": "2024",
+      "description": "Three police officers accompany a suspected criminal on a day-long journey through challenging terrain, during which they witness a startling incident.\n\n📺 Streaming on: Manorama Max\n📅 OTT Release: 21 Mar 2026",
+      "poster": "https://image.tmdb.org/t/p/w500/76t9HdDaERMqHxs8jqOzHUsDe9O.jpg"
     },
     {
       "id": "tt34383084",
@@ -613,35 +600,23 @@
         "Comedy",
         "Drama"
       ]
+    },
+    {
+      "id": "tt36457300",
+      "type": "movie",
+      "name": "Prakambanam",
+      "releaseInfo": "2026",
+      "description": "A group of students' lives are thrown into chaos after one of them is possessed by the spirit of an elderly woman.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 14 Mar 2026\n⭐ Rating: 4.2/10",
+      "poster": "https://image.tmdb.org/t/p/w500/bExPPwAamQzVLtBnwEutiJ53jDZ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/jfzGjZnDYVoID62ogWVRifMdl9m.jpg",
+      "genres": [
+        "Horror",
+        "Comedy"
+      ]
     }
   ],
   "mal-series": [],
   "tam-movies": [
-    {
-      "id": "tt37971394",
-      "type": "movie",
-      "name": "Blast",
-      "releaseInfo": "2026",
-      "description": "A seemingly ordinary family must unleash their hidden martial arts skills when they clash with a ruthless criminal gang tied to corruption and violence.\n\n📺 Streaming on: Netflix, 25 June 2026\n📅 OTT Release: 25 Jun 2026\n⭐ Rating: 6.9/10",
-      "poster": "https://image.tmdb.org/t/p/w500/mZZBUaAXSeEeO3RovqJssBQyxfK.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/xsoKAonKy1zk5XoQoUG1dUXDCKH.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt26654655",
-      "type": "movie",
-      "name": "Charukesi",
-      "releaseInfo": "2026",
-      "description": "A Carnatic musician with Alzheimer's grapples with his prodigal son's lifestyle choices, exploring the intersection of music, memory, and family relationships.\n\n📺 Streaming on: Prime Video, 03 July 2026\n📅 OTT Release: 03 July 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/jf5IyUMYBM4yBm5AU0CAFcYR1Fg.jpg",
-      "genres": [
-        "Drama",
-        "Music"
-      ]
-    },
     {
       "id": "tt28259290",
       "type": "movie",
@@ -671,6 +646,58 @@
       ]
     },
     {
+      "id": "tt37971394",
+      "type": "movie",
+      "name": "Blast",
+      "releaseInfo": "2026",
+      "description": "A seemingly ordinary family must unleash their hidden martial arts skills when they clash with a ruthless criminal gang tied to corruption and violence.\n\n📺 Streaming on: Netflix, 25 June 2026\n📅 OTT Release: 25 Jun 2026\n⭐ Rating: 6.9/10",
+      "poster": "https://image.tmdb.org/t/p/w500/mZZBUaAXSeEeO3RovqJssBQyxfK.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/xsoKAonKy1zk5XoQoUG1dUXDCKH.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt26654655",
+      "type": "movie",
+      "name": "Charukesi",
+      "releaseInfo": "2026",
+      "description": "A Carnatic musician with Alzheimer's grapples with his prodigal son's lifestyle choices, exploring the intersection of music, memory, and family relationships.\n\n📺 Streaming on: Prime Video, 03 July 2026\n📅 OTT Release: 03 July 2026",
+      "poster": "https://image.tmdb.org/t/p/w500/jf5IyUMYBM4yBm5AU0CAFcYR1Fg.jpg",
+      "genres": [
+        "Drama",
+        "Music"
+      ]
+    },
+    {
+      "id": "tt39228907",
+      "type": "movie",
+      "name": "Anali",
+      "releaseInfo": "2026",
+      "description": "Entire Story takes place over a single night. It revolves around Jansi and her 8yr old child, who gets trapped between third world war tensions and dangereous men Lal Chetta, Khan Bhai & Ranga Reddy. These men far more dangerous than wild animals. The Note film thrillingly portraits by how Jansi uses her intelligence to escape and bring everything to an end.\n\n📺 Streaming on: Prime Video (Rent)\n📅 OTT Release: 19 Jun 2026",
+      "poster": "https://image.tmdb.org/t/p/w500/swU1gHR88apVPthor7RVv8AOa1j.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/xUAmKnnYiikp2ayEAZi7pJLyFBh.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt31455863",
+      "type": "movie",
+      "name": "Kenatha Kanom",
+      "releaseInfo": "2026",
+      "description": "Desperate to find water, residents of a parched village start digging a new well, but what they find is not water but a dinosaur fossil.\n\n📺 Streaming on: JioHotstar, 15 June 2026\n📅 OTT Release: 15 Jun 2026",
+      "poster": "https://image.tmdb.org/t/p/w500/4jFuUoddURp94ZvL7haeunK7fsm.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/aq9wblh5J9TmVBsJ1Bx98Cw6bAZ.jpg",
+      "genres": [
+        "Comedy",
+        "Drama",
+        "Family"
+      ]
+    },
+    {
       "id": "tt14113634",
       "type": "movie",
       "name": "Drishyam 3",
@@ -685,16 +712,18 @@
       ]
     },
     {
-      "id": "tt39228907",
+      "id": "tt40601101",
       "type": "movie",
-      "name": "Anali",
+      "name": "Sattendru Maarudhu Vaanilai",
       "releaseInfo": "2026",
-      "description": "Entire Story takes place over a single night. It revolves around Jansi and her 8yr old child, who gets trapped between third world war tensions and dangereous men Lal Chetta, Khan Bhai & Ranga Reddy. These men far more dangerous than wild animals. The Note film thrillingly portraits by how Jansi uses her intelligence to escape and bring everything to an end.\n\n📺 Streaming on: Prime Video (Rent)\n📅 OTT Release: 19 Jun 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/swU1gHR88apVPthor7RVv8AOa1j.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/xUAmKnnYiikp2ayEAZi7pJLyFBh.jpg",
+      "description": "When a carefree orphan and a runaway minister's daughter marry on impulse, their love is tested by financial struggles and powerful enemies — from corrupt politicians to jealous rivals. Together, they uncover hidden truths and prove that love can survive even the darkest threats.\n\n📺 Streaming on: Prime Video, 05 June 2026\n📅 OTT Release: 05 Jun 2026",
+      "poster": "https://image.tmdb.org/t/p/w500/tTgiNXkrg9LS6Qjvrnksev7ztIo.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/wWxrb1dsjSXj0LfwWCHdzljtK7J.jpg",
       "genres": [
-        "Action",
-        "Thriller"
+        "Thriller",
+        "Drama",
+        "Comedy",
+        "Romance"
       ]
     },
     {
@@ -719,35 +748,6 @@
       ]
     },
     {
-      "id": "tt31455863",
-      "type": "movie",
-      "name": "Kenatha Kanom",
-      "releaseInfo": "2026",
-      "description": "Desperate to find water, residents of a parched village start digging a new well, but what they find is not water but a dinosaur fossil.\n\n📺 Streaming on: JioHotstar, 15 June 2026\n📅 OTT Release: 15 Jun 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/4jFuUoddURp94ZvL7haeunK7fsm.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/aq9wblh5J9TmVBsJ1Bx98Cw6bAZ.jpg",
-      "genres": [
-        "Comedy",
-        "Drama",
-        "Family"
-      ]
-    },
-    {
-      "id": "tt40601101",
-      "type": "movie",
-      "name": "Sattendru Maarudhu Vaanilai",
-      "releaseInfo": "2026",
-      "description": "When a carefree orphan and a runaway minister's daughter marry on impulse, their love is tested by financial struggles and powerful enemies — from corrupt politicians to jealous rivals. Together, they uncover hidden truths and prove that love can survive even the darkest threats.\n\n📺 Streaming on: Prime Video, 05 June 2026\n📅 OTT Release: 05 Jun 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/tTgiNXkrg9LS6Qjvrnksev7ztIo.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/wWxrb1dsjSXj0LfwWCHdzljtK7J.jpg",
-      "genres": [
-        "Thriller",
-        "Drama",
-        "Comedy",
-        "Romance"
-      ]
-    },
-    {
       "id": "tt37737315",
       "type": "movie",
       "name": "29",
@@ -758,6 +758,19 @@
       "genres": [
         "Romance",
         "Comedy",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt32741341",
+      "type": "movie",
+      "name": "Leader",
+      "releaseInfo": "2026",
+      "description": "An ordinary man becomes trapped between warring criminal factions and law enforcement, forcing him to use his wits to survive while shielding his loved ones from the deadly crossfire that threatens to consume them all.\n\n📺 Streaming on: Prime Video, 29 May 2026\n📅 OTT Release: 29 May 2026\n⭐ Rating: 5.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/eitNeP5lMT67piVVA8h31lb5keN.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/jdfgdFeg7pIu9hV7VG6k9gHgaUh.jpg",
+      "genres": [
+        "Action",
         "Drama"
       ]
     },
@@ -775,17 +788,12 @@
       ]
     },
     {
-      "id": "tt32741341",
+      "id": "tt0158356",
       "type": "movie",
-      "name": "Leader",
-      "releaseInfo": "2026",
-      "description": "An ordinary man becomes trapped between warring criminal factions and law enforcement, forcing him to use his wits to survive while shielding his loved ones from the deadly crossfire that threatens to consume them all.\n\n📺 Streaming on: Prime Video, 29 May 2026\n📅 OTT Release: 29 May 2026\n⭐ Rating: 5.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/eitNeP5lMT67piVVA8h31lb5keN.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/jdfgdFeg7pIu9hV7VG6k9gHgaUh.jpg",
-      "genres": [
-        "Action",
-        "Drama"
-      ]
+      "name": "Warrant (Series)",
+      "releaseInfo": "1975",
+      "description": "During a jail riot instigated by convict Jaggu (Joginder), the Jailer, Arun Mehra's (Dev Anand) life is threatened and another convict, Dinesh (Satish Kaul), risks his life to save Arun. Arun and his mother, Mrs. Mehra (Sulochana) find out that Dinesh is on death-row for killing noted Professor Ashok Verma. Arun does not believe that Dinesh is guilty and so he arranges his escape from prison. As a result Arun has not only the police, including his own father, Inspector General of Police Mehra (Pran) after him on a manhunt but also underworld don Master (Ajit) and his men; and a cold-hearted female assassin (Zeenat Aman) who has reserved two bullets in her gun for Arun and Dinesh.\n\n📺 Streaming on: ZEE5, 22 May 2026\n📅 OTT Release: 22 May 2026\n⭐ Rating: 7.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/3UpPBvBGcyZ30Xb1FKPRIdv1PyU.jpg"
     },
     {
       "id": "tt37458112",
@@ -803,24 +811,16 @@
       ]
     },
     {
-      "id": "tt0158356",
+      "id": "tt38693803",
       "type": "movie",
-      "name": "Warrant (Series)",
-      "releaseInfo": "1975",
-      "description": "During a jail riot instigated by convict Jaggu (Joginder), the Jailer, Arun Mehra's (Dev Anand) life is threatened and another convict, Dinesh (Satish Kaul), risks his life to save Arun. Arun and his mother, Mrs. Mehra (Sulochana) find out that Dinesh is on death-row for killing noted Professor Ashok Verma. Arun does not believe that Dinesh is guilty and so he arranges his escape from prison. As a result Arun has not only the police, including his own father, Inspector General of Police Mehra (Pran) after him on a manhunt but also underworld don Master (Ajit) and his men; and a cold-hearted female assassin (Zeenat Aman) who has reserved two bullets in her gun for Arun and Dinesh.\n\n📺 Streaming on: ZEE5, 22 May 2026\n📅 OTT Release: 22 May 2026\n⭐ Rating: 7.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/3UpPBvBGcyZ30Xb1FKPRIdv1PyU.jpg"
-    },
-    {
-      "id": "tt0140534",
-      "type": "movie",
-      "name": "Sathi Leelavathi (Tamil)",
-      "releaseInfo": "1995",
-      "description": "Arun, a married man, has an affair with Priya as he dislikes his wife Leelavathi, who is plain-looking and overweight. When she discovers Arun's affair, she plots with Dr. Sakthivel to win Arun back.\n\n📺 Streaming on: Sun NXT, 20 May 2026\n📅 OTT Release: 20 May 2026\n⭐ Rating: 7.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/gJjxDw7uogiHuDtvkxk3GKD9UGu.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/1UGkeYQsW2kml28YURNGdkNCosq.jpg",
+      "name": "Satan The Dark",
+      "releaseInfo": "2026",
+      "description": "Set in the fictional village of Asthinapuram, near Tamil Nadu–Kerala border, When Alisha and her mother desperate to escape the cursed land long belongs to colonial-era witchcraft and black magic, they find themselves spiraling into a deeper sinister. With only Alisha’s boyfriend standing by them, the trio must confront the horrors that dwell in silence… and the curse that refuses to be outrun.\n\n📺 Streaming on: Prime Video, Tentkotta, Aha Tamil, 20 May 2026\n📅 OTT Release: 20 May 2026\n⭐ Rating: 4.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/uFjy89xe1Us6iRfdsKAn05Y1XGX.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/zwZ5f2jJvMaFf59oX6jwKFQd8FW.jpg",
       "genres": [
-        "Comedy",
-        "Drama"
+        "Horror",
+        "Thriller"
       ]
     },
     {
@@ -834,6 +834,19 @@
       "genres": [
         "Action",
         "Thriller"
+      ]
+    },
+    {
+      "id": "tt0140534",
+      "type": "movie",
+      "name": "Sathi Leelavathi (Tamil)",
+      "releaseInfo": "1995",
+      "description": "Arun, a married man, has an affair with Priya as he dislikes his wife Leelavathi, who is plain-looking and overweight. When she discovers Arun's affair, she plots with Dr. Sakthivel to win Arun back.\n\n📺 Streaming on: Sun NXT, 20 May 2026\n📅 OTT Release: 20 May 2026\n⭐ Rating: 7.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/gJjxDw7uogiHuDtvkxk3GKD9UGu.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1UGkeYQsW2kml28YURNGdkNCosq.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
       ]
     },
     {
@@ -851,57 +864,16 @@
       ]
     },
     {
-      "id": "tt31593809",
+      "id": "tt39762179",
       "type": "movie",
-      "name": "Biker (Tamil)",
+      "name": "Oh Butterfly",
       "releaseInfo": "2026",
-      "description": "A seasoned motocross rider returns to the grueling sport he once abandoned, confronting fierce competition and a father who might push him to the brink.\n\n📺 Streaming on: Netflix, 01 May 2026\n📅 OTT Release: 01 May 2026\n⭐ Rating: 6.2/10",
-      "poster": "https://image.tmdb.org/t/p/w500/cKuFTk3qqrASg2nopJwDdeAroeF.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/yrsWvYxnmA7ntxZtO9K0OInjyRA.jpg",
+      "description": "When a series of unfortunate coincidences involving a woman, her husband and her ex, culminates in a shocking death, her long-lost sister returns to redeem her.\n\n📺 Streaming on: Sun NXT, 08 May 2026\n📅 OTT Release: 08 May 2026",
+      "poster": "https://image.tmdb.org/t/p/w500/w0g0bhCuxq0VSMVgER9LLhQnil1.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1wD0i0u7HMrNd3rH6sYvENxj10P.jpg",
       "genres": [
-        "Adventure",
-        "Drama",
-        "Family"
-      ]
-    },
-    {
-      "id": "tt38693803",
-      "type": "movie",
-      "name": "Satan The Dark",
-      "releaseInfo": "2026",
-      "description": "Set in the fictional village of Asthinapuram, near Tamil Nadu–Kerala border, When Alisha and her mother desperate to escape the cursed land long belongs to colonial-era witchcraft and black magic, they find themselves spiraling into a deeper sinister. With only Alisha’s boyfriend standing by them, the trio must confront the horrors that dwell in silence… and the curse that refuses to be outrun.\n\n📺 Streaming on: Prime Video, Tentkotta, Aha Tamil, 20 May 2026\n📅 OTT Release: 20 May 2026\n⭐ Rating: 4.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/uFjy89xe1Us6iRfdsKAn05Y1XGX.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/zwZ5f2jJvMaFf59oX6jwKFQd8FW.jpg",
-      "genres": [
-        "Horror",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt36451817",
-      "type": "movie",
-      "name": "Raakaasa (Tamil)",
-      "releaseInfo": "2026",
-      "description": "Returning home after a decade, an NRI chasing romance inadvertently awakens an ancient darkness long feared by his village. As the threat intensifies, love turns deadly and life hangs in the balance.\n\n📺 Streaming on: Netflix, 01 May 2026\n📅 OTT Release: 01 May 2026\n⭐ Rating: 6.7/10",
-      "poster": "https://image.tmdb.org/t/p/w500/x7zwiuC1HTw5XGZ5JrOwF9uFqRy.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/hxCJcyDnR964ja5mzExvb8UlHLG.jpg",
-      "genres": [
-        "Fantasy",
-        "Comedy"
-      ]
-    },
-    {
-      "id": "tt30460421",
-      "type": "movie",
-      "name": "LIK: Love Insurance Kompany",
-      "releaseInfo": "2026",
-      "description": "In 2040, an app premised on ensuring romance for all is used widely by the population. When the voice behind the app's AI realizes its misconception to true love, he embarks on a quest to prove that love does not come from a screen.\n\n📺 Streaming on: Prime Video, 06 May 2026\n📅 OTT Release: 06 May 2026\n⭐ Rating: 4.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/1IIUWMKzNVvI6YJX8BKE6EJ9bVd.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/woos7rldBAKG99HmcbNZNpMjwNk.jpg",
-      "genres": [
-        "Romance",
-        "Science Fiction",
-        "Comedy"
+        "Thriller",
+        "Drama"
       ]
     },
     {
@@ -919,29 +891,44 @@
       ]
     },
     {
-      "id": "tt39762179",
+      "id": "tt30460421",
       "type": "movie",
-      "name": "Oh Butterfly",
+      "name": "LIK: Love Insurance Kompany",
       "releaseInfo": "2026",
-      "description": "When a series of unfortunate coincidences involving a woman, her husband and her ex, culminates in a shocking death, her long-lost sister returns to redeem her.\n\n📺 Streaming on: Sun NXT, 08 May 2026\n📅 OTT Release: 08 May 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/w0g0bhCuxq0VSMVgER9LLhQnil1.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/1wD0i0u7HMrNd3rH6sYvENxj10P.jpg",
+      "description": "In 2040, an app premised on ensuring romance for all is used widely by the population. When the voice behind the app's AI realizes its misconception to true love, he embarks on a quest to prove that love does not come from a screen.\n\n📺 Streaming on: Prime Video, 06 May 2026\n📅 OTT Release: 06 May 2026\n⭐ Rating: 4.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/1IIUWMKzNVvI6YJX8BKE6EJ9bVd.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/woos7rldBAKG99HmcbNZNpMjwNk.jpg",
       "genres": [
-        "Thriller",
-        "Drama"
+        "Romance",
+        "Science Fiction",
+        "Comedy"
       ]
     },
     {
-      "id": "tt38489752",
+      "id": "tt36451817",
       "type": "movie",
-      "name": "TN 2026",
+      "name": "Raakaasa (Tamil)",
       "releaseInfo": "2026",
-      "description": "Set in Pollachi, the story follows a powerful landlord, Sivalingam Mandradiyar, who becomes obsessed with a rising actor, Kukanth Kumar, believing he is the next M.G.R. He pours his wealth into shaping the actor's career and political future. But as ambition and fame grow, so does the risk of downfall. Will it lead to power or ruin?\n\n📺 Streaming on: Prime Video, Short Flix,   Aha Tamil\n📅 OTT Release: 30 Apr 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/mAX1ujOROXtKsOuIg5MbJbotOyD.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/hlTs5C7zQ7TrH7REWOkSXzi67p7.jpg",
+      "description": "Returning home after a decade, an NRI chasing romance inadvertently awakens an ancient darkness long feared by his village. As the threat intensifies, love turns deadly and life hangs in the balance.\n\n📺 Streaming on: Netflix, 01 May 2026\n📅 OTT Release: 01 May 2026\n⭐ Rating: 6.7/10",
+      "poster": "https://image.tmdb.org/t/p/w500/x7zwiuC1HTw5XGZ5JrOwF9uFqRy.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/hxCJcyDnR964ja5mzExvb8UlHLG.jpg",
       "genres": [
-        "Comedy",
-        "Drama"
+        "Fantasy",
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tt31593809",
+      "type": "movie",
+      "name": "Biker (Tamil)",
+      "releaseInfo": "2026",
+      "description": "A seasoned motocross rider returns to the grueling sport he once abandoned, confronting fierce competition and a father who might push him to the brink.\n\n📺 Streaming on: Netflix, 01 May 2026\n📅 OTT Release: 01 May 2026\n⭐ Rating: 6.2/10",
+      "poster": "https://image.tmdb.org/t/p/w500/cKuFTk3qqrASg2nopJwDdeAroeF.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/yrsWvYxnmA7ntxZtO9K0OInjyRA.jpg",
+      "genres": [
+        "Adventure",
+        "Drama",
+        "Family"
       ]
     },
     {
@@ -955,19 +942,6 @@
       "genres": [
         "Crime",
         "Drama"
-      ]
-    },
-    {
-      "id": "tt40720168",
-      "type": "movie",
-      "name": "Nee Forever",
-      "releaseInfo": "2026",
-      "description": "A Gen Z couple meets via dating app. Their relationship unfolds with unexpected consequences.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 24 Apr 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/qEYp2LgileilGofZVVLL8Juuh2G.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/odsBpm8rvmbeIGzrAxDEERCdDfM.jpg",
-      "genres": [
-        "Drama",
-        "Romance"
       ]
     },
     {
@@ -985,14 +959,55 @@
       ]
     },
     {
-      "id": "tt34705616",
+      "id": "tt38489752",
       "type": "movie",
-      "name": "Vaagai",
-      "releaseInfo": "2024",
-      "description": "A middle-class man's life turns upside down when his friends and a woman named Pavithra create problems for him. Just as he tries to handle these issues, another person's arrival adds more complications to his journey.\n\n📺 Streaming on: Prime Video (Rent), Tentkotta\n📅 OTT Release: 22 Apr 2026",
-      "poster": "https://m.media-amazon.com/images/M/MV5BOGU3OGQ3NjctZjAzMS00NmU4LWExMTgtNDU0NGU4MThhNDhkXkEyXkFqcGc@._V1_SX300.jpg",
+      "name": "TN 2026",
+      "releaseInfo": "2026",
+      "description": "Set in Pollachi, the story follows a powerful landlord, Sivalingam Mandradiyar, who becomes obsessed with a rising actor, Kukanth Kumar, believing he is the next M.G.R. He pours his wealth into shaping the actor's career and political future. But as ambition and fame grow, so does the risk of downfall. Will it lead to power or ruin?\n\n📺 Streaming on: Prime Video, Short Flix,   Aha Tamil\n📅 OTT Release: 30 Apr 2026",
+      "poster": "https://image.tmdb.org/t/p/w500/mAX1ujOROXtKsOuIg5MbJbotOyD.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/hlTs5C7zQ7TrH7REWOkSXzi67p7.jpg",
       "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt29004931",
+      "type": "movie",
+      "name": "Mustafa Mustafa",
+      "releaseInfo": "2026",
+      "description": "A viral social media clip ruins a man's reputation. Despite his claims it is fake, chaos ensues through white lies and misunderstandings, testing the trust of his friends and his lover.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 17 Apr 2026",
+      "poster": "https://image.tmdb.org/t/p/w500/43f2rZ5GE016leKWIntH3k9CXNN.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/bo2cLoPA7snPvoXtnmp6DtV5GMd.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt40720168",
+      "type": "movie",
+      "name": "Nee Forever",
+      "releaseInfo": "2026",
+      "description": "A Gen Z couple meets via dating app. Their relationship unfolds with unexpected consequences.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 24 Apr 2026",
+      "poster": "https://image.tmdb.org/t/p/w500/qEYp2LgileilGofZVVLL8Juuh2G.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/odsBpm8rvmbeIGzrAxDEERCdDfM.jpg",
+      "genres": [
+        "Drama",
         "Romance"
+      ]
+    },
+    {
+      "id": "tt25377130",
+      "type": "movie",
+      "name": "Kadhal Kadhai Sollava",
+      "releaseInfo": "2026",
+      "description": "This story tells about \"Micheal And Shreya\" who participate in the Program , which Actor Vijaysethupathi Conducts through FM \"Kadhal Kadhai Sollava\"\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 10 Apr 2026",
+      "poster": "https://image.tmdb.org/t/p/w500/5bnBIP6brIVCOgQ6D4lIQ6CbUvs.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/6zwziT2NgTXDFe8BsmvJGlYonsZ.jpg",
+      "genres": [
+        "Romance",
+        "Drama"
       ]
     },
     {
@@ -1023,29 +1038,27 @@
       ]
     },
     {
-      "id": "tt29004931",
+      "id": "tt34705616",
       "type": "movie",
-      "name": "Mustafa Mustafa",
-      "releaseInfo": "2026",
-      "description": "A viral social media clip ruins a man's reputation. Despite his claims it is fake, chaos ensues through white lies and misunderstandings, testing the trust of his friends and his lover.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 17 Apr 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/43f2rZ5GE016leKWIntH3k9CXNN.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/bo2cLoPA7snPvoXtnmp6DtV5GMd.jpg",
+      "name": "Vaagai",
+      "releaseInfo": "2024",
+      "description": "A middle-class man's life turns upside down when his friends and a woman named Pavithra create problems for him. Just as he tries to handle these issues, another person's arrival adds more complications to his journey.\n\n📺 Streaming on: Prime Video (Rent), Tentkotta\n📅 OTT Release: 22 Apr 2026",
+      "poster": "https://m.media-amazon.com/images/M/MV5BOGU3OGQ3NjctZjAzMS00NmU4LWExMTgtNDU0NGU4MThhNDhkXkEyXkFqcGc@._V1_SX300.jpg",
       "genres": [
-        "Comedy",
-        "Drama"
+        "Romance"
       ]
     },
     {
-      "id": "tt25377130",
+      "id": "tt29453905",
       "type": "movie",
-      "name": "Kadhal Kadhai Sollava",
-      "releaseInfo": "2026",
-      "description": "This story tells about \"Micheal And Shreya\" who participate in the Program , which Actor Vijaysethupathi Conducts through FM \"Kadhal Kadhai Sollava\"\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 10 Apr 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/5bnBIP6brIVCOgQ6D4lIQ6CbUvs.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/6zwziT2NgTXDFe8BsmvJGlYonsZ.jpg",
+      "name": "Naangal",
+      "releaseInfo": "2025",
+      "description": "It's the 1990s, in a sleepy hillside town in Southern India there is a cavernous mansion surrounded by plantations, inside three preadolescent brothers live with their German shepherd. They buy the groceries, lug water up the slopes in plastic cans, get each other ready for school and lend a hand to workers on the estate. The boys may practically run the house, but the lord of this forsaken domain is their father, a ruthless martinet whose mere sight frightens them to the core.\n\n📺 Streaming on: Sun NXT\n📅 OTT Release: 10 Apr 2026",
+      "poster": "https://image.tmdb.org/t/p/w500/qIjgsO2grsXnpAFlpJrsBKkPf7m.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/dMVKr1vuXzu9qP0CDNT6drB5Gf7.jpg",
       "genres": [
-        "Romance",
-        "Drama"
+        "Drama",
+        "Family"
       ]
     },
     {
@@ -1063,19 +1076,6 @@
       ]
     },
     {
-      "id": "tt29453905",
-      "type": "movie",
-      "name": "Naangal",
-      "releaseInfo": "2025",
-      "description": "It's the 1990s, in a sleepy hillside town in Southern India there is a cavernous mansion surrounded by plantations, inside three preadolescent brothers live with their German shepherd. They buy the groceries, lug water up the slopes in plastic cans, get each other ready for school and lend a hand to workers on the estate. The boys may practically run the house, but the lord of this forsaken domain is their father, a ruthless martinet whose mere sight frightens them to the core.\n\n📺 Streaming on: Sun NXT\n📅 OTT Release: 10 Apr 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/qIjgsO2grsXnpAFlpJrsBKkPf7m.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/dMVKr1vuXzu9qP0CDNT6drB5Gf7.jpg",
-      "genres": [
-        "Drama",
-        "Family"
-      ]
-    },
-    {
       "id": "tt39299630",
       "type": "movie",
       "name": "Vadam",
@@ -1085,6 +1085,33 @@
       "background": "https://image.tmdb.org/t/p/w1280/ei5kPCWaVZKD2BB0pH9yehBxYWP.jpg",
       "genres": [
         "Action"
+      ]
+    },
+    {
+      "id": "tt38779833",
+      "type": "movie",
+      "name": "Kadhal Reset Repeat",
+      "releaseInfo": "2026",
+      "description": "Two people attempt to restart their romance after a major breakdown, believing that a “reset” will fix what went wrong. Just as hopeful habits begin, the shoals of memory, regret and new expectations force them to search for what they really want. A loop of love, loss and renewal takes them through familiar terrain with unfamiliar stakes.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 08 Apr 2026",
+      "poster": "https://image.tmdb.org/t/p/w500/3xMgvXDquViX50l8rwle5SbShqm.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/hCSWwwBZUkq44ZjmsePhXmgPPiz.jpg",
+      "genres": [
+        "Romance",
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt8555488",
+      "type": "movie",
+      "name": "Maayabimbum",
+      "releaseInfo": "2026",
+      "description": "A man’s illusion of love turns tragic when misplaced desire and misunderstanding pull him into consequences he never anticipated.\n\n📺 Streaming on: Sun NXT\n📅 OTT Release: 27 Mar 2026",
+      "poster": "https://image.tmdb.org/t/p/w500/6zMiVFdjJ4JXlkeHctHYQQOtEoy.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1MHPvsrLnntPnR2KjyGr5LmUdJX.jpg",
+      "genres": [
+        "Romance",
+        "Drama"
       ]
     },
     {
@@ -1162,35 +1189,8 @@
       "genres": [
         "Comedy"
       ]
-    },
-    {
-      "id": "tt8555488",
-      "type": "movie",
-      "name": "Maayabimbum",
-      "releaseInfo": "2026",
-      "description": "A man’s illusion of love turns tragic when misplaced desire and misunderstanding pull him into consequences he never anticipated.\n\n📺 Streaming on: Sun NXT\n📅 OTT Release: 27 Mar 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/6zMiVFdjJ4JXlkeHctHYQQOtEoy.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/1MHPvsrLnntPnR2KjyGr5LmUdJX.jpg",
-      "genres": [
-        "Romance",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt38779833",
-      "type": "movie",
-      "name": "Kadhal Reset Repeat",
-      "releaseInfo": "2026",
-      "description": "Two people attempt to restart their romance after a major breakdown, believing that a “reset” will fix what went wrong. Just as hopeful habits begin, the shoals of memory, regret and new expectations force them to search for what they really want. A loop of love, loss and renewal takes them through familiar terrain with unfamiliar stakes.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 08 Apr 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/3xMgvXDquViX50l8rwle5SbShqm.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/hCSWwwBZUkq44ZjmsePhXmgPPiz.jpg",
-      "genres": [
-        "Romance",
-        "Comedy",
-        "Drama"
-      ]
     }
   ],
   "tam-series": [],
-  "builtAt": "2026-07-06T15:10:12.703Z"
+  "builtAt": "2026-07-06T15:59:13.222Z"
 }
