@@ -972,5 +972,5 @@ function deduplicate(items) {
     }
   }
   return result;
-      }
+}
 module.exports = { scrapeMalayalam, scrapeTamil };
