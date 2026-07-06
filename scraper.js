@@ -1,17 +1,5 @@
 /**
- * scraper.js - Complete Updated Version
- * 
- * Features:
- * - Retry logic with exponential backoff
- * - Persistent caching with size limits
- * - Concurrent request limiting
- * - Health checks
- * - Atomic cache writes
- * - Rate limiting for TMDB
- * - Multiple parsing strategies
- * - Timezone-aware date handling
- * - Batch cache saves
- * - Configurable via environment variables
+ * scraper.js - Complete Working Version
  */
 
 const https = require('https');
@@ -33,10 +21,10 @@ const CONFIG = {
   ENABLE_CACHE: process.env.ENABLE_CACHE !== 'false',
   CACHE_FILE: process.env.CACHE_FILE || './data/cache.json',
   MAX_CACHE_SIZE: parseInt(process.env.MAX_CACHE_SIZE) || 500,
-  CACHE_TTL: parseInt(process.env.CACHE_TTL) || 30 * 24 * 60 * 60 * 1000, // 30 days
+  CACHE_TTL: parseInt(process.env.CACHE_TTL) || 30 * 24 * 60 * 60 * 1000,
   MAX_RETRIES: parseInt(process.env.MAX_RETRIES) || 3,
   RETRY_DELAY: parseInt(process.env.RETRY_DELAY) || 1000,
-  GLOBAL_TIMEOUT: parseInt(process.env.GLOBAL_TIMEOUT) || 300000, // 5 minutes
+  GLOBAL_TIMEOUT: parseInt(process.env.GLOBAL_TIMEOUT) || 300000,
   RUN_HEALTH_CHECK: process.env.RUN_HEALTH_CHECK !== 'false',
 };
 
@@ -57,7 +45,6 @@ function loadCache() {
     if (fs.existsSync(CONFIG.CACHE_FILE)) {
       const data = fs.readFileSync(CONFIG.CACHE_FILE, 'utf8');
       const parsed = JSON.parse(data);
-      // Convert array back to Map if needed
       if (Array.isArray(parsed)) {
         memoryCache = new Map(parsed);
       } else {
@@ -80,18 +67,14 @@ function saveCache() {
   
   const tempFile = CONFIG.CACHE_FILE + '.tmp';
   try {
-    // Convert Map to array of entries for better serialization
     const entries = Array.from(memoryCache.entries());
     const data = JSON.stringify(entries, null, 2);
-    
-    // Atomic write: write to temp file then rename
     fs.writeFileSync(tempFile, data);
     fs.renameSync(tempFile, CONFIG.CACHE_FILE);
     console.log(`[Cache] Saved ${memoryCache.size} entries to disk`);
     cacheDirty = false;
   } catch (e) {
     console.warn('[Cache] Failed to save cache:', e.message);
-    // Clean up temp file if it exists
     if (fs.existsSync(tempFile)) {
       try { fs.unlinkSync(tempFile); } catch (unlinkErr) {}
     }
@@ -99,12 +82,11 @@ function saveCache() {
 }
 
 function getCacheKey(title, type, langCode) {
-  // Normalize the title for consistent caching
   const clean = title
     .toLowerCase()
-    .replace(/\s*\(\d{4}\)\s*$/, '') // Remove year
-    .replace(/[^a-z0-9\s]/g, '')      // Remove special characters
-    .replace(/\s+/g, ' ')             // Normalize spaces
+    .replace(/\s*\(\d{4}\)\s*$/, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
     .trim();
   return `${clean}|${type}|${langCode}`;
 }
@@ -114,7 +96,6 @@ function getCachedResult(key) {
   const entry = memoryCache.get(key);
   if (!entry) return null;
   
-  // Check TTL
   if (Date.now() - entry.timestamp > CONFIG.CACHE_TTL) {
     console.log(`[Cache] Entry expired for key: ${key}`);
     memoryCache.delete(key);
@@ -128,15 +109,13 @@ function getCachedResult(key) {
 function setCacheResult(key, data) {
   if (!CONFIG.ENABLE_CACHE) return;
   
-  // Limit cache size - keep only most recent entries
   if (memoryCache.size >= CONFIG.MAX_CACHE_SIZE) {
-    // Remove oldest 20% of entries
     const toRemove = Math.floor(CONFIG.MAX_CACHE_SIZE * 0.2);
     const keys = Array.from(memoryCache.keys());
     for (let i = 0; i < Math.min(toRemove, keys.length); i++) {
       memoryCache.delete(keys[i]);
     }
-    console.log(`[Cache] Removed ${Math.min(toRemove, keys.length)} oldest entries to maintain size limit`);
+    console.log(`[Cache] Removed ${Math.min(toRemove, keys.length)} oldest entries`);
   }
   
   memoryCache.set(key, {
@@ -146,7 +125,7 @@ function setCacheResult(key, data) {
   cacheDirty = true;
 }
 
-// ── DYNAMIC KERALATV URL ──────────────────────────────────────────────────────
+// ── URLS ──────────────────────────────────────────────────────────────────────
 function getKeralaTVUrl() {
   const months = [
     'january','february','march','april','may','june',
@@ -159,17 +138,11 @@ function getKeralaTVUrl() {
 const CINEBUDS_MAL = 'https://cinebuds.com/malayalam-movies-ott-release-dates/';
 const CINEBUDS_TAM = 'https://cinebuds.com/tamil-movies-digital-release-dates/';
 const KERALATV_URL = getKeralaTVUrl();
-
-const LANG_CODE = {
-  'mal-movie': 'ml', 'mal-series': 'ml',
-  'tam-movie': 'ta', 'tam-series': 'ta',
-};
-
 // ── RATE LIMITING ─────────────────────────────────────────────────────────────
 let requestCount = 0;
 let lastReset = Date.now();
-const RATE_LIMIT = 45; // TMDB allows 50 per 10 seconds, leave buffer
-const RATE_WINDOW = 10000; // 10 seconds
+const RATE_LIMIT = 45;
+const RATE_WINDOW = 10000;
 
 async function rateLimitedFetch(url) {
   if (!url.includes('themoviedb.org')) {
@@ -184,7 +157,7 @@ async function rateLimitedFetch(url) {
   
   if (requestCount >= RATE_LIMIT) {
     const waitTime = RATE_WINDOW - (now - lastReset);
-    console.log(`[RateLimit] Waiting ${waitTime}ms to avoid TMDB rate limit...`);
+    console.log(`[RateLimit] Waiting ${waitTime}ms...`);
     await new Promise(r => setTimeout(r, waitTime + 100));
     requestCount = 0;
     lastReset = Date.now();
@@ -200,11 +173,9 @@ function fetchRaw(url, timeoutMs) {
     const lib = url.startsWith('https') ? https : http;
     const opts = {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'text/html,application/xhtml+xml',
         'Accept-Encoding': 'gzip, deflate, br',
-        'Cache-Control': 'no-cache',
       },
     };
     const req = lib.get(url, opts, (res) => {
@@ -237,16 +208,15 @@ async function fetchRawWithRetry(url, timeoutMs, retries = CONFIG.MAX_RETRIES) {
   
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      console.log(`[Fetch] Attempt ${attempt}/${retries}: ${url}`);
+      console.log(`[Fetch] Attempt ${attempt}/${retries}: ${url.substring(0, 50)}...`);
       const result = await fetchRaw(url, timeoutMs);
       
-      // Health check: Validate response contains expected content
       if (url.includes('cinebuds.com') || url.includes('keralatv.in')) {
         if (!result.includes('<table') && !result.includes('table')) {
-          throw new Error('Response missing expected table structure');
+          throw new Error('Response missing table structure');
         }
         if (result.length < 1000) {
-          throw new Error(`Response too small (${result.length} chars) - likely error page`);
+          throw new Error(`Response too small (${result.length} chars)`);
         }
       }
       
@@ -268,17 +238,14 @@ async function fetchRawWithRetry(url, timeoutMs, retries = CONFIG.MAX_RETRIES) {
 
 function fetchJson(url) {
   return fetchRawWithRetry(url, 15000).then(t => JSON.parse(t));
-}
-
-// ── DATE LOGIC WITH TIMEZONE SUPPORT ────────────────────────────────────────
+       }
+// ── DATE LOGIC ────────────────────────────────────────────────────────────────
 function parseDate(str) {
   if (!str) return null;
-  if (/soon|tba|tbd|announced|upcoming|expected|expect|confirm|tentative|coming soon|awaiting/i.test(str)) return null;
+  if (/soon|tba|tbd|upcoming|expected|coming soon/i.test(str)) return null;
   
-  // Clean the string
   str = str.replace(/\s*\(.*?\)/g, '').trim();
   
-  // Handle "DD Month YYYY" format (common in India)
   const indianDate = str.match(/(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\s+(\d{4})/i);
   if (indianDate) {
     const months = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, 
@@ -287,7 +254,6 @@ function parseDate(str) {
     if (!isNaN(d.getTime())) return d;
   }
   
-  // Handle "Month DD, YYYY" format
   const monthDayYear = str.match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\s+(\d{1,2}),?\s+(\d{4})/i);
   if (monthDayYear) {
     const months = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, 
@@ -296,14 +262,12 @@ function parseDate(str) {
     if (!isNaN(d.getTime())) return d;
   }
   
-  // Handle "DD/MM/YYYY" or "DD-MM-YYYY"
   const dmY = str.match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
   if (dmY) {
     const d = new Date(parseInt(dmY[3]), parseInt(dmY[2]) - 1, parseInt(dmY[1]));
     if (!isNaN(d.getTime())) return d;
   }
   
-  // Try standard date parsing as fallback
   const d = new Date(str);
   return isNaN(d.getTime()) ? null : d;
 }
@@ -311,13 +275,7 @@ function parseDate(str) {
 function isAlreadyReleased(dateStr) {
   const d = parseDate(dateStr);
   if (!d) return false;
-  
-  // Use IST timezone for comparison
-  const now = new Date();
-  const istOffset = 5.5 * 60 * 60 * 1000;
-  const istNow = new Date(now.getTime() + istOffset);
-  
-  return d <= istNow;
+  return d <= new Date();
 }
 
 // ── TITLE VARIANTS ────────────────────────────────────────────────────────────
@@ -339,14 +297,12 @@ function getTitleVariants(raw) {
   const noThe = base.replace(/\b(the|a|an)\b/gi, '').replace(/\s+/g, ' ').trim();
   if (noThe !== base) variants.add(noThe);
   
-  // Remove Hindi/other language indicators for better matching
   const cleaned = base.replace(/\b(malayalam|tamil|hindi|telugu|kannada)\b/gi, '').trim();
   if (cleaned !== base) variants.add(cleaned);
 
   return Array.from(variants).filter(v => v.length >= 2);
-}
-
-// ── TMDB SEARCH BY TITLE ──────────────────────────────────────────────────────
+                       }
+// ── TMDB SEARCH ──────────────────────────────────────────────────────────────
 async function searchTMDB(title, type, langCode) {
   if (!CONFIG.TMDB_KEY) return null;
   const endpoint = type === 'series' ? 'tv' : 'movie';
@@ -396,7 +352,6 @@ async function searchTMDB(title, type, langCode) {
   return null;
 }
 
-// ── TMDB LOOKUP BY IMDB ID ────────────────────────────────────────────────────
 async function findTMDBByImdbId(imdbId, type) {
   if (!CONFIG.TMDB_KEY || !imdbId) return null;
   try {
@@ -453,7 +408,7 @@ async function searchOMDb(title, type, langCode) {
 
       const lang = (data.Language || '').toLowerCase();
       if (lang && !lang.includes(targetLang) && !lang.includes('hindi')) {
-        console.log('[OMDb] Language mismatch for "' + variant + '": ' + data.Language);
+        console.log('[OMDb] Language mismatch for "' + variant + '"');
         continue;
       }
 
@@ -472,34 +427,31 @@ async function searchOMDb(title, type, langCode) {
   }
   return null;
 }
-
-// ── RESOLVE IMDB ID WITH CACHE ──────────────────────────────────────────────
+// ── RESOLVE IMDB ID ──────────────────────────────────────────────────────────
 async function resolveImdbId(title, type, langCode) {
   const cacheKey = getCacheKey(title, type, langCode);
   
-  // Check cache first
   const cached = getCachedResult(cacheKey);
   if (cached !== null && cached !== undefined) {
     if (cached === 'not_found') {
-      console.log(`[Cache Hit] "${title}" -> not found (cached negative)`);
+      console.log(`[Cache Hit] "${title}" -> not found`);
       return null;
     }
     console.log(`[Cache Hit] "${title}" -> ${cached.imdbId}`);
     return cached;
   }
 
-  console.log(`[Resolve] Looking up "${title}" (${type}, ${langCode})`);
+  console.log(`[Resolve] Looking up "${title}"...`);
   
   let result = await searchTMDB(title, type, langCode);
 
   if (!result && CONFIG.ENABLE_OMDB) {
-    console.log('[OMDb] Trying title fallback for "' + title + '"...');
+    console.log('[OMDb] Trying fallback for "' + title + '"...');
     result = await searchOMDb(title, type, langCode);
   }
 
-  // If OMDb found an IMDb ID but no poster, try TMDB /find for poster
   if (result && result.imdbId && !result.poster && CONFIG.TMDB_KEY) {
-    console.log('[TMDB/find] Looking up poster for ' + result.imdbId + '...');
+    console.log('[TMDB/find] Looking up poster for ' + result.imdbId);
     const tmdbResult = await findTMDBByImdbId(result.imdbId, type);
     if (tmdbResult && tmdbResult.poster) {
       result.poster = tmdbResult.poster;
@@ -512,15 +464,14 @@ async function resolveImdbId(title, type, langCode) {
     console.log(`[Resolve] "${title}" -> ${result.imdbId}`);
     setCacheResult(cacheKey, result);
   } else {
-    console.log(`[Resolve] No IMDb ID for "${title}" — excluding`);
-    // Cache negative result to avoid repeated lookups
+    console.log(`[Resolve] No IMDb ID for "${title}"`);
     setCacheResult(cacheKey, 'not_found');
   }
 
   return result;
 }
 
-// ── CONCURRENT REQUEST LIMITING ──────────────────────────────────────────────
+// ── CONCURRENT PROCESSING ────────────────────────────────────────────────────
 async function processWithConcurrency(items, processor, concurrency = CONFIG.CONCURRENCY) {
   const results = [];
   const queue = [...items];
@@ -540,44 +491,221 @@ async function processWithConcurrency(items, processor, concurrency = CONFIG.CON
         const result = await processor(item);
         if (result) results.push(result);
       } catch (e) {
-        console.error(`[Concurrency] Error processing item: ${e.message}`);
+        console.error(`[Concurrency] Error: ${e.message}`);
       } finally {
         activeCount--;
-        processNext(); // Process next item in queue
+        processNext();
       }
     }
     
-    // Start concurrency number of workers
-    const workers = [];
     for (let i = 0; i < Math.min(concurrency, items.length); i++) {
-      workers.push(processNext());
+      processNext();
     }
   });
+                                 }
+t
+// ── BUILD METAS ──────────────────────────────────────────────────────────────
+async function buildMetas(items, type, langCode) {
+  const processor = async (item) => {
+    const imdb = await resolveImdbId(item.title, type, langCode);
+    if (!imdb || !imdb.imdbId) return null;
+
+    let desc = '';
+    if (imdb.overview) desc += imdb.overview + '\n\n';
+    desc += '📺 Streaming on: ' + item.platform + '\n';
+    desc += '📅 OTT Release: ' + item.releaseDate;
+    if (imdb.rating) desc += '\n⭐ Rating: ' + imdb.rating + '/10';
+
+    const meta = {
+      id: imdb.imdbId,
+      type,
+      name: item.title,
+      releaseInfo: imdb.year || item.releaseDate,
+      description: desc.trim(),
+      poster: imdb.poster || undefined,
+      background: imdb.backdrop || undefined,
+      genres: imdb.genres && imdb.genres.length ? imdb.genres : undefined,
+    };
+
+    Object.keys(meta).forEach(k => meta[k] === undefined && delete meta[k]);
+    return meta;
+  };
+
+  console.log(`[Build] Processing ${items.length} items with concurrency ${CONFIG.CONCURRENCY}`);
+  const metas = await processWithConcurrency(items, processor, CONFIG.CONCURRENCY);
+  
+  console.log('[scraper] Done: ' + metas.length + ' items with valid IMDb IDs');
+  return metas;
 }
 
-// ── PARSE CINEBUDS TABLE WITH FALLBACKS ─────────────────────────────────────
-function parseCinebudsTable(html) {
-  let items = [];
+// ── HEALTH CHECK ──────────────────────────────────────────────────────────────
+async function healthCheck() {
+  console.log('[Health] Running health checks...');
+  const issues = [];
   
-  // Try primary parsing
-  items = parseCinebudsPrimary(html);
-  
-  // If no items, try alternative method
-  if (items.length === 0) {
-    console.warn('[Parse] Primary parser failed, trying alternative');
-    items = parseCinebudsAlternative(html);
+  if (CONFIG.TMDB_KEY) {
+    try {
+      const test = await fetchJson(
+        'https://api.themoviedb.org/3/movie/550?api_key=' + CONFIG.TMDB_KEY
+      );
+      if (test && test.id === 550) {
+        console.log('[Health] ✅ TMDB API is working');
+      } else {
+        issues.push('TMDB API returned unexpected response');
+      }
+    } catch (e) {
+      issues.push(`TMDB API error: ${e.message}`);
+    }
+  } else {
+    console.warn('[Health] ⚠️ TMDB_API_KEY not set');
   }
   
-  return items;
+  if (CONFIG.OMDB_KEY && CONFIG.ENABLE_OMDB) {
+    try {
+      const test = await fetchJson(
+        'https://www.omdbapi.com/?apikey=' + CONFIG.OMDB_KEY + '&t=Inception'
+      );
+      if (test && test.Response === 'True') {
+        console.log('[Health] ✅ OMDb API is working');
+      } else {
+        issues.push('OMDb API returned unexpected response');
+      }
+    } catch (e) {
+      issues.push(`OMDb API error: ${e.message}`);
+    }
+  }
+  
+  const sources = [
+    { name: 'Cinebuds Malayalam', url: CINEBUDS_MAL },
+    { name: 'Cinebuds Tamil', url: CINEBUDS_TAM },
+    { name: 'KeralaTV', url: KERALATV_URL },
+  ];
+  
+  for (const source of sources) {
+    try {
+      const html = await fetchRawWithRetry(source.url, 10000, 1);
+      if (html.includes('<table') || html.includes('table')) {
+        console.log(`[Health] ✅ ${source.name} is accessible`);
+      } else {
+        issues.push(`${source.name} returned no table structure`);
+      }
+    } catch (e) {
+      issues.push(`${source.name} error: ${e.message}`);
+    }
+  }
+  
+  if (issues.length > 0) {
+    console.warn('[Health] ⚠️ Issues found:', issues.join(', '));
+  } else {
+    console.log('[Health] ✅ All health checks passed');
+  }
+  
+  return issues;
 }
 
-function parseCinebudsPrimary(html) {
-  const $ = cheerio.load(html);
-  const items = [];
+// ── SCRAPE FUNCTIONS ──────────────────────────────────────────────────────────
+async function scrapeMalayalam(type) {
+  loadCache();
+  
+  if (CONFIG.RUN_HEALTH_CHECK) {
+    await healthCheck();
+  }
+  
+  try {
+    if (type === 'movie') {
+      console.log('[scraper] Malayalam movies: fetching...');
+      const [html1, html2] = await Promise.all([
+        fetchRawWithRetry(CINEBUDS_MAL, CONFIG.REQUEST_TIMEOUT),
+        fetchRawWithRetry(KERALATV_URL, CONFIG.REQUEST_TIMEOUT),
+      ]);
+      
+      const items1 = parseCinebudsTable(html1);
+      const items2 = parseKeralaTVTable(html2, 'movie');
+      
+      const combined = deduplicate(
+        [...items1, ...items2].filter(i => isAlreadyReleased(i.releaseDate))
+      );
+      combined.sort((a, b) => {
+        const da = parseDate(a.releaseDate);
+        const db = parseDate(b.releaseDate);
+        if (da && db) return db - da;
+        return 0;
+      });
+      
+      console.log(`[scraper] Malayalam movies: ${combined.length} released items`);
+      const result = await buildMetas(combined.slice(0, CONFIG.MAX_ITEMS), 'movie', 'ml');
+      saveCache();
+      return result;
+    } else {
+      console.log('[scraper] Malayalam series: fetching...');
+      const html = await fetchRawWithRetry(KERALATV_URL, CONFIG.REQUEST_TIMEOUT);
+      const items = parseKeralaTVTable(html, 'series');
+      const released = deduplicate(items.filter(i => isAlreadyReleased(i.releaseDate)));
+      released.sort((a, b) => {
+        const da = parseDate(a.releaseDate);
+        const db = parseDate(b.releaseDate);
+        if (da && db) return db - da;
+        return 0;
+      });
+      
+      console.log(`[scraper] Malayalam series: ${released.length} released items`);
+      const result = await buildMetas(released.slice(0, CONFIG.MAX_ITEMS), 'series', 'ml');
+      saveCache();
+      return result;
+    }
+  } catch (e) {
+    console.warn('[scraper] Malayalam ' + type + ' error:', e.message);
+    saveCache();
+    return [];
+  }
+}
 
-  $('table').each((_, table) => {
-    const headers = [];
-    $(table).find('thead th, thead td').each((_, th) =>
-      headers.push($(th).text().trim().toLowerCase())
-    );
-    if (headers.length 
+async function scrapeTamil(type) {
+  loadCache();
+  
+  if (CONFIG.RUN_HEALTH_CHECK) {
+    await healthCheck();
+  }
+  
+  try {
+    if (type === 'movie') {
+      console.log('[scraper] Tamil movies: fetching...');
+      const html = await fetchRawWithRetry(CINEBUDS_TAM, CONFIG.REQUEST_TIMEOUT);
+      const items = parseCinebudsTable(html);
+      const released = deduplicate(items.filter(i => isAlreadyReleased(i.releaseDate)));
+      released.sort((a, b) => {
+        const da = parseDate(a.releaseDate);
+        const db = parseDate(b.releaseDate);
+        if (da && db) return db - da;
+        return 0;
+      });
+      
+      console.log(`[scraper] Tamil movies: ${released.length} released items`);
+      const result = await buildMetas(released.slice(0, CONFIG.MAX_ITEMS), 'movie', 'ta');
+      saveCache();
+      return result;
+    } else {
+      console.log('[scraper] Tamil series: fetching...');
+      const html = await fetchRawWithRetry(KERALATV_URL, CONFIG.REQUEST_TIMEOUT);
+      const items = parseKeralaTVTable(html, 'series');
+      const released = deduplicate(items.filter(i => isAlreadyReleased(i.releaseDate)));
+      released.sort((a, b) => {
+        const da = parseDate(a.releaseDate);
+        const db = parseDate(b.releaseDate);
+        if (da && db) return db - da;
+        return 0;
+      });
+      
+      console.log(`[scraper] Tamil series: ${released.length} released items`);
+      const result = await buildMetas(released.slice(0, CONFIG.MAX_ITEMS), 'series', 'ta');
+      saveCache();
+      return result;
+    }
+  } catch (e) {
+    console.warn('[scraper] Tamil ' + type + ' error:', e.message);
+    saveCache();
+    return [];
+  }
+}
+
+module.exports = { scrapeMalayalam, scrapeTamil };
