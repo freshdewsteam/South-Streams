@@ -124,7 +124,62 @@ function setCacheResult(key, data) {
   });
   cacheDirty = true;
 }
-
+// ── DIRECT IMDB SEARCH (AUTOMATIC FALLBACK) ──────────────────────────────────
+async function searchImdbDirect(title, type) {
+  try {
+    const cleanTitle = title
+      .replace(/\s*\([^)]*\)/g, '')
+      .replace(/\s*[-–]\s*(official|trailer|teaser|movie|film|review)/i, '')
+      .trim()
+      .substring(0, 30);
+    
+    const firstLetter = cleanTitle[0].toLowerCase();
+    const searchUrl = `https://v2.sg.media-imdb.com/suggestion/titles/${firstLetter}/${encodeURIComponent(cleanTitle)}.json`;
+    
+    console.log(`[IMDb Direct] Searching for "${cleanTitle}"...`);
+    const data = await fetchJson(searchUrl);
+    
+    if (!data.d || data.d.length === 0) {
+      return null;
+    }
+    
+    let bestMatch = null;
+    let bestScore = -1;
+    
+    for (const result of data.d) {
+      let score = 0;
+      const resultTitle = (result.l || '').toLowerCase();
+      const cleanLower = cleanTitle.toLowerCase();
+      
+      if (resultTitle === cleanLower) score += 100;
+      else if (resultTitle.startsWith(cleanLower)) score += 60;
+      else if (resultTitle.includes(cleanLower)) score += 30;
+      
+      const isMovie = result.qid === 'movie' || result.qid === 'feature';
+      const isSeries = result.qid === 'tv_series' || result.qid === 'tv_miniseries';
+      
+      if (type === 'movie' && isMovie) score += 50;
+      else if (type === 'series' && isSeries) score += 50;
+      
+      if (result.id && result.id.startsWith('tt')) score += 30;
+      
+      if (score > bestScore && score >= 50) {
+        bestScore = score;
+        bestMatch = result;
+      }
+    }
+    
+    if (bestMatch && bestMatch.id) {
+      console.log(`[IMDb Direct] Found: ${bestMatch.l} (${bestMatch.id})`);
+      return bestMatch.id;
+    }
+    
+    return null;
+  } catch (e) {
+    console.warn('[IMDb Direct] Error:', e.message);
+    return null;
+  }
+}
 // ── URLS ──────────────────────────────────────────────────────────────────────
 function getKeralaTVUrl() {
   const months = [
@@ -427,31 +482,57 @@ async function searchOMDb(title, type, langCode) {
   }
   return null;
 }
-// ── RESOLVE IMDB ID ──────────────────────────────────────────────────────────
+// ── RESOLVE IMDB ID WITH AUTO FALLBACK ──────────────────────────────────────
 async function resolveImdbId(title, type, langCode) {
   const cacheKey = getCacheKey(title, type, langCode);
   
   const cached = getCachedResult(cacheKey);
   if (cached !== null && cached !== undefined) {
     if (cached === 'not_found') {
-      console.log(`[Cache Hit] "${title}" -> not found`);
       return null;
     }
-    console.log(`[Cache Hit] "${title}" -> ${cached.imdbId}`);
     return cached;
   }
 
   console.log(`[Resolve] Looking up "${title}"...`);
   
-  let result = await searchTMDB(title, type, langCode);
-
+  let result = null;
+  
+  // Try 1: TMDB Search
+  result = await searchTMDB(title, type, langCode);
+  
+  // Try 2: OMDb
   if (!result && CONFIG.ENABLE_OMDB) {
     console.log('[OMDb] Trying fallback for "' + title + '"...');
     result = await searchOMDb(title, type, langCode);
   }
+  
+  // Try 3: Direct IMDb Search (AUTOMATIC!)
+  if (!result) {
+    console.log('[IMDb Direct] Trying direct search for "' + title + '"...');
+    const imdbId = await searchImdbDirect(title, type);
+    if (imdbId) {
+      console.log(`[IMDb Direct] Found IMDb ID: ${imdbId}`);
+      const tmdbResult = await findTMDBByImdbId(imdbId, type);
+      if (tmdbResult) {
+        result = tmdbResult;
+      } else {
+        // Create basic entry even if TMDB doesn't have details
+        result = {
+          imdbId: imdbId,
+          poster: null,
+          backdrop: null,
+          overview: null,
+          rating: null,
+          year: null,
+          genres: [],
+        };
+      }
+    }
+  }
 
+  // Try to get poster if missing
   if (result && result.imdbId && !result.poster && CONFIG.TMDB_KEY) {
-    console.log('[TMDB/find] Looking up poster for ' + result.imdbId);
     const tmdbResult = await findTMDBByImdbId(result.imdbId, type);
     if (tmdbResult && tmdbResult.poster) {
       result.poster = tmdbResult.poster;
@@ -470,7 +551,6 @@ async function resolveImdbId(title, type, langCode) {
 
   return result;
 }
-
 // ── CONCURRENT PROCESSING ────────────────────────────────────────────────────
 async function processWithConcurrency(items, processor, concurrency = CONFIG.CONCURRENCY) {
   const results = [];
