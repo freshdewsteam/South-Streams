@@ -1,33 +1,7 @@
 {
   "mal-movies": [],
-  "mal-series": [
-    {
-      "id": "tt43592288",
-      "type": "series",
-      "name": "Muthassi",
-      "releaseInfo": "2026",
-      "description": "In a remote village haunted by ancient secrets, a mother's love is put to the ultimate test when her son becomes entangled in a terrifying supernatural curse.\n\n📺 Streaming on: ZEE5\n📅 OTT Release: 3 July 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/upghryFPaiUMjlzgmnHpwtnYJx3.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/yjffBOFmUORT79ja3gD42GO7hI3.jpg",
-      "genres": [
-        "Mystery"
-      ]
-    }
-  ],
+  "mal-series": [],
   "tam-movies": [],
-  "tam-series": [
-    {
-      "id": "tt43592288",
-      "type": "series",
-      "name": "Muthassi",
-      "releaseInfo": "2026",
-      "description": "In a remote village haunted by ancient secrets, a mother's love is put to the ultimate test when her son becomes entangled in a terrifying supernatural curse.\n\n📺 Streaming on: ZEE5\n📅 OTT Release: 3 July 2026",
-      "poster": "https://image.tmdb.org/t/p/w500/upghryFPaiUMjlzgmnHpwtnYJx3.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/yjffBOFmUORT79ja3gD42GO7hI3.jpg",
-      "genres": [
-        "Mystery"
-      ]
-    }
-  ],
-  "builtAt": "2026-07-07T20:47:06.112Z"
+  "tam-series": [],
+  "builtAt": "2026-07-07T21:54:41.941Z"
 }
