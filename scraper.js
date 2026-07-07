@@ -19,7 +19,7 @@ const CONFIG = {
   CONCURRENCY: parseInt(process.env.CONCURRENCY) || 5,
   ENABLE_OMDB: process.env.ENABLE_OMDB !== 'false',
   ENABLE_CACHE: process.env.ENABLE_CACHE !== 'false',
-  CACHE_FILE: process.env.CACHE_FILE || './data/cache.json',
+  CACHE_FILE: process.env.CACHE_FILE || './data/resolve-cache.json',
   MAX_CACHE_SIZE: parseInt(process.env.MAX_CACHE_SIZE) || 500,
   CACHE_TTL: parseInt(process.env.CACHE_TTL) || 30 * 24 * 60 * 60 * 1000,
   MAX_RETRIES: parseInt(process.env.MAX_RETRIES) || 3,
