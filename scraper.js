@@ -1,22 +1,11 @@
 /**
  * scraper.js - TMDB Discover API
- *
- * Queries TMDB directly for Malayalam/Tamil OTT releases in India.
- * No scraping. No external sources.
- *
- * EFFICIENCY:
- *   - append_to_response combines detail + providers into 1 request per item
- *   - resolve-cache.json persists processed items — skips on next run
- *   - Only looks back 30 days for new items (not a full year each time)
- *   - ~15-25 TMDB requests per full run across all 4 catalogues
- *
- * TMDB free limit: ~1000 req/day — we use ~100/day (4 runs × 25)
  */
 
 const https = require('https');
-const zlib  = require('zlib');
-const fs    = require('fs');
-const path  = require('path');
+const zlib = require('zlib');   // ← Fixed
+const fs = require('fs');        // ← Make sure this is here
+const path = require('path');
 
 const TMDB_KEY   = process.env.TMDB_API_KEY || '';
 const BASE       = 'https://api.themoviedb.org/3';
@@ -138,8 +127,8 @@ function today() {
 
 // ── DISCOVER NEW RELEASES ─────────────────────────────────────────────────────
 // Returns raw TMDB results (lightweight — no detail calls yet)
+// ── DISCOVER NEW RELEASES (TRENDING METHOD) ─────────────────────────────────
 async function discoverNew(mediaType, lang) {
-  // Use longer lookback if cache is empty (first ever run)
   const isFirstRun = Object.keys(cache).length === 0;
   const lookback   = isFirstRun ? FIRST_RUN_LOOKBACK : LOOKBACK_DAYS;
   const dateFrom   = daysAgo(lookback);
@@ -148,44 +137,49 @@ async function discoverNew(mediaType, lang) {
   console.log('[Discover] ' + lang + ' ' + mediaType +
     ' from ' + dateFrom + (isFirstRun ? ' (first run — backfilling ' + lookback + ' days)' : ''));
 
-  const dateParam = mediaType === 'movie'
-    ? 'primary_release_date.gte=' + dateFrom + '&primary_release_date.lte=' + dateTo
-    : 'first_air_date.gte=' + dateFrom + '&first_air_date.lte=' + dateTo;
-
   const results = [];
 
-  // Fetch pages until we have enough or run out
-  for (let page = 1; page <= 3; page++) {
-    try {
+  // Try two methods: Trending (more likely to have new content) and Discover
+  const methods = [
+    // Method 1: Trending (gets popular new content)
+    async () => {
+      const endpoint = mediaType === 'movie' ? 'movie' : 'tv';
       const data = await tmdb(
-  '/discover/' + mediaType
-  + '?with_original_language=' + lang
-  + '&watch_region=IN'
-  + '&with_watch_monetization_types=flatrate|free|ads|rent|buy'
-  + '&sort_by=primary_release_date.desc'
-  + '&' + dateParam
-  + '&page=' + page
-);
+        '/trending/' + endpoint + '/week'  // ← Trending endpoint
+      );
+      return data.results || [];
+    },
+    // Method 2: Discover (with language filter, but no OTT filter)
+    async () => {
+      const dateParam = mediaType === 'movie'
+        ? 'primary_release_date.gte=' + dateFrom + '&primary_release_date.lte=' + dateTo
+        : 'first_air_date.gte=' + dateFrom + '&first_air_date.lte=' + dateTo;
 
-      if (!data.results || !data.results.length) break;
+      const data = await tmdb(
+        '/discover/' + mediaType
+        + '?with_original_language=' + lang
+        + '&sort_by=primary_release_date.desc'
+        + '&' + dateParam
+        + '&page=1'
+      );
+      return data.results || [];
+    }
+  ];
 
-      // Filter out items already in cache — no need to re-process
-      const newItems = data.results.filter(r => !cache[String(r.id)]);
+  for (const method of methods) {
+    try {
+      const items = await method();
+      // Filter out already cached items
+      const newItems = items.filter(r => !cache[String(r.id)]);
       results.push(...newItems);
-
-      console.log('[Discover] Page ' + page + ': ' + data.results.length +
-        ' total, ' + newItems.length + ' new');
-
-      if (page >= (data.total_pages || 1)) break;
-      // If all items on this page were cached, no need to fetch more pages
-      if (newItems.length === 0) break;
+      console.log('[Discover] Found ' + newItems.length + ' new items');
+      if (results.length >= 50) break;  // Stop if we have enough
     } catch (e) {
-      console.warn('[Discover] Page ' + page + ' failed: ' + e.message);
-      break;
+      console.warn('[Discover] Method failed: ' + e.message);
     }
   }
 
-  console.log('[Discover] ' + results.length + ' new items to process');
+  console.log('[Discover] Total ' + results.length + ' new items to process');
   return results;
 }
 
