@@ -26,7 +26,7 @@ const CACHE_FILE = path.join(__dirname, '..', 'data', 'resolve-cache.json');
 
 // Lookback windows for TMDB Discover
 const MOVIE_LOOKBACK  = 30;  // days — check last 30 days each run
-const MOVIE_FIRST_RUN = 180; // days — backfill on very first run
+const MOVIE_FIRST_RUN = 730; // days — backfill on very first run
 
 // ── PERSISTENT CACHE ──────────────────────────────────────────────────────────
 let cache = {};
