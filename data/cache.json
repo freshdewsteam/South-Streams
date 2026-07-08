@@ -5,7 +5,7 @@
       "type": "movie",
       "name": "Mollywood Times",
       "releaseInfo": "2026",
-      "description": "Vineeth Madhavan tries hard to become Malayalam cinema's greatest horror filmmaker, but will the toxic industry affect his dream?\n\n📺 Streaming on: null\n📅 Release: 2026-06-05\n⭐ Rating: 6.1/10",
+      "description": "Vineeth Madhavan tries hard to become Malayalam cinema's greatest horror filmmaker, but will the toxic industry affect his dream?\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-06-05\n⭐ Rating: 6.1/10",
       "poster": "https://image.tmdb.org/t/p/w500/zUBCBtMsQ8dxnhJhhng4C8U80IU.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/wQwbainQ5CtPWbnwXX144rMIS4E.jpg",
       "genres": [
@@ -259,7 +259,7 @@
       "type": "movie",
       "name": "Mollywood Times",
       "releaseInfo": "2026",
-      "description": "Vineeth Madhavan tries hard to become Malayalam cinema's greatest horror filmmaker, but will the toxic industry affect his dream?\n\n📺 Streaming on: null\n📅 Release: 2026-06-05\n⭐ Rating: 6.1/10",
+      "description": "Vineeth Madhavan tries hard to become Malayalam cinema's greatest horror filmmaker, but will the toxic industry affect his dream?\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-06-05\n⭐ Rating: 6.1/10",
       "poster": "https://image.tmdb.org/t/p/w500/zUBCBtMsQ8dxnhJhhng4C8U80IU.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/wQwbainQ5CtPWbnwXX144rMIS4E.jpg",
       "genres": [
@@ -716,20 +716,7 @@
         "Drama",
         "Action & Adventure"
       ]
-    },
-    {
-      "id": "tmdb317270",
-      "type": "series",
-      "name": "Minnale",
-      "releaseInfo": "2018",
-      "description": "📺 Streaming on: null\n📅 Release: 2018-08-06",
-      "poster": "https://image.tmdb.org/t/p/w500/wACr0ARXdPXZeakkw2ecg4PrDId.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/CrH69HLWkrQM7leATarmoSydIN.jpg",
-      "genres": [
-        "Drama",
-        "Soap"
-      ]
     }
   ],
-  "builtAt": "2026-07-08T14:55:15.765Z"
+  "builtAt": "2026-07-08T20:17:55.930Z"
 }
