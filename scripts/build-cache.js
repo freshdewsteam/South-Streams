@@ -1,10 +1,17 @@
-const fs = require('fs');
+/**
+ * scripts/build-cache.js
+ * Runs on GitHub Actions — builds data/cache.json from scraper output
+ */
+
+const fs   = require('fs');
 const path = require('path');
-const { scrapeMalayalam, scrapeTamil } = require('../scraper.js');  // ← Added .js
+const { scrapeMalayalam, scrapeTamil } = require('../scraper.js');
 
 async function buildCache() {
-  console.log('=== Building OTT cache on GitHub Actions ===');
+  console.log('=== Building OTT cache ===');
   console.log('Time: ' + new Date().toISOString());
+  console.log('TMDB key:  ' + (process.env.TMDB_API_KEY   ? '✅ set' : '❌ MISSING'));
+  console.log('Sheet URL: ' + (process.env.GOOGLE_SHEET_URL ? '✅ set' : '⚠️  not set (series will be empty)'));
 
   const result = {
     'mal-movies': [],
@@ -20,7 +27,7 @@ async function buildCache() {
     console.log('Done: ' + result['mal-movies'].length + ' items');
   } catch (e) { console.error('Failed: ' + e.message); }
 
-  await new Promise(r => setTimeout(r, 5000));
+  await new Promise(r => setTimeout(r, 2000));
 
   console.log('\n[2/4] Malayalam series...');
   try {
@@ -28,7 +35,7 @@ async function buildCache() {
     console.log('Done: ' + result['mal-series'].length + ' items');
   } catch (e) { console.error('Failed: ' + e.message); }
 
-  await new Promise(r => setTimeout(r, 5000));
+  await new Promise(r => setTimeout(r, 2000));
 
   console.log('\n[3/4] Tamil movies...');
   try {
@@ -36,7 +43,7 @@ async function buildCache() {
     console.log('Done: ' + result['tam-movies'].length + ' items');
   } catch (e) { console.error('Failed: ' + e.message); }
 
-  await new Promise(r => setTimeout(r, 5000));
+  await new Promise(r => setTimeout(r, 2000));
 
   console.log('\n[4/4] Tamil series...');
   try {
@@ -44,11 +51,12 @@ async function buildCache() {
     console.log('Done: ' + result['tam-series'].length + ' items');
   } catch (e) { console.error('Failed: ' + e.message); }
 
+  // Save OTT catalogue
   const outputPath = path.join(__dirname, '..', 'data', 'cache.json');
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, JSON.stringify(result, null, 2));
 
-  console.log('\n=== Cache saved ===');
+  console.log('\n=== Done ===');
   console.log('Malayalam movies: ' + result['mal-movies'].length);
   console.log('Malayalam series: ' + result['mal-series'].length);
   console.log('Tamil movies:     ' + result['tam-movies'].length);
