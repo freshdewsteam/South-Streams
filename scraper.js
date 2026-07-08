@@ -14,7 +14,7 @@
  */
 
 const https = require('https');
-const zlib  = require('fs') && require('zlib');
+const zlib  = require('zlib');
 const fs    = require('fs');
 const path  = require('path');
 
@@ -138,11 +138,11 @@ async function discoverNew(mediaType, lang) {
   for (let page = 1; page <= 3; page++) {
     try {
       const data = await tmdb(
-        '/discover/' + mediaType
-        + '?with_original_language=' + lang
-        + '&watch_region=IN'
-        + '&with_watch_monetization_types=flatrate|free|ads'
-        + '&sort_by=primary_release_date.desc'
+  '/discover/' + mediaType
+  + '?with_original_language=' + lang
+  + '&watch_region=IN'
+  + '&with_watch_monetization_types=flatrate|free|ads|rent|buy'
+  + '&sort_by=primary_release_date.desc'
         + '&' + dateParam
         + '&page=' + page
       );
