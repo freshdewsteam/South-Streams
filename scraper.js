@@ -246,23 +246,6 @@ async function processItem(item, mediaType) {
   const imdbId = detail.imdb_id || ('tmdb' + tmdbId);
   if (!detail.imdb_id) {
     console.log('[Notice] No IMDb ID for: ' + (detail.title || detail.name) + ' - using TMDB ID instead');
-    // Still process it - we'll use TMDB ID as identifier
-  }
-
-  // Must be on OTT in India
-  const platform = extractProviders(detail);
-  if (!platform) {
-    console.log('[Skip] Not on OTT in India: ' + (detail.title || detail.name));
-    cache[tmdbId] = 'skip';
-    return null;
-  }
-
-  // Must have an IMDb ID for Stremio stream addons to work
-  const imdbId = detail.imdb_id || null;
-  if (!imdbId) {
-    console.log('[Skip] No IMDb ID: ' + (detail.title || detail.name));
-    cache[tmdbId] = 'skip';
-    return null;
   }
 
   // Must be on OTT in India
@@ -297,9 +280,7 @@ async function processItem(item, mediaType) {
 
   Object.keys(meta).forEach(k => meta[k] === undefined && delete meta[k]);
 
-  // Cache the result so future runs skip this item
   cache[tmdbId] = meta;
-
   console.log('[OK] ' + title + ' -> ' + imdbId + ' on ' + platform);
   return meta;
 }
