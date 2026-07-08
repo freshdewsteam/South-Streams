@@ -1,21 +1,42 @@
 {
   "mal-movies": [
     {
-      "id": "tt37561290",
+      "id": "tt29959401",
       "type": "movie",
-      "name": "Karakkam",
+      "name": "Mollywood Times",
       "releaseInfo": "2026",
-      "description": "A drunken New Year's prank goes horribly wrong when two young men remove sacred crosses from graves. Five restless ghosts emerge to haunt their every move, driving them to seek redemption and release.\n\n📺 Streaming on: Sony Liv\n📅 Release: 2026-05-28\n⭐ Rating: 6.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/xCc5K9hy7Nkmkag1yS3HC75j9e2.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/dTltu0DVm89axQXqdyUE5pcJzxz.jpg",
+      "description": "Vineeth Madhavan tries hard to become Malayalam cinema's greatest horror filmmaker, but will the toxic industry affect his dream?\n\n📺 Streaming on: null\n📅 Release: 2026-06-05\n⭐ Rating: 6.1/10",
+      "poster": "https://image.tmdb.org/t/p/w500/zUBCBtMsQ8dxnhJhhng4C8U80IU.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/wQwbainQ5CtPWbnwXX144rMIS4E.jpg",
       "genres": [
-        "Horror",
-        "Comedy"
+        "Comedy",
+        "Drama"
       ]
-    }
-  ],
-  "mal-series": [],
-  "tam-movies": [
+    },
+    {
+      "id": "tt33083436",
+      "type": "movie",
+      "name": "Ananthan Kaadu",
+      "releaseInfo": "2026",
+      "description": "This is a tale, which almost became a true story. It unfolds in the late Eighties and early Nineties, when the country was going through a dark phase both politically and socially a time when turmoil was writ all over the political scape of the nation.\n\n📺 Streaming on: null\n📅 Release: 2026-06-25\n⭐ Rating: 4.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/a8Ut1fkbqvolWfEIl8Voa1oUsDG.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/AvMub4XZABMznZBn7W5fot7ghDS.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt35076988",
+      "type": "movie",
+      "name": "Chinna Chinna Aasai",
+      "releaseInfo": "2026",
+      "description": "📺 Streaming on: null\n📅 Release: 2026-06-19",
+      "poster": "https://image.tmdb.org/t/p/w500/9uBqlrtZAoq160hEXyhmCv1NXcX.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
     {
       "id": "tt37561290",
       "type": "movie",
@@ -30,6 +51,311 @@
       ]
     },
     {
+      "id": "tt35254624",
+      "type": "movie",
+      "name": "Balan - The Boy",
+      "releaseInfo": "2026",
+      "description": "A teenage boy searches for his missing mother following a turbulent childhood and her subsequent disappearance, exploring his search for closure and the truth about his past.\n\n📺 Streaming on: null\n📅 Release: 2026-06-19\n⭐ Rating: 7.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/boKxdR9tgXfkazf6yWgiDdleBy0.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cb4b4K3E2jBGaSjkuIkZHJHmoWG.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt37079110",
+      "type": "movie",
+      "name": "Uyir",
+      "releaseInfo": "2026",
+      "description": "📺 Streaming on: null\n📅 Release: 2026-06-26",
+      "poster": "https://image.tmdb.org/t/p/w500/r512xdTd9aXjpIxjY2JlhvJYvIb.jpg",
+      "genres": [
+        "Crime",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt38573318",
+      "type": "movie",
+      "name": "Dose",
+      "releaseInfo": "2026",
+      "description": "A doctor uncovers a suspicious death at his hospital, unraveling secrets and lies. Joined by a haunted investigator, their search for truth becomes a deadly fight for survival.\n\n📺 Streaming on: null\n📅 Release: 2026-05-22",
+      "poster": "https://image.tmdb.org/t/p/w500/wuEQbDF5jHaOOAMGiXWmDRz9imG.jpg",
+      "genres": [
+        "Mystery",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tmdb1539777",
+      "type": "movie",
+      "name": "the flower she left me",
+      "releaseInfo": "2026",
+      "description": "Saira visits her ex Shahad’s play rehearsal. The play and the night they share stir memories of a beautiful past and dreams of what once was, yet with no place in their present or future.\n\n📺 Streaming on: null\n📅 Release: 2026-06-28",
+      "poster": "https://image.tmdb.org/t/p/w500/e4uhOcP8wwvfuh16X3ioUbD8DuO.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/wZb5VBnJt7rJUrpH71uJCREJIrA.jpg",
+      "genres": [
+        "Romance",
+        "Drama",
+        "Music"
+      ]
+    },
+    {
+      "id": "tmdb1616268",
+      "type": "movie",
+      "name": "Aroopi",
+      "releaseInfo": "2026",
+      "description": "A vengeful Yakshini, once sealed inside a doll at the Aryanattu estate, is accidentally unleashed by two thieves. When a brutal murder draws Niranjan, the last surviving heir of the lineage, back to his ancestral home, he must confront an ancient curse and the dark secrets surrounding his family's past.\n\n📺 Streaming on: null\n📅 Release: 2026-07-03",
+      "poster": "https://image.tmdb.org/t/p/w500/r86GykyLSKkytL2P6zRupDumubo.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/nMQMfDBmjDn9jsXVXagGwUBWUSs.jpg",
+      "genres": [
+        "Horror",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tmdb1628756",
+      "type": "movie",
+      "name": "Granny - (Short)",
+      "releaseInfo": "2026",
+      "description": "Rony, a home nurse movies into a remote house to take care of a strange old woman only know an 'Granny'. His sanity starts slipping as her behavior turns increasingly eccentric.\n\n📺 Streaming on: null\n📅 Release: 2026-07-03\n⭐ Rating: 8.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/dH1CeEwnESPiRzXPA4A4UPi2ma6.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/otq2aBqwd3lFadyEACFN8qORnen.jpg",
+      "genres": [
+        "Horror"
+      ]
+    },
+    {
+      "id": "tmdb1654500",
+      "type": "movie",
+      "name": "Makaran",
+      "releaseInfo": "2026",
+      "description": "On Appunni, a hangman, getting ready for his job.\n\n📺 Streaming on: null\n📅 Release: 2026-06-03",
+      "poster": "https://image.tmdb.org/t/p/w500/onEZqtuNEWwLy9cjlMQnlZU3LdY.jpg"
+    },
+    {
+      "id": "tmdb1673203",
+      "type": "movie",
+      "name": "അവിചാരിതം",
+      "releaseInfo": "2026",
+      "description": "In 2046, Britto was digging in his land when he discovered something that soon became news.\n\n📺 Streaming on: null\n📅 Release: 2026-05-30",
+      "poster": "https://image.tmdb.org/t/p/w500/xgDJgYMUH73awBAcbWlyqQzcmMD.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/oCEYfqFAehnjBYWTniwic9zDDs3.jpg",
+      "genres": [
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tmdb1700868",
+      "type": "movie",
+      "name": "Tolsaayam",
+      "releaseInfo": "2026",
+      "description": "14 years later, Ranjan is back in his ancestral village for his estranged father’s final rites. But his homecoming aligns with Anthiyutsavam ,a temple festival heavy with ancient rituals and a strange, unspoken unease.\n\n📺 Streaming on: null\n📅 Release: 2026-05-23",
+      "poster": "https://image.tmdb.org/t/p/w500/uES069TFbdcBNd4vOmUfI0QACF7.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/bva38G3fJmLV2R3604PRmHWiUlz.jpg",
+      "genres": [
+        "Horror"
+      ]
+    },
+    {
+      "id": "tt42956366",
+      "type": "movie",
+      "name": "Puttum Halwem",
+      "releaseInfo": "2026",
+      "description": "Two intimate episodes from a young man's life, one twisted conversation.\n\n📺 Streaming on: null\n📅 Release: 2026-05-22",
+      "poster": "https://image.tmdb.org/t/p/w500/6ZCRgBl060wdGLmqpuUCahaDbQ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/4ROa3GlxrpNKoQ5FOHkYUd9ml2u.jpg",
+      "genres": [
+        "Drama",
+        "Fantasy"
+      ]
+    },
+    {
+      "id": "tt43461202",
+      "type": "movie",
+      "name": "Served Cold",
+      "releaseInfo": "2026",
+      "description": "Trapped in a loveless marriage with her domineering husband Raghu, homemaker Ammu moves through the routines of her household with quiet resignation. In a home where even food becomes a symbol of control and neglect, she is often denied the care and dignity she deserves. Ammu finds solace in Pathu, her neighbor and the wife of Raghu’s rival Shihab. Pathu expresses her affection through food quietly shared across boundaries, offering Ammu the nourishment and warmth withheld from her own home. In return, Ammu gives Pathu something just as vital: the freedom to speak, to be seen, and to exist beyond silence. In a world that often pits women against each other, their bond becomes a quiet act of woman for woman solidarity.\n\n📺 Streaming on: null\n📅 Release: 2026-06-07",
+      "poster": "https://image.tmdb.org/t/p/w500/k3dNu4J2ByfRFo3dwcoaUgHR3FT.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt42636911",
+      "type": "movie",
+      "name": "Kolahalamedu",
+      "releaseInfo": "2026",
+      "description": "📺 Streaming on: null\n📅 Release: 2026-05-22",
+      "poster": "https://image.tmdb.org/t/p/w500/i6kGE2jrbQhy8JDtzVUvY5gqbtn.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/4F2tEUW8Ns4dwyioCuaMpTwE7nC.jpg",
+      "genres": [
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tmdb1719662",
+      "type": "movie",
+      "name": "Normal",
+      "releaseInfo": "2026",
+      "description": "Normal is an anthology film comprising three socially relevant stories set during the COVID-19 lockdown period. The film explores how certain social conditions remained unchanged despite the pandemic.\n\n📺 Streaming on: null\n📅 Release: 2026-06-13",
+      "poster": "https://image.tmdb.org/t/p/w500/cMXLW50gXZ1N3ez3AUVBw18Nwcf.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/tyohjyjXdXBIxWSroTbpk7kQqp6.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tmdb1720240",
+      "type": "movie",
+      "name": "Sathyathil Sambhavichathu",
+      "releaseInfo": "2026",
+      "description": "A long-standing legend speaks of treasure hidden beneath village ponds and wells, with only one man ever claiming to have found it. When clues about the lost treasure begin to surface, a series of misunderstandings, unexpected discoveries, and amusing consequences unfold, blending mystery with humor.\n\n📺 Streaming on: null\n📅 Release: 2026-06-18",
+      "poster": "https://image.tmdb.org/t/p/w500/gAflSOddw7iZhzrBBHZCtutuKB.jpg",
+      "genres": [
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tmdb1722382",
+      "type": "movie",
+      "name": "Aftermath",
+      "releaseInfo": "2026",
+      "description": "As a sister’s growing mistrust threatens to shatter what remains of their bond, a brother is pushed to his absolute limit to keep reality from collapsing on itself.\n\n📺 Streaming on: null\n📅 Release: 2026-06-26",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tmdb1722546",
+      "type": "movie",
+      "name": "LONG DISTANCE - A day with HIM",
+      "releaseInfo": "2026",
+      "description": "A day with HIM.\n\n📺 Streaming on: null\n📅 Release: 2026-06-28",
+      "poster": "https://image.tmdb.org/t/p/w500/c1plgYMFK7AiaQzjcIDsgpkyYJV.jpg",
+      "genres": [
+        "Drama",
+        "Romance"
+      ]
+    }
+  ],
+  "mal-series": [
+    {
+      "id": "tmdb326794",
+      "type": "series",
+      "name": "Muthassi",
+      "releaseInfo": "2026",
+      "description": "In a remote village haunted by ancient secrets, a mother's love is put to the ultimate test when her son becomes entangled in a terrifying supernatural curse.\n\n📺 Streaming on: null\n📅 Release: 2026-07-03",
+      "poster": "https://image.tmdb.org/t/p/w500/upghryFPaiUMjlzgmnHpwtnYJx3.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/yjffBOFmUORT79ja3gD42GO7hI3.jpg",
+      "genres": [
+        "Mystery"
+      ]
+    }
+  ],
+  "tam-movies": [
+    {
+      "id": "tt29959401",
+      "type": "movie",
+      "name": "Mollywood Times",
+      "releaseInfo": "2026",
+      "description": "Vineeth Madhavan tries hard to become Malayalam cinema's greatest horror filmmaker, but will the toxic industry affect his dream?\n\n📺 Streaming on: null\n📅 Release: 2026-06-05\n⭐ Rating: 6.1/10",
+      "poster": "https://image.tmdb.org/t/p/w500/zUBCBtMsQ8dxnhJhhng4C8U80IU.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/wQwbainQ5CtPWbnwXX144rMIS4E.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt33083436",
+      "type": "movie",
+      "name": "Ananthan Kaadu",
+      "releaseInfo": "2026",
+      "description": "This is a tale, which almost became a true story. It unfolds in the late Eighties and early Nineties, when the country was going through a dark phase both politically and socially a time when turmoil was writ all over the political scape of the nation.\n\n📺 Streaming on: null\n📅 Release: 2026-06-25\n⭐ Rating: 4.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/a8Ut1fkbqvolWfEIl8Voa1oUsDG.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/AvMub4XZABMznZBn7W5fot7ghDS.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt35076988",
+      "type": "movie",
+      "name": "Chinna Chinna Aasai",
+      "releaseInfo": "2026",
+      "description": "📺 Streaming on: null\n📅 Release: 2026-06-19",
+      "poster": "https://image.tmdb.org/t/p/w500/9uBqlrtZAoq160hEXyhmCv1NXcX.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt37561290",
+      "type": "movie",
+      "name": "Karakkam",
+      "releaseInfo": "2026",
+      "description": "A drunken New Year's prank goes horribly wrong when two young men remove sacred crosses from graves. Five restless ghosts emerge to haunt their every move, driving them to seek redemption and release.\n\n📺 Streaming on: Sony Liv\n📅 Release: 2026-05-28\n⭐ Rating: 6.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/xCc5K9hy7Nkmkag1yS3HC75j9e2.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/dTltu0DVm89axQXqdyUE5pcJzxz.jpg",
+      "genres": [
+        "Horror",
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tt35254624",
+      "type": "movie",
+      "name": "Balan - The Boy",
+      "releaseInfo": "2026",
+      "description": "A teenage boy searches for his missing mother following a turbulent childhood and her subsequent disappearance, exploring his search for closure and the truth about his past.\n\n📺 Streaming on: null\n📅 Release: 2026-06-19\n⭐ Rating: 7.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/boKxdR9tgXfkazf6yWgiDdleBy0.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cb4b4K3E2jBGaSjkuIkZHJHmoWG.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt35741123",
+      "type": "movie",
+      "name": "Heartin",
+      "releaseInfo": "2026",
+      "description": "Fate tosses a couple into an unexpected situation with an ex-girlfriend in the mix.\n\n📺 Streaming on: null\n📅 Release: 2026-06-26\n⭐ Rating: 6.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/7xvMocNLZov64aOU1X3BRWawjD7.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/ufVCGoqEHOCahpXwDguGIq8CxAP.jpg",
+      "genres": [
+        "Comedy",
+        "Romance",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt37079110",
+      "type": "movie",
+      "name": "Uyir",
+      "releaseInfo": "2026",
+      "description": "📺 Streaming on: null\n📅 Release: 2026-06-26",
+      "poster": "https://image.tmdb.org/t/p/w500/r512xdTd9aXjpIxjY2JlhvJYvIb.jpg",
+      "genres": [
+        "Crime",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt37174734",
+      "type": "movie",
+      "name": "Angikaaram",
+      "releaseInfo": "2026",
+      "description": "Inspired by true events, this film follows the journey of a man who has had enough, fights for recognition against a system shaped strictly by politics and power.\n\n📺 Streaming on: null\n📅 Release: 2026-06-26",
+      "poster": "https://image.tmdb.org/t/p/w500/rRyz56Fubfwmre6F5QiYyIzKmnT.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/w5EprlCldSQ5lPTHFmhvXAsb8VB.jpg",
+      "genres": [
+        "Drama",
+        "Action"
+      ]
+    },
+    {
       "id": "tt26654655",
       "type": "movie",
       "name": "Charukesi",
@@ -40,8 +366,370 @@
         "Drama",
         "Music"
       ]
+    },
+    {
+      "id": "tt37458495",
+      "type": "movie",
+      "name": "Gatta Kusthi 2",
+      "releaseInfo": "2026",
+      "description": "Picks up after the first film, with Veera and Keerthi balancing parenthood and Keerthi's wrestling career, featuring a role reversal where Veera takes on more domestic responsibilities.\n\n📺 Streaming on: null\n📅 Release: 2026-07-03\n⭐ Rating: 0.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/5U8MWIk9XZ60NALyOTpyX7vXIR7.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/uygLz1ENt12Riv2ppTtdAIBRIT1.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt38573318",
+      "type": "movie",
+      "name": "Dose",
+      "releaseInfo": "2026",
+      "description": "A doctor uncovers a suspicious death at his hospital, unraveling secrets and lies. Joined by a haunted investigator, their search for truth becomes a deadly fight for survival.\n\n📺 Streaming on: null\n📅 Release: 2026-05-22",
+      "poster": "https://image.tmdb.org/t/p/w500/wuEQbDF5jHaOOAMGiXWmDRz9imG.jpg",
+      "genres": [
+        "Mystery",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tmdb1539777",
+      "type": "movie",
+      "name": "the flower she left me",
+      "releaseInfo": "2026",
+      "description": "Saira visits her ex Shahad’s play rehearsal. The play and the night they share stir memories of a beautiful past and dreams of what once was, yet with no place in their present or future.\n\n📺 Streaming on: null\n📅 Release: 2026-06-28",
+      "poster": "https://image.tmdb.org/t/p/w500/e4uhOcP8wwvfuh16X3ioUbD8DuO.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/wZb5VBnJt7rJUrpH71uJCREJIrA.jpg",
+      "genres": [
+        "Romance",
+        "Drama",
+        "Music"
+      ]
+    },
+    {
+      "id": "tt38267486",
+      "type": "movie",
+      "name": "Nooru Sami",
+      "releaseInfo": "2026",
+      "description": "Selvi, a widowed mother, devotes her life to raising her two sons in a conservative village. Years later, unfulfilled life comes back into focus, challenging deep-rooted traditions. As family and society strongly oppose change, Selvi must choose between societal expectations and her own happiness.\n\n📺 Streaming on: null\n📅 Release: 2026-06-19",
+      "poster": "https://image.tmdb.org/t/p/w500/r9mX5R4jsrospJlWrOE8WqzktnH.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/h4j6jcnQDCepz2dzLmWaoRPveEo.jpg",
+      "genres": [
+        "Drama",
+        "Family"
+      ]
+    },
+    {
+      "id": "tt39163963",
+      "type": "movie",
+      "name": "Double Occupancy",
+      "releaseInfo": "2026",
+      "description": "Rajini transforms between woman by day and man by night, hiding this gender swap from partners creating tangled complications.\n\n📺 Streaming on: null\n📅 Release: 2026-06-12",
+      "poster": "https://image.tmdb.org/t/p/w500/m0rN6dUnvAAjIwKDLRSIdkrZcBA.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/yxKw7DH4aqexI1rBkUnG5rtwaiL.jpg",
+      "genres": [
+        "Romance",
+        "Drama",
+        "Fantasy"
+      ]
+    },
+    {
+      "id": "tt39141842",
+      "type": "movie",
+      "name": "Valluvan",
+      "releaseInfo": "2026",
+      "description": "When a string of high-profile murders rocks the city, investigators uncover a dark secret linking the victims to an unspeakable crime. But even after the alleged killer is caught, the killings don’t stop—revealing a far deeper conspiracy where justice comes at a deadly price.\n\n📺 Streaming on: null\n📅 Release: 2026-06-12",
+      "poster": "https://image.tmdb.org/t/p/w500/iq9HZqIhcUe3eYwUdiWxqmGzxSu.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt39182439",
+      "type": "movie",
+      "name": "Con City",
+      "releaseInfo": "2026",
+      "description": "Follows a struggling family whose lives change when a receipt printer starts generating money after a lightning strike, leading to public chaos when society discovers the money-making machine.\n\n📺 Streaming on: null\n📅 Release: 2026-06-26\n⭐ Rating: 7.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/7xLyq9kWQDiyARwYjR4BXwwuv1P.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/jzDjIHDknKz9jhTvBF9aSeoax1V.jpg",
+      "genres": [
+        "Comedy",
+        "Crime",
+        "Drama",
+        "Fantasy"
+      ]
+    },
+    {
+      "id": "tmdb1616268",
+      "type": "movie",
+      "name": "Aroopi",
+      "releaseInfo": "2026",
+      "description": "A vengeful Yakshini, once sealed inside a doll at the Aryanattu estate, is accidentally unleashed by two thieves. When a brutal murder draws Niranjan, the last surviving heir of the lineage, back to his ancestral home, he must confront an ancient curse and the dark secrets surrounding his family's past.\n\n📺 Streaming on: null\n📅 Release: 2026-07-03",
+      "poster": "https://image.tmdb.org/t/p/w500/r86GykyLSKkytL2P6zRupDumubo.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/nMQMfDBmjDn9jsXVXagGwUBWUSs.jpg",
+      "genres": [
+        "Horror",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tmdb1628756",
+      "type": "movie",
+      "name": "Granny - (Short)",
+      "releaseInfo": "2026",
+      "description": "Rony, a home nurse movies into a remote house to take care of a strange old woman only know an 'Granny'. His sanity starts slipping as her behavior turns increasingly eccentric.\n\n📺 Streaming on: null\n📅 Release: 2026-07-03\n⭐ Rating: 8.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/dH1CeEwnESPiRzXPA4A4UPi2ma6.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/otq2aBqwd3lFadyEACFN8qORnen.jpg",
+      "genres": [
+        "Horror"
+      ]
+    },
+    {
+      "id": "tmdb1654500",
+      "type": "movie",
+      "name": "Makaran",
+      "releaseInfo": "2026",
+      "description": "On Appunni, a hangman, getting ready for his job.\n\n📺 Streaming on: null\n📅 Release: 2026-06-03",
+      "poster": "https://image.tmdb.org/t/p/w500/onEZqtuNEWwLy9cjlMQnlZU3LdY.jpg"
+    },
+    {
+      "id": "tt41101621",
+      "type": "movie",
+      "name": "Habeebi",
+      "releaseInfo": "2026",
+      "description": "Follows a boy and girl in a Muslim neighbourhood in southern Tamil Nadu whose romance divides their community.\n\n📺 Streaming on: null\n📅 Release: 2026-06-12",
+      "poster": "https://image.tmdb.org/t/p/w500/kHU73XK0DHhphgo7U6MUQz8ADYv.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/hdQRhWMUg6cKSWcTCCyqWXcv8Ly.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tmdb1673203",
+      "type": "movie",
+      "name": "അവിചാരിതം",
+      "releaseInfo": "2026",
+      "description": "In 2046, Britto was digging in his land when he discovered something that soon became news.\n\n📺 Streaming on: null\n📅 Release: 2026-05-30",
+      "poster": "https://image.tmdb.org/t/p/w500/xgDJgYMUH73awBAcbWlyqQzcmMD.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/oCEYfqFAehnjBYWTniwic9zDDs3.jpg",
+      "genres": [
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tt28259290",
+      "type": "movie",
+      "name": "Moondram Kan",
+      "releaseInfo": "2026",
+      "description": "Follows the investigation of a factory general manager's murder, where four workers—a mechanic, assistant manager, owner, and new recruit—become the primary suspects.\n\n📺 Streaming on: null\n📅 Release: 2026-06-12",
+      "poster": "https://image.tmdb.org/t/p/w500/zScF00DoAaZoTxysoxTQk7aUge4.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/i24a2DQNM12AAZczm4Ju04Wesdn.jpg",
+      "genres": [
+        "Thriller",
+        "Drama",
+        "Crime"
+      ]
+    },
+    {
+      "id": "tmdb1700868",
+      "type": "movie",
+      "name": "Tolsaayam",
+      "releaseInfo": "2026",
+      "description": "14 years later, Ranjan is back in his ancestral village for his estranged father’s final rites. But his homecoming aligns with Anthiyutsavam ,a temple festival heavy with ancient rituals and a strange, unspoken unease.\n\n📺 Streaming on: null\n📅 Release: 2026-05-23",
+      "poster": "https://image.tmdb.org/t/p/w500/uES069TFbdcBNd4vOmUfI0QACF7.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/bva38G3fJmLV2R3604PRmHWiUlz.jpg",
+      "genres": [
+        "Horror"
+      ]
+    },
+    {
+      "id": "tt42956366",
+      "type": "movie",
+      "name": "Puttum Halwem",
+      "releaseInfo": "2026",
+      "description": "Two intimate episodes from a young man's life, one twisted conversation.\n\n📺 Streaming on: null\n📅 Release: 2026-05-22",
+      "poster": "https://image.tmdb.org/t/p/w500/6ZCRgBl060wdGLmqpuUCahaDbQ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/4ROa3GlxrpNKoQ5FOHkYUd9ml2u.jpg",
+      "genres": [
+        "Drama",
+        "Fantasy"
+      ]
+    },
+    {
+      "id": "tmdb1710563",
+      "type": "movie",
+      "name": "Nizhal",
+      "releaseInfo": "2026",
+      "description": "NIZHAL follows twin sisters Ramya and Saranya. Saranya is a trainee doctor, and Ramya helps their vendor parents. Tragedy strikes when Saranya’s friend Lakshmi is brutally murdered in the hospital lab by Guna, the CEO's son, and his gang. Ramya witnesses the crime and narrowly survives a deadly attack by them. Driven by fury, Saranya seeks vengeance and puts the killers on their deathbeds. Ironically, her lover Raghu takes charge as the sub-inspector for this very case. When Raghu uncovers the truth, a gripping battle begins between law, love, and ultimate justice.\n\n📺 Streaming on: null\n📅 Release: 2026-06-12",
+      "poster": "https://image.tmdb.org/t/p/w500/sqdnjFOemwhDe6Jeu9K51J8E5RE.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/zCI2BleOTvbqqEj9Za7Wr8tDC2q.jpg",
+      "genres": [
+        "Crime",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt43461202",
+      "type": "movie",
+      "name": "Served Cold",
+      "releaseInfo": "2026",
+      "description": "Trapped in a loveless marriage with her domineering husband Raghu, homemaker Ammu moves through the routines of her household with quiet resignation. In a home where even food becomes a symbol of control and neglect, she is often denied the care and dignity she deserves. Ammu finds solace in Pathu, her neighbor and the wife of Raghu’s rival Shihab. Pathu expresses her affection through food quietly shared across boundaries, offering Ammu the nourishment and warmth withheld from her own home. In return, Ammu gives Pathu something just as vital: the freedom to speak, to be seen, and to exist beyond silence. In a world that often pits women against each other, their bond becomes a quiet act of woman for woman solidarity.\n\n📺 Streaming on: null\n📅 Release: 2026-06-07",
+      "poster": "https://image.tmdb.org/t/p/w500/k3dNu4J2ByfRFo3dwcoaUgHR3FT.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tmdb1715800",
+      "type": "movie",
+      "name": "Dark Giant",
+      "releaseInfo": "2026",
+      "description": "Dark Giant is a Supernatural Horror and Psychological Family Drama. It Explores How Greed, Guilt, and Generational Trauma Can Manifest as a Literal Curse, Destroying a Family From the Inside Out\n\n📺 Streaming on: null\n📅 Release: 2026-06-19",
+      "poster": "https://image.tmdb.org/t/p/w500/jKeyjIdRacMd3iDvSVhdRtF4GJY.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/6iJo5yTh2lEqOWL8TZkpKvH8ZSO.jpg",
+      "genres": [
+        "Horror",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt42636911",
+      "type": "movie",
+      "name": "Kolahalamedu",
+      "releaseInfo": "2026",
+      "description": "📺 Streaming on: null\n📅 Release: 2026-05-22",
+      "poster": "https://image.tmdb.org/t/p/w500/i6kGE2jrbQhy8JDtzVUvY5gqbtn.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/4F2tEUW8Ns4dwyioCuaMpTwE7nC.jpg",
+      "genres": [
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tmdb1719662",
+      "type": "movie",
+      "name": "Normal",
+      "releaseInfo": "2026",
+      "description": "Normal is an anthology film comprising three socially relevant stories set during the COVID-19 lockdown period. The film explores how certain social conditions remained unchanged despite the pandemic.\n\n📺 Streaming on: null\n📅 Release: 2026-06-13",
+      "poster": "https://image.tmdb.org/t/p/w500/cMXLW50gXZ1N3ez3AUVBw18Nwcf.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/tyohjyjXdXBIxWSroTbpk7kQqp6.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tmdb1719774",
+      "type": "movie",
+      "name": "Suitcased",
+      "releaseInfo": "2026",
+      "description": "When a struggling student discovers his late father left him a locked pendrive containing a massive fortune in Bitcoin, he and his friends must crack a highly secure password with only one attempt remaining—unknowingly holding the key to a long-buried family secret.\n\n📺 Streaming on: null\n📅 Release: 2026-06-25",
+      "poster": "https://image.tmdb.org/t/p/w500/xlvXWWT7XSdLeu2Q107vNEVeZDJ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/k3MXJpgXxW5mO8yxhwsZgoONVHL.jpg",
+      "genres": [
+        "Drama",
+        "Comedy",
+        "Family"
+      ]
+    },
+    {
+      "id": "tmdb1720240",
+      "type": "movie",
+      "name": "Sathyathil Sambhavichathu",
+      "releaseInfo": "2026",
+      "description": "A long-standing legend speaks of treasure hidden beneath village ponds and wells, with only one man ever claiming to have found it. When clues about the lost treasure begin to surface, a series of misunderstandings, unexpected discoveries, and amusing consequences unfold, blending mystery with humor.\n\n📺 Streaming on: null\n📅 Release: 2026-06-18",
+      "poster": "https://image.tmdb.org/t/p/w500/gAflSOddw7iZhzrBBHZCtutuKB.jpg",
+      "genres": [
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tmdb1722382",
+      "type": "movie",
+      "name": "Aftermath",
+      "releaseInfo": "2026",
+      "description": "As a sister’s growing mistrust threatens to shatter what remains of their bond, a brother is pushed to his absolute limit to keep reality from collapsing on itself.\n\n📺 Streaming on: null\n📅 Release: 2026-06-26",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tmdb1722546",
+      "type": "movie",
+      "name": "LONG DISTANCE - A day with HIM",
+      "releaseInfo": "2026",
+      "description": "A day with HIM.\n\n📺 Streaming on: null\n📅 Release: 2026-06-28",
+      "poster": "https://image.tmdb.org/t/p/w500/c1plgYMFK7AiaQzjcIDsgpkyYJV.jpg",
+      "genres": [
+        "Drama",
+        "Romance"
+      ]
+    },
+    {
+      "id": "tmdb1724890",
+      "type": "movie",
+      "name": "Find Me",
+      "releaseInfo": "2026",
+      "description": "During the COVID-19 lockdown, a series of mysterious murders spreads fear across the city. As the investigation unfolds, hidden secrets and unexpected twists make it increasingly difficult to identify the killer. Every clue leads to another mystery in this Tamil crime thriller.\n\n📺 Streaming on: null\n📅 Release: 2026-07-03\n⭐ Rating: 10.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/7lByW5Hsy1r7NwNNP5B0wECEZTI.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/humuGx6DgniVx6TGkeaIXKd4Bd2.jpg",
+      "genres": [
+        "Crime",
+        "Thriller",
+        "Mystery"
+      ]
     }
   ],
-  "tam-series": [],
-  "builtAt": "2026-07-08T09:37:11.975Z"
+  "tam-series": [
+    {
+      "id": "tmdb307949",
+      "type": "series",
+      "name": "Lingam",
+      "releaseInfo": "2026",
+      "description": "Framed for a crime he didn't commit, a kabaddi hero gets pushed into a world he never wanted and ultimately becomes a feared name.\n\n📺 Streaming on: null\n📅 Release: 2026-06-26",
+      "poster": "https://image.tmdb.org/t/p/w500/l5utMuTzwMUpypOTOSLQLg5WY57.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/4hU24wP2A1Vq72aHhXaRBRB247B.jpg",
+      "genres": [
+        "Crime"
+      ]
+    },
+    {
+      "id": "tmdb326794",
+      "type": "series",
+      "name": "Muthassi",
+      "releaseInfo": "2026",
+      "description": "In a remote village haunted by ancient secrets, a mother's love is put to the ultimate test when her son becomes entangled in a terrifying supernatural curse.\n\n📺 Streaming on: null\n📅 Release: 2026-07-03",
+      "poster": "https://image.tmdb.org/t/p/w500/upghryFPaiUMjlzgmnHpwtnYJx3.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/yjffBOFmUORT79ja3gD42GO7hI3.jpg",
+      "genres": [
+        "Mystery"
+      ]
+    },
+    {
+      "id": "tmdb326804",
+      "type": "series",
+      "name": "Mammatiyaan Stars",
+      "releaseInfo": "2026",
+      "description": "Three die-hard cricket fans and a spirited young woman set out on an unforgettable journey to witness the final season of the legendary cricketer they have idolized for years.\n\n📺 Streaming on: null\n📅 Release: 2026-06-26",
+      "poster": "https://image.tmdb.org/t/p/w500/d3AceJMLR5ULgBMBDbymhKVdAd8.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/swDDfcFOHJ4hQAefXNxCsDHfmLv.jpg",
+      "genres": [
+        "Drama",
+        "Action & Adventure"
+      ]
+    },
+    {
+      "id": "tmdb317270",
+      "type": "series",
+      "name": "Minnale",
+      "releaseInfo": "2018",
+      "description": "📺 Streaming on: null\n📅 Release: 2018-08-06",
+      "poster": "https://image.tmdb.org/t/p/w500/wACr0ARXdPXZeakkw2ecg4PrDId.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/CrH69HLWkrQM7leATarmoSydIN.jpg",
+      "genres": [
+        "Drama",
+        "Soap"
+      ]
+    }
+  ],
+  "builtAt": "2026-07-08T09:49:08.587Z"
 }
