@@ -248,13 +248,12 @@ async function processItem(item, mediaType) {
     console.log('[Notice] No IMDb ID for: ' + (detail.title || detail.name) + ' - using TMDB ID instead');
   }
 
-  // Must be on OTT in India
-  const platform = extractProviders(detail);
-  if (!platform) {
-    console.log('[Skip] Not on OTT in India: ' + (detail.title || detail.name));
-    cache[tmdbId] = 'skip';
-    return null;
-  }
+// Must be on OTT in India - TEMPORARILY DISABLED
+const platform = extractProviders(detail);
+const displayPlatform = platform || 'Unknown OTT';
+if (!platform) {
+  console.log('[Notice] No OTT data for: ' + (detail.title || detail.name) + ' - showing anyway');
+}
 
   const title       = detail.title || detail.name || '';
   const releaseDate = detail.release_date || detail.first_air_date || '';
