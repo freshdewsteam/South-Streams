@@ -126,8 +126,6 @@ function today() {
 }
 
 // ── DISCOVER NEW RELEASES ─────────────────────────────────────────────────────
-// Returns raw TMDB results (lightweight — no detail calls yet)
-// ── DISCOVER NEW RELEASES (TRENDING METHOD) ─────────────────────────────────
 async function discoverNew(mediaType, lang) {
   const isFirstRun = Object.keys(cache).length === 0;
   const lookback   = isFirstRun ? FIRST_RUN_LOOKBACK : LOOKBACK_DAYS;
@@ -139,17 +137,9 @@ async function discoverNew(mediaType, lang) {
 
   const results = [];
 
-  // Try two methods: Trending (more likely to have new content) and Discover
+  // Try multiple methods to catch more content
   const methods = [
-    // Method 1: Trending (gets popular new content)
-    async () => {
-      const endpoint = mediaType === 'movie' ? 'movie' : 'tv';
-      const data = await tmdb(
-        '/trending/' + endpoint + '/week'  // ← Trending endpoint
-      );
-      return data.results || [];
-    },
-    // Method 2: Discover (with language filter, but no OTT filter)
+    // Method 1: Discover with language only (no OTT filter)
     async () => {
       const dateParam = mediaType === 'movie'
         ? 'primary_release_date.gte=' + dateFrom + '&primary_release_date.lte=' + dateTo
@@ -163,17 +153,28 @@ async function discoverNew(mediaType, lang) {
         + '&page=1'
       );
       return data.results || [];
+    },
+    // Method 2: Trending (catches popular new content)
+    async () => {
+      const endpoint = mediaType === 'movie' ? 'movie' : 'tv';
+      const data = await tmdb('/trending/' + endpoint + '/week');
+      return (data.results || []).filter(r => r.original_language === lang);
+    },
+    // Method 3: Popular (catches evergreen content)
+    async () => {
+      const endpoint = mediaType === 'movie' ? 'movie' : 'tv';
+      const data = await tmdb('/' + endpoint + '/popular');
+      return (data.results || []).filter(r => r.original_language === lang);
     }
   ];
 
   for (const method of methods) {
     try {
       const items = await method();
-      // Filter out already cached items
       const newItems = items.filter(r => !cache[String(r.id)]);
       results.push(...newItems);
       console.log('[Discover] Found ' + newItems.length + ' new items');
-      if (results.length >= 50) break;  // Stop if we have enough
+      if (results.length >= 100) break;
     } catch (e) {
       console.warn('[Discover] Method failed: ' + e.message);
     }
@@ -182,7 +183,12 @@ async function discoverNew(mediaType, lang) {
   console.log('[Discover] Total ' + results.length + ' new items to process');
   return results;
 }
-
+// Use TMDB ID as fallback if IMDb ID is missing
+const imdbId = detail.imdb_id || ('tmdb' + tmdbId);
+if (!detail.imdb_id) {
+  console.log('[Notice] No IMDb ID for: ' + (detail.title || detail.name) + ' - using TMDB ID instead');
+  // Still process it - we'll use TMDB ID as identifier
+}
 // ── FETCH DETAILS + PROVIDERS IN ONE REQUEST ──────────────────────────────────
 // append_to_response saves 1 API call per item compared to separate requests
 async function fetchDetailAndProviders(tmdbId, mediaType) {
