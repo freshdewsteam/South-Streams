@@ -32,7 +32,27 @@ const FIRST_RUN_LOOKBACK = 180;
 // Stores processed TMDB IDs so we don't re-fetch them on every run
 // Format: { "tmdbId": { ...meta } | "skip" }
 let cache = {};
+const MAX_CACHE_SIZE = 1500;  // Only keep 1500 items in cache
 let cacheLoaded = false;
+function trimCache() {
+  const keys = Object.keys(cache);
+  if (keys.length > MAX_CACHE_SIZE) {
+    // Remove oldest entries (they're at the end)
+    const toRemove = keys.length - MAX_CACHE_SIZE;
+    const sortedKeys = keys.sort((a, b) => {
+      const aVal = cache[a];
+      const bVal = cache[b];
+      // Skip entries are less important
+      if (aVal === 'skip' && bVal !== 'skip') return 1;
+      if (bVal === 'skip' && aVal !== 'skip') return -1;
+      return 0;
+    });
+    for (let i = 0; i < Math.min(toRemove, sortedKeys.length); i++) {
+      delete cache[sortedKeys[i]];
+    }
+    console.log('[Cache] Trimmed ' + toRemove + ' old entries');
+  }
+}
 
 function loadCache() {
   if (cacheLoaded) return;
@@ -50,8 +70,8 @@ function loadCache() {
   }
   cacheLoaded = true;
 }
-
 function saveCache() {
+  trimCache();
   try {
     const dir = path.dirname(CACHE_FILE);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -84,7 +104,7 @@ function fetchJson(url) {
       s.on('error', reject);
     });
     req.on('error', reject);
-    req.setTimeout(15000, function () { this.destroy(); reject(new Error('Timeout')); });
+    req.setTimeout(20000, function () { this.destroy(); reject(new Error('Timeout after 20s')); });
   });
 }
 
@@ -143,9 +163,9 @@ async function discoverNew(mediaType, lang) {
   + '&watch_region=IN'
   + '&with_watch_monetization_types=flatrate|free|ads|rent|buy'
   + '&sort_by=primary_release_date.desc'
-        + '&' + dateParam
-        + '&page=' + page
-      );
+  + '&' + dateParam
+  + '&page=' + page
+);
 
       if (!data.results || !data.results.length) break;
 
@@ -304,8 +324,8 @@ async function scrapeLanguage(lang, mediaType) {
     .slice(0, 50);
 
   console.log('[Done] ' + lang + ' ' + mediaType + ': ' +
-    processed + ' new processed, ' + allMetas.length + ' total in catalogue');
-
+  processed + ' new processed, ' + allMetas.length + ' total in catalogue' +
+  (processed === 0 ? ' (all cached, skipping)' : ''));
   saveCache();
   return allMetas;
 }
