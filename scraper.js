@@ -183,12 +183,7 @@ async function discoverNew(mediaType, lang) {
   console.log('[Discover] Total ' + results.length + ' new items to process');
   return results;
 }
-// Use TMDB ID as fallback if IMDb ID is missing
-const imdbId = detail.imdb_id || ('tmdb' + tmdbId);
-if (!detail.imdb_id) {
-  console.log('[Notice] No IMDb ID for: ' + (detail.title || detail.name) + ' - using TMDB ID instead');
-  // Still process it - we'll use TMDB ID as identifier
-}
+
 // ── FETCH DETAILS + PROVIDERS IN ONE REQUEST ──────────────────────────────────
 // append_to_response saves 1 API call per item compared to separate requests
 async function fetchDetailAndProviders(tmdbId, mediaType) {
@@ -243,6 +238,21 @@ async function processItem(item, mediaType) {
 
   const detail = await fetchDetailAndProviders(tmdbId, mediaType);
   if (!detail) {
+    cache[tmdbId] = 'skip';
+    return null;
+  }
+
+  // Use TMDB ID as fallback if IMDb ID is missing
+  const imdbId = detail.imdb_id || ('tmdb' + tmdbId);
+  if (!detail.imdb_id) {
+    console.log('[Notice] No IMDb ID for: ' + (detail.title || detail.name) + ' - using TMDB ID instead');
+    // Still process it - we'll use TMDB ID as identifier
+  }
+
+  // Must be on OTT in India
+  const platform = extractProviders(detail);
+  if (!platform) {
+    console.log('[Skip] Not on OTT in India: ' + (detail.title || detail.name));
     cache[tmdbId] = 'skip';
     return null;
   }
