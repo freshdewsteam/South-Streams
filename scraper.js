@@ -424,10 +424,10 @@ function sortDesc(items) {
 
 async function buildMetas(items, type, lang) {
   const results = [], queue = [...items];
-  await new Promise(resolve => {
+  await new Promise(done => {
     let active = 0;
     const next = async () => {
-      if (!queue.length) { if (!active) resolve(); return; }
+      if (!queue.length) { if (!active) done(); return; }
       const item = queue.shift(); active++;
       try {
         const imdb = await resolve(item.title, type, lang);
