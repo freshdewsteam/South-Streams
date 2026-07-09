@@ -388,12 +388,27 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
 
 // ── BUILD STREMIO META OBJECT ─────────────────────────────────────────────────
 function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
-                     rating, posterPath, backdropPath, genres }) {
+                     rating, posterPath, backdropPath, genres, posterUrl, backdropUrl }) {
   let desc = '';
   if (overview)    desc += overview + '\n\n';
   if (platform)    desc += '📺 Streaming on: ' + platform;
   if (releaseDate) desc += '\n📅 Release: ' + releaseDate;
   if (rating)      desc += '\n⭐ Rating: ' + Number(rating).toFixed(1) + '/10';
+
+  // Use posterUrl or posterPath (whichever is provided)
+  let poster = null;
+  if (posterUrl) {
+    poster = posterUrl;
+  } else if (posterPath) {
+    poster = IMG + 'w500' + posterPath;
+  }
+
+  let backdrop = null;
+  if (backdropUrl) {
+    backdrop = backdropUrl;
+  } else if (backdropPath) {
+    backdrop = IMG + 'w1280' + backdropPath;
+  }
 
   const meta = {
     id:          imdbId,
@@ -401,8 +416,8 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
     name:        title,
     releaseInfo: releaseDate || '',
     description: desc.trim(),
-    poster:      posterPath   ? IMG + 'w500'  + posterPath   : undefined,
-    background:  backdropPath ? IMG + 'w1280' + backdropPath : undefined,
+    poster:      poster || undefined,
+    background:  backdrop || undefined,
     genres:      genres && genres.length ? genres : undefined,
   };
   Object.keys(meta).forEach(k => meta[k] === undefined && delete meta[k]);
@@ -453,8 +468,7 @@ async function scrapeSeries(lang) {
   const metas = [];
   for (const item of items.slice(0, 50)) {
     // Try to enrich with TMDB data (poster etc)
-    // Use cache to avoid re-fetching on every run
-    const cacheKey = 'series_' + item.imdbId;
+    const cacheKey = 'series_' + (item.imdbId || item.title.toLowerCase().replace(/[^a-z0-9]/g, '_'));
     let tmdbData   = cache[cacheKey] && cache[cacheKey] !== 'skip'
       ? cache[cacheKey]
       : null;
@@ -478,19 +492,22 @@ async function scrapeSeries(lang) {
       releaseDate: item.date,
       overview:    tmdbData?.overview || '',
       rating:      tmdbData?.rating   || null,
-      posterPath:  tmdbData?.poster   ? null : null, // posterPath used for IMG prefix
-      backdropPath: null,
+      posterUrl:   tmdbData?.poster   || null,
+      backdropUrl: tmdbData?.backdrop || null,
       genres:      tmdbData?.genres   || [],
     });
 
-    // Manually assign poster/backdrop since we get full URLs from enrichSeriesFromTMDB
-    if (tmdbData?.poster)   meta.poster     = tmdbData.poster;
-    if (tmdbData?.backdrop) meta.background = tmdbData.backdrop;
-
     metas.push(meta);
-    console.log('[Series] ' + item.title + ' -> ' + item.imdbId);
+    console.log('[Series] ' + item.title + ' -> ' + finalImdbId);
     await new Promise(r => setTimeout(r, 100));
   }
+
+  // Sort metas by release date (newest first)
+  metas.sort((a, b) => {
+    const da = a.releaseInfo || '';
+    const db = b.releaseInfo || '';
+    return db.localeCompare(da);
+  });
 
   console.log('[Series] ' + lang + ': ' + metas.length + ' in catalogue');
   saveCache();
