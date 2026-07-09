@@ -244,8 +244,14 @@ async function fetchSheetSeries(filterLang) {
   }
 
   try {
-    console.log('[Sheet] Fetching...');
-    const csv = await fetchUrl(SHEET_URL);
+    // Auto-convert edit/view URL to CSV export URL
+    let sheetUrl = SHEET_URL;
+    if (sheetUrl.includes('/edit') || sheetUrl.includes('/view')) {
+      const id = sheetUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+      if (id) sheetUrl = 'https://docs.google.com/spreadsheets/d/' + id[1] + '/export?format=csv&gid=0';
+    }
+    console.log('[Sheet] Fetching: ' + sheetUrl);
+    const csv = await fetchUrl(sheetUrl);
     const lines = csv.trim().split('\n');
     const items = [];
 
@@ -260,7 +266,8 @@ async function fetchSheetSeries(filterLang) {
       const date     = row[3].trim();
       const imdbId   = row[4].trim();
 
-      if (!title || !imdbId || !imdbId.startsWith('tt')) continue;
+      if (!title) continue;
+      // IMDb ID is optional — if missing, TMDB auto-lookup will find it
       if (!isReleased(date)) continue; // skip future releases
       if (!lang.includes(filterLang.toLowerCase())) continue;
 
@@ -297,28 +304,84 @@ function parseCSVRow(line) {
 }
 
 // ── SHEET SERIES → TMDB META ──────────────────────────────────────────────────
-// For sheet series, we already have the IMDb ID.
-// Use TMDB /find to get poster/backdrop cheaply.
-async function enrichSeriesFromTMDB(imdbId) {
-  const cacheKey = 'series_' + imdbId;
+// If IMDb ID is provided: use TMDB /find (1 request)
+// If IMDb ID is missing:  search TMDB by title to find it automatically
+async function enrichSeriesFromTMDB(imdbId, title, lang) {
+  const cacheKey = 'series_' + (imdbId || title.toLowerCase().replace(/[^a-z0-9]/g, '_'));
   if (cache[cacheKey] && cache[cacheKey] !== 'skip') return cache[cacheKey];
 
   try {
-    const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
-    const tv   = (data.tv_results || [])[0];
-    if (!tv) return null;
+    let tvId = null;
+    let resolvedImdbId = imdbId || null;
 
-    // Fetch full detail for overview + genres
-    const detail = await tmdb('/tv/' + tv.id + '?language=en-US');
-    return {
-      poster:      detail.poster_path   ? IMG + 'w500'  + detail.poster_path   : null,
-      backdrop:    detail.backdrop_path ? IMG + 'w1280' + detail.backdrop_path : null,
-      overview:    detail.overview      || '',
-      rating:      detail.vote_average  || null,
-      genres:      (detail.genres || []).map(g => g.name),
+    if (imdbId && imdbId.startsWith('tt')) {
+      // We have an IMDb ID — use TMDB /find (fast, 1 request)
+      const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
+      const tv   = (data.tv_results || [])[0];
+      if (tv) tvId = tv.id;
+    } else {
+      // No IMDb ID — search TMDB by title
+      console.log('[AutoLookup] Searching for: ' + title);
+      const langCode = lang === 'ml' ? 'ml' : 'ta';
+      const query    = encodeURIComponent(title);
+      const data     = await tmdb('/search/tv?query=' + query + '&language=en-US&page=1');
+      const results  = data.results || [];
+
+      // Score results — prefer correct language
+      let best = null, bestScore = -1;
+      for (const r of results) {
+        let score = 0;
+        const rt = (r.name || '').toLowerCase();
+        const vl = title.toLowerCase();
+        if (rt === vl)              score += 60;
+        else if (rt.includes(vl))   score += 30;
+        if (r.original_language === langCode) score += 50;
+        else if (r.original_language === 'en') score -= 20;
+        if (r.origin_country && r.origin_country.includes('IN')) score += 15;
+        if (score > bestScore && score >= 40) { bestScore = score; best = r; }
+      }
+
+      if (best) {
+        tvId = best.id;
+        console.log('[AutoLookup] Found: ' + best.name + ' (score: ' + bestScore + ')');
+      } else {
+        console.log('[AutoLookup] No match for: ' + title);
+        cache[cacheKey] = 'skip'; cacheDirty = true; return null;
+      }
+    }
+
+    if (!tvId) {
+      cache[cacheKey] = 'skip'; cacheDirty = true; return null;
+    }
+
+    // Fetch full TV detail
+    const detail = await tmdb('/tv/' + tvId + '?language=en-US');
+
+    // Get IMDb ID from detail if we didn't have it
+    if (!resolvedImdbId && detail.external_ids) {
+      resolvedImdbId = detail.external_ids.imdb_id || null;
+    }
+    // Fetch external IDs if still missing
+    if (!resolvedImdbId) {
+      try {
+        const ext = await tmdb('/tv/' + tvId + '/external_ids');
+        resolvedImdbId = ext.imdb_id || null;
+      } catch(e) {}
+    }
+
+    const result = {
+      imdbId:   resolvedImdbId,
+      poster:   detail.poster_path   ? IMG + 'w500'  + detail.poster_path   : null,
+      backdrop: detail.backdrop_path ? IMG + 'w1280' + detail.backdrop_path : null,
+      overview: detail.overview      || '',
+      rating:   detail.vote_average  || null,
+      genres:   (detail.genres || []).map(g => g.name),
     };
+
+    cache[cacheKey] = result; cacheDirty = true;
+    return result;
   } catch (e) {
-    console.warn('[Enrich] ' + imdbId + ': ' + e.message);
+    console.warn('[Enrich] ' + (imdbId || title) + ': ' + e.message);
     return null;
   }
 }
@@ -336,7 +399,7 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
     id:          imdbId,
     type,
     name:        title,
-    releaseInfo: (releaseDate || '').slice(0, 4) || releaseDate,
+    releaseInfo: releaseDate || '',
     description: desc.trim(),
     poster:      posterPath   ? IMG + 'w500'  + posterPath   : undefined,
     background:  backdropPath ? IMG + 'w1280' + backdropPath : undefined,
@@ -397,12 +460,18 @@ async function scrapeSeries(lang) {
       : null;
 
     if (!tmdbData) {
-      tmdbData = await enrichSeriesFromTMDB(item.imdbId);
-      if (tmdbData) { cache[cacheKey] = tmdbData; cacheDirty = true; }
+      tmdbData = await enrichSeriesFromTMDB(item.imdbId, item.title, lang);
+    }
+
+    // If sheet had no IMDb ID, use the one resolved from TMDB
+    const finalImdbId = item.imdbId || (tmdbData && tmdbData.imdbId) || null;
+    if (!finalImdbId) {
+      console.log('[Series] Skipping (no IMDb ID found): ' + item.title);
+      continue;
     }
 
     const meta = buildMeta({
-      imdbId:      item.imdbId,
+      imdbId:      finalImdbId,
       type:        'series',
       title:       item.title,
       platform:    item.platform,
