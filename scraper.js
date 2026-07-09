@@ -389,7 +389,129 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
     return null;
   }
 }
+// ── AUTO-FIND MISSING SERIES FROM TMDB/IMDb ──────────────────────────────────
+async function autoFindSeries(title, lang) {
+  console.log('[AutoFind] Trying to find: ' + title);
+  
+  // Try multiple search methods
+  const searchMethods = [
+    // Method 1: TMDB search with different language
+    async () => {
+      const langCode = lang === 'ml' ? 'ml' : 'ta';
+      const query = encodeURIComponent(title);
+      // Try with language filter
+      const data = await tmdb('/search/tv?query=' + query + '&language=en-US&page=1');
+      return data.results || [];
+    },
+    // Method 2: TMDB search without language filter (broader)
+    async () => {
+      const query = encodeURIComponent(title);
+      const data = await tmdb('/search/tv?query=' + query + '&language=en-US&page=1&include_adult=false');
+      return data.results || [];
+    },
+    // Method 3: Search by year if title has one
+    async () => {
+      // Try to extract year from title
+      const yearMatch = title.match(/\b(20\d{2})\b/);
+      if (yearMatch) {
+        const year = yearMatch[1];
+        const cleanTitle = title.replace(/\b20\d{2}\b/, '').trim();
+        const query = encodeURIComponent(cleanTitle);
+        const data = await tmdb('/search/tv?query=' + query + '&language=en-US&page=1&first_air_date_year=' + year);
+        return data.results || [];
+      }
+      return [];
+    }
+  ];
 
+  let allResults = [];
+  for (const method of searchMethods) {
+    try {
+      const results = await method();
+      allResults = allResults.concat(results);
+    } catch(e) {}
+  }
+
+  // Deduplicate results
+  const seen = new Set();
+  const uniqueResults = allResults.filter(r => {
+    const key = r.id;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  if (uniqueResults.length === 0) {
+    console.log('[AutoFind] No results found for: ' + title);
+    return null;
+  }
+
+  // Score and find best match
+  let bestMatch = null;
+  let bestScore = -1;
+
+  for (const r of uniqueResults) {
+    let score = 0;
+    const rTitle = (r.name || '').toLowerCase();
+    const searchTitle = title.toLowerCase();
+
+    // Exact match
+    if (rTitle === searchTitle) score += 100;
+    // Starts with
+    else if (rTitle.startsWith(searchTitle)) score += 60;
+    // Contains
+    else if (rTitle.includes(searchTitle)) score += 30;
+    // Similar (some words match)
+    else {
+      const words = searchTitle.split(' ');
+      const matchedWords = words.filter(w => rTitle.includes(w) && w.length > 2);
+      if (matchedWords.length > 0) score += matchedWords.length * 10;
+    }
+
+    // Prefer correct language
+    if (r.original_language === 'ml' && lang === 'ml') score += 50;
+    else if (r.original_language === 'ta' && lang === 'ta') score += 50;
+    else if (r.original_language === 'en') score -= 20;
+
+    // Prefer Indian content
+    if (r.origin_country && r.origin_country.includes('IN')) score += 30;
+
+    if (score > bestScore && score >= 40) {
+      bestScore = score;
+      bestMatch = r;
+    }
+  }
+
+  if (bestMatch) {
+    console.log('[AutoFind] Found: ' + bestMatch.name + ' (score: ' + bestScore + ')');
+    
+    // Fetch full details
+    const detail = await tmdb('/tv/' + bestMatch.id + '?language=en-US');
+    
+    // Get IMDb ID
+    let imdbId = detail.external_ids?.imdb_id || null;
+    if (!imdbId) {
+      try {
+        const ext = await tmdb('/tv/' + bestMatch.id + '/external_ids');
+        imdbId = ext.imdb_id || null;
+      } catch(e) {}
+    }
+
+    return {
+      id: bestMatch.id,
+      imdbId: imdbId,
+      poster: detail.poster_path ? IMG + 'w500' + detail.poster_path : null,
+      backdrop: detail.backdrop_path ? IMG + 'w1280' + detail.backdrop_path : null,
+      overview: detail.overview || '',
+      rating: detail.vote_average || null,
+      genres: (detail.genres || []).map(g => g.name),
+      found: true
+    };
+  }
+
+  console.log('[AutoFind] No match found for: ' + title);
+  return null;
+}
 // ── BUILD STREMIO META OBJECT ─────────────────────────────────────────────────
 function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
                      rating, posterPath, backdropPath, genres, posterUrl, backdropUrl }) {
@@ -485,10 +607,22 @@ async function scrapeSeries(lang) {
       ? cache[cacheKey]
       : null;
 
-    if (!tmdbData) {
+      if (!tmdbData) {
       tmdbData = await enrichSeriesFromTMDB(item.imdbId, item.title, lang);
     }
-
+    
+    // If still no data, try auto-find
+    if (!tmdbData) {
+      console.log('[Series] Auto-finding: ' + item.title);
+      tmdbData = await autoFindSeries(item.title, lang);
+      if (tmdbData && tmdbData.found) {
+        console.log('[Series] Auto-found: ' + item.title);
+        // Cache the result
+        const cacheKey = 'series_' + (item.imdbId || item.title.toLowerCase().replace(/[^a-z0-9]/g, '_'));
+        cache[cacheKey] = tmdbData;
+        cacheDirty = true;
+      }
+    }
     // If sheet had no IMDb ID, use the one resolved from TMDB
     const finalImdbId = item.imdbId || (tmdbData && tmdbData.imdbId) || null;
     if (!finalImdbId) {
