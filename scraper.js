@@ -152,13 +152,17 @@ async function discoverMovies(lang, lookbackDays) {
       );
       if (!data.results || !data.results.length) break;
 
-      const newItems = data.results.filter(r => !cache[String(r.id)]);
+      // Strict language filter - keeps Malayalam movies in Malayalam section only
+      const newItems = data.results
+        .filter(r => !cache[String(r.id)])
+        .filter(r => r.original_language === lang);
+
       results.push(...newItems);
       console.log('[Discover] Page ' + page + ': ' + data.results.length +
         ' found, ' + newItems.length + ' new');
 
       if (page >= (data.total_pages || 1)) break;
-      if (newItems.length === 0) break; // all cached, stop paging
+      if (newItems.length === 0) break;
     } catch (e) {
       console.warn('[Discover] Page ' + page + ' failed: ' + e.message);
       break;
@@ -462,8 +466,16 @@ async function scrapeSeries(lang) {
   const langLabel = lang === 'ml' ? 'Malayalam' : 'Tamil';
   const items     = await fetchSheetSeries(langLabel);
 
-  // Sort newest first
-  items.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  // Sort by date (newest first)
+  items.sort((a, b) => {
+    const da = new Date(a.date);
+    const db = new Date(b.date);
+    if (isNaN(da)) return 1;
+    if (isNaN(db)) return -1;
+    return db - da;
+  });
+
+  console.log('[Series] Processing ' + items.length + ' items from sheet');
 
   const metas = [];
   for (const item of items.slice(0, 50)) {
@@ -484,12 +496,23 @@ async function scrapeSeries(lang) {
       continue;
     }
 
+    // Format date for better display
+    let formattedDate = item.date;
+    if (item.date) {
+      try {
+        const d = new Date(item.date);
+        if (!isNaN(d)) {
+          formattedDate = d.toISOString().split('T')[0];
+        }
+      } catch(e) {}
+    }
+
     const meta = buildMeta({
       imdbId:      finalImdbId,
       type:        'series',
       title:       item.title,
       platform:    item.platform,
-      releaseDate: item.date,
+      releaseDate: formattedDate || item.date,
       overview:    tmdbData?.overview || '',
       rating:      tmdbData?.rating   || null,
       posterUrl:   tmdbData?.poster   || null,
@@ -498,15 +521,29 @@ async function scrapeSeries(lang) {
     });
 
     metas.push(meta);
-    console.log('[Series] ' + item.title + ' -> ' + finalImdbId);
+    console.log('[Series] ' + item.title + ' -> ' + finalImdbId + ' (' + formattedDate + ')');
     await new Promise(r => setTimeout(r, 100));
   }
 
-  // Sort metas by release date (newest first)
+  // Sort by release date (newest first)
   metas.sort((a, b) => {
-    const da = a.releaseInfo || '';
-    const db = b.releaseInfo || '';
-    return db.localeCompare(da);
+    if (a.releaseInfo && b.releaseInfo) {
+      const da = new Date(a.releaseInfo);
+      const db = new Date(b.releaseInfo);
+      if (!isNaN(da) && !isNaN(db)) {
+        return db - da;
+      }
+      return (b.releaseInfo || '').localeCompare(a.releaseInfo || '');
+    }
+    if (a.releaseInfo && !b.releaseInfo) return -1;
+    if (!a.releaseInfo && b.releaseInfo) return 1;
+    return 0;
+  });
+
+  // Log the sorted order for debugging
+  console.log('[Series] Sorted order (newest first):');
+  metas.slice(0, 10).forEach((m, i) => {
+    console.log('  ' + (i+1) + '. ' + m.name + ' (' + m.releaseInfo + ')');
   });
 
   console.log('[Series] ' + lang + ': ' + metas.length + ' in catalogue');
