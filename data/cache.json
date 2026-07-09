@@ -647,85 +647,6 @@
   ],
   "mal-series": [
     {
-      "id": "tt33131120",
-      "type": "series",
-      "name": "1000 Babies",
-      "releaseInfo": "September 27 2024",
-      "description": "Enter a cradle of mysteries where a man with a dark past manipulates multiple lives through a series of cryptic letters and deadly games.\n\n📺 Streaming on: JioHotstar\n📅 Release: September 27 2024\n⭐ Rating: 5.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/j9EdxlAReZ27m29kTP0cqaQOeoe.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/50yPSUThPKxeC9FLGQxB6WoY8f2.jpg",
-      "genres": [
-        "Crime",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt28675376",
-      "type": "series",
-      "name": "Masterpeace",
-      "releaseInfo": "October 25 2023",
-      "description": "When marital discord becomes everyone's business and parents get way too involved in the \"peace talks,\" family drama can become family trauma.\n\n📺 Streaming on: JioHotstar\n📅 Release: October 25 2023\n⭐ Rating: 5.7/10",
-      "poster": "https://image.tmdb.org/t/p/w500/hUOiNi5uFmDNOYLn2hCrgtSwNPA.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/whRb5cpSALBhj23krlcSRhg8VAo.jpg",
-      "genres": [
-        "Drama",
-        "Comedy"
-      ]
-    },
-    {
-      "id": "tt27540960",
-      "type": "series",
-      "name": "Jai Mahendran",
-      "releaseInfo": "October 11 2024",
-      "description": "When Mahendran, a corrupt and manipulative deputy Thasildar, believes in getting things done through powerplay and influence within the system, becomes the victim of his own plans to sabotage an entire system in an attempt to safeguard his job and restore his reputation.\n\n📺 Streaming on: Sony LIV\n📅 Release: October 11 2024\n⭐ Rating: 8.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/i4XuRIfKepANLQO6AcPG9tfBvpg.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/jRPiWplpM9mNyazOj0Cj6rcEZit.jpg",
-      "genres": [
-        "Comedy",
-        "Drama",
-        "Family"
-      ]
-    },
-    {
-      "id": "tt27950365",
-      "type": "series",
-      "name": "Nagendran's Honeymoons",
-      "releaseInfo": "July 19 2024",
-      "description": "A lazy man named Nagendran, who, with his friend Soman, hatches a plan to marry multiple women to earn money from dowry to escape his village and find a better life abroad.\n\n📺 Streaming on: JioHotstar\n📅 Release: July 19 2024\n⭐ Rating: 5.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/mk1iphrEF1hoQeTQWeF2xPgP8Ug.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/ePTDgSFfSVm10qUSK7RKeQYyVaH.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt27349179",
-      "type": "series",
-      "name": "Perilloor Premier League",
-      "releaseInfo": "January 5 2024",
-      "description": "Malavika, who comes to the village of Perilloor to find love with her boyfriend Sreekuttan, unexpectedly ends up becoming the village Panchayat President against her will. Later, her life goes upside down along with the problems stirred by the wayward people of Perilloor Panchayath.\n\n📺 Streaming on: JioHotstar\n📅 Release: January 5 2024\n⭐ Rating: 6.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/zuQRHydJ1Xojty6EHhWRMNT7ooO.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/uVMFFqUWe2fKntOyC01ipgJ1k4i.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt15478036",
-      "type": "series",
-      "name": "Manorathangal",
-      "releaseInfo": "August 15 2024",
-      "description": "Eight legendary filmmakers collaborate with 9 superstars, breathing life into the timeless stories of author M.T. Vasudevan Nair. Based in Kerala, these stories explore the nuances of human nature.\n\n📺 Streaming on: ZEE5\n📅 Release: August 15 2024\n⭐ Rating: 4.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/z7IzYTN5oUFX42D8N7D3QEy5eEa.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/vx9NcwSkdrH5TSZ8KSFoLi8ZIDR.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
-    },
-    {
       "id": "tt43592288",
       "type": "series",
       "name": "Muthassi",
@@ -811,6 +732,85 @@
       "background": "https://image.tmdb.org/t/p/w1280/mfrx8ie27ljjrjSkiFrISKAui7o.jpg",
       "genres": [
         "Crime",
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tt27540960",
+      "type": "series",
+      "name": "Jai Mahendran",
+      "releaseInfo": "2024-10-11",
+      "description": "When Mahendran, a corrupt and manipulative deputy Thasildar, believes in getting things done through powerplay and influence within the system, becomes the victim of his own plans to sabotage an entire system in an attempt to safeguard his job and restore his reputation.\n\n📺 Streaming on: Sony LIV\n📅 Release: 2024-10-11\n⭐ Rating: 8.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/i4XuRIfKepANLQO6AcPG9tfBvpg.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/jRPiWplpM9mNyazOj0Cj6rcEZit.jpg",
+      "genres": [
+        "Comedy",
+        "Drama",
+        "Family"
+      ]
+    },
+    {
+      "id": "tt33131120",
+      "type": "series",
+      "name": "1000 Babies",
+      "releaseInfo": "2024-09-27",
+      "description": "Enter a cradle of mysteries where a man with a dark past manipulates multiple lives through a series of cryptic letters and deadly games.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2024-09-27\n⭐ Rating: 5.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/j9EdxlAReZ27m29kTP0cqaQOeoe.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/50yPSUThPKxeC9FLGQxB6WoY8f2.jpg",
+      "genres": [
+        "Crime",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt15478036",
+      "type": "series",
+      "name": "Manorathangal",
+      "releaseInfo": "2024-08-15",
+      "description": "Eight legendary filmmakers collaborate with 9 superstars, breathing life into the timeless stories of author M.T. Vasudevan Nair. Based in Kerala, these stories explore the nuances of human nature.\n\n📺 Streaming on: ZEE5\n📅 Release: 2024-08-15\n⭐ Rating: 4.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/z7IzYTN5oUFX42D8N7D3QEy5eEa.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/vx9NcwSkdrH5TSZ8KSFoLi8ZIDR.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt27950365",
+      "type": "series",
+      "name": "Nagendran's Honeymoons",
+      "releaseInfo": "2024-07-19",
+      "description": "A lazy man named Nagendran, who, with his friend Soman, hatches a plan to marry multiple women to earn money from dowry to escape his village and find a better life abroad.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2024-07-19\n⭐ Rating: 5.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/mk1iphrEF1hoQeTQWeF2xPgP8Ug.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/ePTDgSFfSVm10qUSK7RKeQYyVaH.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt27349179",
+      "type": "series",
+      "name": "Perilloor Premier League",
+      "releaseInfo": "2024-01-05",
+      "description": "Malavika, who comes to the village of Perilloor to find love with her boyfriend Sreekuttan, unexpectedly ends up becoming the village Panchayat President against her will. Later, her life goes upside down along with the problems stirred by the wayward people of Perilloor Panchayath.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2024-01-05\n⭐ Rating: 6.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/zuQRHydJ1Xojty6EHhWRMNT7ooO.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/uVMFFqUWe2fKntOyC01ipgJ1k4i.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt28675376",
+      "type": "series",
+      "name": "Masterpeace",
+      "releaseInfo": "2023-10-25",
+      "description": "When marital discord becomes everyone's business and parents get way too involved in the \"peace talks,\" family drama can become family trauma.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2023-10-25\n⭐ Rating: 5.7/10",
+      "poster": "https://image.tmdb.org/t/p/w500/hUOiNi5uFmDNOYLn2hCrgtSwNPA.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/whRb5cpSALBhj23krlcSRhg8VAo.jpg",
+      "genres": [
+        "Drama",
         "Comedy"
       ]
     }
@@ -1527,5 +1527,5 @@
       ]
     }
   ],
-  "builtAt": "2026-07-09T22:40:27.832Z"
+  "builtAt": "2026-07-09T22:49:02.084Z"
 }
