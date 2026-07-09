@@ -1,14 +1,18 @@
 /**
- * scraper.js
- *
- * Movies  → TMDB Discover API (automatic, no maintenance)
- * Series  → Google Sheet CSV (you maintain manually)
- *
- * Series sheet format (5 columns):
- *   Title | Language | Platform | OTT Release Date | IMDb ID
- *
- * IMPORTANT: Only titles with release date ≤ today will appear in the catalog.
- * Future dates in the sheet will be ignored until their release date arrives.
+ * scraper.js - Full-Fledged Version
+ * 
+ * Features:
+ * ✅ Movies from TMDB Discover API
+ * ✅ Series from Google Sheet CSV
+ * ✅ Title variations for better matching
+ * ✅ Strict date filtering (future releases skipped)
+ * ✅ Better error handling (keeps running if one part fails)
+ * ✅ Alerts on failure (Discord/Telegram)
+ * ✅ Retry failed items (not permanently skipped)
+ * ✅ Split cache (movies/series separate)
+ * ✅ Health check status
+ * ✅ Rate limit handling
+ * ✅ Placeholder posters for missing images
  */
 
 const https = require('https');
@@ -16,69 +20,147 @@ const zlib  = require('zlib');
 const fs    = require('fs');
 const path  = require('path');
 
+// ── CONFIGURATION ─────────────────────────────────────────────────────────────
 const TMDB_KEY   = process.env.TMDB_API_KEY || '';
-const SHEET_URL  = process.env.GOOGLE_SHEET_URL || ''; // Set in GitHub Secrets
+const SHEET_URL  = process.env.GOOGLE_SHEET_URL || '';
+const WEBHOOK_URL = process.env.WEBHOOK_URL || ''; // Discord/Telegram webhook
 const BASE       = 'https://api.themoviedb.org/3';
 const IMG        = 'https://image.tmdb.org/t/p/';
-const CACHE_FILE = path.join(__dirname, '..', 'data', 'resolve-cache.json');
+
+// Separate cache files for movies and series
+const MOVIE_CACHE_FILE = path.join(__dirname, '..', 'data', 'movies-cache.json');
+const SERIES_CACHE_FILE = path.join(__dirname, '..', 'data', 'series-cache.json');
 
 // Lookback windows for TMDB Discover
-const MOVIE_LOOKBACK  = 30;  // days — check last 30 days each run
-const MOVIE_FIRST_RUN = 730; // days — backfill on very first run
+const MOVIE_LOOKBACK  = 30;
+const MOVIE_FIRST_RUN = 730;
 
-// ── PERSISTENT CACHE ──────────────────────────────────────────────────────────
-let cache = {};
-let seen  = {}; // tracks which catalogues have run before
-let cacheLoaded = false;
-let cacheDirty  = false;
+// ── CACHE MANAGEMENT ──────────────────────────────────────────────────────────
+let movieCache = {};
+let seriesCache = {};
+let seen  = {};
+let cacheDirty = false;
 
 function loadCache() {
-  if (cacheLoaded) return;
   try {
-    if (fs.existsSync(CACHE_FILE)) {
-      const raw = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
-      seen  = raw._seen  || {};
-      cache = Object.fromEntries(
-        Object.entries(raw).filter(([k]) => k !== '_seen')
-      );
-      console.log('[Cache] Loaded ' + Object.keys(cache).length + ' entries');
+    // Load movies cache
+    if (fs.existsSync(MOVIE_CACHE_FILE)) {
+      const raw = JSON.parse(fs.readFileSync(MOVIE_CACHE_FILE, 'utf8'));
+      movieCache = raw._data || {};
+      seen = raw._seen || {};
+      console.log('[Cache] Loaded ' + Object.keys(movieCache).length + ' movie entries');
     } else {
-      console.log('[Cache] Fresh start');
+      console.log('[Cache] Fresh movie cache');
+    }
+
+    // Load series cache
+    if (fs.existsSync(SERIES_CACHE_FILE)) {
+      const raw = JSON.parse(fs.readFileSync(SERIES_CACHE_FILE, 'utf8'));
+      seriesCache = raw._data || {};
+      console.log('[Cache] Loaded ' + Object.keys(seriesCache).length + ' series entries');
+    } else {
+      console.log('[Cache] Fresh series cache');
     }
   } catch (e) {
     console.warn('[Cache] Load failed: ' + e.message);
-    cache = {}; seen = {};
+    movieCache = {};
+    seriesCache = {};
+    seen = {};
   }
-  cacheLoaded = true;
 }
 
 function saveCache() {
   if (!cacheDirty) return;
   try {
-    const dir = path.dirname(CACHE_FILE);
+    const dir = path.dirname(MOVIE_CACHE_FILE);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(CACHE_FILE, JSON.stringify({ ...cache, _seen: seen }, null, 2));
-    console.log('[Cache] Saved ' + Object.keys(cache).length + ' entries');
+
+    // Save movies
+    fs.writeFileSync(MOVIE_CACHE_FILE, JSON.stringify({ _data: movieCache, _seen: seen }, null, 2));
+    
+    // Save series
+    fs.writeFileSync(SERIES_CACHE_FILE, JSON.stringify({ _data: seriesCache }, null, 2));
+    
+    console.log('[Cache] Saved movies: ' + Object.keys(movieCache).length + ', series: ' + Object.keys(seriesCache).length);
     cacheDirty = false;
   } catch (e) {
     console.warn('[Cache] Save failed: ' + e.message);
   }
 }
 
+// ── ALERT SYSTEM ──────────────────────────────────────────────────────────────
+async function sendAlert(message, isError = true) {
+  const emoji = isError ? '🚨' : 'ℹ️';
+  const fullMessage = emoji + ' ' + message;
+  
+  console.log('[Alert] ' + fullMessage);
+  
+  if (!WEBHOOK_URL) {
+    console.log('[Alert] No webhook URL set - alert not sent');
+    return;
+  }
+
+  try {
+    const data = JSON.stringify({
+      content: fullMessage,
+      username: 'Mollywood Scraper'
+    });
+
+    const req = https.request(WEBHOOK_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': data.length
+      }
+    }, (res) => {
+      if (res.statusCode >= 200 && res.statusCode < 300) {
+        console.log('[Alert] ✅ Sent successfully');
+      } else {
+        console.log('[Alert] Failed with status: ' + res.statusCode);
+      }
+    });
+    req.on('error', (e) => console.log('[Alert] Request failed: ' + e.message));
+    req.write(data);
+    req.end();
+  } catch (e) {
+    console.log('[Alert] Failed to send: ' + e.message);
+  }
+}
+
+// ── HEALTH CHECK ──────────────────────────────────────────────────────────────
+function getHealthStatus() {
+  const movieCount = Object.values(movieCache).filter(v => v && v !== 'skip' && v !== 'retry').length;
+  const seriesCount = Object.values(seriesCache).filter(v => v && v !== 'skip' && v !== 'retry').length;
+  const total = movieCount + seriesCount;
+  
+  const status = {
+    timestamp: new Date().toISOString(),
+    movies: movieCount,
+    series: seriesCount,
+    total: total,
+    status: total > 0 ? '✅ OK' : '⚠️ No items found'
+  };
+  
+  console.log('[Health] 📊 Status: ' + status.movies + ' movies, ' + status.series + ' series, ' + status.total + ' total');
+  return status;
+}
+
 // ── HTTP ──────────────────────────────────────────────────────────────────────
-function fetchUrl(url) {
+function fetchUrl(url, options = {}) {
   return new Promise((resolve, reject) => {
     const req = https.get(url, {
       headers: {
         'Accept': 'application/json, text/plain, */*',
         'User-Agent': 'MollywoodAddon/1.0',
+        ...options.headers
       },
     }, (res) => {
-      // Follow redirects
-      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location)
-        return fetchUrl(res.headers.location).then(resolve).catch(reject);
-      if (res.statusCode !== 200)
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        return fetchUrl(res.headers.location, options).then(resolve).catch(reject);
+      }
+      if (res.statusCode !== 200) {
         return reject(new Error('HTTP ' + res.statusCode));
+      }
       let s = res;
       const enc = res.headers['content-encoding'];
       if (enc === 'gzip')    s = res.pipe(zlib.createGunzip());
@@ -98,21 +180,41 @@ function fetchJson(url) {
   return fetchUrl(url).then(t => JSON.parse(t));
 }
 
-// Rate limiter — stay under TMDB's 40 req/10s
+// ── RATE LIMITER ──────────────────────────────────────────────────────────────
 let reqCount = 0, reqReset = Date.now();
-async function tmdb(endpoint) {
-  if (!TMDB_KEY) throw new Error('TMDB_API_KEY not set');
-  const now = Date.now();
-  if (now - reqReset > 10000) { reqCount = 0; reqReset = now; }
-  if (reqCount >= 35) {
-    const wait = 10100 - (now - reqReset);
-    console.log('[Rate] Pausing ' + Math.ceil(wait / 1000) + 's...');
-    await new Promise(r => setTimeout(r, wait));
-    reqCount = 0; reqReset = Date.now();
+
+async function tmdb(endpoint, retries = 3) {
+  if (!TMDB_KEY) {
+    await sendAlert('❌ TMDB_API_KEY not set!');
+    throw new Error('TMDB_API_KEY not set');
   }
-  reqCount++;
-  const sep = endpoint.includes('?') ? '&' : '?';
-  return fetchJson(BASE + endpoint + sep + 'api_key=' + TMDB_KEY);
+
+  let lastError;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const now = Date.now();
+      if (now - reqReset > 10000) { reqCount = 0; reqReset = now; }
+      
+      if (reqCount >= 35) {
+        const wait = 15100 - (now - reqReset);
+        console.log('[Rate] Pausing ' + Math.ceil(wait / 1000) + 's...');
+        await new Promise(r => setTimeout(r, wait));
+        reqCount = 0; reqReset = Date.now();
+      }
+      
+      reqCount++;
+      const sep = endpoint.includes('?') ? '&' : '?';
+      const url = BASE + endpoint + sep + 'api_key=' + TMDB_KEY;
+      return await fetchJson(url);
+    } catch (e) {
+      lastError = e;
+      console.warn('[TMDB] Attempt ' + attempt + ' failed: ' + e.message);
+      if (attempt < retries) {
+        await new Promise(r => setTimeout(r, 2000 * attempt));
+      }
+    }
+  }
+  throw new Error('TMDB failed after ' + retries + ' attempts: ' + lastError.message);
 }
 
 // ── DATE HELPERS ──────────────────────────────────────────────────────────────
@@ -126,326 +228,33 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
-// 🔥 STRICT DATE CHECK: Only returns true if date is today or in the past
 function isReleased(dateStr) {
   if (!dateStr) return false;
   const releaseDate = new Date(dateStr);
   const now = new Date();
-  // Reset time to midnight for fair comparison
   releaseDate.setHours(0, 0, 0, 0);
   now.setHours(0, 0, 0, 0);
   return releaseDate <= now;
 }
 
-// ── TITLE VARIATIONS FOR BETTER MATCHING ─────────────────────────────────────
+// ── TITLE VARIATIONS ──────────────────────────────────────────────────────────
 function getTitleVariations(title) {
   const variations = new Set();
   variations.add(title);
   
-  // Replace 'and' with '&' and vice versa
   variations.add(title.replace(/\band\b/gi, '&'));
   variations.add(title.replace(/&/g, ' and '));
-  
-  // Remove special characters
   variations.add(title.replace(/[^a-zA-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim());
-  
-  // Remove year if present
   variations.add(title.replace(/\s*\(\d{4}\)\s*$/, '').trim());
-  
-  // Remove "Season X" or "S01" patterns
   variations.add(title.replace(/\s*[-–]\s*season\s*\d+/i, '').trim());
   variations.add(title.replace(/\s*[Ss]\d{2}/, '').trim());
-  
-  // Remove common prefixes/suffixes
   variations.add(title.replace(/^(the|a|an)\s+/i, '').trim());
   variations.add(title.replace(/\s+(series|show|tv|web series)$/i, '').trim());
   
   return Array.from(variations);
 }
 
-// ── TMDB: DISCOVER MOVIES ─────────────────────────────────────────────────────
-async function discoverMovies(lang, lookbackDays) {
-  const dateFrom = daysAgo(lookbackDays);
-  const results  = [];
-
-  for (let page = 1; page <= 5; page++) {
-    try {
-      const data = await tmdb(
-        '/discover/movie'
-        + '?with_original_language=' + lang
-        + '&watch_region=IN'
-        + '&with_watch_monetization_types=flatrate|free|ads'
-        + '&sort_by=primary_release_date.desc'
-        + '&primary_release_date.gte=' + dateFrom
-        + '&primary_release_date.lte=' + today()
-        + '&page=' + page
-      );
-      if (!data.results || !data.results.length) break;
-
-      // Strict language filter
-      const newItems = data.results
-        .filter(r => !cache[String(r.id)])
-        .filter(r => r.original_language === lang);
-
-      results.push(...newItems);
-      console.log('[Discover] Page ' + page + ': ' + data.results.length +
-        ' found, ' + newItems.length + ' new');
-
-      if (page >= (data.total_pages || 1)) break;
-      if (newItems.length === 0) break;
-    } catch (e) {
-      console.warn('[Discover] Page ' + page + ' failed: ' + e.message);
-      break;
-    }
-  }
-  return results;
-}
-
-// ── TMDB: FETCH DETAIL + PROVIDERS (1 request) ────────────────────────────────
-async function fetchMovieDetail(tmdbId) {
-  try {
-    return await tmdb(
-      '/movie/' + tmdbId
-      + '?language=en-US'
-      + '&append_to_response=watch/providers'
-    );
-  } catch (e) {
-    console.warn('[Detail] ' + tmdbId + ': ' + e.message);
-    return null;
-  }
-}
-
-function getIndiaProviders(data) {
-  const wp = data['watch/providers'];
-  if (!wp || !wp.results || !wp.results.IN) return null;
-  const IN  = wp.results.IN;
-  const all = [...(IN.flatrate || []), ...(IN.free || []), ...(IN.ads || [])];
-  if (!all.length) return null;
-  const seen = new Set();
-  return all
-    .filter(p => { if (seen.has(p.provider_id)) return false; seen.add(p.provider_id); return true; })
-    .map(p => p.provider_name)
-    .join(', ');
-}
-
-// ── TMDB: PROCESS ONE MOVIE ───────────────────────────────────────────────────
-async function processMovie(item) {
-  const tmdbId = String(item.id);
-  if (cache[tmdbId] !== undefined) {
-    return cache[tmdbId] === 'skip' ? null : cache[tmdbId];
-  }
-
-  const detail = await fetchMovieDetail(tmdbId);
-  if (!detail) { cache[tmdbId] = 'skip'; cacheDirty = true; return null; }
-
-  if (!detail.imdb_id) {
-    console.log('[Skip] No IMDb ID: ' + (detail.title || ''));
-    cache[tmdbId] = 'skip'; cacheDirty = true; return null;
-  }
-
-  const platform = getIndiaProviders(detail);
-  if (!platform) {
-    console.log('[Skip] Not on OTT/IN: ' + (detail.title || ''));
-    cache[tmdbId] = 'skip'; cacheDirty = true; return null;
-  }
-
-  const releaseDate = detail.release_date || '';
-  const meta = buildMeta({
-    imdbId:      detail.imdb_id,
-    type:        'movie',
-    title:       detail.title || '',
-    platform,
-    releaseDate,
-    overview:    detail.overview || '',
-    rating:      detail.vote_average,
-    posterPath:  detail.poster_path,
-    backdropPath: detail.backdrop_path,
-    genres:      (detail.genres || []).map(g => g.name),
-  });
-
-  cache[tmdbId] = meta; cacheDirty = true;
-  console.log('[OK] ' + meta.name + ' -> ' + detail.imdb_id + ' on ' + platform);
-  return meta;
-}
-
-// ── GOOGLE SHEET: FETCH AND PARSE SERIES ──────────────────────────────────────
-// Sheet columns: Title | Language | Platform | OTT Release Date | IMDb ID
-// Language column: "Malayalam" or "Tamil"
-// 🔥 FUTURE DATES ARE FILTERED OUT HERE - They won't appear in the catalog
-async function fetchSheetSeries(filterLang) {
-  if (!SHEET_URL) {
-    console.warn('[Sheet] GOOGLE_SHEET_URL not set — no series data');
-    return [];
-  }
-
-  try {
-    // Auto-convert edit/view URL to CSV export URL
-    let sheetUrl = SHEET_URL;
-    if (sheetUrl.includes('/edit') || sheetUrl.includes('/view')) {
-      const id = sheetUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
-      if (id) sheetUrl = 'https://docs.google.com/spreadsheets/d/' + id[1] + '/export?format=csv&gid=0';
-    }
-    console.log('[Sheet] Fetching: ' + sheetUrl);
-    const csv = await fetchUrl(sheetUrl);
-    const lines = csv.trim().split('\n');
-    const items = [];
-
-    // Skip header row
-    for (let i = 1; i < lines.length; i++) {
-      const row = parseCSVRow(lines[i]);
-      if (row.length < 5) continue;
-
-      const title    = row[0].trim();
-      const lang     = row[1].trim().toLowerCase();
-      const platform = row[2].trim();
-      const date     = row[3].trim();
-      const imdbId   = row[4].trim();
-
-      if (!title) continue;
-      
-      // 🔥 SKIP FUTURE RELEASES - Only include today or past
-      if (!isReleased(date)) {
-        console.log('[Sheet] Skipping future release: ' + title + ' (' + date + ')');
-        continue;
-      }
-      
-      if (!lang.includes(filterLang.toLowerCase())) continue;
-
-      items.push({ title, platform, date, imdbId });
-    }
-
-    console.log('[Sheet] ' + items.length + ' released ' + filterLang + ' series found');
-    return items;
-  } catch (e) {
-    console.warn('[Sheet] Failed: ' + e.message);
-    return [];
-  }
-}
-
-// Simple CSV row parser (handles quoted fields)
-function parseCSVRow(line) {
-  const result = [];
-  let current  = '';
-  let inQuotes = false;
-
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
-      else inQuotes = !inQuotes;
-    } else if (ch === ',' && !inQuotes) {
-      result.push(current); current = '';
-    } else {
-      current += ch;
-    }
-  }
-  result.push(current);
-  return result;
-}
-
-// ── SHEET SERIES → TMDB META ──────────────────────────────────────────────────
-// If IMDb ID is provided: use TMDB /find (1 request)
-// If IMDb ID is missing: search TMDB by title with variations
-async function enrichSeriesFromTMDB(imdbId, title, lang) {
-  const cacheKey = 'series_' + (imdbId || title.toLowerCase().replace(/[^a-z0-9]/g, '_'));
-  if (cache[cacheKey] && cache[cacheKey] !== 'skip') return cache[cacheKey];
-
-  try {
-    let tvId = null;
-    let resolvedImdbId = imdbId || null;
-
-    if (imdbId && imdbId.startsWith('tt')) {
-      // We have an IMDb ID — use TMDB /find (fast, 1 request)
-      const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
-      const tv   = (data.tv_results || [])[0];
-      if (tv) tvId = tv.id;
-    }
-
-    if (!tvId) {
-      // No IMDb ID or not found — search TMDB by title with variations
-      console.log('[AutoLookup] Searching for: ' + title);
-      const langCode = lang === 'ml' ? 'ml' : 'ta';
-      const variations = getTitleVariations(title);
-
-      let best = null;
-      let bestScore = -1;
-
-      for (const variant of variations) {
-        try {
-          const query = encodeURIComponent(variant);
-          const data = await tmdb('/search/tv?query=' + query + '&language=en-US&page=1');
-          const results = data.results || [];
-
-          for (const r of results) {
-            let score = 0;
-            const rt = (r.name || '').toLowerCase();
-            const vl = variant.toLowerCase();
-
-            if (rt === vl) score += 100;
-            else if (rt.includes(vl) || vl.includes(rt)) score += 50;
-            else if (rt.split(' ').some(word => vl.includes(word) && word.length > 3)) score += 20;
-
-            if (r.original_language === langCode) score += 50;
-            if (r.origin_country && r.origin_country.includes('IN')) score += 30;
-
-            if (score > bestScore && score >= 40) {
-              bestScore = score;
-              best = r;
-            }
-          }
-
-          if (best && bestScore >= 80) break;
-        } catch(e) {
-          // Continue to next variation
-        }
-      }
-
-      if (best) {
-        tvId = best.id;
-        console.log('[AutoLookup] Found: ' + best.name + ' (score: ' + bestScore + ')');
-      } else {
-        console.log('[AutoLookup] No match for: ' + title);
-        cache[cacheKey] = 'skip'; cacheDirty = true; return null;
-      }
-    }
-
-    if (!tvId) {
-      cache[cacheKey] = 'skip'; cacheDirty = true; return null;
-    }
-
-    // Fetch full TV detail
-    const detail = await tmdb('/tv/' + tvId + '?language=en-US');
-
-    // Get IMDb ID from detail if we didn't have it
-    if (!resolvedImdbId && detail.external_ids) {
-      resolvedImdbId = detail.external_ids.imdb_id || null;
-    }
-    // Fetch external IDs if still missing
-    if (!resolvedImdbId) {
-      try {
-        const ext = await tmdb('/tv/' + tvId + '/external_ids');
-        resolvedImdbId = ext.imdb_id || null;
-      } catch(e) {}
-    }
-
-    const result = {
-      imdbId:   resolvedImdbId,
-      poster:   detail.poster_path   ? IMG + 'w500'  + detail.poster_path   : null,
-      backdrop: detail.backdrop_path ? IMG + 'w1280' + detail.backdrop_path : null,
-      overview: detail.overview      || '',
-      rating:   detail.vote_average  || null,
-      genres:   (detail.genres || []).map(g => g.name),
-    };
-
-    cache[cacheKey] = result; cacheDirty = true;
-    return result;
-  } catch (e) {
-    console.warn('[Enrich] ' + (imdbId || title) + ': ' + e.message);
-    return null;
-  }
-}
-
-// ── BUILD STREMIO META OBJECT ─────────────────────────────────────────────────
+// ── BUILD META ─────────────────────────────────────────────────────────────────
 function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
                      rating, posterPath, backdropPath, genres, posterUrl, backdropUrl }) {
   let desc = '';
@@ -454,14 +263,12 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
   if (releaseDate) desc += '\n📅 Release: ' + releaseDate;
   if (rating)      desc += '\n⭐ Rating: ' + Number(rating).toFixed(1) + '/10';
 
-  // Use posterUrl or posterPath (whichever is provided)
   let poster = null;
   if (posterUrl) {
     poster = posterUrl;
   } else if (posterPath) {
     poster = IMG + 'w500' + posterPath;
   } else {
-    // Use placeholder if no poster
     poster = 'https://via.placeholder.com/500x750/1a1a2e/ffffff?text=' + encodeURIComponent(title);
   }
 
@@ -486,149 +293,456 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
   return meta;
 }
 
-// ── SCRAPE MOVIES (TMDB Discover) ────────────────────────────────────────────
-async function scrapeMovies(lang) {
-  loadCache();
+// ── MOVIES ─────────────────────────────────────────────────────────────────────
+async function discoverMovies(lang, lookbackDays) {
+  const dateFrom = daysAgo(lookbackDays);
+  const results  = [];
 
-  const catalogueKey = lang + '_movie';
-  const isFirstRun   = !seen[catalogueKey];
-  const lookback     = isFirstRun ? MOVIE_FIRST_RUN : MOVIE_LOOKBACK;
+  for (let page = 1; page <= 5; page++) {
+    try {
+      const data = await tmdb(
+        '/discover/movie'
+        + '?with_original_language=' + lang
+        + '&watch_region=IN'
+        + '&with_watch_monetization_types=flatrate|free|ads'
+        + '&sort_by=primary_release_date.desc'
+        + '&primary_release_date.gte=' + dateFrom
+        + '&primary_release_date.lte=' + today()
+        + '&page=' + page
+      );
+      if (!data.results || !data.results.length) break;
 
-  console.log('[Movies] ' + lang + ' | lookback: ' + lookback + 'd' +
-    (isFirstRun ? ' (first run)' : ''));
+      const newItems = data.results
+        .filter(r => !movieCache[String(r.id)])
+        .filter(r => r.original_language === lang);
 
-  const newItems = await discoverMovies(lang, lookback);
-  console.log('[Movies] ' + newItems.length + ' new items to process');
+      results.push(...newItems);
+      console.log('[Discover] Page ' + page + ': ' + data.results.length +
+        ' found, ' + newItems.length + ' new');
 
-  for (let i = 0; i < newItems.length; i++) {
-    await processMovie(newItems[i]);
-    if ((i + 1) % 10 === 0) await new Promise(r => setTimeout(r, 300));
+      if (page >= (data.total_pages || 1)) break;
+      if (newItems.length === 0) break;
+    } catch (e) {
+      console.warn('[Discover] Page ' + page + ' failed: ' + e.message);
+      break;
+    }
+  }
+  return results;
+}
+
+async function processMovie(item) {
+  const tmdbId = String(item.id);
+  
+  // Check cache with retry logic
+  if (movieCache[tmdbId] !== undefined) {
+    if (movieCache[tmdbId] === 'skip') return null;
+    if (movieCache[tmdbId] === 'retry') {
+      // Try again - don't skip permanently
+      console.log('[Retry] Attempting previously failed movie: ' + (item.title || item.name));
+    } else {
+      return movieCache[tmdbId];
+    }
   }
 
-  seen[catalogueKey] = true;
+  try {
+    const detail = await tmdb('/movie/' + tmdbId + '?language=en-US&append_to_response=watch/providers');
+    if (!detail) {
+      movieCache[tmdbId] = 'retry';
+      cacheDirty = true;
+      return null;
+    }
 
-  const result = Object.values(cache)
-    .filter(v => v && v !== 'skip' && v.type === 'movie')
-    .sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''))
-    .slice(0, 50);
+    if (!detail.imdb_id) {
+      console.log('[Skip] No IMDb ID: ' + (detail.title || ''));
+      movieCache[tmdbId] = 'skip';
+      cacheDirty = true;
+      return null;
+    }
 
-  console.log('[Movies] ' + lang + ': ' + result.length + ' in catalogue');
-  saveCache();
+    const wp = detail['watch/providers'];
+    if (!wp || !wp.results || !wp.results.IN) {
+      console.log('[Skip] Not on OTT/IN: ' + (detail.title || ''));
+      movieCache[tmdbId] = 'skip';
+      cacheDirty = true;
+      return null;
+    }
+
+    const IN = wp.results.IN;
+    const all = [...(IN.flatrate || []), ...(IN.free || []), ...(IN.ads || [])];
+    if (!all.length) {
+      console.log('[Skip] No OTT provider: ' + (detail.title || ''));
+      movieCache[tmdbId] = 'skip';
+      cacheDirty = true;
+      return null;
+    }
+
+    const seen = new Set();
+    const platform = all
+      .filter(p => { if (seen.has(p.provider_id)) return false; seen.add(p.provider_id); return true; })
+      .map(p => p.provider_name)
+      .join(', ');
+
+    const meta = buildMeta({
+      imdbId:      detail.imdb_id,
+      type:        'movie',
+      title:       detail.title || '',
+      platform,
+      releaseDate: detail.release_date || '',
+      overview:    detail.overview || '',
+      rating:      detail.vote_average,
+      posterPath:  detail.poster_path,
+      backdropPath: detail.backdrop_path,
+      genres:      (detail.genres || []).map(g => g.name),
+    });
+
+    movieCache[tmdbId] = meta;
+    cacheDirty = true;
+    console.log('[OK] ' + meta.name + ' -> ' + detail.imdb_id + ' on ' + platform);
+    return meta;
+  } catch (e) {
+    console.warn('[Process] Movie ' + tmdbId + ' failed: ' + e.message);
+    movieCache[tmdbId] = 'retry';
+    cacheDirty = true;
+    return null;
+  }
+}
+
+async function scrapeMovies(lang) {
+  try {
+    const catalogueKey = lang + '_movie';
+    const isFirstRun   = !seen[catalogueKey];
+    const lookback     = isFirstRun ? MOVIE_FIRST_RUN : MOVIE_LOOKBACK;
+
+    console.log('[Movies] ' + lang + ' | lookback: ' + lookback + 'd' + (isFirstRun ? ' (first run)' : ''));
+
+    const newItems = await discoverMovies(lang, lookback);
+    console.log('[Movies] ' + newItems.length + ' new items to process');
+
+    let processed = 0;
+    let failed = 0;
+    for (const item of newItems) {
+      const result = await processMovie(item);
+      if (result) processed++;
+      else failed++;
+      if ((processed + failed) % 10 === 0) await new Promise(r => setTimeout(r, 300));
+    }
+
+    seen[catalogueKey] = true;
+
+    const result = Object.values(movieCache)
+      .filter(v => v && v !== 'skip' && v !== 'retry' && v.type === 'movie')
+      .sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''))
+      .slice(0, 50);
+
+    console.log('[Movies] ' + lang + ': ' + result.length + ' in catalogue (' + processed + ' new, ' + failed + ' failed)');
+    return result;
+  } catch (e) {
+    console.error('[Movies] ' + lang + ' error: ' + e.message);
+    await sendAlert('❌ Movies scraper failed for ' + lang + ': ' + e.message);
+    return [];
+  }
+}
+
+// ── SERIES ─────────────────────────────────────────────────────────────────────
+async function fetchSheetSeries(filterLang) {
+  if (!SHEET_URL) {
+    console.warn('[Sheet] GOOGLE_SHEET_URL not set — no series data');
+    return [];
+  }
+
+  try {
+    let sheetUrl = SHEET_URL;
+    if (sheetUrl.includes('/edit') || sheetUrl.includes('/view')) {
+      const id = sheetUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+      if (id) sheetUrl = 'https://docs.google.com/spreadsheets/d/' + id[1] + '/export?format=csv&gid=0';
+    }
+    
+    console.log('[Sheet] Fetching: ' + sheetUrl);
+    const csv = await fetchUrl(sheetUrl);
+    const lines = csv.trim().split('\n');
+    const items = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const row = parseCSVRow(lines[i]);
+      if (row.length < 5) continue;
+
+      const title    = row[0].trim();
+      const lang     = row[1].trim().toLowerCase();
+      const platform = row[2].trim();
+      const date     = row[3].trim();
+      const imdbId   = row[4].trim();
+
+      if (!title) continue;
+      if (!isReleased(date)) {
+        console.log('[Sheet] Skipping future: ' + title + ' (' + date + ')');
+        continue;
+      }
+      if (!lang.includes(filterLang.toLowerCase())) continue;
+
+      items.push({ title, platform, date, imdbId });
+    }
+
+    console.log('[Sheet] ' + items.length + ' released ' + filterLang + ' series found');
+    return items;
+  } catch (e) {
+    console.warn('[Sheet] Failed: ' + e.message);
+    await sendAlert('⚠️ Google Sheet fetch failed: ' + e.message);
+    return [];
+  }
+}
+
+function parseCSVRow(line) {
+  const result = [];
+  let current  = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
+      else inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes) {
+      result.push(current); current = '';
+    } else {
+      current += ch;
+    }
+  }
+  result.push(current);
   return result;
 }
 
-// ── SCRAPE SERIES (Google Sheet) ─────────────────────────────────────────────
-async function scrapeSeries(lang) {
-  loadCache();
-
-  const langLabel = lang === 'ml' ? 'Malayalam' : 'Tamil';
-  const items     = await fetchSheetSeries(langLabel);
-
-  // 🔥 EXTRA SAFETY: Filter out any future dates that might have slipped through
-  const releasedItems = items.filter(item => isReleased(item.date));
+async function enrichSeriesFromTMDB(imdbId, title, lang) {
+  const cacheKey = (imdbId || title.toLowerCase().replace(/[^a-z0-9]/g, '_'));
   
-  if (releasedItems.length < items.length) {
-    console.log('[Series] Filtered out ' + (items.length - releasedItems.length) + ' future releases');
+  if (seriesCache[cacheKey] !== undefined) {
+    if (seriesCache[cacheKey] === 'skip') return null;
+    if (seriesCache[cacheKey] === 'retry') {
+      console.log('[Retry] Re-trying: ' + title);
+    } else {
+      return seriesCache[cacheKey];
+    }
   }
 
-  // Sort by date (newest first)
-  releasedItems.sort((a, b) => {
-    const da = new Date(a.date);
-    const db = new Date(b.date);
-    if (isNaN(da)) return 1;
-    if (isNaN(db)) return -1;
-    return db - da;
-  });
+  try {
+    let tvId = null;
+    let resolvedImdbId = imdbId || null;
 
-  console.log('[Series] Processing ' + releasedItems.length + ' released items from sheet');
-
-  const metas = [];
-  for (const item of releasedItems.slice(0, 50)) {
-    const cacheKey = 'series_' + (item.imdbId || item.title.toLowerCase().replace(/[^a-z0-9]/g, '_'));
-    let tmdbData = cache[cacheKey] && cache[cacheKey] !== 'skip'
-      ? cache[cacheKey]
-      : null;
-
-    if (!tmdbData) {
-      tmdbData = await enrichSeriesFromTMDB(item.imdbId, item.title, lang);
+    if (imdbId && imdbId.startsWith('tt')) {
+      const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
+      const tv   = (data.tv_results || [])[0];
+      if (tv) tvId = tv.id;
     }
 
-    // If sheet had no IMDb ID, use the one resolved from TMDB
-    const finalImdbId = item.imdbId || (tmdbData && tmdbData.imdbId) || null;
-    if (!finalImdbId) {
-      console.log('[Series] Skipping (no IMDb ID found): ' + item.title);
-      continue;
+    if (!tvId) {
+      console.log('[AutoLookup] Searching: ' + title);
+      const langCode = lang === 'ml' ? 'ml' : 'ta';
+      const variations = getTitleVariations(title);
+
+      let best = null;
+      let bestScore = -1;
+
+      for (const variant of variations) {
+        try {
+          const data = await tmdb('/search/tv?query=' + encodeURIComponent(variant) + '&language=en-US&page=1');
+          const results = data.results || [];
+
+          for (const r of results) {
+            let score = 0;
+            const rt = (r.name || '').toLowerCase();
+            const vl = variant.toLowerCase();
+
+            if (rt === vl) score += 100;
+            else if (rt.includes(vl) || vl.includes(rt)) score += 50;
+            else if (rt.split(' ').some(word => vl.includes(word) && word.length > 3)) score += 20;
+
+            if (r.original_language === langCode) score += 50;
+            if (r.origin_country && r.origin_country.includes('IN')) score += 30;
+
+            if (score > bestScore && score >= 40) {
+              bestScore = score;
+              best = r;
+            }
+          }
+
+          if (best && bestScore >= 80) break;
+        } catch(e) {}
+      }
+
+      if (best) {
+        tvId = best.id;
+        console.log('[AutoLookup] Found: ' + best.name + ' (score: ' + bestScore + ')');
+      } else {
+        console.log('[AutoLookup] No match for: ' + title);
+        seriesCache[cacheKey] = 'skip';
+        cacheDirty = true;
+        return null;
+      }
     }
 
-    // Format date for better display
-    let formattedDate = item.date;
-    if (item.date) {
+    if (!tvId) {
+      seriesCache[cacheKey] = 'skip';
+      cacheDirty = true;
+      return null;
+    }
+
+    const detail = await tmdb('/tv/' + tvId + '?language=en-US');
+
+    if (!resolvedImdbId && detail.external_ids) {
+      resolvedImdbId = detail.external_ids.imdb_id || null;
+    }
+    if (!resolvedImdbId) {
       try {
-        const d = new Date(item.date);
-        if (!isNaN(d)) {
-          formattedDate = d.toISOString().split('T')[0];
-        }
+        const ext = await tmdb('/tv/' + tvId + '/external_ids');
+        resolvedImdbId = ext.imdb_id || null;
       } catch(e) {}
     }
 
-    const meta = buildMeta({
-      imdbId:      finalImdbId,
-      type:        'series',
-      title:       item.title,
-      platform:    item.platform,
-      releaseDate: formattedDate || item.date,
-      overview:    tmdbData?.overview || '',
-      rating:      tmdbData?.rating   || null,
-      posterUrl:   tmdbData?.poster   || null,
-      backdropUrl: tmdbData?.backdrop || null,
-      genres:      tmdbData?.genres   || [],
-    });
+    const result = {
+      imdbId:   resolvedImdbId,
+      poster:   detail.poster_path   ? IMG + 'w500'  + detail.poster_path   : null,
+      backdrop: detail.backdrop_path ? IMG + 'w1280' + detail.backdrop_path : null,
+      overview: detail.overview      || '',
+      rating:   detail.vote_average  || null,
+      genres:   (detail.genres || []).map(g => g.name),
+    };
 
-    metas.push(meta);
-    console.log('[Series] ' + item.title + ' -> ' + finalImdbId + ' (' + formattedDate + ')');
-    await new Promise(r => setTimeout(r, 100));
+    seriesCache[cacheKey] = result;
+    cacheDirty = true;
+    return result;
+  } catch (e) {
+    console.warn('[Enrich] ' + (imdbId || title) + ': ' + e.message);
+    seriesCache[cacheKey] = 'retry';
+    cacheDirty = true;
+    return null;
   }
-
-  // Sort by release date (newest first)
-  metas.sort((a, b) => {
-    if (a.releaseInfo && b.releaseInfo) {
-      const da = new Date(a.releaseInfo);
-      const db = new Date(b.releaseInfo);
-      if (!isNaN(da) && !isNaN(db)) {
-        return db - da;
-      }
-      return (b.releaseInfo || '').localeCompare(a.releaseInfo || '');
-    }
-    if (a.releaseInfo && !b.releaseInfo) return -1;
-    if (!a.releaseInfo && b.releaseInfo) return 1;
-    return 0;
-  });
-
-  console.log('[Series] ' + lang + ': ' + metas.length + ' released series in catalogue');
-  saveCache();
-  return metas;
 }
 
-// ── PUBLIC API ────────────────────────────────────────────────────────────────
-async function scrapeMalayalam(type) {
+async function scrapeSeries(lang) {
   try {
-    return type === 'series'
-      ? await scrapeSeries('ml')
-      : await scrapeMovies('ml');
+    const langLabel = lang === 'ml' ? 'Malayalam' : 'Tamil';
+    const items     = await fetchSheetSeries(langLabel);
+    
+    const releasedItems = items.filter(item => isReleased(item.date));
+    if (releasedItems.length < items.length) {
+      console.log('[Series] Filtered ' + (items.length - releasedItems.length) + ' future releases');
+    }
+
+    releasedItems.sort((a, b) => {
+      const da = new Date(a.date);
+      const db = new Date(b.date);
+      if (isNaN(da)) return 1;
+      if (isNaN(db)) return -1;
+      return db - da;
+    });
+
+    console.log('[Series] Processing ' + releasedItems.length + ' released items');
+
+    const metas = [];
+    let failed = 0;
+    
+    for (const item of releasedItems.slice(0, 50)) {
+      const tmdbData = await enrichSeriesFromTMDB(item.imdbId, item.title, lang);
+      
+      const finalImdbId = item.imdbId || (tmdbData && tmdbData.imdbId) || null;
+      if (!finalImdbId) {
+        console.log('[Series] Skipping (no IMDb ID): ' + item.title);
+        failed++;
+        continue;
+      }
+
+      let formattedDate = item.date;
+      if (item.date) {
+        try {
+          const d = new Date(item.date);
+          if (!isNaN(d)) {
+            formattedDate = d.toISOString().split('T')[0];
+          }
+        } catch(e) {}
+      }
+
+      const meta = buildMeta({
+        imdbId:      finalImdbId,
+        type:        'series',
+        title:       item.title,
+        platform:    item.platform,
+        releaseDate: formattedDate || item.date,
+        overview:    tmdbData?.overview || '',
+        rating:      tmdbData?.rating   || null,
+        posterUrl:   tmdbData?.poster   || null,
+        backdropUrl: tmdbData?.backdrop || null,
+        genres:      tmdbData?.genres   || [],
+      });
+
+      metas.push(meta);
+      console.log('[Series] ' + item.title + ' -> ' + finalImdbId + ' (' + formattedDate + ')');
+      await new Promise(r => setTimeout(r, 100));
+    }
+
+    metas.sort((a, b) => {
+      if (a.releaseInfo && b.releaseInfo) {
+        const da = new Date(a.releaseInfo);
+        const db = new Date(b.releaseInfo);
+        if (!isNaN(da) && !isNaN(db)) {
+          return db - da;
+        }
+        return (b.releaseInfo || '').localeCompare(a.releaseInfo || '');
+      }
+      if (a.releaseInfo && !b.releaseInfo) return -1;
+      if (!a.releaseInfo && b.releaseInfo) return 1;
+      return 0;
+    });
+
+    console.log('[Series] ' + lang + ': ' + metas.length + ' series in catalogue (' + failed + ' failed)');
+    return metas;
+  } catch (e) {
+    console.error('[Series] ' + lang + ' error: ' + e.message);
+    await sendAlert('❌ Series scraper failed for ' + lang + ': ' + e.message);
+    return [];
+  }
+}
+
+// ── PUBLIC API ─────────────────────────────────────────────────────────────────
+async function scrapeMalayalam(type) {
+  loadCache();
+  try {
+    let result;
+    if (type === 'series') {
+      result = await scrapeSeries('ml');
+    } else {
+      result = await scrapeMovies('ml');
+    }
+    saveCache();
+    
+    // Health check after successful run
+    getHealthStatus();
+    return result;
   } catch (e) {
     console.error('[scrapeMalayalam] ' + e.message);
-    saveCache(); return [];
+    await sendAlert('❌ Malayalam ' + type + ' failed: ' + e.message);
+    saveCache();
+    return [];
   }
 }
 
 async function scrapeTamil(type) {
+  loadCache();
   try {
-    return type === 'series'
-      ? await scrapeSeries('ta')
-      : await scrapeMovies('ta');
+    let result;
+    if (type === 'series') {
+      result = await scrapeSeries('ta');
+    } else {
+      result = await scrapeMovies('ta');
+    }
+    saveCache();
+    
+    // Health check after successful run
+    getHealthStatus();
+    return result;
   } catch (e) {
     console.error('[scrapeTamil] ' + e.message);
-    saveCache(); return [];
+    await sendAlert('❌ Tamil ' + type + ' failed: ' + e.message);
+    saveCache();
+    return [];
   }
 }
 
