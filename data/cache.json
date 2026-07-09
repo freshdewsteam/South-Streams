@@ -663,7 +663,13 @@
       "type": "series",
       "name": "Cousins and Kalyanams",
       "releaseInfo": "2026-05-29",
-      "description": "📺 Streaming on: JioHotstar\n📅 Release: 2026-05-29"
+      "description": "A 26-year tale of six cousins in Kerala whose lives and relationships revolve around seven weddings.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-05-29\n⭐ Rating: 6.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/cEfHZNS071Qa0ycrUhySEjRdXXB.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cEfpO6QG5Ks5cTJ8bRrZJiDYKUH.jpg",
+      "genres": [
+        "Comedy",
+        "Family"
+      ]
     },
     {
       "id": "tt41757212",
@@ -1482,7 +1488,12 @@
       "type": "series",
       "name": "Lingam",
       "releaseInfo": "2026-06-26",
-      "description": "📺 Streaming on: JioHotstar\n📅 Release: 2026-06-26"
+      "description": "Framed for a crime he didn't commit, a kabaddi hero gets pushed into a world he never wanted and ultimately becomes a feared name.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-06-26",
+      "poster": "https://image.tmdb.org/t/p/w500/l5utMuTzwMUpypOTOSLQLg5WY57.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/4hU24wP2A1Vq72aHhXaRBRB247B.jpg",
+      "genres": [
+        "Crime"
+      ]
     },
     {
       "id": "tt41100531",
@@ -1527,5 +1538,5 @@
       ]
     }
   ],
-  "builtAt": "2026-07-09T22:49:02.084Z"
+  "builtAt": "2026-07-09T23:04:21.312Z"
 }
