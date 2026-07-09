@@ -7,10 +7,8 @@
  * Series sheet format (5 columns):
  *   Title | Language | Platform | OTT Release Date | IMDb ID
  *
- * How to get your sheet CSV URL:
- *   1. Create Google Sheet, make it public (Anyone with link → Viewer)
- *   2. File → Share → Publish to web → CSV → Copy link
- *   OR use: https://docs.google.com/spreadsheets/d/SHEET_ID/export?format=csv
+ * IMPORTANT: Only titles with release date ≤ today will appear in the catalog.
+ * Future dates in the sheet will be ignored until their release date arrives.
  */
 
 const https = require('https');
@@ -128,9 +126,41 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
+// 🔥 STRICT DATE CHECK: Only returns true if date is today or in the past
 function isReleased(dateStr) {
   if (!dateStr) return false;
-  return new Date(dateStr) <= new Date();
+  const releaseDate = new Date(dateStr);
+  const now = new Date();
+  // Reset time to midnight for fair comparison
+  releaseDate.setHours(0, 0, 0, 0);
+  now.setHours(0, 0, 0, 0);
+  return releaseDate <= now;
+}
+
+// ── TITLE VARIATIONS FOR BETTER MATCHING ─────────────────────────────────────
+function getTitleVariations(title) {
+  const variations = new Set();
+  variations.add(title);
+  
+  // Replace 'and' with '&' and vice versa
+  variations.add(title.replace(/\band\b/gi, '&'));
+  variations.add(title.replace(/&/g, ' and '));
+  
+  // Remove special characters
+  variations.add(title.replace(/[^a-zA-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim());
+  
+  // Remove year if present
+  variations.add(title.replace(/\s*\(\d{4}\)\s*$/, '').trim());
+  
+  // Remove "Season X" or "S01" patterns
+  variations.add(title.replace(/\s*[-–]\s*season\s*\d+/i, '').trim());
+  variations.add(title.replace(/\s*[Ss]\d{2}/, '').trim());
+  
+  // Remove common prefixes/suffixes
+  variations.add(title.replace(/^(the|a|an)\s+/i, '').trim());
+  variations.add(title.replace(/\s+(series|show|tv|web series)$/i, '').trim());
+  
+  return Array.from(variations);
 }
 
 // ── TMDB: DISCOVER MOVIES ─────────────────────────────────────────────────────
@@ -152,7 +182,7 @@ async function discoverMovies(lang, lookbackDays) {
       );
       if (!data.results || !data.results.length) break;
 
-      // Strict language filter - keeps Malayalam movies in Malayalam section only
+      // Strict language filter
       const newItems = data.results
         .filter(r => !cache[String(r.id)])
         .filter(r => r.original_language === lang);
@@ -241,6 +271,7 @@ async function processMovie(item) {
 // ── GOOGLE SHEET: FETCH AND PARSE SERIES ──────────────────────────────────────
 // Sheet columns: Title | Language | Platform | OTT Release Date | IMDb ID
 // Language column: "Malayalam" or "Tamil"
+// 🔥 FUTURE DATES ARE FILTERED OUT HERE - They won't appear in the catalog
 async function fetchSheetSeries(filterLang) {
   if (!SHEET_URL) {
     console.warn('[Sheet] GOOGLE_SHEET_URL not set — no series data');
@@ -271,8 +302,13 @@ async function fetchSheetSeries(filterLang) {
       const imdbId   = row[4].trim();
 
       if (!title) continue;
-      // IMDb ID is optional — if missing, TMDB auto-lookup will find it
-      if (!isReleased(date)) continue; // skip future releases
+      
+      // 🔥 SKIP FUTURE RELEASES - Only include today or past
+      if (!isReleased(date)) {
+        console.log('[Sheet] Skipping future release: ' + title + ' (' + date + ')');
+        continue;
+      }
+      
       if (!lang.includes(filterLang.toLowerCase())) continue;
 
       items.push({ title, platform, date, imdbId });
@@ -309,7 +345,7 @@ function parseCSVRow(line) {
 
 // ── SHEET SERIES → TMDB META ──────────────────────────────────────────────────
 // If IMDb ID is provided: use TMDB /find (1 request)
-// If IMDb ID is missing:  search TMDB by title to find it automatically
+// If IMDb ID is missing: search TMDB by title with variations
 async function enrichSeriesFromTMDB(imdbId, title, lang) {
   const cacheKey = 'series_' + (imdbId || title.toLowerCase().replace(/[^a-z0-9]/g, '_'));
   if (cache[cacheKey] && cache[cacheKey] !== 'skip') return cache[cacheKey];
@@ -323,26 +359,45 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
       const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
       const tv   = (data.tv_results || [])[0];
       if (tv) tvId = tv.id;
-    } else {
-      // No IMDb ID — search TMDB by title
+    }
+
+    if (!tvId) {
+      // No IMDb ID or not found — search TMDB by title with variations
       console.log('[AutoLookup] Searching for: ' + title);
       const langCode = lang === 'ml' ? 'ml' : 'ta';
-      const query    = encodeURIComponent(title);
-      const data     = await tmdb('/search/tv?query=' + query + '&language=en-US&page=1');
-      const results  = data.results || [];
+      const variations = getTitleVariations(title);
 
-      // Score results — prefer correct language
-      let best = null, bestScore = -1;
-      for (const r of results) {
-        let score = 0;
-        const rt = (r.name || '').toLowerCase();
-        const vl = title.toLowerCase();
-        if (rt === vl)              score += 60;
-        else if (rt.includes(vl))   score += 30;
-        if (r.original_language === langCode) score += 50;
-        else if (r.original_language === 'en') score -= 20;
-        if (r.origin_country && r.origin_country.includes('IN')) score += 15;
-        if (score > bestScore && score >= 40) { bestScore = score; best = r; }
+      let best = null;
+      let bestScore = -1;
+
+      for (const variant of variations) {
+        try {
+          const query = encodeURIComponent(variant);
+          const data = await tmdb('/search/tv?query=' + query + '&language=en-US&page=1');
+          const results = data.results || [];
+
+          for (const r of results) {
+            let score = 0;
+            const rt = (r.name || '').toLowerCase();
+            const vl = variant.toLowerCase();
+
+            if (rt === vl) score += 100;
+            else if (rt.includes(vl) || vl.includes(rt)) score += 50;
+            else if (rt.split(' ').some(word => vl.includes(word) && word.length > 3)) score += 20;
+
+            if (r.original_language === langCode) score += 50;
+            if (r.origin_country && r.origin_country.includes('IN')) score += 30;
+
+            if (score > bestScore && score >= 40) {
+              bestScore = score;
+              best = r;
+            }
+          }
+
+          if (best && bestScore >= 80) break;
+        } catch(e) {
+          // Continue to next variation
+        }
       }
 
       if (best) {
@@ -389,129 +444,7 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
     return null;
   }
 }
-// ── AUTO-FIND MISSING SERIES FROM TMDB/IMDb ──────────────────────────────────
-async function autoFindSeries(title, lang) {
-  console.log('[AutoFind] Trying to find: ' + title);
-  
-  // Try multiple search methods
-  const searchMethods = [
-    // Method 1: TMDB search with different language
-    async () => {
-      const langCode = lang === 'ml' ? 'ml' : 'ta';
-      const query = encodeURIComponent(title);
-      // Try with language filter
-      const data = await tmdb('/search/tv?query=' + query + '&language=en-US&page=1');
-      return data.results || [];
-    },
-    // Method 2: TMDB search without language filter (broader)
-    async () => {
-      const query = encodeURIComponent(title);
-      const data = await tmdb('/search/tv?query=' + query + '&language=en-US&page=1&include_adult=false');
-      return data.results || [];
-    },
-    // Method 3: Search by year if title has one
-    async () => {
-      // Try to extract year from title
-      const yearMatch = title.match(/\b(20\d{2})\b/);
-      if (yearMatch) {
-        const year = yearMatch[1];
-        const cleanTitle = title.replace(/\b20\d{2}\b/, '').trim();
-        const query = encodeURIComponent(cleanTitle);
-        const data = await tmdb('/search/tv?query=' + query + '&language=en-US&page=1&first_air_date_year=' + year);
-        return data.results || [];
-      }
-      return [];
-    }
-  ];
 
-  let allResults = [];
-  for (const method of searchMethods) {
-    try {
-      const results = await method();
-      allResults = allResults.concat(results);
-    } catch(e) {}
-  }
-
-  // Deduplicate results
-  const seen = new Set();
-  const uniqueResults = allResults.filter(r => {
-    const key = r.id;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-
-  if (uniqueResults.length === 0) {
-    console.log('[AutoFind] No results found for: ' + title);
-    return null;
-  }
-
-  // Score and find best match
-  let bestMatch = null;
-  let bestScore = -1;
-
-  for (const r of uniqueResults) {
-    let score = 0;
-    const rTitle = (r.name || '').toLowerCase();
-    const searchTitle = title.toLowerCase();
-
-    // Exact match
-    if (rTitle === searchTitle) score += 100;
-    // Starts with
-    else if (rTitle.startsWith(searchTitle)) score += 60;
-    // Contains
-    else if (rTitle.includes(searchTitle)) score += 30;
-    // Similar (some words match)
-    else {
-      const words = searchTitle.split(' ');
-      const matchedWords = words.filter(w => rTitle.includes(w) && w.length > 2);
-      if (matchedWords.length > 0) score += matchedWords.length * 10;
-    }
-
-    // Prefer correct language
-    if (r.original_language === 'ml' && lang === 'ml') score += 50;
-    else if (r.original_language === 'ta' && lang === 'ta') score += 50;
-    else if (r.original_language === 'en') score -= 20;
-
-    // Prefer Indian content
-    if (r.origin_country && r.origin_country.includes('IN')) score += 30;
-
-    if (score > bestScore && score >= 40) {
-      bestScore = score;
-      bestMatch = r;
-    }
-  }
-
-  if (bestMatch) {
-    console.log('[AutoFind] Found: ' + bestMatch.name + ' (score: ' + bestScore + ')');
-    
-    // Fetch full details
-    const detail = await tmdb('/tv/' + bestMatch.id + '?language=en-US');
-    
-    // Get IMDb ID
-    let imdbId = detail.external_ids?.imdb_id || null;
-    if (!imdbId) {
-      try {
-        const ext = await tmdb('/tv/' + bestMatch.id + '/external_ids');
-        imdbId = ext.imdb_id || null;
-      } catch(e) {}
-    }
-
-    return {
-      id: bestMatch.id,
-      imdbId: imdbId,
-      poster: detail.poster_path ? IMG + 'w500' + detail.poster_path : null,
-      backdrop: detail.backdrop_path ? IMG + 'w1280' + detail.backdrop_path : null,
-      overview: detail.overview || '',
-      rating: detail.vote_average || null,
-      genres: (detail.genres || []).map(g => g.name),
-      found: true
-    };
-  }
-
-  console.log('[AutoFind] No match found for: ' + title);
-  return null;
-}
 // ── BUILD STREMIO META OBJECT ─────────────────────────────────────────────────
 function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
                      rating, posterPath, backdropPath, genres, posterUrl, backdropUrl }) {
@@ -527,6 +460,9 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
     poster = posterUrl;
   } else if (posterPath) {
     poster = IMG + 'w500' + posterPath;
+  } else {
+    // Use placeholder if no poster
+    poster = 'https://via.placeholder.com/500x750/1a1a2e/ffffff?text=' + encodeURIComponent(title);
   }
 
   let backdrop = null;
@@ -588,8 +524,15 @@ async function scrapeSeries(lang) {
   const langLabel = lang === 'ml' ? 'Malayalam' : 'Tamil';
   const items     = await fetchSheetSeries(langLabel);
 
+  // 🔥 EXTRA SAFETY: Filter out any future dates that might have slipped through
+  const releasedItems = items.filter(item => isReleased(item.date));
+  
+  if (releasedItems.length < items.length) {
+    console.log('[Series] Filtered out ' + (items.length - releasedItems.length) + ' future releases');
+  }
+
   // Sort by date (newest first)
-  items.sort((a, b) => {
+  releasedItems.sort((a, b) => {
     const da = new Date(a.date);
     const db = new Date(b.date);
     if (isNaN(da)) return 1;
@@ -597,32 +540,19 @@ async function scrapeSeries(lang) {
     return db - da;
   });
 
-  console.log('[Series] Processing ' + items.length + ' items from sheet');
+  console.log('[Series] Processing ' + releasedItems.length + ' released items from sheet');
 
   const metas = [];
-  for (const item of items.slice(0, 50)) {
-    // Try to enrich with TMDB data (poster etc)
+  for (const item of releasedItems.slice(0, 50)) {
     const cacheKey = 'series_' + (item.imdbId || item.title.toLowerCase().replace(/[^a-z0-9]/g, '_'));
-    let tmdbData   = cache[cacheKey] && cache[cacheKey] !== 'skip'
+    let tmdbData = cache[cacheKey] && cache[cacheKey] !== 'skip'
       ? cache[cacheKey]
       : null;
 
-      if (!tmdbData) {
+    if (!tmdbData) {
       tmdbData = await enrichSeriesFromTMDB(item.imdbId, item.title, lang);
     }
-    
-    // If still no data, try auto-find
-    if (!tmdbData) {
-      console.log('[Series] Auto-finding: ' + item.title);
-      tmdbData = await autoFindSeries(item.title, lang);
-      if (tmdbData && tmdbData.found) {
-        console.log('[Series] Auto-found: ' + item.title);
-        // Cache the result
-        const cacheKey = 'series_' + (item.imdbId || item.title.toLowerCase().replace(/[^a-z0-9]/g, '_'));
-        cache[cacheKey] = tmdbData;
-        cacheDirty = true;
-      }
-    }
+
     // If sheet had no IMDb ID, use the one resolved from TMDB
     const finalImdbId = item.imdbId || (tmdbData && tmdbData.imdbId) || null;
     if (!finalImdbId) {
@@ -674,13 +604,7 @@ async function scrapeSeries(lang) {
     return 0;
   });
 
-  // Log the sorted order for debugging
-  console.log('[Series] Sorted order (newest first):');
-  metas.slice(0, 10).forEach((m, i) => {
-    console.log('  ' + (i+1) + '. ' + m.name + ' (' + m.releaseInfo + ')');
-  });
-
-  console.log('[Series] ' + lang + ': ' + metas.length + ' in catalogue');
+  console.log('[Series] ' + lang + ': ' + metas.length + ' released series in catalogue');
   saveCache();
   return metas;
 }
