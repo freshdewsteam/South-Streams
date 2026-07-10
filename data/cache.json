@@ -862,6 +862,20 @@
       ]
     },
     {
+      "id": "tt36853497",
+      "type": "movie",
+      "name": "Double Occupancy",
+      "releaseInfo": "2026-06-12",
+      "description": "Rajini transforms between woman by day and man by night, hiding this gender swap from partners creating tangled complications.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-06-12",
+      "poster": "https://image.tmdb.org/t/p/w500/m0rN6dUnvAAjIwKDLRSIdkrZcBA.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/yxKw7DH4aqexI1rBkUnG5rtwaiL.jpg",
+      "genres": [
+        "Romance",
+        "Drama",
+        "Fantasy"
+      ]
+    },
+    {
       "id": "tt29959401",
       "type": "movie",
       "name": "Mollywood Times",
@@ -1494,19 +1508,6 @@
         "Romance",
         "Comedy"
       ]
-    },
-    {
-      "id": "tt37028716",
-      "type": "movie",
-      "name": "Yogida",
-      "releaseInfo": "2026-02-06",
-      "description": "It is story about a Honest and straightforward lady police Inspector Yogi works in Coimbatore, where she proves a textile mill owner’s “suicide” is actually a murder by his own son, leading to her transfer to the punishment area Vyasarpadi in North Chennai. There she confronts ruthless don Shekar Babu, who controls the area and its police through fear, power, and political influence, but Yogi refuses to bow down and begins taking action against his network.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-02-06",
-      "poster": "https://image.tmdb.org/t/p/w500/qG8xiHPIJJqdH9WKpZXaeOaiouk.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/yf9ntvHqZFgwB79V6DhXNHbuiKj.jpg",
-      "genres": [
-        "Thriller",
-        "Action"
-      ]
     }
   ],
   "tamil-series": [
@@ -1665,5 +1666,5 @@
       ]
     }
   ],
-  "builtAt": "2026-07-10T15:10:33.142Z"
+  "builtAt": "2026-07-10T20:18:23.267Z"
 }
