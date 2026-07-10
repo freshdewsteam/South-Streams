@@ -1,15 +1,14 @@
 {
-  "name": "mollywood-addon",
-  "version": "1.0.0",
-  "description": "Stremio addon for Malayalam and Tamil OTT content",
-  "main": "index.js",
+  "name": "south-streams",
+  "version": "1.6.0",
+  "description": "South Streams - Malayalam and Tamil OTT content for Stremio",
+  "main": "server.js",
   "scripts": {
-    "build": "node scripts/build-cache.js",
-    "start": "node index.js"
+    "start": "node server.js",
+    "build": "node scripts/build-cache.js"
   },
   "dependencies": {
-    "cheerio": "^1.0.0-rc.12",
-    "stremio-addon-sdk": "^1.6.10"
+    "cheerio": "^1.0.0-rc.12"
   },
   "engines": {
     "node": ">=18.0.0"
