@@ -27,6 +27,19 @@
       ]
     },
     {
+      "id": "tt38573318",
+      "type": "movie",
+      "name": "Dose",
+      "releaseInfo": "2026-05-22",
+      "description": "A doctor uncovers a suspicious death at his hospital, unraveling secrets and lies. Joined by a haunted investigator, their search for truth becomes a deadly fight for survival.\n\n📺 Streaming on: Amazon Prime Video, Lionsgate Play Apple TV Channel, Lionsgate Play Amazon Channel, Amazon Prime Video with Ads\n📅 Release: 2026-05-22",
+      "poster": "https://image.tmdb.org/t/p/w500/wuEQbDF5jHaOOAMGiXWmDRz9imG.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/swelLWmdNwZVU403GG5L2pDtaaS.jpg",
+      "genres": [
+        "Mystery",
+        "Thriller"
+      ]
+    },
+    {
       "id": "tt14113634",
       "type": "movie",
       "name": "Drishyam 3",
@@ -630,19 +643,6 @@
         "Horror",
         "Thriller"
       ]
-    },
-    {
-      "id": "tt35099420",
-      "type": "movie",
-      "name": "Nellikkampoyil Night Riders",
-      "releaseInfo": "2025-10-24",
-      "description": "Nellikampoil, a village adjacent to Forest, is very common. Many strange events are taking place in this land full of many myths. A figure with the legs of a horse and the body of a man is filling the land with fear by hanging a chicken head in the houses and hiding it in darkness and fear.\n\n📺 Streaming on: Zee5\n📅 Release: 2025-10-24\n⭐ Rating: 5.4/10",
-      "poster": "https://image.tmdb.org/t/p/w500/fni5RRvoJ4PIQnqW3vICXamB1Uw.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/wQmUeYbOeHU5kPbQnmqv3towQ6l.jpg",
-      "genres": [
-        "Horror",
-        "Comedy"
-      ]
     }
   ],
   "malayalam-series": [
@@ -655,8 +655,7 @@
       "poster": "https://image.tmdb.org/t/p/w500/xbkjBvwKm1sGAMMjFi0ZXYmTh6n.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/ohYuYtROMBfGJnOHgpWSkzDzPyp.jpg",
       "genres": [
-        "Documentary",
-        "Drama"
+        "Reality"
       ]
     },
     {
@@ -898,6 +897,19 @@
       "background": "https://image.tmdb.org/t/p/w1280/xsoKAonKy1zk5XoQoUG1dUXDCKH.jpg",
       "genres": [
         "Action",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt38573318",
+      "type": "movie",
+      "name": "Dose",
+      "releaseInfo": "2026-05-22",
+      "description": "A doctor uncovers a suspicious death at his hospital, unraveling secrets and lies. Joined by a haunted investigator, their search for truth becomes a deadly fight for survival.\n\n📺 Streaming on: Amazon Prime Video, Lionsgate Play Apple TV Channel, Lionsgate Play Amazon Channel, Amazon Prime Video with Ads\n📅 Release: 2026-05-22",
+      "poster": "https://image.tmdb.org/t/p/w500/wuEQbDF5jHaOOAMGiXWmDRz9imG.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/swelLWmdNwZVU403GG5L2pDtaaS.jpg",
+      "genres": [
+        "Mystery",
         "Thriller"
       ]
     },
@@ -1495,19 +1507,6 @@
         "Thriller",
         "Action"
       ]
-    },
-    {
-      "id": "tt39007449",
-      "type": "movie",
-      "name": "Red Label",
-      "releaseInfo": "2026-02-06",
-      "description": "An ex-student leader returns to campus politics to confront a bully.\n\n📺 Streaming on:  AP International South Cinema Amazon Channel\n📅 Release: 2026-02-06",
-      "poster": "https://image.tmdb.org/t/p/w500/4igrj26TQvSCQ60vgVFSEQfIqeF.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/bA4ard6P4MRRmlOaVbU9uEYLg31.jpg",
-      "genres": [
-        "Drama",
-        "Thriller"
-      ]
     }
   ],
   "tamil-series": [
@@ -1666,5 +1665,5 @@
       ]
     }
   ],
-  "builtAt": "2026-07-10T10:50:11.595Z"
+  "builtAt": "2026-07-10T15:10:33.142Z"
 }
