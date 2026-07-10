@@ -34,7 +34,7 @@ const server = http.createServer((req, res) => {
   const url = req.url.split('?')[0]; // Remove query params
 
   // ── Serve manifest.json ──
-  i// Serve the HTML page for the root URL
+  // Serve the HTML page for the root URL
 if (req.url === '/') {
   // Read the manifest to get the addon name
   const manifestPath = path.join(__dirname, 'manifest.json');
