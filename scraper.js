@@ -1,5 +1,5 @@
 /**
- * scraper.js - Full-Fledged Version
+ * scraper.js - Full-Fledged Version with Multi-Source Poster Fetching
  * 
  * Features:
  * ✅ Movies from TMDB Discover API
@@ -13,6 +13,7 @@
  * ✅ Health check status
  * ✅ Rate limit handling
  * ✅ Placeholder posters for missing images
+ * ✅ Multi-source poster fetching (TMDB → OMDb → IMDb → Wikipedia)
  */
 
 const https = require('https');
@@ -22,6 +23,7 @@ const path  = require('path');
 
 // ── CONFIGURATION ─────────────────────────────────────────────────────────────
 const TMDB_KEY   = process.env.TMDB_API_KEY || '';
+const OMDB_KEY   = process.env.OMDB_API_KEY || ''; // For fallback poster fetching
 const SHEET_URL  = process.env.GOOGLE_SHEET_URL || '';
 const WEBHOOK_URL = process.env.WEBHOOK_URL || ''; // Discord/Telegram webhook
 const BASE       = 'https://api.themoviedb.org/3';
@@ -103,7 +105,7 @@ async function sendAlert(message, isError = true) {
   try {
     const data = JSON.stringify({
       content: fullMessage,
-      username: 'Mollywood Scraper'
+      username: 'South Streams Scraper'
     });
 
     const req = https.request(WEBHOOK_URL, {
@@ -151,7 +153,7 @@ function fetchUrl(url, options = {}) {
     const req = https.get(url, {
       headers: {
         'Accept': 'application/json, text/plain, */*',
-        'User-Agent': 'MollywoodAddon/1.0',
+        'User-Agent': 'SouthStreams/1.0',
         ...options.headers
       },
     }, (res) => {
@@ -254,6 +256,110 @@ function getTitleVariations(title) {
   return Array.from(variations);
 }
 
+// ── MULTI-SOURCE POSTER FETCHER ──────────────────────────────────────────────
+// Tries multiple sources to find a poster when TMDB fails
+async function fetchPosterFromMultipleSources(title, imdbId, type) {
+  let posterUrl = null;
+  
+  // Source 1: OMDb API using IMDb ID
+  async function fromOMDbWithId() {
+    if (!OMDB_KEY || !imdbId) return null;
+    try {
+      const url = `https://www.omdbapi.com/?apikey=${OMDB_KEY}&i=${imdbId}`;
+      const data = await fetchJson(url);
+      if (data && data.Response === 'True' && data.Poster && data.Poster !== 'N/A') {
+        console.log('[Poster] Found on OMDb (via ID): ' + data.Poster);
+        return data.Poster;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+  
+  // Source 2: OMDb API by title
+  async function fromOMDbByTitle() {
+    if (!OMDB_KEY) return null;
+    try {
+      const variations = getTitleVariations(title);
+      for (const variant of variations.slice(0, 3)) {
+        const searchTitle = encodeURIComponent(variant);
+        const mediaType = type === 'series' ? 'series' : 'movie';
+        const url = `https://www.omdbapi.com/?apikey=${OMDB_KEY}&t=${searchTitle}&type=${mediaType}`;
+        const data = await fetchJson(url);
+        if (data && data.Response === 'True' && data.Poster && data.Poster !== 'N/A') {
+          console.log('[Poster] Found on OMDb (by title): ' + data.Poster);
+          return data.Poster;
+        }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+  
+  // Source 3: IMDb Direct (using IMDb's CDN)
+  async function fromImdbDirect() {
+    if (!imdbId) return null;
+    try {
+      // IMDb poster URL pattern
+      const url = `https://img.omdbapi.com/?apikey=${OMDB_KEY || 'your_key'}&i=${imdbId}`;
+      const data = await fetchJson(url);
+      if (data && data.Poster && data.Poster !== 'N/A') {
+        console.log('[Poster] Found via IMDb ID: ' + data.Poster);
+        return data.Poster;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+  
+  // Source 4: Wikipedia (some shows have posters there)
+  async function fromWikipedia() {
+    try {
+      const cleanTitle = title.replace(/\([^)]*\)/g, '').trim();
+      const searchTitle = encodeURIComponent(cleanTitle);
+      const url = `https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&titles=${searchTitle}&format=json&pithumbsize=500&origin=*`;
+      const data = await fetchJson(url);
+      if (data && data.query && data.query.pages) {
+        const pages = Object.values(data.query.pages);
+        for (const page of pages) {
+          if (page.thumbnail && page.thumbnail.source) {
+            console.log('[Poster] Found on Wikipedia: ' + page.thumbnail.source);
+            return page.thumbnail.source;
+          }
+        }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+  
+  // Try each source in order
+  const sources = [
+    fromOMDbWithId,
+    fromOMDbByTitle,
+    fromImdbDirect,
+    fromWikipedia
+  ];
+  
+  for (const source of sources) {
+    try {
+      const result = await source();
+      if (result) {
+        posterUrl = result;
+        break;
+      }
+    } catch (e) {
+      // Continue to next source
+    }
+  }
+  
+  return posterUrl;
+}
+
 // ── BUILD META ─────────────────────────────────────────────────────────────────
 function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
                      rating, posterPath, backdropPath, genres, posterUrl, backdropUrl }) {
@@ -333,11 +439,9 @@ async function discoverMovies(lang, lookbackDays) {
 async function processMovie(item) {
   const tmdbId = String(item.id);
   
-  // Check cache with retry logic
   if (movieCache[tmdbId] !== undefined) {
     if (movieCache[tmdbId] === 'skip') return null;
     if (movieCache[tmdbId] === 'retry') {
-      // Try again - don't skip permanently
       console.log('[Retry] Attempting previously failed movie: ' + (item.title || item.name));
     } else {
       return movieCache[tmdbId];
@@ -527,23 +631,44 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
     let tvId = null;
     let resolvedImdbId = imdbId || null;
 
+    // If we have an IMDb ID, try that first
     if (imdbId && imdbId.startsWith('tt')) {
-      const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
-      const tv   = (data.tv_results || [])[0];
-      if (tv) tvId = tv.id;
+      try {
+        const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
+        const tv = (data.tv_results || [])[0];
+        if (tv) tvId = tv.id;
+      } catch(e) { /* ignore */ }
     }
 
+    // If not found, search by title with variations
     if (!tvId) {
       console.log('[AutoLookup] Searching: ' + title);
       const langCode = lang === 'ml' ? 'ml' : 'ta';
       const variations = getTitleVariations(title);
-
+      
+      // Also add common alternate spellings
+      const extraVariations = [];
+      for (const v of variations) {
+        extraVariations.push(v.replace(/^(the|a|an)\s+/i, '').trim());
+        extraVariations.push(v.replace(/ai/g, 'ay'));
+        extraVariations.push(v.replace(/y/g, 'i'));
+        extraVariations.push(v.replace(/u/g, 'oo'));
+        extraVariations.push(v.replace(/i/g, 'ee'));
+      }
+      
+      const allVariations = [...variations, ...extraVariations];
+      const seenVariations = new Set();
+      
       let best = null;
       let bestScore = -1;
 
-      for (const variant of variations) {
+      for (const variant of allVariations) {
+        if (seenVariations.has(variant) || variant.length < 3) continue;
+        seenVariations.add(variant);
+        
         try {
-          const data = await tmdb('/search/tv?query=' + encodeURIComponent(variant) + '&language=en-US&page=1');
+          const query = encodeURIComponent(variant);
+          const data = await tmdb('/search/tv?query=' + query + '&language=en-US&page=1');
           const results = data.results || [];
 
           for (const r of results) {
@@ -552,39 +677,47 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
             const vl = variant.toLowerCase();
 
             if (rt === vl) score += 100;
-            else if (rt.includes(vl) || vl.includes(rt)) score += 50;
-            else if (rt.split(' ').some(word => vl.includes(word) && word.length > 3)) score += 20;
+            else if (rt.startsWith(vl)) score += 60;
+            else if (rt.includes(vl)) score += 30;
+            else {
+              const words = vl.split(' ');
+              const matchedWords = words.filter(w => rt.includes(w) && w.length > 3);
+              if (matchedWords.length > 0) score += matchedWords.length * 15;
+            }
 
-            if (r.original_language === langCode) score += 50;
-            if (r.origin_country && r.origin_country.includes('IN')) score += 30;
+            if (r.original_language === langCode) score += 40;
+            if (r.origin_country && r.origin_country.includes('IN')) score += 25;
+            if (r.popularity > 10) score += 10;
+            if (r.media_type === 'movie') score -= 20;
 
-            if (score > bestScore && score >= 40) {
+            if (score > bestScore && score >= 30) {
               bestScore = score;
               best = r;
             }
           }
 
-          if (best && bestScore >= 80) break;
-        } catch(e) {}
+          if (best && bestScore >= 70) break;
+        } catch(e) { /* continue */ }
       }
 
       if (best) {
         tvId = best.id;
         console.log('[AutoLookup] Found: ' + best.name + ' (score: ' + bestScore + ')');
       } else {
-        console.log('[AutoLookup] No match for: ' + title);
-        seriesCache[cacheKey] = 'skip';
+        console.log('[AutoLookup] No match found for: ' + title);
+        seriesCache[cacheKey] = 'retry';
         cacheDirty = true;
         return null;
       }
     }
 
     if (!tvId) {
-      seriesCache[cacheKey] = 'skip';
+      seriesCache[cacheKey] = 'retry';
       cacheDirty = true;
       return null;
     }
 
+    // Fetch full TV detail
     const detail = await tmdb('/tv/' + tvId + '?language=en-US');
 
     if (!resolvedImdbId && detail.external_ids) {
@@ -597,9 +730,18 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
       } catch(e) {}
     }
 
+    // ── GET POSTER FROM MULTIPLE SOURCES ──
+    let posterUrl = detail.poster_path ? IMG + 'w500' + detail.poster_path : null;
+    
+    // If TMDB doesn't have a poster, try alternate sources
+    if (!posterUrl) {
+      console.log('[Poster] No TMDB poster for: ' + title + ', trying alternate sources...');
+      posterUrl = await fetchPosterFromMultipleSources(title, resolvedImdbId, 'series');
+    }
+
     const result = {
       imdbId:   resolvedImdbId,
-      poster:   detail.poster_path   ? IMG + 'w500'  + detail.poster_path   : null,
+      poster:   posterUrl,
       backdrop: detail.backdrop_path ? IMG + 'w1280' + detail.backdrop_path : null,
       overview: detail.overview      || '',
       rating:   detail.vote_average  || null,
