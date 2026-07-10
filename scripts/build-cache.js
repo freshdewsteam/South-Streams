@@ -1,54 +1,56 @@
-// scripts/build-cache.js
 const fs = require('fs');
 const path = require('path');
 const { scrapeMalayalam, scrapeTamil } = require('../scraper.js');
 
 async function buildCache() {
-  console.log('=== Building OTT cache ===');
+  console.log('=== Building South Streams Cache ===');
   console.log('Time: ' + new Date().toISOString());
 
   const result = {
-    'mal-movies': [],
-    'mal-series': [],
-    'tam-movies': [],
-    'tam-series': [],
+    'malayalam-movies': [],
+    'malayalam-series': [],
+    'tamil-movies': [],
+    'tamil-series': [],
     builtAt: new Date().toISOString(),
   };
 
   console.log('\n[1/4] Malayalam movies...');
   try {
-    result['mal-movies'] = await scrapeMalayalam('movie');
-    console.log('✅ Done: ' + result['mal-movies'].length + ' items');
+    result['malayalam-movies'] = await scrapeMalayalam('movie');
+    console.log('✅ Done: ' + result['malayalam-movies'].length + ' items');
   } catch (e) { console.error('❌ Failed: ' + e.message); }
 
   console.log('\n[2/4] Malayalam series...');
   try {
-    result['mal-series'] = await scrapeMalayalam('series');
-    console.log('✅ Done: ' + result['mal-series'].length + ' items');
+    result['malayalam-series'] = await scrapeMalayalam('series');
+    console.log('✅ Done: ' + result['malayalam-series'].length + ' items');
   } catch (e) { console.error('❌ Failed: ' + e.message); }
 
   console.log('\n[3/4] Tamil movies...');
   try {
-    result['tam-movies'] = await scrapeTamil('movie');
-    console.log('✅ Done: ' + result['tam-movies'].length + ' items');
+    result['tamil-movies'] = await scrapeTamil('movie');
+    console.log('✅ Done: ' + result['tamil-movies'].length + ' items');
   } catch (e) { console.error('❌ Failed: ' + e.message); }
 
   console.log('\n[4/4] Tamil series...');
   try {
-    result['tam-series'] = await scrapeTamil('series');
-    console.log('✅ Done: ' + result['tam-series'].length + ' items');
+    result['tamil-series'] = await scrapeTamil('series');
+    console.log('✅ Done: ' + result['tamil-series'].length + ' items');
   } catch (e) { console.error('❌ Failed: ' + e.message); }
 
-  // Save to cache files (the scraper already saves separately)
-  // But also save combined for backward compatibility
-  const combinedPath = path.join(__dirname, '..', 'data', 'cache.json');
-  fs.writeFileSync(combinedPath, JSON.stringify(result, null, 2));
+  const dataDir = path.join(__dirname, '..', 'data');
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+
+  const cachePath = path.join(dataDir, 'cache.json');
+  fs.writeFileSync(cachePath, JSON.stringify(result, null, 2));
 
   console.log('\n=== Cache saved ===');
-  console.log('Malayalam movies: ' + result['mal-movies'].length);
-  console.log('Malayalam series: ' + result['mal-series'].length);
-  console.log('Tamil movies:     ' + result['tam-movies'].length);
-  console.log('Tamil series:     ' + result['tam-series'].length);
+  console.log('Malayalam Movies: ' + result['malayalam-movies'].length);
+  console.log('Malayalam Series: ' + result['malayalam-series'].length);
+  console.log('Tamil Movies:     ' + result['tamil-movies'].length);
+  console.log('Tamil Series:     ' + result['tamil-series'].length);
 }
 
 buildCache().catch(e => { 
