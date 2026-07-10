@@ -1,4 +1,3 @@
-// scripts/build-cache.js
 const fs = require('fs');
 const path = require('path');
 const { scrapeMalayalam, scrapeTamil } = require('../scraper.js');
@@ -17,35 +16,45 @@ async function buildCache() {
 
   console.log('\n[1/4] Malayalam movies...');
   try {
-    result['malayalam-movies'] = await scrapeMalayalam('movie');
-    console.log('✅ Done: ' + result['malayalam-movies'].length + ' items');
-  } catch (e) { console.error('❌ Failed: ' + e.message); }
+    const movies = await scrapeMalayalam('movie');
+    result['malayalam-movies'] = movies;
+    console.log('✅ Done: ' + movies.length + ' items');
+  } catch (e) { 
+    console.error('❌ Failed: ' + e.message); 
+  }
 
   console.log('\n[2/4] Malayalam series...');
   try {
-    result['malayalam-series'] = await scrapeMalayalam('series');
-    console.log('✅ Done: ' + result['malayalam-series'].length + ' items');
-  } catch (e) { console.error('❌ Failed: ' + e.message); }
+    const series = await scrapeMalayalam('series');
+    result['malayalam-series'] = series;
+    console.log('✅ Done: ' + series.length + ' items');
+  } catch (e) { 
+    console.error('❌ Failed: ' + e.message); 
+  }
 
   console.log('\n[3/4] Tamil movies...');
   try {
-    result['tamil-movies'] = await scrapeTamil('movie');
-    console.log('✅ Done: ' + result['tamil-movies'].length + ' items');
-  } catch (e) { console.error('❌ Failed: ' + e.message); }
+    const movies = await scrapeTamil('movie');
+    result['tamil-movies'] = movies;
+    console.log('✅ Done: ' + movies.length + ' items');
+  } catch (e) { 
+    console.error('❌ Failed: ' + e.message); 
+  }
 
   console.log('\n[4/4] Tamil series...');
   try {
-    result['tamil-series'] = await scrapeTamil('series');
-    console.log('✅ Done: ' + result['tamil-series'].length + ' items');
-  } catch (e) { console.error('❌ Failed: ' + e.message); }
+    const series = await scrapeTamil('series');
+    result['tamil-series'] = series;
+    console.log('✅ Done: ' + series.length + ' items');
+  } catch (e) { 
+    console.error('❌ Failed: ' + e.message); 
+  }
 
-  // Ensure data directory exists
   const dataDir = path.join(__dirname, '..', 'data');
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
   }
 
-  // Write the cache file
   const cachePath = path.join(dataDir, 'cache.json');
   fs.writeFileSync(cachePath, JSON.stringify(result, null, 2));
   console.log('\n✅ Cache saved to: ' + cachePath);
