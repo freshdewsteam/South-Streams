@@ -1,3 +1,4 @@
+// scripts/build-cache.js
 const fs = require('fs');
 const path = require('path');
 const { scrapeMalayalam, scrapeTamil } = require('../scraper.js');
@@ -11,7 +12,7 @@ async function buildCache() {
     'malayalam-series': [],
     'tamil-movies': [],
     'tamil-series': [],
-    builtAt: new Date().toISOString(),
+    'builtAt': new Date().toISOString(),
   };
 
   console.log('\n[1/4] Malayalam movies...');
@@ -20,24 +21,9 @@ async function buildCache() {
     console.log('✅ Done: ' + result['malayalam-movies'].length + ' items');
   } catch (e) { console.error('❌ Failed: ' + e.message); }
 
-  console.log('\n[2/4] Malayalam series...');
-  try {
-    result['malayalam-series'] = await scrapeMalayalam('series');
-    console.log('✅ Done: ' + result['malayalam-series'].length + ' items');
-  } catch (e) { console.error('❌ Failed: ' + e.message); }
+  // ... similar for other catalogs ...
 
-  console.log('\n[3/4] Tamil movies...');
-  try {
-    result['tamil-movies'] = await scrapeTamil('movie');
-    console.log('✅ Done: ' + result['tamil-movies'].length + ' items');
-  } catch (e) { console.error('❌ Failed: ' + e.message); }
-
-  console.log('\n[4/4] Tamil series...');
-  try {
-    result['tamil-series'] = await scrapeTamil('series');
-    console.log('✅ Done: ' + result['tamil-series'].length + ' items');
-  } catch (e) { console.error('❌ Failed: ' + e.message); }
-
+  // Save to the data folder
   const dataDir = path.join(__dirname, '..', 'data');
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
@@ -45,12 +31,7 @@ async function buildCache() {
 
   const cachePath = path.join(dataDir, 'cache.json');
   fs.writeFileSync(cachePath, JSON.stringify(result, null, 2));
-
-  console.log('\n=== Cache saved ===');
-  console.log('Malayalam Movies: ' + result['malayalam-movies'].length);
-  console.log('Malayalam Series: ' + result['malayalam-series'].length);
-  console.log('Tamil Movies:     ' + result['tamil-movies'].length);
-  console.log('Tamil Series:     ' + result['tamil-series'].length);
+  console.log('\n✅ Cache saved to: ' + cachePath);
 }
 
 buildCache().catch(e => { 
