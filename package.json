@@ -1,7 +1,7 @@
 {
   "name": "south-streams",
   "version": "1.6.0",
-  "description": "South Streams - Malayalam and Tamil OTT content for Stremio",
+  "description": "South Streams - Latest Malayalam and Tamil OTT movies and web series for Stremio",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
