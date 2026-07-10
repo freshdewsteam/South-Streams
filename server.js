@@ -34,17 +34,71 @@ const server = http.createServer((req, res) => {
   const url = req.url.split('?')[0]; // Remove query params
 
   // ── Serve manifest.json ──
-  if (url === '/' || url === '/manifest.json') {
-    const manifest = readJsonFile(path.join(__dirname, 'manifest.json'));
-    if (manifest) {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(manifest));
-    } else {
-      res.writeHead(500);
-      res.end('Manifest not found');
-    }
-    return;
+  i// Serve the HTML page for the root URL
+if (req.url === '/') {
+  // Read the manifest to get the addon name
+  const manifestPath = path.join(__dirname, 'manifest.json');
+  if (fs.existsSync(manifestPath)) {
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${manifest.name}</title>
+          <style>
+            body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 60px auto; padding: 0 20px; text-align: center; background: #0d1117; color: #e6edf3; }
+            .container { background: #161b22; padding: 40px; border-radius: 16px; border: 1px solid #30363d; }
+            h1 { font-size: 2.5rem; margin: 0; color: #58a6ff; }
+            .subtitle { font-size: 1.1rem; color: #8b949e; margin: 10px 0 30px; }
+            .install-btn { display: inline-block; background: #238636; color: #fff; padding: 16px 40px; border-radius: 8px; font-size: 1.2rem; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s; }
+            .install-btn:hover { background: #2ea043; }
+            .install-btn:active { transform: scale(0.98); }
+            .info { margin-top: 30px; color: #8b949e; font-size: 0.9rem; }
+            .info a { color: #58a6ff; text-decoration: none; }
+            .info a:hover { text-decoration: underline; }
+            .catalogs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 20px 0; }
+            .catalog-tag { background: #21262d; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; color: #8b949e; border: 1px solid #30363d; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h1>🌊 ${manifest.name}</h1>
+            <p class="subtitle">${manifest.description}</p>
+            <a href="stremio://${req.headers.host}/manifest.json" class="install-btn">📦 Install in Stremio</a>
+            <div class="catalogs">
+              ${manifest.catalogs.map(c => `<span class="catalog-tag">${c.name}</span>`).join('')}
+            </div>
+            <div class="info">
+              <p>📱 Also available in <a href="https://nuvio.io/" target="_blank">Nuvio</a></p>
+              <p>🔗 Manual install: <a href="/manifest.json">manifest.json</a></p>
+              <p>⚡ Updated automatically every 6 hours</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `);
+  } else {
+    res.writeHead(404);
+    res.end('Manifest not found');
   }
+  return;
+}
+
+// Serve the JSON manifest for Stremio
+if (req.url === '/manifest.json') {
+  const manifestPath = path.join(__dirname, 'manifest.json');
+  if (fs.existsSync(manifestPath)) {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    fs.createReadStream(manifestPath).pipe(res);
+  } else {
+    res.writeHead(404);
+    res.end('Manifest not found');
+  }
+  return;
+}
 
   // ── SERVE CATALOG ENDPOINTS (THIS IS THE FIX) ──
   // Stremio expects: /catalog/{type}/{catalogId}.json
