@@ -5,38 +5,67 @@ const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 
+// Helper function to send JSON response
+function sendJson(res, data, statusCode = 200) {
+  res.writeHead(statusCode, {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
+  });
+  res.end(JSON.stringify(data));
+}
+
+// Helper function to read JSON file safely
+function readJsonFile(filePath) {
+  try {
+    if (fs.existsSync(filePath)) {
+      const content = fs.readFileSync(filePath, 'utf8');
+      return JSON.parse(content);
+    }
+    return null;
+  } catch (e) {
+    console.error('Error reading JSON file:', e.message);
+    return null;
+  }
+}
+
 const server = http.createServer((req, res) => {
+  // Set CORS headers for all responses
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  // ✅ Serve manifest.json at root
+  // Serve manifest.json
   if (req.url === '/' || req.url === '/manifest.json') {
-    const manifestPath = path.join(__dirname, 'manifest.json');
-    if (fs.existsSync(manifestPath)) {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      fs.createReadStream(manifestPath).pipe(res);
+    const manifest = readJsonFile(path.join(__dirname, 'manifest.json'));
+    if (manifest) {
+      sendJson(res, manifest);
     } else {
-      res.writeHead(404);
-      res.end('Manifest not found');
+      res.writeHead(500);
+      res.end('Server error: manifest.json not found or invalid');
     }
     return;
   }
 
-  // ✅ Serve cache.json
+  // Serve cache.json
   if (req.url === '/data/cache.json') {
-    const cachePath = path.join(__dirname, 'data', 'cache.json');
-    if (fs.existsSync(cachePath)) {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      fs.createReadStream(cachePath).pipe(res);
+    const cache = readJsonFile(path.join(__dirname, 'data', 'cache.json'));
+    if (cache) {
+      sendJson(res, cache);
     } else {
-      res.writeHead(404);
-      res.end('Cache not found');
+      // If cache doesn't exist, return an empty cache structure
+      console.log('📭 Cache file not found, returning empty cache');
+      sendJson(res, {
+        'malayalam-movies': [],
+        'malayalam-series': [],
+        'tamil-movies': [],
+        'tamil-series': [],
+        'builtAt': new Date().toISOString()
+      });
     }
     return;
   }
 
-  // ✅ Serve the HTML page
-  try {
-    const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'manifest.json'), 'utf8'));
+  // Serve the HTML page for root
+  const manifest = readJsonFile(path.join(__dirname, 'manifest.json'));
+  if (manifest) {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(`
       <!DOCTYPE html>
@@ -69,7 +98,7 @@ const server = http.createServer((req, res) => {
         </body>
       </html>
     `);
-  } catch(e) {
+  } else {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end('<h1>🌊 South Streams</h1><p>Addon is running</p>');
   }
