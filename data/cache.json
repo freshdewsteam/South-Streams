@@ -1,5 +1,5 @@
 {
-  "mal-movies": [
+  "malayalam-movies": [
     {
       "id": "tt29959401",
       "type": "movie",
@@ -645,7 +645,7 @@
       ]
     }
   ],
-  "mal-series": [
+  "malayalam-series": [
     {
       "id": "tt43592288",
       "type": "series",
@@ -689,7 +689,8 @@
       "type": "series",
       "name": "Kasaragod Embassy",
       "releaseInfo": "2026-03-20",
-      "description": "📺 Streaming on: ZEE5\n📅 Release: 2026-03-20"
+      "description": "📺 Streaming on: ZEE5\n📅 Release: 2026-03-20",
+      "poster": "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=Kasaragod%20Embassy"
     },
     {
       "id": "tt32105473",
@@ -821,14 +822,15 @@
       ]
     }
   ],
-  "tam-movies": [
+  "tamil-movies": [
     {
       "id": "tt26654655",
       "type": "movie",
       "name": "Charukesi",
       "releaseInfo": "2026-06-12",
       "description": "A Carnatic musician with Alzheimer's grapples with his prodigal son's lifestyle choices, exploring the intersection of music, memory, and family relationships.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-06-12",
-      "poster": "https://image.tmdb.org/t/p/w500/jf5IyUMYBM4yBm5AU0CAFcYR1Fg.jpg",
+      "poster": "https://image.tmdb.org/t/p/w500/vpLFV4vrb5O56ydvnAvuA1QX6Jm.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/79kAdR7TbKI3RHAd1Dg4JzHRAxQ.jpg",
       "genres": [
         "Drama",
         "Music"
@@ -866,7 +868,7 @@
       "name": "Blast",
       "releaseInfo": "2026-05-28",
       "description": "A seemingly ordinary family must unleash their hidden martial arts skills when they clash with a ruthless criminal gang tied to corruption and violence.\n\n📺 Streaming on: Netflix\n📅 Release: 2026-05-28\n⭐ Rating: 6.9/10",
-      "poster": "https://image.tmdb.org/t/p/w500/mZZBUaAXSeEeO3RovqJssBQyxfK.jpg",
+      "poster": "https://image.tmdb.org/t/p/w500/lpsUpXieodUhN6DlK9ZDnjkysLk.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/xsoKAonKy1zk5XoQoUG1dUXDCKH.jpg",
       "genres": [
         "Action",
@@ -1482,7 +1484,7 @@
       ]
     }
   ],
-  "tam-series": [
+  "tamil-series": [
     {
       "id": "tt34210614",
       "type": "series",
@@ -1538,5 +1540,5 @@
       ]
     }
   ],
-  "builtAt": "2026-07-09T23:04:21.312Z"
+  "builtAt": "2026-07-10T09:11:59.363Z"
 }
