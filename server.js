@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  // Serve manifest.json at root
+  // ✅ Serve manifest.json at root
   if (req.url === '/' || req.url === '/manifest.json') {
     const manifestPath = path.join(__dirname, 'manifest.json');
     if (fs.existsSync(manifestPath)) {
@@ -21,7 +21,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Serve cache.json
+  // ✅ Serve cache.json
   if (req.url === '/data/cache.json') {
     const cachePath = path.join(__dirname, 'data', 'cache.json');
     if (fs.existsSync(cachePath)) {
@@ -34,7 +34,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Default: Show a simple HTML page from manifest.json
+  // ✅ Serve the HTML page
   try {
     const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'manifest.json'), 'utf8'));
     res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -57,12 +57,10 @@ const server = http.createServer((req, res) => {
           <h1>🌊 ${manifest.name}</h1>
           <p><span class="badge">v${manifest.version}</span></p>
           <p>${manifest.description}</p>
-          
           <h3>📦 Catalogs</h3>
           <div class="catalogs">
             ${manifest.catalogs.map(c => `<span class="catalog">${c.name}</span>`).join('')}
           </div>
-          
           <div class="footer">
             <p>🔗 <a href="/manifest.json">View manifest.json</a></p>
             <p>📊 <a href="/data/cache.json">View cache.json</a></p>
@@ -73,7 +71,7 @@ const server = http.createServer((req, res) => {
     `);
   } catch(e) {
     res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end('<h1>South Streams</h1><p>Addon is running</p>');
+    res.end('<h1>🌊 South Streams</h1><p>Addon is running</p>');
   }
 });
 
