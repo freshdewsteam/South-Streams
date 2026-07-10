@@ -2,7 +2,7 @@
   "id": "com.freshdewsteam.southstreams",
   "name": "South Streams",
   "description": "South Streams brings you the latest Malayalam and Tamil OTT movies and web series. Automatically updated with new releases every day.",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "resources": ["catalog"],
   "types": ["movie", "series"],
   "catalogs": [
