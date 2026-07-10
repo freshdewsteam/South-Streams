@@ -1,20 +1,15 @@
 {
   "id": "com.freshdewsteam.southstreams",
   "name": "South Streams",
-  "description": "South Streams brings the latest Malayalam and Tamil OTT movies and web series to your screen. Automatically updated with new releases every day.",
-  "version": "1.0.0",
-  "resources": [
-    "catalog"
-  ],
-  "types": [
-    "movie",
-    "series"
-  ],
+  "description": "South Streams brings you the latest Malayalam and Tamil OTT movies and web series. Automatically updated with new releases every day.",
+  "version": "1.6.0",
+  "resources": ["catalog"],
+  "types": ["movie", "series"],
   "catalogs": [
     {
       "type": "movie",
       "id": "malayalam-movies",
-      "name": "Latest Malayalam OTT"
+      "name": "Latest Malayalam Movies"
     },
     {
       "type": "series",
@@ -24,7 +19,7 @@
     {
       "type": "movie",
       "id": "tamil-movies",
-      "name": "Latest Tamil OTT"
+      "name": "Latest Tamil Movies"
     },
     {
       "type": "series",
@@ -32,7 +27,5 @@
       "name": "Latest Tamil Series"
     }
   ],
-  "idPrefixes": [
-    "tt"
-  ]
+  "idPrefixes": ["tt"]
 }
