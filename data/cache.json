@@ -651,12 +651,8 @@
       "type": "series",
       "name": "Land of Football",
       "releaseInfo": "2026-07-10",
-      "description": "From the mud-slicked night tournaments to the World Cup flex-board wars, this is a deep dive into the obsessive and deep-rooted football culture of Kerala.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-07-10",
-      "poster": "https://image.tmdb.org/t/p/w500/xbkjBvwKm1sGAMMjFi0ZXYmTh6n.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/ohYuYtROMBfGJnOHgpWSkzDzPyp.jpg",
-      "genres": [
-        "Reality"
-      ]
+      "description": "📺 Streaming on: JioHotstar\n📅 Release: 2026-07-10",
+      "poster": "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=Land%20of%20Football"
     },
     {
       "id": "tt43592288",
@@ -675,13 +671,8 @@
       "type": "series",
       "name": "Cousins and Kalyanams",
       "releaseInfo": "2026-05-29",
-      "description": "A 26-year tale of six cousins in Kerala whose lives and relationships revolve around seven weddings.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-05-29\n⭐ Rating: 6.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/cEfHZNS071Qa0ycrUhySEjRdXXB.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/cEfpO6QG5Ks5cTJ8bRrZJiDYKUH.jpg",
-      "genres": [
-        "Comedy",
-        "Family"
-      ]
+      "description": "📺 Streaming on: JioHotstar\n📅 Release: 2026-05-29",
+      "poster": "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=Cousins%20and%20Kalyanams"
     },
     {
       "id": "tt41757212",
@@ -1514,12 +1505,8 @@
       "type": "series",
       "name": "Lingam",
       "releaseInfo": "2026-06-26",
-      "description": "Framed for a crime he didn't commit, a kabaddi hero gets pushed into a world he never wanted and ultimately becomes a feared name.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-06-26",
-      "poster": "https://image.tmdb.org/t/p/w500/l5utMuTzwMUpypOTOSLQLg5WY57.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/4hU24wP2A1Vq72aHhXaRBRB247B.jpg",
-      "genres": [
-        "Crime"
-      ]
+      "description": "📺 Streaming on: JioHotstar\n📅 Release: 2026-06-26",
+      "poster": "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=Lingam"
     },
     {
       "id": "tt41962673",
@@ -1664,5 +1651,5 @@
       ]
     }
   ],
-  "builtAt": "2026-07-11T14:00:12.120Z"
+  "builtAt": "2026-07-11T15:36:00.437Z"
 }
