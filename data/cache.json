@@ -1448,13 +1448,11 @@
       "type": "series",
       "name": "Muthu Engira Kaattaan",
       "releaseInfo": "2026-03-27",
-      "description": "A story of an man who becomes a legend, a Monster, and a Miracle, depending on the Storyteller.\n\n📺 Streaming on: Jiohotstar\n📅 Release: 2026-03-27\n⭐ Rating: 6.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/nOxTfnDo0tOKWKBsoTmJHYjOrme.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/iCZBpc0mW23XbkEI75KP5G5dgvK.jpg",
+      "description": "📺 Streaming on: Jiohotstar\n📅 Release: 2026-03-27",
+      "poster": "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=Muthu%20Engira%20Kaattaan",
       "genres": [
-        "Drama",
-        "Crime",
-        "Action & Adventure"
+        "Action",
+        "Drama"
       ]
     },
     {
@@ -1470,7 +1468,20 @@
         "Mystery",
         "Crime"
       ]
+    },
+    {
+      "id": "tt20873118",
+      "type": "series",
+      "name": "Suzhal: The Vortex",
+      "releaseInfo": "2025-02-28",
+      "description": "In a small South Indian town, a seemingly routine minor case explodes into a twisted crime thriller that rips apart its social fabric.\n\n📺 Streaming on: Prime Video\n📅 Release: 2025-02-28\n⭐ Rating: 8.2/10",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNmY5MGIxNWQtMGQzMC00YWRjLTk2OTEtMWQzYzM5ZTJlZDA4XkEyXkFqcGc@._V1_SX300.jpg",
+      "genres": [
+        "Crime",
+        "Drama",
+        "Thriller"
+      ]
     }
   ],
-  "builtAt": "2026-07-11T18:15:39.839Z"
+  "builtAt": "2026-07-11T18:47:45.955Z"
 }
