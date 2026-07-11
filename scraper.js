@@ -15,7 +15,7 @@
  * ✅ Placeholder posters for missing images
  * ✅ Multi-source poster fetching (TMDB → OMDb → IMDb → Wikipedia)
  * ✅ Multi-step search: TMDB /find → TMDB /search → OMDb by ID → OMDb by title
- * ✅ Strict matching to prevent wrong metadata
+ * ✅ Strict matching with year filter to prevent wrong metadata
  */
 
 const https = require('https');
@@ -455,7 +455,6 @@ async function discoverMovies(lang, lookbackDays) {
           // Also accept English-titled Indian content — many Malayalam/Tamil
           // documentaries and shows are classified as 'en' on TMDB even though
           // they are produced in India and stream in regional languages
-          // e.g. "Land of Football" (Malayalam doc, TMDB tags as 'en')
           if (r.original_language === 'en' &&
               Array.isArray(r.origin_country) &&
               r.origin_country.includes('IN')) return true;
@@ -671,9 +670,12 @@ function parseCSVRow(line) {
   return result;
 }
 
-// ── ENRICH SERIES FROM TMDB (MULTI-STEP SEARCH) ─────────────────────────────
-async function enrichSeriesFromTMDB(imdbId, title, lang) {
+// ── ENRICH SERIES FROM TMDB (MULTI-STEP SEARCH WITH YEAR FILTER) ─────────────
+async function enrichSeriesFromTMDB(imdbId, title, lang, releaseDate) {
   const cacheKey = (imdbId || title.toLowerCase().replace(/[^a-z0-9]/g, '_'));
+  
+  // ── EXTRACT YEAR FROM RELEASE DATE ──
+  const sheetYear = releaseDate ? parseInt(releaseDate.slice(0, 4)) : null;
   
   // Check cache
   if (seriesCache[cacheKey] !== undefined) {
@@ -690,64 +692,25 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
   }
 
   try {
-    let tvId = null;
     let resolvedImdbId = imdbId || null;
     let posterUrl = null;
     let overview = '';
     let rating = null;
     let genres = [];
     let backdropUrl = null;
+    let metadataFound = false;
 
-    // ── STEP 1: Try TMDB /find (fastest, but fails for new titles) ──
-    if (imdbId && imdbId.startsWith('tt')) {
-      try {
-        const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
-        const tv = (data.tv_results || [])[0];
-        if (tv) {
-          tvId = tv.id;
-          console.log('[TMDB/find] ✅ Found by IMDb ID: ' + imdbId + ' -> TMDB ' + tvId);
-          
-          const detail = await tmdb('/tv/' + tvId + '?language=en-US');
-          if (detail) {
-            if (detail.poster_path) posterUrl = IMG + 'w500' + detail.poster_path;
-            if (detail.backdrop_path) backdropUrl = IMG + 'w1280' + detail.backdrop_path;
-            if (detail.overview) overview = detail.overview;
-            if (detail.vote_average) rating = detail.vote_average;
-            if (detail.genres && detail.genres.length) genres = detail.genres.map(g => g.name);
-            if (detail.imdb_id) resolvedImdbId = detail.imdb_id;
-            console.log('[TMDB/find] ✅ Enhanced metadata for: ' + (detail.title || detail.name));
-          }
-        }
-      } catch(e) {
-        console.log('[TMDB/find] ⚠️ Failed: ' + e.message);
-      }
-    }
-
-    // ── STEP 2: If /find failed, try TMDB /search by title ──
-    // This catches new titles that aren't in the /find index yet
-    if (!tvId) {
-      console.log('[TMDB/search] Searching by title: ' + title);
+    // ── STEP 1: TMDB /search by title ──
+    if (sheetYear) {
+      console.log('[TMDB/search] Searching by title: ' + title + ' (year: ' + sheetYear + ')');
       const langCode = lang === 'ml' ? 'ml' : 'ta';
       const variations = getTitleVariations(title);
-      
-      // Add common alternate spellings
-      const extraVariations = [];
-      for (const v of variations) {
-        extraVariations.push(v.replace(/^(the|a|an)\s+/i, '').trim());
-        extraVariations.push(v.replace(/ai/g, 'ay'));
-        extraVariations.push(v.replace(/y/g, 'i'));
-        extraVariations.push(v.replace(/u/g, 'oo'));
-        extraVariations.push(v.replace(/i/g, 'ee'));
-        extraVariations.push(v.replace(/\s*[-–]\s*season\s*\d+/i, '').trim());
-      }
-      
-      const allVariations = [...variations, ...extraVariations];
       const seenVariations = new Set();
       
       let best = null;
       let bestScore = -1;
 
-      for (const variant of allVariations) {
+      for (const variant of variations.slice(0, 5)) {
         if (seenVariations.has(variant) || variant.length < 3) continue;
         seenVariations.add(variant);
         
@@ -757,46 +720,50 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
           const results = data.results || [];
 
           for (const r of results) {
+            // ── HARD YEAR FILTER ──
+            const rYear = r.first_air_date ? parseInt(r.first_air_date.slice(0, 4)) : null;
+            if (rYear && Math.abs(rYear - sheetYear) > 1) continue;
+
             let score = 0;
             const rt = (r.name || '').toLowerCase();
             const vl = variant.toLowerCase();
 
-            // Exact match (highest)
             if (rt === vl) score += 100;
-            // Starts with
             else if (rt.startsWith(vl)) score += 60;
-            // Contains
             else if (rt.includes(vl)) score += 30;
-            // Word match
             else {
               const words = vl.split(' ');
               const matchedWords = words.filter(w => rt.includes(w) && w.length > 3);
               if (matchedWords.length > 0) score += matchedWords.length * 15;
             }
 
-            // Language boost
             if (r.original_language === langCode) score += 40;
-            // Indian content boost
             if (r.origin_country && r.origin_country.includes('IN')) score += 25;
-            // Popularity boost for new titles
-            if (r.popularity > 5) score += 10;
 
-            // 🔥 Strict threshold - only accept if clearly a match
-            if (score > bestScore && score >= 60) {
+            // ── ACCEPTANCE RULES ──
+            if (score >= 80) {
+              bestScore = score;
+              best = r;
+              break;
+            }
+            if (score >= 60 && r.original_language === langCode && r.origin_country && r.origin_country.includes('IN')) {
+              if (score > bestScore) { bestScore = score; best = r; }
+            }
+            if (score >= 50 && r.original_language === langCode) {
+              if (score > bestScore) { bestScore = score; best = r; }
+            }
+            if (score >= 40 && score > bestScore) {
               bestScore = score;
               best = r;
             }
           }
-
-          if (best && bestScore >= 60) break;
+          if (best && bestScore >= 80) break;
         } catch(e) { /* continue */ }
       }
 
       if (best) {
-        tvId = best.id;
-        console.log('[TMDB/search] ✅ Found: ' + best.name + ' (score: ' + bestScore + ')');
-        
-        const detail = await tmdb('/tv/' + tvId + '?language=en-US');
+        console.log('[TMDB/search] ✅ Found: ' + best.name + ' (score: ' + bestScore + ', year: ' + sheetYear + ')');
+        const detail = await tmdb('/tv/' + best.id + '?language=en-US');
         if (detail) {
           if (detail.poster_path) posterUrl = IMG + 'w500' + detail.poster_path;
           if (detail.backdrop_path) backdropUrl = IMG + 'w1280' + detail.backdrop_path;
@@ -804,45 +771,54 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
           if (detail.vote_average) rating = detail.vote_average;
           if (detail.genres && detail.genres.length) genres = detail.genres.map(g => g.name);
           if (detail.imdb_id) resolvedImdbId = detail.imdb_id;
-          console.log('[TMDB/search] ✅ Enhanced metadata for: ' + (detail.title || detail.name));
+          metadataFound = true;
+          console.log('[TMDB/search] ✅ Data found for: ' + (detail.title || detail.name));
         }
-      } else {
-        console.log('[TMDB/search] ❌ No match found for: ' + title);
       }
     }
 
-    // ── STEP 3: If still no data, try OMDb by IMDb ID (if available) ──
-    if (!posterUrl && !overview && imdbId && imdbId.startsWith('tt') && OMDB_KEY) {
+    // ── STEP 2: OMDb by IMDb ID ──
+    if (!metadataFound && imdbId && imdbId.startsWith('tt') && sheetYear && OMDB_KEY) {
+      console.log('[OMDb] Searching by IMDb ID: ' + imdbId + ' (year: ' + sheetYear + ')');
       try {
         const omdbData = await fetchJson(`https://www.omdbapi.com/?apikey=${OMDB_KEY}&i=${imdbId}&plot=full`);
         if (omdbData && omdbData.Response === 'True') {
-          console.log('[OMDb] ✅ Found metadata for: ' + omdbData.Title);
-          posterUrl = omdbData.Poster && omdbData.Poster !== 'N/A' ? omdbData.Poster : null;
-          overview = omdbData.Plot || '';
-          rating = omdbData.imdbRating && omdbData.imdbRating !== 'N/A' ? parseFloat(omdbData.imdbRating) : null;
-          genres = omdbData.Genre ? omdbData.Genre.split(', ') : [];
-          resolvedImdbId = imdbId;
+          const omdbYear = omdbData.Year ? parseInt(omdbData.Year.slice(0, 4)) : null;
+          if (omdbYear && Math.abs(omdbYear - sheetYear) > 1) {
+            console.log('[OMDb] ❌ Year mismatch: ' + omdbYear + ' vs ' + sheetYear);
+          } else {
+            console.log('[OMDb] ✅ Found by ID: ' + omdbData.Title + ' (year: ' + omdbYear + ')');
+            posterUrl = omdbData.Poster && omdbData.Poster !== 'N/A' ? omdbData.Poster : null;
+            overview = omdbData.Plot || '';
+            rating = omdbData.imdbRating && omdbData.imdbRating !== 'N/A' ? parseFloat(omdbData.imdbRating) : null;
+            genres = omdbData.Genre ? omdbData.Genre.split(', ') : [];
+            resolvedImdbId = imdbId;
+            metadataFound = true;
+          }
         }
       } catch(e) {
         console.log('[OMDb] ⚠️ Failed: ' + e.message);
       }
     }
 
-    // ── STEP 4: If still no data, try OMDb by title (if no IMDb ID) ──
-    if (!posterUrl && !overview && (!imdbId || !imdbId.startsWith('tt')) && OMDB_KEY) {
+    // ── STEP 3: OMDb by title ──
+    if (!metadataFound && (!imdbId || !imdbId.startsWith('tt')) && sheetYear && OMDB_KEY) {
+      console.log('[OMDb] Searching by title: ' + title + ' (year: ' + sheetYear + ')');
       try {
-        const variations = getTitleVariations(title);
-        for (const variant of variations.slice(0, 3)) {
-          const query = encodeURIComponent(variant);
-          const omdbData = await fetchJson(`https://www.omdbapi.com/?apikey=${OMDB_KEY}&t=${query}&plot=full`);
-          if (omdbData && omdbData.Response === 'True') {
-            console.log('[OMDb] ✅ Found by title: ' + omdbData.Title);
+        const searchTitle = encodeURIComponent(title);
+        const omdbData = await fetchJson(`https://www.omdbapi.com/?apikey=${OMDB_KEY}&t=${searchTitle}&plot=full`);
+        if (omdbData && omdbData.Response === 'True') {
+          const omdbYear = omdbData.Year ? parseInt(omdbData.Year.slice(0, 4)) : null;
+          if (omdbYear && Math.abs(omdbYear - sheetYear) > 1) {
+            console.log('[OMDb] ❌ Year mismatch: ' + omdbYear + ' vs ' + sheetYear);
+          } else {
+            console.log('[OMDb] ✅ Found by title: ' + omdbData.Title + ' (year: ' + omdbYear + ')');
             posterUrl = omdbData.Poster && omdbData.Poster !== 'N/A' ? omdbData.Poster : null;
             overview = omdbData.Plot || '';
             rating = omdbData.imdbRating && omdbData.imdbRating !== 'N/A' ? parseFloat(omdbData.imdbRating) : null;
             genres = omdbData.Genre ? omdbData.Genre.split(', ') : [];
             resolvedImdbId = omdbData.imdbID || null;
-            break;
+            metadataFound = true;
           }
         }
       } catch(e) {
@@ -850,7 +826,27 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
       }
     }
 
-    // ── STEP 5: If we have ANY data, return it ──
+    // ── STEP 4: Final fallback (no year check) ──
+    if (!metadataFound && OMDB_KEY) {
+      console.log('[OMDb] 🚨 Final fallback for: ' + title);
+      try {
+        const searchTitle = encodeURIComponent(title);
+        const omdbData = await fetchJson(`https://www.omdbapi.com/?apikey=${OMDB_KEY}&t=${searchTitle}&plot=full`);
+        if (omdbData && omdbData.Response === 'True') {
+          console.log('[OMDb] ⚠️ Fallback found: ' + omdbData.Title);
+          posterUrl = omdbData.Poster && omdbData.Poster !== 'N/A' ? omdbData.Poster : null;
+          overview = omdbData.Plot || '';
+          rating = omdbData.imdbRating && omdbData.imdbRating !== 'N/A' ? parseFloat(omdbData.imdbRating) : null;
+          genres = omdbData.Genre ? omdbData.Genre.split(', ') : [];
+          resolvedImdbId = omdbData.imdbID || null;
+          metadataFound = true;
+        }
+      } catch(e) {
+        console.log('[OMDb] ⚠️ Final fallback failed: ' + e.message);
+      }
+    }
+
+    // ── RETURN ──
     if (posterUrl || overview || resolvedImdbId) {
       const result = {
         imdbId: resolvedImdbId || imdbId,
@@ -862,11 +858,10 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
       };
       seriesCache[cacheKey] = result;
       cacheDirty = true;
-      console.log('[Enrich] ✅ Saved: ' + title + ' -> ' + (resolvedImdbId || 'no-id'));
+      console.log('[Enrich] ✅ Saved: ' + title);
       return result;
     }
 
-    // ── STEP 6: Nothing worked ──
     console.log('[Enrich] ❌ No data for: ' + title);
     seriesCache[cacheKey] = { _status: 'retry', _at: Date.now() };
     cacheDirty = true;
@@ -904,8 +899,8 @@ async function scrapeSeries(lang) {
     let failed = 0;
     
     for (const item of releasedItems.slice(0, 50)) {
-      // enrichSeriesFromTMDB now tries all methods: /find → /search → OMDb
-      const tmdbData = await enrichSeriesFromTMDB(item.imdbId, item.title, lang);
+      // Pass the release date to enrichSeriesFromTMDB for year filtering
+      const tmdbData = await enrichSeriesFromTMDB(item.imdbId, item.title, lang, item.date);
       
       let finalImdbId = item.imdbId || (tmdbData && tmdbData.imdbId) || null;
       if (!finalImdbId) {
