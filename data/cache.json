@@ -651,8 +651,11 @@
       "type": "series",
       "name": "Land of Football",
       "releaseInfo": "2026-07-10",
-      "description": "📺 Streaming on: JioHotstar\n📅 Release: 2026-07-10",
-      "poster": "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=Land%20of%20Football"
+      "description": "N/A\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-07-10",
+      "poster": "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=Land%20of%20Football",
+      "genres": [
+        "N/A"
+      ]
     },
     {
       "id": "tt43592288",
@@ -672,7 +675,7 @@
       "name": "Cousins and Kalyanams",
       "releaseInfo": "2026-05-29",
       "description": "📺 Streaming on: JioHotstar\n📅 Release: 2026-05-29",
-      "poster": "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=Cousins%20and%20Kalyanams"
+      "poster": "https://m.media-amazon.com/images/M/MV5BNWYxMGZjODMtNzA2OC00NmM4LWFmOGUtYjIxYjQzNGVmZjNkXkEyXkFqcGdeQXRyYW5zY29kZS13b3JrZmxvdw@@._V1_QL75_UX1000_CR0,0,1000,563_.jpg"
     },
     {
       "id": "tt41757212",
@@ -1505,8 +1508,13 @@
       "type": "series",
       "name": "Lingam",
       "releaseInfo": "2026-06-26",
-      "description": "📺 Streaming on: JioHotstar\n📅 Release: 2026-06-26",
-      "poster": "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=Lingam"
+      "description": "Theo, an ambulance driver stigmatized by his town, begins seeing visions of deceased people he transports. His troubled mind, shaped by childhood loss, creates these apparitions as emotional substitutes for connection.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-06-26\n⭐ Rating: 8.2/10",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMDJjYTMyMjUtMmQxNS00M2Q5LWI3OTEtMzJhNTAxYmVmMWNmXkEyXkFqcGc@._V1_SX300.jpg",
+      "genres": [
+        "Comedy",
+        "Drama",
+        "Fantasy"
+      ]
     },
     {
       "id": "tt41962673",
@@ -1651,5 +1659,5 @@
       ]
     }
   ],
-  "builtAt": "2026-07-11T15:36:00.437Z"
+  "builtAt": "2026-07-11T17:47:38.308Z"
 }
