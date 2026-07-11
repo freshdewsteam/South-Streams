@@ -651,10 +651,11 @@
       "type": "series",
       "name": "Land of Football",
       "releaseInfo": "2026-07-10",
-      "description": "N/A\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-07-10",
-      "poster": "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=Land%20of%20Football",
+      "description": "From the mud-slicked night tournaments to the World Cup flex-board wars, this is a deep dive into the obsessive and deep-rooted football culture of Kerala.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-07-10",
+      "poster": "https://image.tmdb.org/t/p/w500/xbkjBvwKm1sGAMMjFi0ZXYmTh6n.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/ohYuYtROMBfGJnOHgpWSkzDzPyp.jpg",
       "genres": [
-        "N/A"
+        "Reality"
       ]
     },
     {
@@ -674,8 +675,13 @@
       "type": "series",
       "name": "Cousins and Kalyanams",
       "releaseInfo": "2026-05-29",
-      "description": "📺 Streaming on: JioHotstar\n📅 Release: 2026-05-29",
-      "poster": "https://m.media-amazon.com/images/M/MV5BNWYxMGZjODMtNzA2OC00NmM4LWFmOGUtYjIxYjQzNGVmZjNkXkEyXkFqcGdeQXRyYW5zY29kZS13b3JrZmxvdw@@._V1_QL75_UX1000_CR0,0,1000,563_.jpg"
+      "description": "A 26-year tale of six cousins in Kerala whose lives and relationships revolve around seven weddings.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-05-29\n⭐ Rating: 6.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/cEfHZNS071Qa0ycrUhySEjRdXXB.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cEfpO6QG5Ks5cTJ8bRrZJiDYKUH.jpg",
+      "genres": [
+        "Comedy",
+        "Family"
+      ]
     },
     {
       "id": "tt41757212",
@@ -745,98 +751,6 @@
       "background": "https://image.tmdb.org/t/p/w1280/mfrx8ie27ljjrjSkiFrISKAui7o.jpg",
       "genres": [
         "Crime",
-        "Comedy"
-      ]
-    },
-    {
-      "id": "tt28755900",
-      "type": "series",
-      "name": "Love Under Construction",
-      "releaseInfo": "2025-02-28",
-      "description": "Vinod is ready to build his dream house. But is he ready to face the hurdles in his path?\n\n📺 Streaming on: JioHotstar\n📅 Release: 2025-02-28\n⭐ Rating: 6.9/10",
-      "poster": "https://image.tmdb.org/t/p/w500/z7MIw0qDpN038SYQiuvrL11QS7W.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/y2vNh5Qz2oMNslunAEuDGvqJ29E.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt27540960",
-      "type": "series",
-      "name": "Jai Mahendran",
-      "releaseInfo": "2024-10-11",
-      "description": "When Mahendran, a corrupt and manipulative deputy Thasildar, believes in getting things done through powerplay and influence within the system, becomes the victim of his own plans to sabotage an entire system in an attempt to safeguard his job and restore his reputation.\n\n📺 Streaming on: Sony LIV\n📅 Release: 2024-10-11\n⭐ Rating: 8.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/i4XuRIfKepANLQO6AcPG9tfBvpg.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/jRPiWplpM9mNyazOj0Cj6rcEZit.jpg",
-      "genres": [
-        "Comedy",
-        "Drama",
-        "Family"
-      ]
-    },
-    {
-      "id": "tt33131120",
-      "type": "series",
-      "name": "1000 Babies",
-      "releaseInfo": "2024-09-27",
-      "description": "Enter a cradle of mysteries where a man with a dark past manipulates multiple lives through a series of cryptic letters and deadly games.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2024-09-27\n⭐ Rating: 5.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/j9EdxlAReZ27m29kTP0cqaQOeoe.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/50yPSUThPKxeC9FLGQxB6WoY8f2.jpg",
-      "genres": [
-        "Crime",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt15478036",
-      "type": "series",
-      "name": "Manorathangal",
-      "releaseInfo": "2024-08-15",
-      "description": "Eight legendary filmmakers collaborate with 9 superstars, breathing life into the timeless stories of author M.T. Vasudevan Nair. Based in Kerala, these stories explore the nuances of human nature.\n\n📺 Streaming on: ZEE5\n📅 Release: 2024-08-15\n⭐ Rating: 4.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/z7IzYTN5oUFX42D8N7D3QEy5eEa.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/vx9NcwSkdrH5TSZ8KSFoLi8ZIDR.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt27950365",
-      "type": "series",
-      "name": "Nagendran's Honeymoons",
-      "releaseInfo": "2024-06-19",
-      "description": "A lazy man named Nagendran, who, with his friend Soman, hatches a plan to marry multiple women to earn money from dowry to escape his village and find a better life abroad.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2024-06-19\n⭐ Rating: 5.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/mk1iphrEF1hoQeTQWeF2xPgP8Ug.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/ePTDgSFfSVm10qUSK7RKeQYyVaH.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt27349179",
-      "type": "series",
-      "name": "Perilloor Premier League",
-      "releaseInfo": "2024-01-05",
-      "description": "Malavika, who comes to the village of Perilloor to find love with her boyfriend Sreekuttan, unexpectedly ends up becoming the village Panchayat President against her will. Later, her life goes upside down along with the problems stirred by the wayward people of Perilloor Panchayath.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2024-01-05\n⭐ Rating: 6.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/zuQRHydJ1Xojty6EHhWRMNT7ooO.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/uVMFFqUWe2fKntOyC01ipgJ1k4i.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt28675376",
-      "type": "series",
-      "name": "Masterpeace",
-      "releaseInfo": "2023-10-25",
-      "description": "When marital discord becomes everyone's business and parents get way too involved in the \"peace talks,\" family drama can become family trauma.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2023-10-25\n⭐ Rating: 5.7/10",
-      "poster": "https://image.tmdb.org/t/p/w500/hUOiNi5uFmDNOYLn2hCrgtSwNPA.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/whRb5cpSALBhj23krlcSRhg8VAo.jpg",
-      "genres": [
-        "Drama",
         "Comedy"
       ]
     }
@@ -1508,40 +1422,11 @@
       "type": "series",
       "name": "Lingam",
       "releaseInfo": "2026-06-26",
-      "description": "Theo, an ambulance driver stigmatized by his town, begins seeing visions of deceased people he transports. His troubled mind, shaped by childhood loss, creates these apparitions as emotional substitutes for connection.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-06-26\n⭐ Rating: 8.2/10",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMDJjYTMyMjUtMmQxNS00M2Q5LWI3OTEtMzJhNTAxYmVmMWNmXkEyXkFqcGc@._V1_SX300.jpg",
+      "description": "Framed for a crime he didn't commit, a kabaddi hero gets pushed into a world he never wanted and ultimately becomes a feared name.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-06-26",
+      "poster": "https://image.tmdb.org/t/p/w500/l5utMuTzwMUpypOTOSLQLg5WY57.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/4hU24wP2A1Vq72aHhXaRBRB247B.jpg",
       "genres": [
-        "Comedy",
-        "Drama",
-        "Fantasy"
-      ]
-    },
-    {
-      "id": "tt41962673",
-      "type": "series",
-      "name": "Brothers and Sisters",
-      "releaseInfo": "2026-05-27",
-      "description": "Bound by love and unspoken truths, Shanmuga Sundaram and his devoted family's lives revolve around shared rituals... till hidden cracks begin to surface.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-05-27",
-      "poster": "https://image.tmdb.org/t/p/w500/dUmJyNe5UT301KwVWrxctpP2sqU.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/vOXCP8gDeChnUyDVro0jUaT7Acr.jpg",
-      "genres": [
-        "Family",
-        "Drama",
-        "Comedy"
-      ]
-    },
-    {
-      "id": "tt42446103",
-      "type": "series",
-      "name": "Warrant",
-      "releaseInfo": "2026-05-22",
-      "description": "A bullied and vulnerable small‑town constable transforms into a brutal force while solving forgotten warrant cases, until a custodial death forces the law to judge the man he has become.\n\n📺 Streaming on: ZEE5\n📅 Release: 2026-05-22\n⭐ Rating: 7.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/gG1jPwTsy9UkSdKL7shYT21WnDz.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/mRVKrB2DS1ySDHe1DpDffaQ6KuG.jpg",
-      "genres": [
-        "Crime",
-        "Mystery",
-        "Drama"
+        "Crime"
       ]
     },
     {
@@ -1573,65 +1458,6 @@
       ]
     },
     {
-      "id": "tt40494646",
-      "type": "series",
-      "name": "Local Times",
-      "releaseInfo": "2026-03-13",
-      "description": "What happens when four friends try to save a dying newspaper with nothing but blind ambition, street smarts, and each other? Local times is a heartfelt comedy of misadventures, where the real headline is the friendship that keeps them going-even when nothing else does.\n\n📺 Streaming on: Prime Video\n📅 Release: 2026-03-13",
-      "poster": "https://image.tmdb.org/t/p/w500/nEaXAXs8dPKnFTbNM2bumQDlZge.jpg",
-      "genres": [
-        "Comedy"
-      ]
-    },
-    {
-      "id": "tt40184918",
-      "type": "series",
-      "name": "Resort",
-      "releaseInfo": "2026-03-12",
-      "description": "A debt-ridden room service boy rises to challenge a ruthless kitchen at a luxurious beachside haven.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-03-12",
-      "poster": "https://image.tmdb.org/t/p/w500/cL7iOwqapRRb7eKKlXI4FDaP6rh.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/wQ1cpJW9uxfKmO8msAF5z4edK63.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt39989131",
-      "type": "series",
-      "name": "Thadayam",
-      "releaseInfo": "2026-02-27",
-      "description": "In 1999, a string of brutal midnight murders terrifies tamil nadu's border villages but when a sharp new officer arrives, he uncovers a chilling pattern.\n\n📺 Streaming on: ZEE5\n📅 Release: 2026-02-27",
-      "poster": "https://image.tmdb.org/t/p/w500/Qw6NDY418wB7jpHSLGEhrqxLM1.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/4AdaGRRz3XtpTtjjRg1NHRZ7mhY.jpg"
-    },
-    {
-      "id": "tt39182415",
-      "type": "series",
-      "name": "LBW: Love Beyond Wicket",
-      "releaseInfo": "2026-01-01",
-      "description": "A washed-up PT teacher, a legendary coach and a generation of misfit students come together to save a legacy.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-01-01\n⭐ Rating: 7.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/tC5K8MkLipwV9bIdJV9SQcCzgUF.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/bMxAWOQN8Y0USoCrGSywQ0K2Sfb.jpg",
-      "genres": [
-        "Drama",
-        "Comedy"
-      ]
-    },
-    {
-      "id": "tt29625288",
-      "type": "series",
-      "name": "Akka",
-      "releaseInfo": "2025-11-01",
-      "description": "A gritty, violent story revolving around two women and a bloody revenge.\n\n📺 Streaming on: Netflix\n📅 Release: 2025-11-01",
-      "poster": "https://image.tmdb.org/t/p/w500/dcBkOqk5TzYip1sfqtCmYZpoh3j.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/cVUKFfws4upCB4ytz5uGIONIiRc.jpg",
-      "genres": [
-        "Action & Adventure",
-        "Drama"
-      ]
-    },
-    {
       "id": "tt33702419",
       "type": "series",
       "name": "Good Wife",
@@ -1644,20 +1470,7 @@
         "Mystery",
         "Crime"
       ]
-    },
-    {
-      "id": "tt20873118",
-      "type": "series",
-      "name": "Suzhal: The Vortex",
-      "releaseInfo": "2025-02-28",
-      "description": "A minor girl goes missing in a small town in Tamilnadu and an investigation follows. A sub inspector investigating a missing girl's case in a uncovers some shocking revelations and dirty truths those threaten to shake up the cultural societal fabric.\n\n📺 Streaming on: Prime Video\n📅 Release: 2025-02-28\n⭐ Rating: 6.9/10",
-      "poster": "https://image.tmdb.org/t/p/w500/z6IJi7xmAMmKdbzSnwguIXLIVjN.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/hEFbJLsoFhEcf3OtFgptrllxBxI.jpg",
-      "genres": [
-        "Crime",
-        "Mystery"
-      ]
     }
   ],
-  "builtAt": "2026-07-11T17:47:38.308Z"
+  "builtAt": "2026-07-11T18:15:39.839Z"
 }
