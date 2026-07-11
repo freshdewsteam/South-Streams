@@ -2,16 +2,16 @@ name: Scrape & Update Cache
 
 on:
   schedule:
-    - cron: '0 19 * * *'
-    - cron: '30 1 * * *'
-    - cron: '0 7 * * *'
-    - cron: '30 12 * * *'
+    - cron: '0 19 * * *'   # 12:30 AM IST
+    - cron: '30 1 * * *'   #  7:00 AM IST
+    - cron: '0 7 * * *'    # 12:30 PM IST
+    - cron: '30 12 * * *'  #  6:00 PM IST
   workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     permissions:
       contents: write
 
@@ -28,58 +28,68 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Create data directory
+      - name: Ensure data directory exists
         run: |
           mkdir -p data
-          touch data/cache.json data/movies-cache.json data/series-cache.json
-          echo '{}' > data/cache.json
-          echo '{"_data": {}, "_seen": {}}' > data/movies-cache.json
-          echo '{"_data": {}}' > data/series-cache.json
+          [ -f data/cache.json ]        || echo '{}' > data/cache.json
+          [ -f data/movies-cache.json ] || echo '{"_data":{},"_seen":{}}' > data/movies-cache.json
+          [ -f data/series-cache.json ] || echo '{"_data":{}}' > data/series-cache.json
 
-      - name: Run scraper and save cache
+      - name: Run scraper
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
           GOOGLE_SHEET_URL: ${{ secrets.GOOGLE_SHEET_URL }}
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        run: |
-          echo "🚀 Running scraper..."
-          node scripts/build-cache.js
+        run: node scripts/build-cache.js
 
-      - name: Check cache file exists
+      - name: Verify cache was built
         run: |
-          if [ -f data/cache.json ]; then
-            echo "✅ data/cache.json exists"
-            cat data/cache.json | head -20
-          else
-            echo "❌ data/cache.json does not exist!"
+          if [ ! -f data/cache.json ]; then
+            echo "❌ data/cache.json missing — build failed"
             exit 1
+          fi
+          ITEMS=$(node -e "const c=require('./data/cache.json'); const t=(c['malayalam-movies']||[]).length+(c['malayalam-series']||[]).length+(c['tamil-movies']||[]).length+(c['tamil-series']||[]).length; console.log(t)")
+          echo "✅ Cache built with $ITEMS total items"
+          if [ "$ITEMS" -eq "0" ]; then
+            echo "⚠️ Warning: 0 items in cache — check TMDB_API_KEY and GOOGLE_SHEET_URL secrets"
           fi
 
       - name: Commit updated cache
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Add all cache files
-          git add data/cache.json data/movies-cache.json data/series-cache.json || echo "No files to add"
-          
-          # Check if there are changes to commit
+          git add data/cache.json data/movies-cache.json data/series-cache.json
           if git diff --staged --quiet; then
-            echo "📭 No changes to cache"
+            echo "📭 No changes — cache is up to date"
           else
             git commit -m "chore: update cache $(date -u '+%Y-%m-%d %H:%M UTC')"
             git push
             echo "✅ Cache updated and pushed"
           fi
 
-      - name: Upload cache as artifact (for debugging)
+      - name: Upload cache artifact (for debugging)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cache-files
+          name: cache-${{ github.run_number }}
           path: |
             data/cache.json
             data/movies-cache.json
             data/series-cache.json
           retention-days: 7
+
+      # ── EMAIL ON FAILURE ──────────────────────────────────────────────────────
+      # GitHub sends you an email automatically when a workflow fails.
+      # To enable: go to GitHub → Settings → Notifications → Actions
+      # and make sure "Send notifications for failed workflows" is checked.
+      # No extra setup needed — GitHub handles this natively.
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ South Streams scraper failed at $(date -u)"
+          echo "Check the logs above for details."
+          echo "Common causes:"
+          echo "  - TMDB_API_KEY expired or missing"
+          echo "  - GOOGLE_SHEET_URL not set or sheet not public"
+          echo "  - GitHub Actions runner had a network issue"
