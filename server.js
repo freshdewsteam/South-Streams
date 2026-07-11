@@ -72,9 +72,10 @@ if (req.url === '/') {
               ${manifest.catalogs.map(c => `<span class="catalog-tag">${c.name}</span>`).join('')}
             </div>
             <div class="info">
-              <p>📱 Also available in <a href="https://nuvio.io/" target="_blank">Nuvio</a></p>
+              <p>📱 Compatible with Stremio, Nuvio and other Stremio-compatible apps</p>
               <p>🔗 Manual install: <a href="/manifest.json">manifest.json</a></p>
-              <p>⚡ Updated automatically every 6 hours</p>
+              <p>⚡ Updated automatically 4 times daily</p>
+              <p>❤️ Built for the South Indian OTT community</p>
             </div>
           </div>
         </body>
@@ -133,11 +134,15 @@ if (req.url === '/manifest.json') {
       }
     }
 
-    // Return the catalog data
+    // Return the catalog data with stale headers
+    // staleRevalidate: serve old data while fetching new (user sees content instantly)
+    // staleError: keep showing data even if our server has a temporary error
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       metas: catalogData,
-      cacheMaxAge: 3600 // 1 hour
+      cacheMaxAge: 3600,      // Stremio caches for 1 hour
+      staleRevalidate: 86400, // Serve stale data for up to 24h while refreshing
+      staleError: 86400       // Keep showing data even if server errors
     }));
     return;
   }
