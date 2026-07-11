@@ -230,13 +230,40 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
+// Robust date parser — handles YYYY-MM-DD, DD/MM/YYYY, DD-MM-YYYY,
+// "15 Jun 2026", "June 15 2026", "15th June 2026"
+const _MONTHS = {
+  jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11,
+  january:0,february:1,march:2,april:3,june:5,july:6,august:7,
+  september:8,october:9,november:10,december:11
+};
+
+function parseAnyDate(s) {
+  if (!s) return null;
+  s = String(s).trim();
+  if (/soon|tba|tbd|upcoming|expected|coming/i.test(s)) return null;
+  let m;
+  // YYYY-MM-DD
+  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (m) return new Date(+m[1], +m[2]-1, +m[3]);
+  // DD/MM/YYYY or DD-MM-YYYY
+  m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (m) return new Date(+m[3], +m[2]-1, +m[1]);
+  // "15 Jun 2026" or "15th Jun 2026"
+  m = s.match(/^(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)\s+(\d{4})$/);
+  if (m) { const mo = _MONTHS[m[2].toLowerCase()]; if (mo !== undefined) return new Date(+m[3], mo, +m[1]); }
+  // "Jun 15, 2026" or "June 15 2026"
+  m = s.match(/^([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})$/);
+  if (m) { const mo = _MONTHS[m[1].toLowerCase()]; if (mo !== undefined) return new Date(+m[3], mo, +m[2]); }
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
+
 function isReleased(dateStr) {
-  if (!dateStr) return false;
-  const releaseDate = new Date(dateStr);
-  const now = new Date();
-  releaseDate.setHours(0, 0, 0, 0);
-  now.setHours(0, 0, 0, 0);
-  return releaseDate <= now;
+  const d = parseAnyDate(dateStr);
+  if (!d) return false;
+  const now = new Date(); now.setHours(23, 59, 59, 999);
+  return d <= now;
 }
 
 // ── TITLE VARIATIONS ──────────────────────────────────────────────────────────
@@ -418,9 +445,11 @@ async function discoverMovies(lang, lookbackDays) {
       );
       if (!data.results || !data.results.length) break;
 
+      // Use lang-prefixed key to prevent Malayalam/Tamil cache mixing
+      const langPrefix = lang + '_';
       const newItems = data.results
-        .filter(r => !movieCache[String(r.id)])
-        .filter(r => r.original_language === lang);
+        .filter(r => r.original_language === lang)
+        .filter(r => !movieCache[langPrefix + r.id]);
 
       results.push(...newItems);
       console.log('[Discover] Page ' + page + ': ' + data.results.length +
@@ -436,29 +465,30 @@ async function discoverMovies(lang, lookbackDays) {
   return results;
 }
 
-async function processMovie(item) {
-  const tmdbId = String(item.id);
-  
-  if (movieCache[tmdbId] !== undefined) {
-    if (movieCache[tmdbId] === 'skip') return null;
-    if (movieCache[tmdbId] === 'retry') {
+async function processMovie(item, lang) {
+  const tmdbId  = String(item.id);
+  const cacheKey = (lang || 'ml') + '_' + tmdbId; // lang-prefixed to prevent mixing
+
+  if (movieCache[cacheKey] !== undefined) {
+    if (movieCache[cacheKey] === 'skip') return null;
+    if (movieCache[cacheKey] === 'retry') {
       console.log('[Retry] Attempting previously failed movie: ' + (item.title || item.name));
     } else {
-      return movieCache[tmdbId];
+      return movieCache[cacheKey];
     }
   }
 
   try {
     const detail = await tmdb('/movie/' + tmdbId + '?language=en-US&append_to_response=watch/providers');
     if (!detail) {
-      movieCache[tmdbId] = 'retry';
+      movieCache[cacheKey] = 'retry';
       cacheDirty = true;
       return null;
     }
 
     if (!detail.imdb_id) {
       console.log('[Skip] No IMDb ID: ' + (detail.title || ''));
-      movieCache[tmdbId] = 'skip';
+      movieCache[cacheKey] = 'skip';
       cacheDirty = true;
       return null;
     }
@@ -466,7 +496,7 @@ async function processMovie(item) {
     const wp = detail['watch/providers'];
     if (!wp || !wp.results || !wp.results.IN) {
       console.log('[Skip] Not on OTT/IN: ' + (detail.title || ''));
-      movieCache[tmdbId] = 'skip';
+      movieCache[cacheKey] = 'skip';
       cacheDirty = true;
       return null;
     }
@@ -475,7 +505,7 @@ async function processMovie(item) {
     const all = [...(IN.flatrate || []), ...(IN.free || []), ...(IN.ads || [])];
     if (!all.length) {
       console.log('[Skip] No OTT provider: ' + (detail.title || ''));
-      movieCache[tmdbId] = 'skip';
+      movieCache[cacheKey] = 'skip';
       cacheDirty = true;
       return null;
     }
@@ -499,13 +529,13 @@ async function processMovie(item) {
       genres:      (detail.genres || []).map(g => g.name),
     });
 
-    movieCache[tmdbId] = meta;
+    movieCache[cacheKey] = meta;
     cacheDirty = true;
-    console.log('[OK] ' + meta.name + ' -> ' + detail.imdb_id + ' on ' + platform);
+    console.log('[OK] ' + meta.name + ' (' + (lang||'ml') + ') -> ' + detail.imdb_id + ' on ' + platform);
     return meta;
   } catch (e) {
     console.warn('[Process] Movie ' + tmdbId + ' failed: ' + e.message);
-    movieCache[tmdbId] = 'retry';
+    movieCache[cacheKey] = 'retry';
     cacheDirty = true;
     return null;
   }
@@ -525,7 +555,7 @@ async function scrapeMovies(lang) {
     let processed = 0;
     let failed = 0;
     for (const item of newItems) {
-      const result = await processMovie(item);
+      const result = await processMovie(item, lang);
       if (result) processed++;
       else failed++;
       if ((processed + failed) % 10 === 0) await new Promise(r => setTimeout(r, 300));
@@ -533,8 +563,11 @@ async function scrapeMovies(lang) {
 
     seen[catalogueKey] = true;
 
-    const result = Object.values(movieCache)
-      .filter(v => v && v !== 'skip' && v !== 'retry' && v.type === 'movie')
+    // Only return movies for THIS language using lang-prefixed keys
+    const langPrefix = lang + '_';
+    const result = Object.entries(movieCache)
+      .filter(([k, v]) => k.startsWith(langPrefix) && v && v !== 'skip' && v !== 'retry' && v.type === 'movie')
+      .map(([, v]) => v)
       .sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''))
       .slice(0, 50);
 
