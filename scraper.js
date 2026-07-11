@@ -131,8 +131,8 @@ async function sendAlert(message, isError = true) {
 
 // ── HEALTH CHECK ──────────────────────────────────────────────────────────────
 function getHealthStatus() {
-  const movieCount = Object.values(movieCache).filter(v => v && v !== 'skip' && v !== 'retry').length;
-  const seriesCount = Object.values(seriesCache).filter(v => v && v !== 'skip' && v !== 'retry').length;
+  const movieCount  = Object.values(movieCache).filter(v => v && !v._status && typeof v !== 'string' && v.type).length;
+  const seriesCount = Object.values(seriesCache).filter(v => v && !v._status && typeof v !== 'string' && v.imdbId).length;
   const total = movieCount + seriesCount;
   
   const status = {
@@ -448,7 +448,18 @@ async function discoverMovies(lang, lookbackDays) {
       // Use lang-prefixed key to prevent Malayalam/Tamil cache mixing
       const langPrefix = lang + '_';
       const newItems = data.results
-        .filter(r => r.original_language === lang)
+        .filter(r => {
+          // Accept correct language (ml/ta)
+          if (r.original_language === lang) return true;
+          // Also accept English-titled Indian content — many Malayalam/Tamil
+          // documentaries and shows are classified as 'en' on TMDB even though
+          // they are produced in India and stream in regional languages
+          // e.g. "Land of Football" (Malayalam doc, TMDB tags as 'en')
+          if (r.original_language === 'en' &&
+              Array.isArray(r.origin_country) &&
+              r.origin_country.includes('IN')) return true;
+          return false;
+        })
         .filter(r => !movieCache[langPrefix + r.id]);
 
       results.push(...newItems);
@@ -470,25 +481,31 @@ async function processMovie(item, lang) {
   const cacheKey = (lang || 'ml') + '_' + tmdbId; // lang-prefixed to prevent mixing
 
   if (movieCache[cacheKey] !== undefined) {
-    if (movieCache[cacheKey] === 'skip') return null;
-    if (movieCache[cacheKey] === 'retry') {
-      console.log('[Retry] Attempting previously failed movie: ' + (item.title || item.name));
-    } else {
-      return movieCache[cacheKey];
-    }
+    const cached = movieCache[cacheKey];
+    if (cached && typeof cached === 'object' && cached._status) {
+      const age = Date.now() - (cached._at || 0);
+      const SKIP_TTL  = 14 * 24 * 60 * 60 * 1000; // 14 days — re-check skipped items
+      const RETRY_TTL =  3 * 24 * 60 * 60 * 1000; //  3 days — re-check failed items
+      if (cached._status === 'skip'  && age < SKIP_TTL)  return null;
+      if (cached._status === 'retry' && age < RETRY_TTL) return null;
+      // Expired — fall through and retry
+      console.log('[Recheck] Re-checking expired ' + cached._status + ': ' + (item.title || item.name));
+    } else if (cached === 'skip')  { return null; } // legacy
+      else if (cached === 'retry') { /* fall through */ }
+      else if (cached) { return cached; } // valid meta
   }
 
   try {
     const detail = await tmdb('/movie/' + tmdbId + '?language=en-US&append_to_response=watch/providers');
     if (!detail) {
-      movieCache[cacheKey] = 'retry';
+      movieCache[cacheKey] = { _status: 'retry', _at: Date.now() };
       cacheDirty = true;
       return null;
     }
 
     if (!detail.imdb_id) {
       console.log('[Skip] No IMDb ID: ' + (detail.title || ''));
-      movieCache[cacheKey] = 'skip';
+      movieCache[cacheKey] = { _status: 'skip', _at: Date.now() };
       cacheDirty = true;
       return null;
     }
@@ -496,7 +513,7 @@ async function processMovie(item, lang) {
     const wp = detail['watch/providers'];
     if (!wp || !wp.results || !wp.results.IN) {
       console.log('[Skip] Not on OTT/IN: ' + (detail.title || ''));
-      movieCache[cacheKey] = 'skip';
+      movieCache[cacheKey] = { _status: 'skip', _at: Date.now() };
       cacheDirty = true;
       return null;
     }
@@ -505,7 +522,7 @@ async function processMovie(item, lang) {
     const all = [...(IN.flatrate || []), ...(IN.free || []), ...(IN.ads || [])];
     if (!all.length) {
       console.log('[Skip] No OTT provider: ' + (detail.title || ''));
-      movieCache[cacheKey] = 'skip';
+      movieCache[cacheKey] = { _status: 'skip', _at: Date.now() };
       cacheDirty = true;
       return null;
     }
@@ -535,7 +552,7 @@ async function processMovie(item, lang) {
     return meta;
   } catch (e) {
     console.warn('[Process] Movie ' + tmdbId + ' failed: ' + e.message);
-    movieCache[cacheKey] = 'retry';
+    movieCache[cacheKey] = { _status: 'retry', _at: Date.now() };
     cacheDirty = true;
     return null;
   }
@@ -566,7 +583,12 @@ async function scrapeMovies(lang) {
     // Only return movies for THIS language using lang-prefixed keys
     const langPrefix = lang + '_';
     const result = Object.entries(movieCache)
-      .filter(([k, v]) => k.startsWith(langPrefix) && v && v !== 'skip' && v !== 'retry' && v.type === 'movie')
+      .filter(([k, v]) => {
+        if (!k.startsWith(langPrefix) || !v) return false;
+        if (typeof v === 'string') return false; // 'skip'/'retry' strings
+        if (v._status) return false; // timed skip/retry objects
+        return v.type === 'movie';
+      })
       .map(([, v]) => v)
       .sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''))
       .slice(0, 50);
@@ -652,29 +674,61 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
   const cacheKey = (imdbId || title.toLowerCase().replace(/[^a-z0-9]/g, '_'));
   
   if (seriesCache[cacheKey] !== undefined) {
-    if (seriesCache[cacheKey] === 'skip') return null;
-    if (seriesCache[cacheKey] === 'retry') {
-      console.log('[Retry] Re-trying: ' + title);
-    } else {
-      return seriesCache[cacheKey];
-    }
+    const cached = seriesCache[cacheKey];
+    if (cached && typeof cached === 'object' && cached._status) {
+      const age = Date.now() - (cached._at || 0);
+      const SKIP_TTL  = 14 * 24 * 60 * 60 * 1000;
+      const RETRY_TTL =  3 * 24 * 60 * 60 * 1000;
+      if (cached._status === 'skip'  && age < SKIP_TTL)  return null;
+      if (cached._status === 'retry' && age < RETRY_TTL) return null;
+      console.log('[Recheck] Re-checking expired ' + cached._status + ': ' + title);
+    } else if (cached === 'skip')  { return null; }
+      else if (cached === 'retry') { /* fall through */ }
+      else if (cached) { return cached; }
   }
 
   try {
     let tvId = null;
     let resolvedImdbId = imdbId || null;
 
-    // If we have an IMDb ID, try that first
+    // If we have an IMDb ID, try TMDB /find first (fastest — 1 request)
     if (imdbId && imdbId.startsWith('tt')) {
       try {
         const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
         const tv = (data.tv_results || [])[0];
-        if (tv) tvId = tv.id;
-      } catch(e) { /* ignore */ }
+        if (tv) {
+          tvId = tv.id;
+          console.log('[Find] Matched by IMDb ID: ' + imdbId + ' -> TMDB ' + tvId);
+        } else {
+          // /find returned nothing — TMDB hasn't indexed this IMDb ID yet.
+          // IMPORTANT: Do NOT fall through to title search when we have an IMDb ID.
+          // Title search risks returning a completely wrong show (wrong metadata,
+          // wrong poster) — e.g. searching "Land of Football" could match an
+          // unrelated show. Better to show the title with no poster/metadata
+          // than show completely wrong information.
+          console.log('[Find] IMDb ID ' + imdbId + ' not yet on TMDB — will show title only');
+          // Return a minimal result with just the IMDb ID so it still appears
+          // in the catalogue and stream addons can resolve it
+          const minimal = {
+            imdbId,
+            poster:   null,
+            backdrop: null,
+            overview: '',
+            rating:   null,
+            genres:   [],
+          };
+          seriesCache[cacheKey] = { _status: 'retry', _at: Date.now() }; // retry next run
+          cacheDirty = true;
+          return minimal; // show in catalogue, retry metadata next run
+        }
+      } catch(e) {
+        console.warn('[Find] /find failed for ' + imdbId + ': ' + e.message);
+      }
     }
 
-    // If not found, search by title with variations
-    if (!tvId) {
+    // Only do title search if we have NO IMDb ID at all
+    // (never title-search when we have an IMDb ID — risks wrong match)
+    if (!tvId && (!imdbId || !imdbId.startsWith('tt'))) {
       console.log('[AutoLookup] Searching: ' + title);
       const langCode = lang === 'ml' ? 'ml' : 'ta';
       const variations = getTitleVariations(title);
@@ -723,7 +777,7 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
             if (r.popularity > 10) score += 10;
             if (r.media_type === 'movie') score -= 20;
 
-            if (score > bestScore && score >= 30) {
+            if (score > bestScore && score >= 70) {  // high threshold prevents wrong matches
               bestScore = score;
               best = r;
             }
@@ -786,7 +840,7 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
     return result;
   } catch (e) {
     console.warn('[Enrich] ' + (imdbId || title) + ': ' + e.message);
-    seriesCache[cacheKey] = 'retry';
+    seriesCache[cacheKey] = { _status: 'retry', _at: Date.now() };
     cacheDirty = true;
     return null;
   }
