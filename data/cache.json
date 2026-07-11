@@ -647,7 +647,7 @@
   ],
   "malayalam-series": [
     {
-      "id": "tt37541677",
+      "id": "tt43639419",
       "type": "series",
       "name": "Land of Football",
       "releaseInfo": "2026-07-10",
@@ -671,7 +671,7 @@
       ]
     },
     {
-      "id": "tt35467123",
+      "id": "tt42071698",
       "type": "series",
       "name": "Cousins and Kalyanams",
       "releaseInfo": "2026-05-29",
@@ -697,12 +697,16 @@
       ]
     },
     {
-      "id": "tt34567890",
+      "id": "tt40431801",
       "type": "series",
       "name": "Kasaragod Embassy",
       "releaseInfo": "2026-03-20",
-      "description": "📺 Streaming on: ZEE5\n📅 Release: 2026-03-20",
-      "poster": "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=Kasaragod%20Embassy"
+      "description": "Set between 2008 and 2010 the story follows cousins Azi and Chemmu who dream of escaping poverty in Kasaragod. They work for their cunning uncle, Razak Mama, whose stationery shop secretly operates as a forgery hub. Restless and frustrated with their stagnant lives, the cousins attempt to obtain legitimate passports, but when that fails, desperation pushes them deeper into Razak's illicit world. Razak introduces them to a gold smuggling job, claiming it will fund their escape. Instead, they are used as disposable pawns and end up in jail.\n\n📺 Streaming on: ZEE5\n📅 Release: 2026-03-20\n⭐ Rating: 5.0/10",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNDZmNGRkMzYtYmE0Yi00YjJhLWEyMDMtMzNkMjU1NmQzZmIzXkEyXkFqcGc@._V1_QL75_UX380_CR0,57,380,562_.jpg",
+      "genres": [
+        "Crime",
+        "Thriller"
+      ]
     },
     {
       "id": "tt32105473",
@@ -1418,7 +1422,7 @@
   ],
   "tamil-series": [
     {
-      "id": "tt34210614",
+      "id": "tt31924038",
       "type": "series",
       "name": "Lingam",
       "releaseInfo": "2026-06-26",
@@ -1483,5 +1487,5 @@
       ]
     }
   ],
-  "builtAt": "2026-07-11T18:47:45.955Z"
+  "builtAt": "2026-07-11T19:06:02.011Z"
 }
