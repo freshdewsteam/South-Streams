@@ -14,6 +14,8 @@
  * ✅ Rate limit handling
  * ✅ Placeholder posters for missing images
  * ✅ Multi-source poster fetching (TMDB → OMDb → IMDb → Wikipedia)
+ * ✅ IMDb ID priority - NEVER title-search when we have an IMDb ID
+ * ✅ OMDb fallback for new titles not yet on TMDB
  */
 
 const https = require('https');
@@ -283,6 +285,31 @@ function getTitleVariations(title) {
   return Array.from(variations);
 }
 
+// ── FETCH METADATA FROM IMDb DIRECTLY ────────────────────────────────────────
+async function fetchImdbMetadata(imdbId) {
+  if (!imdbId || !imdbId.startsWith('tt')) return null;
+  
+  try {
+    if (OMDB_KEY) {
+      const data = await fetchJson(`https://www.omdbapi.com/?apikey=${OMDB_KEY}&i=${imdbId}&plot=full`);
+      if (data && data.Response === 'True') {
+        return {
+          title: data.Title,
+          year: data.Year,
+          overview: data.Plot,
+          rating: data.imdbRating,
+          poster: data.Poster !== 'N/A' ? data.Poster : null,
+          genres: data.Genre ? data.Genre.split(', ') : [],
+        };
+      }
+    }
+    return null;
+  } catch (e) {
+    console.warn('[IMDb] Failed to fetch metadata for ' + imdbId + ': ' + e.message);
+    return null;
+  }
+}
+
 // ── MULTI-SOURCE POSTER FETCHER ──────────────────────────────────────────────
 // Tries multiple sources to find a poster when TMDB fails
 async function fetchPosterFromMultipleSources(title, imdbId, type) {
@@ -329,7 +356,6 @@ async function fetchPosterFromMultipleSources(title, imdbId, type) {
   async function fromImdbDirect() {
     if (!imdbId) return null;
     try {
-      // IMDb poster URL pattern
       const url = `https://img.omdbapi.com/?apikey=${OMDB_KEY || 'your_key'}&i=${imdbId}`;
       const data = await fetchJson(url);
       if (data && data.Poster && data.Poster !== 'N/A') {
@@ -690,8 +716,13 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
   try {
     let tvId = null;
     let resolvedImdbId = imdbId || null;
+    let finalPosterUrl = null;
+    let finalOverview = '';
+    let finalRating = null;
+    let finalGenres = [];
 
-    // If we have an IMDb ID, try TMDB /find first (fastest — 1 request)
+    // 🔥 CRITICAL: If we have an IMDb ID, use it EXCLUSIVELY
+    // Never fall back to title search when we have an IMDb ID
     if (imdbId && imdbId.startsWith('tt')) {
       try {
         const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
@@ -700,36 +731,70 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
           tvId = tv.id;
           console.log('[Find] Matched by IMDb ID: ' + imdbId + ' -> TMDB ' + tvId);
         } else {
-          // /find returned nothing — TMDB hasn't indexed this IMDb ID yet.
-          // IMPORTANT: Do NOT fall through to title search when we have an IMDb ID.
-          // Title search risks returning a completely wrong show (wrong metadata,
-          // wrong poster) — e.g. searching "Land of Football" could match an
-          // unrelated show. Better to show the title with no poster/metadata
-          // than show completely wrong information.
-          console.log('[Find] IMDb ID ' + imdbId + ' not yet on TMDB — will show title only');
-          // Return a minimal result with just the IMDb ID so it still appears
-          // in the catalogue and stream addons can resolve it
+          // IMDb ID not yet on TMDB — we should NOT do a title search
+          // Title search risks matching the WRONG show
+          console.log('[Find] IMDb ID ' + imdbId + ' not yet on TMDB. Using IMDb ID only (no title search).');
+          
+          // Try to get metadata from OMDb (IMDb proxy)
+          const imdbMeta = await fetchImdbMetadata(imdbId);
+          if (imdbMeta) {
+            console.log('[IMDb] Using metadata from IMDb for: ' + imdbMeta.title);
+            finalPosterUrl = imdbMeta.poster;
+            finalOverview = imdbMeta.overview || '';
+            finalRating = imdbMeta.rating ? parseFloat(imdbMeta.rating) : null;
+            finalGenres = imdbMeta.genres || [];
+            
+            // Also try poster from multiple sources if OMDb didn't have one
+            if (!finalPosterUrl) {
+              finalPosterUrl = await fetchPosterFromMultipleSources(title, imdbId, 'series');
+            }
+          } else {
+            // Even without OMDb, try poster from multiple sources
+            finalPosterUrl = await fetchPosterFromMultipleSources(title, imdbId, 'series');
+          }
+          
           const minimal = {
-            imdbId,
-            poster:   null,
+            imdbId: imdbId,
+            poster: finalPosterUrl,
             backdrop: null,
-            overview: '',
-            rating:   null,
-            genres:   [],
+            overview: finalOverview,
+            rating: finalRating,
+            genres: finalGenres,
           };
-          seriesCache[cacheKey] = { _status: 'retry', _at: Date.now() }; // retry next run
+          // Store with retry status so we check again next run
+          seriesCache[cacheKey] = { _status: 'retry', _at: Date.now(), data: minimal };
           cacheDirty = true;
-          return minimal; // show in catalogue, retry metadata next run
+          return minimal;
         }
       } catch(e) {
         console.warn('[Find] /find failed for ' + imdbId + ': ' + e.message);
+        // Try OMDb as fallback even if TMDB /find fails
+        const imdbMeta = await fetchImdbMetadata(imdbId);
+        if (imdbMeta) {
+          console.log('[IMDb] Using metadata from IMDb after TMDB /find failure: ' + imdbMeta.title);
+          const minimal = {
+            imdbId: imdbId,
+            poster: imdbMeta.poster || await fetchPosterFromMultipleSources(title, imdbId, 'series'),
+            backdrop: null,
+            overview: imdbMeta.overview || '',
+            rating: imdbMeta.rating ? parseFloat(imdbMeta.rating) : null,
+            genres: imdbMeta.genres || [],
+          };
+          seriesCache[cacheKey] = { _status: 'retry', _at: Date.now(), data: minimal };
+          cacheDirty = true;
+          return minimal;
+        }
+        // Don't fall through to title search
+        seriesCache[cacheKey] = { _status: 'retry', _at: Date.now() };
+        cacheDirty = true;
+        return null;
       }
     }
 
-    // Only do title search if we have NO IMDb ID at all
-    // (never title-search when we have an IMDb ID — risks wrong match)
+    // 🔥 IMPORTANT: Title search is ONLY for items WITHOUT an IMDb ID
+    // This prevents matching the wrong show when we already have an ID
     if (!tvId && (!imdbId || !imdbId.startsWith('tt'))) {
-      console.log('[AutoLookup] Searching: ' + title);
+      console.log('[AutoLookup] Searching by title (no IMDb ID): ' + title);
       const langCode = lang === 'ml' ? 'ml' : 'ta';
       const variations = getTitleVariations(title);
       
@@ -792,14 +857,14 @@ async function enrichSeriesFromTMDB(imdbId, title, lang) {
         console.log('[AutoLookup] Found: ' + best.name + ' (score: ' + bestScore + ')');
       } else {
         console.log('[AutoLookup] No match found for: ' + title);
-        seriesCache[cacheKey] = 'retry';
+        seriesCache[cacheKey] = { _status: 'retry', _at: Date.now() };
         cacheDirty = true;
         return null;
       }
     }
 
     if (!tvId) {
-      seriesCache[cacheKey] = 'retry';
+      seriesCache[cacheKey] = { _status: 'retry', _at: Date.now() };
       cacheDirty = true;
       return null;
     }
@@ -870,9 +935,11 @@ async function scrapeSeries(lang) {
     let failed = 0;
     
     for (const item of releasedItems.slice(0, 50)) {
+      // If we have an IMDb ID but it's not in cache, enrichSeriesFromTMDB will now
+      // ONLY use the IMDb ID and never do a title search
       const tmdbData = await enrichSeriesFromTMDB(item.imdbId, item.title, lang);
       
-      const finalImdbId = item.imdbId || (tmdbData && tmdbData.imdbId) || null;
+      let finalImdbId = item.imdbId || (tmdbData && tmdbData.imdbId) || null;
       if (!finalImdbId) {
         console.log('[Series] Skipping (no IMDb ID): ' + item.title);
         failed++;
@@ -889,17 +956,31 @@ async function scrapeSeries(lang) {
         } catch(e) {}
       }
 
+      // Check if the data has a _status (it means it's retry/skip object with nested data)
+      let posterUrl = tmdbData?.poster || null;
+      let overview = tmdbData?.overview || '';
+      let rating = tmdbData?.rating || null;
+      let genres = tmdbData?.genres || [];
+      
+      // If the data is a status object with a data property, extract from there
+      if (tmdbData && tmdbData._status && tmdbData.data) {
+        posterUrl = tmdbData.data.poster || posterUrl;
+        overview = tmdbData.data.overview || overview;
+        rating = tmdbData.data.rating || rating;
+        genres = tmdbData.data.genres || genres;
+      }
+
       const meta = buildMeta({
         imdbId:      finalImdbId,
         type:        'series',
         title:       item.title,
         platform:    item.platform,
         releaseDate: formattedDate || item.date,
-        overview:    tmdbData?.overview || '',
-        rating:      tmdbData?.rating   || null,
-        posterUrl:   tmdbData?.poster   || null,
+        overview:    overview,
+        rating:      rating,
+        posterUrl:   posterUrl,
         backdropUrl: tmdbData?.backdrop || null,
-        genres:      tmdbData?.genres   || [],
+        genres:      genres,
       });
 
       metas.push(meta);
