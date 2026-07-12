@@ -788,6 +788,21 @@
       ]
     },
     {
+      "id": "tt39385419",
+      "type": "movie",
+      "name": "Parimala and Co",
+      "releaseInfo": "2026-06-05",
+      "description": "A dark comedy centered around a chaotic family whose tangled relationships and unpredictable situations lead to emotionally charged and absurd moments, blending humor with underlying tension and drama.\n\n📺 Streaming on: Zee5\n📅 Release: 2026-06-05",
+      "poster": "https://image.tmdb.org/t/p/w500/vN2TOTKin83av7hwYnwAKSd3EG8.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/hcQ9Kcmc34yYElii4fjFxABQYqq.jpg",
+      "genres": [
+        "Crime",
+        "Comedy",
+        "Mystery",
+        "Thriller"
+      ]
+    },
+    {
       "id": "tt37971394",
       "type": "movie",
       "name": "Blast",
@@ -1405,19 +1420,6 @@
         "Comedy",
         "Drama"
       ]
-    },
-    {
-      "id": "tt15380786",
-      "type": "movie",
-      "name": "Theeyavar Kulaigal Nadunga",
-      "releaseInfo": "2025-11-21",
-      "description": "An Investigative Police officer teams up with an autism school teacher to solve the mystery of a cruel murder happened in a school for autistic children.\n\n📺 Streaming on: Sun Nxt\n📅 Release: 2025-11-21",
-      "poster": "https://image.tmdb.org/t/p/w500/aAQ0I4EZUmg7dEyTwxYZi1dYB8Y.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/uoxkOkRzPP9jcnl59CObzYLn2Mq.jpg",
-      "genres": [
-        "Crime",
-        "Thriller"
-      ]
     }
   ],
   "tamil-series": [
@@ -1487,5 +1489,5 @@
       ]
     }
   ],
-  "builtAt": "2026-07-11T20:03:23.022Z"
+  "builtAt": "2026-07-12T04:53:52.417Z"
 }
