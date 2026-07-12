@@ -507,10 +507,22 @@ async function enrichSeries(imdbId, title, lang) {
           // DO NOT fall through to title search.
           // Return a minimal result — the IMDb ID is enough for Stremio
           // to show the title. Cinemeta/AIO will provide poster + metadata.
-          console.log('[Find] ' + imdbId + ' not yet indexed on TMDB — using IMDb ID only');
-          setRetry(seriesCache, cacheKey); // retry next run in case TMDB indexes it
-          return { imdbId, poster: null, backdrop: null, overview: '', rating: null, genres: [] };
-        }
+          console.log('[Find] ' + imdbId + ' not yet indexed on TMDB — trying OMDb for poster');
+// OMDb indexes new titles faster than TMDB — good chance it has the poster
+let omdbPoster = null;
+let omdbOverview = '';
+if (OMDB_KEY) {
+  try {
+    const omdb = await fetchJson('https://www.omdbapi.com/?apikey=' + OMDB_KEY + '&i=' + imdbId);
+    if (omdb && omdb.Response === 'True') {
+      omdbPoster   = omdb.Poster && omdb.Poster !== 'N/A' ? omdb.Poster : null;
+      omdbOverview = omdb.Plot   && omdb.Plot   !== 'N/A' ? omdb.Plot   : '';
+      if (omdbPoster) console.log('[OMDb] Got poster for: ' + imdbId);
+    }
+  } catch(e) { console.warn('[OMDb] ' + imdbId + ': ' + e.message); }
+}
+setRetry(seriesCache, cacheKey); // retry TMDB next run
+return { imdbId, poster: omdbPoster, backdrop: null, overview: omdbOverview, rating: null, genres: [] };
       } catch(e) {
         console.warn('[Find] ' + imdbId + ': ' + e.message);
         setRetry(seriesCache, cacheKey);
