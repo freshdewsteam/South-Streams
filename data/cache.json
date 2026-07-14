@@ -363,7 +363,8 @@
       "background": "https://image.tmdb.org/t/p/w1280/7ocFvtRnNXwrNJLJRWa0kKVPRW0.jpg",
       "genres": [
         "Action",
-        "Drama"
+        "Drama",
+        "Comedy"
       ]
     },
     {
@@ -1670,5 +1671,5 @@
       ]
     }
   ],
-  "builtAt": "2026-07-14T14:23:08.625Z"
+  "builtAt": "2026-07-14T20:06:53.509Z"
 }
