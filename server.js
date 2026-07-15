@@ -8,6 +8,17 @@ if (url.startsWith('/meta/')) {
 
   console.log('[Meta] Request: ' + type + ' / ' + id);
 
+  console.log('[Meta] Request: ' + type + ' / ' + id);
+
+  // Series meta is intentionally NOT served by us
+  // Our manifest declares meta only for movies
+  // Returning null here lets Cinemeta/AIO handle series episodes
+  if (type === 'series') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ meta: null }));
+    return;
+  }
+
   // Read the cache data
   const cache = readJsonFile(path.join(__dirname, 'data', 'cache.json'));
   let found   = null;
