@@ -1517,6 +1517,19 @@
   ],
   "tamil-series": [
     {
+      "id": "tt38856253",
+      "type": "series",
+      "name": "Exam",
+      "releaseInfo": "2026-07-15",
+      "description": "A determined young woman with a mysterious past enters the dangerous world of the Regional Public Service Exam (RPSE) scam to expose a powerful paper-leak network. But as she digs deeper, she uncovers a corruption chain embedded deep within the education system-and must bring it down before it destroys the dreams of an entire generation.\n\n📺 Streaming on: Prime Video\n📅 Release: 2026-07-15\n⭐ Rating: 7.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/9jt62J8sfq8pFFovZhEQmxjUqhb.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/w8jWzyz0NiaHPhdrw9ALm1wB3e1.jpg",
+      "genres": [
+        "Crime",
+        "Drama"
+      ]
+    },
+    {
       "id": "tt31924038",
       "type": "series",
       "name": "Lingam",
@@ -1671,5 +1684,5 @@
       ]
     }
   ],
-  "builtAt": "2026-07-14T21:44:33.343Z"
+  "builtAt": "2026-07-15T04:27:34.633Z"
 }
