@@ -837,6 +837,19 @@
         "Comedy",
         "Drama"
       ]
+    },
+    {
+      "id": "tt28675376",
+      "type": "series",
+      "name": "Masterpeace",
+      "releaseInfo": "2023-10-25",
+      "description": "When marital discord becomes everyone's business and parents get way too involved in the \"peace talks,\" family drama can become family trauma.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2023-10-25\n⭐ Rating: 5.7/10",
+      "poster": "https://image.tmdb.org/t/p/w500/hUOiNi5uFmDNOYLn2hCrgtSwNPA.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/whRb5cpSALBhj23krlcSRhg8VAo.jpg",
+      "genres": [
+        "Drama",
+        "Comedy"
+      ]
     }
   ],
   "tamil-movies": [
@@ -893,6 +906,34 @@
       "genres": [
         "Action",
         "Thriller"
+      ]
+    },
+    {
+      "id": "tt40601101",
+      "type": "movie",
+      "name": "Sattendru Maarudhu Vaanilai",
+      "releaseInfo": "2026-05-15",
+      "description": "When a carefree orphan and a runaway minister's daughter marry on impulse, their love is tested by financial struggles and powerful enemies — from corrupt politicians to jealous rivals. Together, they uncover hidden truths and prove that love can survive even the darkest threats.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads,  AP International South Cinema Amazon Channel\n📅 Release: 2026-05-15",
+      "poster": "https://image.tmdb.org/t/p/w500/tTgiNXkrg9LS6Qjvrnksev7ztIo.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/wWxrb1dsjSXj0LfwWCHdzljtK7J.jpg",
+      "genres": [
+        "Thriller",
+        "Drama",
+        "Comedy",
+        "Romance"
+      ]
+    },
+    {
+      "id": "tt33988385",
+      "type": "movie",
+      "name": "Karuppu",
+      "releaseInfo": "2026-05-14",
+      "description": "In a world where justice falters, guardian deity Vettai Karuppu takes the guise of a lawyer to battle a corrupt legal system preying on the powerless.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-05-14\n⭐ Rating: 6.6/10",
+      "poster": "https://image.tmdb.org/t/p/w500/4KZXlZ5tTT6ghbW77gS4hSLkCd7.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1eAuwNBy34kkM3xkl202z4f1NiI.jpg",
+      "genres": [
+        "Action",
+        "Fantasy"
       ]
     },
     {
@@ -1472,33 +1513,6 @@
         "Comedy",
         "Drama"
       ]
-    },
-    {
-      "id": "tt15380786",
-      "type": "movie",
-      "name": "Theeyavar Kulaigal Nadunga",
-      "releaseInfo": "2025-11-21",
-      "description": "An Investigative Police officer teams up with an autism school teacher to solve the mystery of a cruel murder happened in a school for autistic children.\n\n📺 Streaming on: Sun Nxt\n📅 Release: 2025-11-21",
-      "poster": "https://image.tmdb.org/t/p/w500/aAQ0I4EZUmg7dEyTwxYZi1dYB8Y.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/uoxkOkRzPP9jcnl59CObzYLn2Mq.jpg",
-      "genres": [
-        "Crime",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt38164364",
-      "type": "movie",
-      "name": "Dawood",
-      "releaseInfo": "2025-11-14",
-      "description": "An unsuspecting cab driver takes up a petty job, only to fall into the deadly trap of a ruthless gangster. Now, he must fight for surviva or accept that he was born to be hunted\n\n📺 Streaming on: Lionsgate Play, Lionsgate Play Apple TV Channel, Lionsgate Play Amazon Channel\n📅 Release: 2025-11-14",
-      "poster": "https://image.tmdb.org/t/p/w500/nq38CcUlghZjweCK14SLmF7hf4t.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/6ST5h02E3J8Vhz8cv1Y9tRrWMWV.jpg",
-      "genres": [
-        "Crime",
-        "Comedy",
-        "Thriller"
-      ]
     }
   ],
   "tamil-series": [
@@ -1670,5 +1684,5 @@
       ]
     }
   ],
-  "builtAt": "2026-07-16T09:13:30.001Z"
+  "builtAt": "2026-07-16T14:32:00.060Z"
 }
