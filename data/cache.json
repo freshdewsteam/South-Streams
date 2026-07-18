@@ -31,7 +31,7 @@
       "type": "movie",
       "name": "Dose",
       "releaseInfo": "2026-05-22",
-      "description": "A doctor uncovers a suspicious death at his hospital, unraveling secrets and lies. Joined by a haunted investigator, their search for truth becomes a deadly fight for survival.\n\n📺 Streaming on: Amazon Prime Video, ManoramaMax, Lionsgate Play, Lionsgate Play Apple TV Channel, Lionsgate Play Amazon Channel, Amazon Prime Video with Ads,  AP International South Cinema Amazon Channel\n📅 Release: 2026-05-22",
+      "description": "A doctor uncovers a suspicious death at his hospital, unraveling secrets and lies. Joined by a haunted investigator, their search for truth becomes a deadly fight for survival.\n\n📺 Streaming on: Amazon Prime Video, ManoramaMax, Lionsgate Play, Lionsgate Play Apple TV Channel, Lionsgate Play Amazon Channel, ManoramaMAX Amazon Channel, Amazon Prime Video with Ads,  AP International South Cinema Amazon Channel\n📅 Release: 2026-05-22",
       "poster": "https://image.tmdb.org/t/p/w500/wuEQbDF5jHaOOAMGiXWmDRz9imG.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/swelLWmdNwZVU403GG5L2pDtaaS.jpg",
       "genres": [
@@ -1650,8 +1650,8 @@
       "poster": "https://image.tmdb.org/t/p/w500/cL7iOwqapRRb7eKKlXI4FDaP6rh.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/wQ1cpJW9uxfKmO8msAF5z4edK63.jpg",
       "genres": [
-        "Comedy",
-        "Drama"
+        "Drama",
+        "Comedy"
       ]
     },
     {
@@ -1725,5 +1725,5 @@
       "poster": "https://m.media-amazon.com/images/M/MV5BOTJjNDVhN2YtN2YxZS00NzVmLWI1MTctOTk0Yzc2NDE3ZTQxXkEyXkFqcGc@._V1_SX300.jpg"
     }
   ],
-  "builtAt": "2026-07-18T08:48:36.991Z"
+  "builtAt": "2026-07-18T13:56:15.237Z"
 }
