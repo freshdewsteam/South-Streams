@@ -1,5 +1,14 @@
+
 {
   "malayalam-movies": [
+    {
+  "id": "ttXXXXXXX",
+  "type": "movie",
+  "name": "Pallichattambi",
+  "releaseInfo": "2026-07-24",
+  "description": "📺 Streaming on: Sony LIV\n📅 Release: 2026-07-24",
+  "poster": "https://image.tmdb.org/t/p/w500/xxx.jpg"
+    }
     {
       "id": "tt29959401",
       "type": "movie",
