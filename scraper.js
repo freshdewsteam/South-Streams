@@ -1,14 +1,14 @@
 /**
  * scraper.js — South Streams
  *
- * Movies  → TMDB Discover API (automatic)
- * Series  → Google Sheet CSV (manually maintained)
+ * Movies  → TMDB Auto-Discover (primary) + Google Sheet (fallback/patching)
+ * Series  → Google Sheet CSV (manually maintained, primary)
+ * Enrichment → TMDB / OMDb API (posters, descriptions, IMDb IDs)
  *
  * Key principles:
+ * - TMDB finds movies automatically. The Sheet manually adds missed movies & patches OTT dates.
  * - If a series has an IMDb ID → use it directly, never title-search-fallback
- *   (title search risks matching a completely wrong show)
  * - If no poster found → omit it entirely so Cinemeta/AIO Metadata can fill it
- * - Movie cache is language-prefixed to prevent Malayalam/Tamil mixing
  */
 
 const https = require('https');
@@ -34,7 +34,7 @@ const RETRY_TTL       =  3 * 24 * 60 * 60 * 1000; //  3 days
 // ── CACHE ─────────────────────────────────────────────────────────────────────
 let movieCache  = {};
 let seriesCache = {};
-let seen        = {};
+let seen        = {}; // Used for the 730-day first run logic
 let cacheDirty  = false;
 
 function loadCache() {
@@ -42,7 +42,7 @@ function loadCache() {
     if (fs.existsSync(MOVIE_CACHE_FILE)) {
       const raw   = JSON.parse(fs.readFileSync(MOVIE_CACHE_FILE, 'utf8'));
       movieCache  = raw._data || {};
-      seen        = raw._seen || {};
+      seen        = raw._seen || {}; 
       console.log('[Cache] Movies: ' + Object.keys(movieCache).length + ' entries');
     }
     if (fs.existsSync(SERIES_CACHE_FILE)) {
@@ -70,20 +70,16 @@ function saveCache() {
   }
 }
 
-// Read a cache entry — handles both old string format and new timed object format
 function readCacheEntry(entry) {
   if (entry === undefined) return undefined;
-  // Legacy string format
   if (entry === 'skip')  return 'skip';
   if (entry === 'retry') return 'retry';
-  // New timed object format
   if (entry && typeof entry === 'object' && entry._status) {
     const age = Date.now() - (entry._at || 0);
     const ttl = entry._status === 'skip' ? SKIP_TTL : RETRY_TTL;
-    if (age < ttl) return entry._status; // still within TTL
-    return undefined; // expired — treat as not cached, retry
+    if (age < ttl) return entry._status;
+    return undefined;
   }
-  // Valid meta object
   if (entry && typeof entry === 'object' && entry.id) return entry;
   return undefined;
 }
@@ -218,13 +214,10 @@ function getTitleVariations(title) {
 }
 
 // ── POSTER FETCHER ────────────────────────────────────────────────────────────
-// Only reliable sources: OMDb by ID, OMDb by title
-// Wikipedia removed — returns wrong images (people photos, logos etc.)
 async function fetchPosterFallback(title, imdbId, type) {
   if (!OMDB_KEY) return null;
   const mediaType = type === 'series' ? 'series' : 'movie';
 
-  // Source 1: OMDb by IMDb ID (most reliable)
   if (imdbId) {
     try {
       const data = await fetchJson('https://www.omdbapi.com/?apikey=' + OMDB_KEY + '&i=' + imdbId);
@@ -235,7 +228,6 @@ async function fetchPosterFallback(title, imdbId, type) {
     } catch(e) {}
   }
 
-  // Source 2: OMDb by title (3 variations max)
   const variations = getTitleVariations(title).slice(0, 3);
   for (const v of variations) {
     try {
@@ -249,8 +241,7 @@ async function fetchPosterFallback(title, imdbId, type) {
       }
     } catch(e) {}
   }
-
-  return null; // No poster found — return null, NOT a placeholder
+  return null;
 }
 
 // ── BUILD META ────────────────────────────────────────────────────────────────
@@ -262,11 +253,6 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
   if (releaseDate) desc += '\n📅 Release: ' + releaseDate;
   if (rating)      desc += '\n⭐ Rating: ' + Number(rating).toFixed(1) + '/10';
 
-  // ── KEY FIX: No placeholder posters ─────────────────────────────────────
-  // If we don't have a poster, omit it entirely.
-  // Stremio's metadata addons (Cinemeta, AIO Metadata) will provide the
-  // correct poster when the user clicks the title.
-  // A placeholder grey box is worse than no poster at all.
   let poster   = posterUrl || (posterPath   ? IMG + 'w500'  + posterPath   : undefined);
   let backdrop = backdropUrl || (backdropPath ? IMG + 'w1280' + backdropPath : undefined);
 
@@ -284,11 +270,67 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
   return meta;
 }
 
-// ── MOVIES ────────────────────────────────────────────────────────────────────
+// ── GOOGLE SHEET FETCHER (UNIFIED) ────────────────────────────────────────────
+function parseCSVRow(line) {
+  const result = []; let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { if (inQ && line[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
+    else if (ch === ',' && !inQ) { result.push(cur.trim()); cur = ''; }
+    else cur += ch;
+  }
+  result.push(cur.trim());
+  return result;
+}
+
+async function fetchSheetContent(filterLang, filterType) {
+  if (!SHEET_URL) { console.warn('[Sheet] GOOGLE_SHEET_URL not set'); return []; }
+  try {
+    let url = SHEET_URL;
+    if (url.includes('docs.google.com/spreadsheets')) {
+      const id = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+      if (id) url = 'https://docs.google.com/spreadsheets/d/' + id[1] + '/export?format=csv&gid=0';
+    }
+    console.log('[Sheet] Fetching ' + filterType + '...');
+    const csv   = await fetchUrl(url);
+    const lines = csv.trim().split('\n');
+    const items = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      if (!lines[i].trim()) continue;
+      const row      = parseCSVRow(lines[i]);
+      const type     = (row[0] || '').toLowerCase().trim();   // Column A
+      const title    = (row[1] || '').trim();                 // Column B
+      const lang     = (row[2] || '').toLowerCase().trim();   // Column C
+      const platform = (row[3] || '').trim();                 // Column D
+      const dateRaw  = (row[4] || '').trim();                 // Column E
+      const imdbId   = (row[5] || '').trim();                 // Column F
+
+      if (!title) continue;
+      if (!lang.includes(filterLang.toLowerCase())) continue;
+      if (type !== filterType) continue;
+      if (!isReleased(dateRaw)) continue;
+
+      const d = parseAnyDate(dateRaw);
+      const dateISO = d ? d.toISOString().slice(0, 10) : dateRaw;
+
+      items.push({ type, title, platform, date: dateISO, imdbId });
+    }
+
+    console.log('[Sheet] ' + items.length + ' released ' + filterLang + ' ' + filterType);
+    return items;
+  } catch (e) {
+    console.warn('[Sheet] Failed: ' + e.message);
+    await sendAlert('Google Sheet fetch failed: ' + e.message);
+    return [];
+  }
+}
+
+// ── MOVIES (TMDB AUTO-DISCOVER FIRST, SHEET AS FALLBACK/PATCH) ────────────────
+
 async function discoverMovies(lang, lookbackDays) {
   const dateFrom = daysAgo(lookbackDays);
   const results  = [];
-  const langPfx  = lang + '_';
 
   for (let page = 1; page <= 5; page++) {
     try {
@@ -304,19 +346,12 @@ async function discoverMovies(lang, lookbackDays) {
 
       const newItems = data.results
         .filter(r => {
-          // Accept correct language
           if (r.original_language === lang) return true;
-          // Accept English-titled Indian content (Malayalam/Tamil docs often tagged 'en')
           if (r.original_language === 'en' && Array.isArray(r.origin_country) && r.origin_country.includes('IN')) return true;
           return false;
-        })
-        .filter(r => {
-          const cached = readCacheEntry(movieCache[langPfx + r.id]);
-          return cached === undefined; // only process uncached items
         });
 
       results.push(...newItems);
-      console.log('[Discover] ' + lang + ' page ' + page + ': ' + data.results.length + ' found, ' + newItems.length + ' new');
       if (page >= (data.total_pages || 1) || newItems.length === 0) break;
     } catch (e) { console.warn('[Discover] Page ' + page + ': ' + e.message); break; }
   }
@@ -329,8 +364,8 @@ async function processMovie(item, lang) {
   const cached   = readCacheEntry(movieCache[cacheKey]);
 
   if (cached === 'skip')  return null;
-  if (cached === 'retry') { /* fall through to retry */ }
-  else if (cached)        return cached; // valid meta
+  if (cached === 'retry') { /* fall through */ }
+  else if (cached)        return cached;
 
   try {
     const detail = await tmdb('/movie/' + item.id + '?language=en-US&append_to_response=watch/providers');
@@ -369,118 +404,229 @@ async function processMovie(item, lang) {
 
     movieCache[cacheKey] = meta;
     cacheDirty = true;
-    console.log('[Movie OK] ' + meta.name + ' (' + lang + ') -> ' + detail.imdb_id + ' on ' + platform);
+    console.log('[TMDB OK] ' + meta.name + ' -> ' + detail.imdb_id + ' on ' + platform);
     return meta;
   } catch (e) {
     setRetry(movieCache, cacheKey);
-    console.warn('[Movie] Failed: ' + e.message);
+    console.warn('[TMDB] Failed: ' + e.message);
+    return null;
+  }
+}
+
+async function enrichMovie(imdbId, title, lang) {
+  const cacheKey = imdbId && imdbId.startsWith('tt') ? imdbId : 'title_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
+  const cached   = readCacheEntry(movieCache[cacheKey]);
+
+  if (cached === 'skip')  return null;
+  if (cached === 'retry') { /* fall through */ }
+  else if (cached)        return cached;
+
+  try {
+    let movieId = null;
+    let resolvedImdbId = imdbId || null;
+
+    if (imdbId && imdbId.startsWith('tt')) {
+      try {
+        const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
+        const movie = (data.movie_results || [])[0];
+        if (movie) {
+          movieId = movie.id;
+          console.log('[Find] ' + imdbId + ' -> TMDB Movie ' + movieId);
+        } else {
+          console.log('[Find] ' + imdbId + ' not yet indexed on TMDB — trying OMDb for poster');
+          let omdbPoster = null;
+          let omdbOverview = '';
+          if (OMDB_KEY) {
+            try {
+              const omdb = await fetchJson('https://www.omdbapi.com/?apikey=' + OMDB_KEY + '&i=' + imdbId);
+              if (omdb && omdb.Response === 'True') {
+                omdbPoster   = omdb.Poster && omdb.Poster !== 'N/A' ? omdb.Poster : null;
+                omdbOverview = omdb.Plot   && omdb.Plot   !== 'N/A' ? omdb.Plot   : '';
+                if (omdbPoster) console.log('[OMDb] Got poster for: ' + imdbId);
+              }
+            } catch(e) { console.warn('[OMDb] ' + imdbId + ': ' + e.message); }
+          }
+          setRetry(movieCache, cacheKey);
+          return { imdbId, poster: omdbPoster, backdrop: null, overview: omdbOverview, rating: null, genres: [] };
+        }
+      } catch(e) {
+        console.warn('[Find] ' + imdbId + ': ' + e.message);
+        setRetry(movieCache, cacheKey);
+        return { imdbId, poster: null, backdrop: null, overview: '', rating: null, genres: [] };
+      }
+    }
+
+    if (!movieId) {
+      console.log('[Search] Looking up movie: ' + title);
+      let best = null, bestScore = -1;
+
+      for (const v of getTitleVariations(title)) {
+        try {
+          const data = await tmdb('/search/movie?query=' + encodeURIComponent(v) + '&language=en-US&page=1');
+          for (const r of (data.results || [])) {
+            let sc = 0;
+            const rt = (r.title || '').toLowerCase(), vl = v.toLowerCase();
+            if (rt === vl)              sc += 100;
+            else if (rt.includes(vl))  sc += 40;
+            else if (vl.includes(rt))  sc += 40;
+            if (r.original_language === lang)                                   sc += 50;
+            if (r.origin_country && r.origin_country.includes('IN'))            sc += 30;
+            if (r.original_language !== lang && r.original_language !== 'en')   sc -= 50;
+            if (sc > bestScore && sc >= 70) { bestScore = sc; best = r; }
+          }
+          if (best && bestScore >= 100) break;
+        } catch(e) {}
+      }
+
+      if (best) {
+        movieId = best.id;
+        console.log('[Search] Matched: ' + best.title + ' (score: ' + bestScore + ')');
+      } else {
+        console.log('[Search] No confident match for movie: ' + title);
+        setSkip(movieCache, cacheKey);
+        return null;
+      }
+    }
+
+    const detail = await tmdb('/movie/' + movieId + '?language=en-US');
+
+    if (!resolvedImdbId) {
+      try {
+        const ext  = await tmdb('/movie/' + movieId + '/external_ids');
+        resolvedImdbId = ext.imdb_id || null;
+      } catch(e) {}
+    }
+
+    let posterUrl  = detail.poster_path   ? IMG + 'w500'  + detail.poster_path   : null;
+    let backdropUrl = detail.backdrop_path ? IMG + 'w1280' + detail.backdrop_path : null;
+
+    if (!posterUrl) {
+      console.log('[Poster] No TMDB poster for: ' + title + ' — trying OMDb');
+      posterUrl = await fetchPosterFallback(title, resolvedImdbId, 'movie');
+    }
+
+    const result = {
+      imdbId:   resolvedImdbId,
+      poster:   posterUrl   || null,
+      backdrop: backdropUrl || null,
+      overview: detail.overview || '',
+      rating:   detail.vote_average || null,
+      genres:   (detail.genres || []).map(g => g.name),
+    };
+
+    movieCache[cacheKey] = result;
+    cacheDirty = true;
+    console.log('[Movie OK] ' + title + ' -> ' + (resolvedImdbId || 'no IMDb') + (posterUrl ? ' (has poster)' : ' (no poster)'));
+    return result;
+  } catch (e) {
+    console.warn('[Enrich Movie] ' + (imdbId || title) + ': ' + e.message);
+    setRetry(movieCache, cacheKey);
     return null;
   }
 }
 
 async function scrapeMovies(lang) {
+  const langLabel = lang === 'ml' ? 'Malayalam' : 'Tamil';
+  const metas = [];
+  const processedImdbIds = new Set();
+
+  // --- STEP 1: TMDB AUTO-DISCOVER ---
   const key      = lang + '_movie';
   const isFirst  = !seen[key];
   const lookback = isFirst ? MOVIE_FIRST_RUN : MOVIE_LOOKBACK;
-  console.log('\n[Movies] ' + lang + ' | lookback: ' + lookback + 'd' + (isFirst ? ' (first run)' : ''));
+  console.log('\n[Movies] ' + lang + ' | lookback: ' + lookback + 'd' + (isFirst ? ' (FIRST RUN)' : ''));
 
-  const newItems = await discoverMovies(lang, lookback);
-  console.log('[Movies] ' + newItems.length + ' new to process');
-
-  for (let i = 0; i < newItems.length; i++) {
-    await processMovie(newItems[i], lang);
+  const tmdbItems = await discoverMovies(lang, lookback);
+  
+  for (let i = 0; i < tmdbItems.length; i++) {
+    const meta = await processMovie(tmdbItems[i], lang);
+    if (meta && meta.id) {
+      metas.push(meta);
+      processedImdbIds.add(meta.id);
+    }
     if ((i+1) % 10 === 0) await new Promise(r => setTimeout(r, 300));
   }
   seen[key] = true;
+  console.log('[Movies] ' + metas.length + ' found via TMDB');
 
-  const langPfx = lang + '_';
-  const result  = Object.entries(movieCache)
-    .filter(([k, v]) => {
-      if (!k.startsWith(langPfx)) return false;
-      const c = readCacheEntry(v);
-      return c && typeof c === 'object' && c.id && c.type === 'movie';
-    })
-    .map(([, v]) => {
-      // Strip internal cache fields before returning
-      const { _status, _at, _savedAt, ...clean } = (typeof v === 'object' ? v : {});
-      return clean;
-    })
-    .filter(m => m.id)
-    .sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''))
-    .slice(0, 50);
+  // --- STEP 2: GOOGLE SHEET (Patching OTT dates & filling gaps) ---
+  console.log('\n[Movies] Checking ' + langLabel + ' Sheet for OTT date patches and missing movies...');
+  const sheetItems = await fetchSheetContent(langLabel, 'movie');
+  
+  for (const item of sheetItems.slice(0, 50)) {
+    let checkId = item.imdbId || null;
 
-  console.log('[Movies] ' + lang + ': ' + result.length + ' in catalogue');
-  return result;
-}
-
-// ── SERIES ────────────────────────────────────────────────────────────────────
-function parseCSVRow(line) {
-  const result = []; let cur = '', inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') { if (inQ && line[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
-    else if (ch === ',' && !inQ) { result.push(cur.trim()); cur = ''; }
-    else cur += ch;
-  }
-  result.push(cur.trim());
-  return result;
-}
-
-async function fetchSheetSeries(filterLang) {
-  if (!SHEET_URL) { console.warn('[Sheet] GOOGLE_SHEET_URL not set'); return []; }
-  try {
-    let url = SHEET_URL;
-    if (url.includes('docs.google.com/spreadsheets')) {
-      const id = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
-      if (id) url = 'https://docs.google.com/spreadsheets/d/' + id[1] + '/export?format=csv&gid=0';
-    }
-    console.log('[Sheet] Fetching...');
-    const csv   = await fetchUrl(url);
-    const lines = csv.trim().split('\n');
-    const items = [];
-
-    for (let i = 1; i < lines.length; i++) {
-      if (!lines[i].trim()) continue;
-      const row      = parseCSVRow(lines[i]);
-      const title    = (row[0] || '').trim();
-      const lang     = (row[1] || '').toLowerCase();
-      const platform = (row[2] || '').trim();
-      const dateRaw  = (row[3] || '').trim();
-      const imdbId   = (row[4] || '').trim();
-
-      if (!title) continue;
-      if (!lang.includes(filterLang.toLowerCase())) continue;
-      if (!isReleased(dateRaw)) continue;
-
-      // Normalise date to YYYY-MM-DD
-      const d = parseAnyDate(dateRaw);
-      const dateISO = d ? d.toISOString().slice(0, 10) : dateRaw;
-
-      items.push({ title, platform, date: dateISO, imdbId });
+    if (!checkId) {
+      console.log('[Sheet] No IMDb ID for "' + item.title + '" — searching...');
+      const searchData = await tmdb('/search/movie?query=' + encodeURIComponent(item.title) + '&language=en-US&page=1');
+      const match = searchData.results.find(r => r.original_language === lang || (r.origin_country && r.origin_country.includes('IN')));
+      if (match) {
+        try {
+          const ext = await tmdb('/movie/' + match.id + '/external_ids');
+          checkId = ext.imdb_id || null;
+        } catch(e) {}
+      }
     }
 
-    console.log('[Sheet] ' + items.length + ' released ' + filterLang + ' series');
-    return items;
-  } catch (e) {
-    console.warn('[Sheet] Failed: ' + e.message);
-    await sendAlert('Google Sheet fetch failed: ' + e.message);
-    return [];
+    // SMART PATCH: TMDB found it, BUT the Sheet has a more accurate OTT date!
+    if (checkId && processedImdbIds.has(checkId)) {
+      const existingIndex = metas.findIndex(m => m.id === checkId);
+      if (existingIndex !== -1) {
+        const existingMeta = metas[existingIndex];
+        
+        // Overwrite the old theatre date with the new OTT date from the Sheet
+        existingMeta.releaseInfo = item.date; 
+        
+        // Rebuild the description to feature the OTT platform and accurate date
+        let desc = existingMeta.overview || '';
+        if (desc) desc += '\n\n';
+        if (item.platform) desc += '📺 Streaming on: ' + item.platform;
+        desc += '\n📅 OTT Release: ' + item.date;
+        if (existingMeta.rating) desc += '\n⭐ Rating: ' + Number(existingMeta.rating).toFixed(1) + '/10';
+        existingMeta.description = desc.trim();
+        
+        console.log('[Sheet Patch] ✅ Updated OTT date for ' + item.title + ' to ' + item.date);
+      }
+      continue; 
+    }
+
+    // TMDB missed it entirely, process it from scratch using enrichMovie
+    const tmdbData    = await enrichMovie(item.imdbId, item.title, lang);
+    const finalImdbId = item.imdbId || (tmdbData && tmdbData.imdbId) || checkId || null;
+
+    if (!finalImdbId) {
+      console.log('[Sheet] ⚠️  Could not resolve IMDb ID for: ' + item.title);
+      continue;
+    }
+
+    const meta = buildMeta({
+      imdbId:      finalImdbId,
+      type:        'movie',
+      title:       item.title,
+      platform:    item.platform,
+      releaseDate: item.date, // Sheet date takes priority
+      overview:    tmdbData && tmdbData.overview || '',
+      rating:      tmdbData && tmdbData.rating   || null,
+      posterUrl:   tmdbData && tmdbData.poster   || undefined,
+      backdropUrl: tmdbData && tmdbData.backdrop || undefined,
+      genres:      tmdbData && tmdbData.genres   || [],
+    });
+
+    metas.push(meta);
+    processedImdbIds.add(finalImdbId);
+    console.log('[Sheet OK] ' + item.title + ' -> ' + finalImdbId + ' (TMDB missed it)');
+    await new Promise(r => setTimeout(r, 100));
   }
+
+  // Final Sort (Now correctly sorts by the patched OTT dates!)
+  metas.sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''));
+  const finalResult = metas.slice(0, 100);
+
+  console.log('[Movies] ' + lang + ': ' + finalResult.length + ' total in catalogue');
+  return finalResult;
 }
 
-// ── SERIES ENRICHMENT ─────────────────────────────────────────────────────────
-// DESIGN DECISION — why we never do title-search when we have an IMDb ID:
-//
-// "Land of Football" has IMDb ID tt37541677. TMDB /find returns nothing
-// because TMDB hasn't indexed this new title yet. If we then search by
-// title "Land of Football", TMDB matches a completely unrelated show and
-// we get Mohiniyattam/SpongeBob metadata — worse than having no metadata.
-//
-// The correct approach:
-// - Have IMDb ID + TMDB finds it → use TMDB metadata ✅
-// - Have IMDb ID + TMDB doesn't find it → return just the IMDb ID,
-//   let Cinemeta/AIO Metadata provide the real metadata ✅
-// - No IMDb ID → search by title strictly (score >= 70 to prevent wrong matches) ✅
+// ── SERIES (SHEET ONLY) ──────────────────────────────────────────────────────
 async function enrichSeries(imdbId, title, lang) {
   const cacheKey = imdbId && imdbId.startsWith('tt') ? imdbId : 'title_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
   const cached   = readCacheEntry(seriesCache[cacheKey]);
@@ -492,23 +638,16 @@ async function enrichSeries(imdbId, title, lang) {
   try {
     let tvId = null;
     let resolvedImdbId = imdbId || null;
-    let usedTitleSearch = false;
 
-    // Step 1: If we have an IMDb ID, try TMDB /find (fast, 1 request)
     if (imdbId && imdbId.startsWith('tt')) {
       try {
         const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
         const tv   = (data.tv_results || [])[0];
         if (tv) {
           tvId = tv.id;
-          console.log('[Find] ' + imdbId + ' -> TMDB ' + tvId);
+          console.log('[Find] ' + imdbId + ' -> TMDB TV ' + tvId);
         } else {
-          // ── CRITICAL: TMDB doesn't have this IMDb ID yet ─────────────────
-          // DO NOT fall through to title search.
-          // Return a minimal result — the IMDb ID is enough for Stremio
-          // to show the title. Cinemeta/AIO will provide poster + metadata.
           console.log('[Find] ' + imdbId + ' not yet indexed on TMDB — trying OMDb for poster');
-          // OMDb indexes new titles faster than TMDB — good chance it has the poster
           let omdbPoster = null;
           let omdbOverview = '';
           if (OMDB_KEY) {
@@ -521,7 +660,7 @@ async function enrichSeries(imdbId, title, lang) {
               }
             } catch(e) { console.warn('[OMDb] ' + imdbId + ': ' + e.message); }
           }
-          setRetry(seriesCache, cacheKey); // retry TMDB next run
+          setRetry(seriesCache, cacheKey);
           return { imdbId, poster: omdbPoster, backdrop: null, overview: omdbOverview, rating: null, genres: [] };
         }
       } catch(e) {
@@ -531,10 +670,8 @@ async function enrichSeries(imdbId, title, lang) {
       }
     }
 
-    // Step 2: No IMDb ID — title search (strict threshold)
     if (!tvId) {
-      usedTitleSearch = true;
-      console.log('[Search] Looking up: ' + title);
+      console.log('[Search] Looking up series: ' + title);
       let best = null, bestScore = -1;
 
       for (const v of getTitleVariations(title)) {
@@ -549,7 +686,6 @@ async function enrichSeries(imdbId, title, lang) {
             if (r.original_language === lang)                                   sc += 50;
             if (r.origin_country && r.origin_country.includes('IN'))            sc += 30;
             if (r.original_language !== lang && r.original_language !== 'en')   sc -= 50;
-            // High threshold (70) to prevent wrong matches
             if (sc > bestScore && sc >= 70) { bestScore = sc; best = r; }
           }
           if (best && bestScore >= 100) break;
@@ -560,16 +696,14 @@ async function enrichSeries(imdbId, title, lang) {
         tvId = best.id;
         console.log('[Search] Matched: ' + best.name + ' (score: ' + bestScore + ')');
       } else {
-        console.log('[Search] No confident match for: ' + title);
+        console.log('[Search] No confident match for series: ' + title);
         setSkip(seriesCache, cacheKey);
         return null;
       }
     }
 
-    // Step 3: Fetch full TV details
     const detail = await tmdb('/tv/' + tvId + '?language=en-US');
 
-    // Step 4: Get IMDb ID if we don't have it
     if (!resolvedImdbId) {
       try {
         const ext  = await tmdb('/tv/' + tvId + '/external_ids');
@@ -577,7 +711,6 @@ async function enrichSeries(imdbId, title, lang) {
       } catch(e) {}
     }
 
-    // Step 5: Get poster — TMDB first, then OMDb fallback
     let posterUrl  = detail.poster_path   ? IMG + 'w500'  + detail.poster_path   : null;
     let backdropUrl = detail.backdrop_path ? IMG + 'w1280' + detail.backdrop_path : null;
 
@@ -597,11 +730,10 @@ async function enrichSeries(imdbId, title, lang) {
 
     seriesCache[cacheKey] = result;
     cacheDirty = true;
-    console.log('[Series OK] ' + title + ' -> ' + (resolvedImdbId || 'no IMDb') +
-      (posterUrl ? ' (has poster)' : ' (no poster)'));
+    console.log('[Series OK] ' + title + ' -> ' + (resolvedImdbId || 'no IMDb') + (posterUrl ? ' (has poster)' : ' (no poster)'));
     return result;
   } catch (e) {
-    console.warn('[Enrich] ' + (imdbId || title) + ': ' + e.message);
+    console.warn('[Enrich Series] ' + (imdbId || title) + ': ' + e.message);
     setRetry(seriesCache, cacheKey);
     return null;
   }
@@ -609,7 +741,7 @@ async function enrichSeries(imdbId, title, lang) {
 
 async function scrapeSeries(lang) {
   const langLabel = lang === 'ml' ? 'Malayalam' : 'Tamil';
-  const items     = await fetchSheetSeries(langLabel);
+  const items     = await fetchSheetContent(langLabel, 'series');
   const skipped   = [];
 
   items.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
@@ -639,8 +771,7 @@ async function scrapeSeries(lang) {
     });
 
     metas.push(meta);
-    console.log('[Series] ' + item.title + ' -> ' + finalImdbId +
-      (meta.poster ? ' ✅ poster' : ' (no poster yet — metadata addon will fill)'));
+    console.log('[Series] ' + item.title + ' -> ' + finalImdbId + (meta.poster ? ' ✅ poster' : ' (no poster yet)'));
     await new Promise(r => setTimeout(r, 100));
   }
 
