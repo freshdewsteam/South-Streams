@@ -1292,29 +1292,6 @@
         "Crime",
         "Drama"
       ]
-    },
-    {
-      "id": "tt0277780",
-      "type": "movie",
-      "name": "Kattukuthira",
-      "releaseInfo": "1990-05-25",
-      "description": "In an era when caste still plays a major role in society; an upper caste girl seduces a lowly toddy collector Kunjiraman. They get caught in the act and this ends up in the lynching of Kunjiraman by the family of the girl. Kunjiraman's young son Kochuvava witnesses the horrific scene of his father's body lying in a pool of blood. Fast forward to the present time and Kochuvava has grown into a rich and ruthless tycoon who's determined to take slow poisonous revenge on the kin of his father's killers.\n\n📺 Streaming on: JioHotstar\n📅 Release: 1990-05-25\n⭐ Rating: 10.0/10\n\n♻️ Re-release: back on OTT on 2026-09-04",
-      "poster": "https://image.tmdb.org/t/p/w500/7f7cXFzcJaXiDWLAOs6cN9AKIxA.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/l7z2dLo8o1P0nlQgWJLzNcxUZgG.jpg",
-      "genres": [
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt0248946",
-      "type": "movie",
-      "name": "Koodevide?",
-      "releaseInfo": "1983-06-21",
-      "description": "Alice is a teacher at a boarding school in Ooty. A prodigal and unruly son of a Member of Parliament Xavier Puthooran, Ravi Puthooran joins the school in Alice's class. Alice manages to mentor him into a good student.\n\n📺 Streaming on: VI movies and tv, JioHotstar\n📅 Release: 1983-06-21\n⭐ Rating: 7.5/10\n\n♻️ Re-release: back on OTT on 2026-09-04",
-      "poster": "https://image.tmdb.org/t/p/w500/x1yebBb2cMLpm996d5kVQ9r9ef1.jpg",
-      "genres": [
-        "Drama"
-      ]
     }
   ],
   "malayalam-series": [
@@ -3123,5 +3100,5 @@
       "poster": "https://m.media-amazon.com/images/M/MV5BOTJjNDVhN2YtN2YxZS00NzVmLWI1MTctOTk0Yzc2NDE3ZTQxXkEyXkFqcGc@._V1_SX300.jpg"
     }
   ],
-  "builtAt": "2026-09-07T21:44:19.376Z"
+  "builtAt": "2026-09-07T22:27:04.140Z"
 }
