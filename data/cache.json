@@ -14,6 +14,57 @@
       ]
     },
     {
+      "id": "tt38286171",
+      "type": "movie",
+      "name": "Unmadham",
+      "releaseInfo": "2026-09-04",
+      "description": "A police constable reopens a long-forgotten case and experiences an unsettling world.\n\n📺 Streaming on: Sony LIV\n📅 Release: 2026-09-04\n⭐ Rating: 6.9/10",
+      "poster": "https://image.tmdb.org/t/p/w500/6AIMHBUY6PCHVYASWZ0GcTA9Kph.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/o0Ai0yCq1jyLE3K55Nk3bAl4D9h.jpg",
+      "genres": [
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt26445387",
+      "type": "movie",
+      "name": "I, Nobody",
+      "releaseInfo": "2026-08-25",
+      "description": "📺 Streaming on: Jiohotstar\n📅 OTT Release: 2026-08-25",
+      "poster": "https://image.tmdb.org/t/p/w500/qFJl3w9KpVXpfZ3rpmv7p0UYZkP.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/zNvSWIvca6aA0eq63JqzVvagqLI.jpg",
+      "genres": [
+        "Crime",
+        "Thriller",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt36580813",
+      "type": "movie",
+      "name": "Pluto",
+      "releaseInfo": "2026-08-24",
+      "description": "Follows the unexpected arrival of an extraterrestrial visitor in a quiet Kerala village, which turns everyday life completely upside down.\n\n📺 Streaming on: Saina Play\n📅 Release: 2026-08-24\n⭐ Rating: 2.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/pPxsw4KnZbsklyHUCTKSCHKaC8F.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cSiQqEN2IbNxWXNZ2YLd32DSVrK.jpg",
+      "genres": [
+        "Science Fiction",
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tt36670542",
+      "type": "movie",
+      "name": "Lurk",
+      "releaseInfo": "2026-08-24",
+      "description": "Man-animal conflict, exploring who the real predator is, man or animal, with inspiration from real incidents and forest life.\n\n📺 Streaming on: ETV\n📅 Release: 2026-08-24",
+      "poster": "https://image.tmdb.org/t/p/w500/a8YUKtD4zNRGY5OpZVg1M2gLlMW.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/9rF3CfdH7tXyeaiWp5POgfOpctU.jpg",
+      "genres": [
+        "Thriller"
+      ]
+    },
+    {
       "id": "tt37510017",
       "type": "movie",
       "name": "Thudakkam",
@@ -27,16 +78,41 @@
       ]
     },
     {
-      "id": "tt26445387",
+      "id": "tt35254624",
       "type": "movie",
-      "name": "I, Nobody",
-      "releaseInfo": "2026-07-09",
-      "description": "Rajeevan, an ordinary government employee, witnesses something he was never meant to see and is thrust into the centre of a serious crime. Branded a troublemaker and hunted by the system, he must protect his family while fighting to survive against forces far beyond his control.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-07-09\n⭐ Rating: 6.1/10",
-      "poster": "https://image.tmdb.org/t/p/w500/qFJl3w9KpVXpfZ3rpmv7p0UYZkP.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/zNvSWIvca6aA0eq63JqzVvagqLI.jpg",
+      "name": "Balan - The Boy",
+      "releaseInfo": "2026-07-31",
+      "description": "A teenage boy searches for his missing mother following a turbulent childhood and her subsequent disappearance, exploring his search for closure and the truth about his past.\n\n📺 Streaming on: Zee5\n📅 Release: 2026-07-31\n⭐ Rating: 7.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/boKxdR9tgXfkazf6yWgiDdleBy0.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cb4b4K3E2jBGaSjkuIkZHJHmoWG.jpg",
       "genres": [
-        "Crime",
-        "Thriller",
+        "Drama",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt41944664",
+      "type": "movie",
+      "name": "Secret of Kalinga",
+      "releaseInfo": "2026-07-24",
+      "description": "📺 Streaming on: SunNxt\n📅 OTT Release: 2026-07-24",
+      "poster": "https://image.tmdb.org/t/p/w500/fIDU3LSWigWq9ges3Dw5KvGn3Av.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1gCAMqd8SKeQEzbgKRwTwzvrxgX.jpg",
+      "genres": [
+        "Horror",
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tt10515398",
+      "type": "movie",
+      "name": "Pallichattambi",
+      "releaseInfo": "2026-07-24",
+      "description": "📺 Streaming on: Sony LIV\n📅 OTT Release: 2026-07-24",
+      "poster": "https://image.tmdb.org/t/p/w500/pEzXdyJhdWc2msM0oBC9N8pKtMY.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/kAJK8Kp6oPYb3T2gIHfp2SNitJ.jpg",
+      "genres": [
+        "Action",
         "Drama"
       ]
     },
@@ -63,19 +139,6 @@
       "background": "https://image.tmdb.org/t/p/w1280/1KXnH4NcCQTAxV0pZwvIIGCepIx.jpg",
       "genres": [
         "Drama"
-      ]
-    },
-    {
-      "id": "tt41944664",
-      "type": "movie",
-      "name": "Secret of Kalinga",
-      "releaseInfo": "2026-06-18",
-      "description": "A college sits on ancient Kalinga kingdom land. Behind it, a forest well holds a princess's spirit, imprisoned centuries ago. Students accidentally break the seal on New Year's Eve, triggering comedic chaos.\n\n📺 Streaming on: Amazon Prime Video, Sun Nxt, Amazon Prime Video with Ads\n📅 Release: 2026-06-18\n⭐ Rating: 7.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/fIDU3LSWigWq9ges3Dw5KvGn3Av.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/1gCAMqd8SKeQEzbgKRwTwzvrxgX.jpg",
-      "genres": [
-        "Horror",
-        "Comedy"
       ]
     },
     {
@@ -280,19 +343,6 @@
       "genres": [
         "Comedy",
         "Thriller"
-      ]
-    },
-    {
-      "id": "tt10515398",
-      "type": "movie",
-      "name": "Pallichattambi",
-      "releaseInfo": "2026-04-15",
-      "description": "Set in the politically turbulent late 1950s, Krishnan Pillai, a playful ruffian chosen by the Church to lead a defensive force, the Christopher Sena. His mission to resist the Communist government takes a detour when he experiences an ideological awakening and falls in love with a comrade, sparking an epic tale of rebellion against feudal power and oppression.\n\n📺 Streaming on: Sony Liv\n📅 Release: 2026-04-15\n⭐ Rating: 5.2/10",
-      "poster": "https://image.tmdb.org/t/p/w500/pEzXdyJhdWc2msM0oBC9N8pKtMY.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/kAJK8Kp6oPYb3T2gIHfp2SNitJ.jpg",
-      "genres": [
-        "Action",
-        "Drama"
       ]
     },
     {
@@ -1228,6 +1278,46 @@
       "genres": [
         "Mystery",
         "Thriller"
+      ]
+    },
+    {
+      "id": "tt37255718",
+      "type": "movie",
+      "name": "Thug CR 143/24",
+      "releaseInfo": "2025-06-06",
+      "description": "Thug CR 143/24 is a gripping Malayalam investigation thriller that unfolds over two high-stakes days. A murder case spirals into a web of shifting narratives, where every character-investigators, suspects, and shadowy figures-adds a new twist to the truth. With no clear hero, the film blurs the lines between guilt and innocence, leaving one haunting question: Who is the real thug?\n\n📺 Streaming on: ManoramaMax, ManoramaMAX Amazon Channel,  AP International South Cinema Amazon Channel\n📅 Release: 2025-06-06\n⭐ Rating: 2.0/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
+      "poster": "https://image.tmdb.org/t/p/w500/hgoyl0TE6p4kECkugyO0SilaHi9.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/dnAJR453JBz3vGvNnlC3FIyiSMZ.jpg",
+      "genres": [
+        "Crime",
+        "Mystery",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt17632818",
+      "type": "movie",
+      "name": "Kooman",
+      "releaseInfo": "2022-11-04",
+      "description": "The story takes place in a hilly village on the Kerala-Tamil Nadu border. The story is about a strict police officer who relocates there and the subsequent events that turn his and many other's lives upside down associated with that police station. Few normal incidents happen in the village, and some from the past suddenly appear to be abnormal. The secrets slowly start unfolding.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2022-11-04\n⭐ Rating: 6.7/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
+      "poster": "https://image.tmdb.org/t/p/w500/nhKiu5zi5rUjPwzEQCaLKfbDHrL.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/y0EpsN8VU5SH31Q5PMpk93UjyK9.jpg",
+      "genres": [
+        "Drama",
+        "Mystery",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt6253546",
+      "type": "movie",
+      "name": "Role Models",
+      "releaseInfo": "2017-06-25",
+      "description": "Gowtham is a geeky loner with hardly any social connections, though he was a jovial guy while at college. His parents, being worried about his extreme changes, attempt to bring back his old self with the help of Gowtham’s friends from college days.\n\n📺 Streaming on: VI movies and tv, JioHotstar\n📅 Release: 2017-06-25\n⭐ Rating: 4.9/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
+      "poster": "https://image.tmdb.org/t/p/w500/3LJzZhLjuicTwC0eoySn5eCvmkd.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1JZLbC9vE0GGPtkhRnvm3qxaXAV.jpg",
+      "genres": [
+        "Comedy"
       ]
     }
   ],
@@ -2749,6 +2839,46 @@
       ]
     },
     {
+      "id": "tt26887171",
+      "type": "movie",
+      "name": "Petta Rap",
+      "releaseInfo": "2024-09-27",
+      "description": "A movie stuntman begins to lose hope of achieving his dream of becoming an action star.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads, JioHotstar\n📅 Release: 2024-09-27\n\n♻️ Re-release: back on OTT on 2026-09-08",
+      "poster": "https://image.tmdb.org/t/p/w500/pt5Wv7YW6Lv4XbZJ7ZeVrswg2EZ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/6z9puKCNohQ3T535N9MxNcnbzoh.jpg",
+      "genres": [
+        "Action",
+        "Music"
+      ]
+    },
+    {
+      "id": "tt20452494",
+      "type": "movie",
+      "name": "Haraa",
+      "releaseInfo": "2024-06-07",
+      "description": "Ram (a) Ibrahim, who is grieving the loss of his daughter after she dies by suicide. He goes on a mission to uncover secrets and avenge her death.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2024-06-07\n⭐ Rating: 6.0/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
+      "poster": "https://image.tmdb.org/t/p/w500/AwoWCdx0udqe0PCTuvG9RtVIpqr.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/bkMgiwBFnen43BVYoYBMCZKEsuH.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt24724658",
+      "type": "movie",
+      "name": "Maruthi Nagar Police Station",
+      "releaseInfo": "2023-05-19",
+      "description": "A group of four youngsters band together to eliminate a police officer and a notorious gangster who are responsible for the death of their friend. But they are left baffled when someone else does the job for them.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2023-05-19\n⭐ Rating: 4.5/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
+      "poster": "https://image.tmdb.org/t/p/w500/1ctjc6rGXxg0opjqz4ywmkkqyiT.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/kN8MdCL8uAma6SqXhDFRtEEz1Ec.jpg",
+      "genres": [
+        "Crime",
+        "Action",
+        "Thriller"
+      ]
+    },
+    {
       "id": "tt14526318",
       "type": "movie",
       "name": "Sardar",
@@ -2759,6 +2889,20 @@
       "genres": [
         "Thriller",
         "Action"
+      ]
+    },
+    {
+      "id": "tt0353590",
+      "type": "movie",
+      "name": "Julie Ganapathi",
+      "releaseInfo": "2003-02-01",
+      "description": "Tenkasi, the creator of a hit television show, finds himself in the house of Julie, a fan, after an accident. However, she reveals herself to be emotionally unstable and potentially dangerous.\n\n📺 Streaming on: Eros Now Select Apple TV channel\n📅 Release: 2003-02-01\n⭐ Rating: 7.3/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
+      "poster": "https://image.tmdb.org/t/p/w500/gChw8ncSoUmUkbvNAyMlxPsMam7.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/h4kMpAzuwLT2xg3mc8eRpL4tZIv.jpg",
+      "genres": [
+        "Horror",
+        "Thriller",
+        "Music"
       ]
     }
   ],
@@ -2997,5 +3141,5 @@
       "poster": "https://m.media-amazon.com/images/M/MV5BOTJjNDVhN2YtN2YxZS00NzVmLWI1MTctOTk0Yzc2NDE3ZTQxXkEyXkFqcGc@._V1_SX300.jpg"
     }
   ],
-  "builtAt": "2026-09-08T16:47:03.657Z"
+  "builtAt": "2026-09-08T21:21:21.302Z"
 }
