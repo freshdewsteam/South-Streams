@@ -1279,19 +1279,6 @@
         "Mystery",
         "Thriller"
       ]
-    },
-    {
-      "id": "tt6409416",
-      "type": "movie",
-      "name": "Moothon",
-      "releaseInfo": "2019-10-18",
-      "description": "A child from Lakshadweep sets off to Mumbai in pursuit of Akbar, an elder brother who left the island and never returned.\n\n📺 Streaming on: Zee5, aha\n📅 Release: 2019-10-18\n⭐ Rating: 6.2/10\n\n♻️ Re-release: back on OTT on 2026-09-05",
-      "poster": "https://image.tmdb.org/t/p/w500/wyyHGE5uHgUFDUKDHzO6TGq6EJs.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/1m5jJSZZJgqNh2DzefAJ9SMls2o.jpg",
-      "genres": [
-        "Crime",
-        "Drama"
-      ]
     }
   ],
   "malayalam-series": [
@@ -1336,7 +1323,7 @@
       "type": "series",
       "name": "Cousins and Kalyanams",
       "releaseInfo": "2026-05-29",
-      "description": "📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-05-29",
+      "description": "A 26-year tale of six cousins in Kerala whose lives and relationships revolve around seven weddings.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-05-29\n⭐ Rating: 6.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/cEfHZNS071Qa0ycrUhySEjRdXXB.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/cEfpO6QG5Ks5cTJ8bRrZJiDYKUH.jpg",
       "genres": [
@@ -1566,18 +1553,6 @@
       ]
     },
     {
-      "id": "tt40706424",
-      "type": "movie",
-      "name": "Arulvaan",
-      "releaseInfo": "2026-09-03",
-      "description": "Follows Muthuvel, a resolute collector who overcomes all obstacles to educate a tribal girl and provide school access for the entire forest community.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-07-17",
-      "poster": "https://image.tmdb.org/t/p/w500/m9KJuxjN0n9VnHDACqLEfltZv8z.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/x1GPEffctNTnoqmUXQeP3iTcslW.jpg",
-      "genres": [
-        "Drama"
-      ]
-    },
-    {
       "id": "tt39260895",
       "type": "movie",
       "name": "Pyaar Prema Kalyanam",
@@ -1651,6 +1626,18 @@
       "description": "Follows the toxic relationship between a prospective civil servant and a conceited school principal, which intensifies when a Yamaha motorbike enters the narrative.\n\n📺 Streaming on: Prime Video\n📅 Release: 2026-07-24",
       "poster": "https://image.tmdb.org/t/p/w500/rFKCzvt5uw7wjG9ZXaUXL8MMq1Y.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/7sILP5U85V5OTzX3BsRsiy8WNyJ.jpg"
+    },
+    {
+      "id": "tt40706424",
+      "type": "movie",
+      "name": "Arulvaan",
+      "releaseInfo": "2026-07-17",
+      "description": "Follows Muthuvel, a resolute collector who overcomes all obstacles to educate a tribal girl and provide school access for the entire forest community.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-07-17",
+      "poster": "https://image.tmdb.org/t/p/w500/m9KJuxjN0n9VnHDACqLEfltZv8z.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/x1GPEffctNTnoqmUXQeP3iTcslW.jpg",
+      "genres": [
+        "Drama"
+      ]
     },
     {
       "id": "tt42203456",
@@ -1900,19 +1887,6 @@
       ]
     },
     {
-      "id": "tt38111710",
-      "type": "movie",
-      "name": "Carmeni Selvam",
-      "releaseInfo": "2026-04-03",
-      "description": "A content man's life turns chaotic when money fever strikes. His newfound greed leads to a series of amusing situations that unfold in this humorous tale.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-04-03\n\n♻️ Re-release: back on OTT on 2026-09-03",
-      "poster": "https://image.tmdb.org/t/p/w500/1VjWJjNt5jefOJAnxJEvC7B7ulV.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/hkxyILpj5Gws3Ak8lOLuviZW8ei.jpg",
-      "genres": [
-        "Drama",
-        "Comedy"
-      ]
-    },
-    {
       "id": "tt30956744",
       "type": "movie",
       "name": "Neelira",
@@ -1923,6 +1897,19 @@
       "genres": [
         "Thriller",
         "War"
+      ]
+    },
+    {
+      "id": "tt38111710",
+      "type": "movie",
+      "name": "Carmeni Selvam",
+      "releaseInfo": "2026-04-03",
+      "description": "A content man's life turns chaotic when money fever strikes. His newfound greed leads to a series of amusing situations that unfold in this humorous tale.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-04-03",
+      "poster": "https://image.tmdb.org/t/p/w500/1VjWJjNt5jefOJAnxJEvC7B7ulV.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/hkxyILpj5Gws3Ak8lOLuviZW8ei.jpg",
+      "genres": [
+        "Drama",
+        "Comedy"
       ]
     },
     {
@@ -2823,33 +2810,6 @@
         "Thriller",
         "Action"
       ]
-    },
-    {
-      "id": "tt11064472",
-      "type": "movie",
-      "name": "Market Raja MBBS",
-      "releaseInfo": "2019-11-29",
-      "description": "An arrogant don is possessed by the ghost of a medical college student and turns meek. Now, his accomplices have hide this fact from the outside world and ensure the return of the actual don.\n\n📺 Streaming on: Zee5,  AP International South Cinema Amazon Channel\n📅 Release: 2019-11-29\n⭐ Rating: 1.5/10\n\n♻️ Re-release: back on OTT on 2026-09-03",
-      "poster": "https://image.tmdb.org/t/p/w500/3NblkZMUwCeVS4uoSo66LFI3O5f.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/tAH8AMrTqJ0qynWHNxWNZjnJgZu.jpg",
-      "genres": [
-        "Comedy",
-        "Action"
-      ]
-    },
-    {
-      "id": "tt9900782",
-      "type": "movie",
-      "name": "Kaithi",
-      "releaseInfo": "2019-10-24",
-      "description": "Dilli, a convicted criminal, is out on parole to meet his daughter. However, a drug bust sets him off on a mission to save the life of police officers.\n\n📺 Streaming on: JioHotstar, aha, VI movies and tv, MX Player, Amazon MX Player\n📅 Release: 2019-10-24\n⭐ Rating: 7.6/10\n\n♻️ Re-release: back on OTT on 2026-09-03",
-      "poster": "https://image.tmdb.org/t/p/w500/hOF9CgPsy9aLr5GJEBESC8MEXFy.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/seTFDq1iKyJ6YHr7HePbC20DMsy.jpg",
-      "genres": [
-        "Action",
-        "Thriller",
-        "Crime"
-      ]
     }
   ],
   "tamil-series": [
@@ -2863,19 +2823,6 @@
       "background": "https://image.tmdb.org/t/p/w1280/hnzTQjhhEo67VHneHdHTQjTPzab.jpg",
       "genres": [
         "Reality"
-      ]
-    },
-    {
-      "id": "tt44914967",
-      "type": "series",
-      "name": "The Court",
-      "releaseInfo": "2026-09-03",
-      "description": "A brilliant young lawyer with a stammer stands against her celebrated father in her fight for justice.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-09-04\n⭐ Rating: 10.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/iXUtd6fpt15vMZSO6du1uXQjcmv.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/qcdCBnnarlsSCnjL0ikIngLlRQp.jpg",
-      "genres": [
-        "Drama",
-        "Family"
       ]
     },
     {
@@ -3100,5 +3047,5 @@
       "poster": "https://m.media-amazon.com/images/M/MV5BOTJjNDVhN2YtN2YxZS00NzVmLWI1MTctOTk0Yzc2NDE3ZTQxXkEyXkFqcGc@._V1_SX300.jpg"
     }
   ],
-  "builtAt": "2026-09-07T22:27:04.140Z"
+  "builtAt": "2026-09-08T06:13:00.440Z"
 }
