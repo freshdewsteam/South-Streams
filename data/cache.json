@@ -14,57 +14,6 @@
       ]
     },
     {
-      "id": "tt38286171",
-      "type": "movie",
-      "name": "Unmadham",
-      "releaseInfo": "2026-09-04",
-      "description": "A police constable reopens a long-forgotten case and experiences an unsettling world.\n\n📺 Streaming on: Sony LIV\n📅 Release: 2026-09-04\n⭐ Rating: 6.9/10",
-      "poster": "https://image.tmdb.org/t/p/w500/6AIMHBUY6PCHVYASWZ0GcTA9Kph.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/o0Ai0yCq1jyLE3K55Nk3bAl4D9h.jpg",
-      "genres": [
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt26445387",
-      "type": "movie",
-      "name": "I, Nobody",
-      "releaseInfo": "2026-08-25",
-      "description": "📺 Streaming on: Jiohotstar\n📅 OTT Release: 2026-08-25",
-      "poster": "https://image.tmdb.org/t/p/w500/qFJl3w9KpVXpfZ3rpmv7p0UYZkP.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/zNvSWIvca6aA0eq63JqzVvagqLI.jpg",
-      "genres": [
-        "Crime",
-        "Thriller",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt36580813",
-      "type": "movie",
-      "name": "Pluto",
-      "releaseInfo": "2026-08-24",
-      "description": "Follows the unexpected arrival of an extraterrestrial visitor in a quiet Kerala village, which turns everyday life completely upside down.\n\n📺 Streaming on: Saina Play\n📅 Release: 2026-08-24\n⭐ Rating: 2.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/pPxsw4KnZbsklyHUCTKSCHKaC8F.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/cSiQqEN2IbNxWXNZ2YLd32DSVrK.jpg",
-      "genres": [
-        "Science Fiction",
-        "Comedy"
-      ]
-    },
-    {
-      "id": "tt36670542",
-      "type": "movie",
-      "name": "Lurk",
-      "releaseInfo": "2026-08-24",
-      "description": "Man-animal conflict, exploring who the real predator is, man or animal, with inspiration from real incidents and forest life.\n\n📺 Streaming on: ETV\n📅 Release: 2026-08-24",
-      "poster": "https://image.tmdb.org/t/p/w500/a8YUKtD4zNRGY5OpZVg1M2gLlMW.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/9rF3CfdH7tXyeaiWp5POgfOpctU.jpg",
-      "genres": [
-        "Thriller"
-      ]
-    },
-    {
       "id": "tt37510017",
       "type": "movie",
       "name": "Thudakkam",
@@ -78,41 +27,16 @@
       ]
     },
     {
-      "id": "tt35254624",
+      "id": "tt26445387",
       "type": "movie",
-      "name": "Balan - The Boy",
-      "releaseInfo": "2026-07-31",
-      "description": "A teenage boy searches for his missing mother following a turbulent childhood and her subsequent disappearance, exploring his search for closure and the truth about his past.\n\n📺 Streaming on: Zee5\n📅 Release: 2026-07-31\n⭐ Rating: 7.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/boKxdR9tgXfkazf6yWgiDdleBy0.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/cb4b4K3E2jBGaSjkuIkZHJHmoWG.jpg",
+      "name": "I, Nobody",
+      "releaseInfo": "2026-07-09",
+      "description": "Rajeevan, an ordinary government employee, witnesses something he was never meant to see and is thrust into the centre of a serious crime. Branded a troublemaker and hunted by the system, he must protect his family while fighting to survive against forces far beyond his control.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-07-09\n⭐ Rating: 6.1/10",
+      "poster": "https://image.tmdb.org/t/p/w500/qFJl3w9KpVXpfZ3rpmv7p0UYZkP.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/zNvSWIvca6aA0eq63JqzVvagqLI.jpg",
       "genres": [
-        "Drama",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt41944664",
-      "type": "movie",
-      "name": "Secret of Kalinga",
-      "releaseInfo": "2026-07-24",
-      "description": "📺 Streaming on: SunNxt\n📅 OTT Release: 2026-07-24",
-      "poster": "https://image.tmdb.org/t/p/w500/fIDU3LSWigWq9ges3Dw5KvGn3Av.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/1gCAMqd8SKeQEzbgKRwTwzvrxgX.jpg",
-      "genres": [
-        "Horror",
-        "Comedy"
-      ]
-    },
-    {
-      "id": "tt10515398",
-      "type": "movie",
-      "name": "Pallichattambi",
-      "releaseInfo": "2026-07-24",
-      "description": "📺 Streaming on: Sony LIV\n📅 OTT Release: 2026-07-24",
-      "poster": "https://image.tmdb.org/t/p/w500/pEzXdyJhdWc2msM0oBC9N8pKtMY.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/kAJK8Kp6oPYb3T2gIHfp2SNitJ.jpg",
-      "genres": [
-        "Action",
+        "Crime",
+        "Thriller",
         "Drama"
       ]
     },
@@ -139,6 +63,19 @@
       "background": "https://image.tmdb.org/t/p/w1280/1KXnH4NcCQTAxV0pZwvIIGCepIx.jpg",
       "genres": [
         "Drama"
+      ]
+    },
+    {
+      "id": "tt41944664",
+      "type": "movie",
+      "name": "Secret of Kalinga",
+      "releaseInfo": "2026-06-18",
+      "description": "A college sits on ancient Kalinga kingdom land. Behind it, a forest well holds a princess's spirit, imprisoned centuries ago. Students accidentally break the seal on New Year's Eve, triggering comedic chaos.\n\n📺 Streaming on: Amazon Prime Video, Sun Nxt, Amazon Prime Video with Ads\n📅 Release: 2026-06-18\n⭐ Rating: 7.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/fIDU3LSWigWq9ges3Dw5KvGn3Av.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1gCAMqd8SKeQEzbgKRwTwzvrxgX.jpg",
+      "genres": [
+        "Horror",
+        "Comedy"
       ]
     },
     {
@@ -343,6 +280,19 @@
       "genres": [
         "Comedy",
         "Thriller"
+      ]
+    },
+    {
+      "id": "tt10515398",
+      "type": "movie",
+      "name": "Pallichattambi",
+      "releaseInfo": "2026-04-15",
+      "description": "Set in the politically turbulent late 1950s, Krishnan Pillai, a playful ruffian chosen by the Church to lead a defensive force, the Christopher Sena. His mission to resist the Communist government takes a detour when he experiences an ideological awakening and falls in love with a comrade, sparking an epic tale of rebellion against feudal power and oppression.\n\n📺 Streaming on: Sony Liv\n📅 Release: 2026-04-15\n⭐ Rating: 5.2/10",
+      "poster": "https://image.tmdb.org/t/p/w500/pEzXdyJhdWc2msM0oBC9N8pKtMY.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/kAJK8Kp6oPYb3T2gIHfp2SNitJ.jpg",
+      "genres": [
+        "Action",
+        "Drama"
       ]
     },
     {
@@ -3047,5 +2997,5 @@
       "poster": "https://m.media-amazon.com/images/M/MV5BOTJjNDVhN2YtN2YxZS00NzVmLWI1MTctOTk0Yzc2NDE3ZTQxXkEyXkFqcGc@._V1_SX300.jpg"
     }
   ],
-  "builtAt": "2026-09-08T11:55:51.751Z"
+  "builtAt": "2026-09-08T16:47:03.657Z"
 }
