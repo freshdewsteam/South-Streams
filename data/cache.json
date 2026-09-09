@@ -1,19 +1,6 @@
 {
   "malayalam-movies": [
     {
-      "id": "tt33083436",
-      "type": "movie",
-      "name": "Ananthan Kaadu",
-      "releaseInfo": "2026-09-04",
-      "description": "Set against the socio-political landscape of the 1980s and 1990s, this gripping drama weaves together themes of ambition, survival, violence, and retribution. As choices made in desperation set powerful forces in motion, the story unfolds into a compelling journey where karma relentlessly pursues those trying to outrun their past.\n\n📺 Streaming on: Amazon Prime Video, Lionsgate Play Apple TV Channel, Lionsgate Play Amazon Channel, ManoramaMAX Amazon Channel, Amazon Prime Video with Ads,  AP International South Cinema Amazon Channel\n📅 Release: 2026-06-25\n⭐ Rating: 4.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/a8Ut1fkbqvolWfEIl8Voa1oUsDG.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/AvMub4XZABMznZBn7W5fot7ghDS.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
-      ]
-    },
-    {
       "id": "tt38286171",
       "type": "movie",
       "name": "Unmadham",
@@ -82,7 +69,7 @@
       "type": "movie",
       "name": "Balan - The Boy",
       "releaseInfo": "2026-07-31",
-      "description": "A teenage boy searches for his missing mother following a turbulent childhood and her subsequent disappearance, exploring his search for closure and the truth about his past.\n\n📺 Streaming on: Zee5\n📅 Release: 2026-07-31\n⭐ Rating: 7.5/10",
+      "description": "A teenage boy searches for his missing mother following a turbulent childhood and her subsequent disappearance, exploring his search for closure and the truth about his past.\n\n📺 Streaming on: Zee5\n📅 Release: 2026-07-31\n⭐ Rating: 7.6/10",
       "poster": "https://image.tmdb.org/t/p/w500/boKxdR9tgXfkazf6yWgiDdleBy0.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/cb4b4K3E2jBGaSjkuIkZHJHmoWG.jpg",
       "genres": [
@@ -126,6 +113,19 @@
       "background": "https://image.tmdb.org/t/p/w1280/sxs1ME8rwQIccp7SL37fRgt0sFH.jpg",
       "genres": [
         "Crime",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt33083436",
+      "type": "movie",
+      "name": "Ananthan Kaadu",
+      "releaseInfo": "2026-06-25",
+      "description": "Set against the socio-political landscape of the 1980s and 1990s, this gripping drama weaves together themes of ambition, survival, violence, and retribution. As choices made in desperation set powerful forces in motion, the story unfolds into a compelling journey where karma relentlessly pursues those trying to outrun their past.\n\n📺 Streaming on: Amazon Prime Video, Lionsgate Play Apple TV Channel, Lionsgate Play Amazon Channel, ManoramaMAX Amazon Channel, Amazon Prime Video with Ads,  AP International South Cinema Amazon Channel\n📅 Release: 2026-06-25\n⭐ Rating: 4.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/a8Ut1fkbqvolWfEIl8Voa1oUsDG.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/AvMub4XZABMznZBn7W5fot7ghDS.jpg",
+      "genres": [
+        "Action",
         "Thriller"
       ]
     },
@@ -363,7 +363,7 @@
       "type": "movie",
       "name": "Pagida Kali",
       "releaseInfo": "2026-04-03",
-      "description": "A Kerala murder sparks fear and confusion. Then a child vanishes mysteriously. The investigation intensifies and spreads beyond state borders in this suspenseful thriller.\n\n📺 Streaming on: ManoramaMAX Amazon Channel,  AP International South Cinema Amazon Channel\n📅 Release: 2026-04-03\n\n♻️ Re-release: back on OTT on 2026-09-04",
+      "description": "A Kerala murder sparks fear and confusion. Then a child vanishes mysteriously. The investigation intensifies and spreads beyond state borders in this suspenseful thriller.\n\n📺 Streaming on: ManoramaMAX Amazon Channel,  AP International South Cinema Amazon Channel\n📅 Release: 2026-04-03",
       "poster": "https://image.tmdb.org/t/p/w500/rwqow2Zw9m8qzVj50uiaXFraXFH.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/aXJf0qGLw8oAgvIl2n81n5VICCG.jpg",
       "genres": [
@@ -1323,18 +1323,6 @@
   ],
   "malayalam-series": [
     {
-      "id": "tt44568661",
-      "type": "series",
-      "name": "Bigg Boss: Agnipareeksha",
-      "releaseInfo": "2026-09-04",
-      "description": "The journey to Bigg Boss Malayalam 8 begins in Agnipareeksha, where commoner contestants battle for a place in the Bigg Boss House.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-08-15\n⭐ Rating: 6.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/1GboWZREUaFkx11V4DtkLpQsiOs.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/a47LKDjGgDihcMDjEiekDIY3ToK.jpg",
-      "genres": [
-        "Reality"
-      ]
-    },
-    {
       "id": "tt43639419",
       "type": "series",
       "name": "Land of Football",
@@ -1567,20 +1555,6 @@
   ],
   "tamil-movies": [
     {
-      "id": "tt37501035",
-      "type": "movie",
-      "name": "DC",
-      "releaseInfo": "2026-09-04",
-      "description": "Rebel Devadas joins forces with Chandra in a dangerous world where passion and peril collide. Their turbulent alliance demands bloodshed and tests loyalties as survival becomes the ultimate stake in their fight.\n\n📺 Streaming on: Sun Nxt\n📅 Release: 2026-08-07\n⭐ Rating: 7.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/cB6ZAWK70cR5HVnGK6BaCr8W4FH.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/9GmAODqkVdRvSgg5C4Vfeomi5Nj.jpg",
-      "genres": [
-        "Romance",
-        "Action",
-        "Drama"
-      ]
-    },
-    {
       "id": "tt35712605",
       "type": "movie",
       "name": "G.D.N",
@@ -1615,6 +1589,20 @@
       "poster": "https://image.tmdb.org/t/p/w500/jt8pfSIdi47YpFMMWVRr8w5u2S0.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/v3lNH2gCojWYXVuXcT9FZLBxcSq.jpg",
       "genres": [
+        "Action",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt37501035",
+      "type": "movie",
+      "name": "DC",
+      "releaseInfo": "2026-08-07",
+      "description": "Rebel Devadas joins forces with Chandra in a dangerous world where passion and peril collide. Their turbulent alliance demands bloodshed and tests loyalties as survival becomes the ultimate stake in their fight.\n\n📺 Streaming on: Sun Nxt\n📅 Release: 2026-08-07\n⭐ Rating: 7.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/cB6ZAWK70cR5HVnGK6BaCr8W4FH.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/9GmAODqkVdRvSgg5C4Vfeomi5Nj.jpg",
+      "genres": [
+        "Romance",
         "Action",
         "Drama"
       ]
@@ -2879,6 +2867,19 @@
       ]
     },
     {
+      "id": "tt14962838",
+      "type": "movie",
+      "name": "Memories",
+      "releaseInfo": "2023-03-10",
+      "description": "Venky, suspected of committing multiple murders, suffers from memory loss and finds himself entangled in a web of lies. However, the true identity of Venky and the person responsible for his predicament are complex and multi-layered, leading to the discovery of the real killer.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2023-03-10\n⭐ Rating: 6.0/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
+      "poster": "https://image.tmdb.org/t/p/w500/s9RacyjuAERdecfuHXQ8W2L8MLp.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/tW4pCVGfGtODKxIVXWy51mzsEsi.jpg",
+      "genres": [
+        "Thriller",
+        "Mystery"
+      ]
+    },
+    {
       "id": "tt14526318",
       "type": "movie",
       "name": "Sardar",
@@ -3141,5 +3142,5 @@
       "poster": "https://m.media-amazon.com/images/M/MV5BOTJjNDVhN2YtN2YxZS00NzVmLWI1MTctOTk0Yzc2NDE3ZTQxXkEyXkFqcGc@._V1_SX300.jpg"
     }
   ],
-  "builtAt": "2026-09-08T22:18:02.670Z"
+  "builtAt": "2026-09-09T06:19:10.869Z"
 }
