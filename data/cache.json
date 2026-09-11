@@ -1661,7 +1661,7 @@
       "type": "movie",
       "name": "Idhayam Murali",
       "releaseInfo": "2026-07-10",
-      "description": "A young man navigates the complexities of unrequited love, finding that even as years pass and life takes unexpected turns, certain emotions remain deeply embedded in his heart.\n\n📺 Streaming on: Netflix\n📅 Release: 2026-07-10\n⭐ Rating: 6.9/10",
+      "description": "A young man navigates the complexities of unrequited love, finding that even as years pass and life takes unexpected turns, certain emotions remain deeply embedded in his heart.\n\n📺 Streaming on: Netflix\n📅 Release: 2026-07-10\n⭐ Rating: 6.8/10",
       "poster": "https://image.tmdb.org/t/p/w500/8gfs5OsGINENFAl0h1XZPNup9lI.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/jLncLuPE5kOascGrvN39jgQHVJT.jpg",
       "genres": [
@@ -1805,6 +1805,20 @@
       "genres": [
         "Action",
         "Fantasy"
+      ]
+    },
+    {
+      "id": "tt37737315",
+      "type": "movie",
+      "name": "29",
+      "releaseInfo": "2026-05-08",
+      "description": "A quirky 29-year-old named Sathya embarks on an unexpected journey of laughter, unlikely friendships, and self-discovery. Through hilarious misadventures and chance encounters, he slowly sees life's bigger picture - its surprises, joys, and second chances.\n\n📺 Streaming on: Netflix\n📅 Release: 2026-05-08\n⭐ Rating: 6.9/10",
+      "poster": "https://image.tmdb.org/t/p/w500/aQZ4OxzaYTN7cRN7fALi9BhPucp.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/gzOamXAMuBpWFcCitMdEoAVAjCf.jpg",
+      "genres": [
+        "Romance",
+        "Comedy",
+        "Drama"
       ]
     },
     {
@@ -3001,5 +3015,5 @@
       "poster": "https://m.media-amazon.com/images/M/MV5BOTJjNDVhN2YtN2YxZS00NzVmLWI1MTctOTk0Yzc2NDE3ZTQxXkEyXkFqcGc@._V1_SX300.jpg"
     }
   ],
-  "builtAt": "2026-09-11T16:40:10.691Z"
+  "builtAt": "2026-09-11T21:11:49.336Z"
 }
