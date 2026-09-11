@@ -79,6 +79,19 @@
       ]
     },
     {
+      "id": "tt43665767",
+      "type": "movie",
+      "name": "Maharaja Hostel",
+      "releaseInfo": "2026-07-24",
+      "description": "A group of college students settle into what seems like an ordinary hostel, but things soon take a strange turn when a series of unexplained incidents begin to unfold. As their fun-filled hostel life descends into chaos, the students and their warden are forced to face the mysterious presence lurking within Maharaja Hostel.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-07-24",
+      "poster": "https://image.tmdb.org/t/p/w500/b7k2NhmlnMMRup94QbbCfBuct05.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/AjUhJH18YIUdnJqoU2SC54k0pv2.jpg",
+      "genres": [
+        "Horror",
+        "Comedy"
+      ]
+    },
+    {
       "id": "tt41944664",
       "type": "movie",
       "name": "Secret of Kalinga",
@@ -102,6 +115,19 @@
       "genres": [
         "Action",
         "Drama"
+      ]
+    },
+    {
+      "id": "tt39910244",
+      "type": "movie",
+      "name": "Achyuta Avataaram",
+      "releaseInfo": "2026-07-17",
+      "description": "A family's quiet life is upended by a devastating cyber scam that leaves them shattered. Determined to fight back, one woman takes on the digital underworld in a courageous battle for justice, hope and those she loves.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-07-17",
+      "poster": "https://image.tmdb.org/t/p/w500/pH5QDBV55imyvC31MMdxTtHUT6t.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/kWt0BUdYOdt95N5RQJ0zkUnIfmR.jpg",
+      "genres": [
+        "Drama",
+        "Thriller"
       ]
     },
     {
@@ -1256,31 +1282,6 @@
       "genres": [
         "Drama"
       ]
-    },
-    {
-      "id": "tt35110563",
-      "type": "movie",
-      "name": "Flask",
-      "releaseInfo": "2025-07-18",
-      "description": "The Arrogant District Judge Venkitesh Balaji and his naive Personal Security Officer Jyothi Kuttan are abducted and held hostage by a Maoist Group demanding release of their leader in prison. As both men face the impending death, their hierarchy equations change and it becomes a fight for survival.\n\n📺 Streaming on: ManoramaMax, ManoramaMAX Amazon Channel\n📅 Release: 2025-07-18\n⭐ Rating: 6.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/sQIbvMC6j8dQE31vIhLgwchSlVs.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/qxDHSadL15AO0kEPB5CSMusYc5b.jpg",
-      "genres": [
-        "Drama",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt29633769",
-      "type": "movie",
-      "name": "Raveendra Nee Evide?",
-      "releaseInfo": "2025-07-18",
-      "description": "The life of a weather officer harbouring an obsession with certainty gets complicated when a bizarre incident concerning a neighbour incites his suspicions about his own wife.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2025-07-18\n⭐ Rating: 2.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/7lYvcK3rvBBqpr1vG4I7ChTC6NX.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/dbcKWj9365RIwRSxGTT4ZToN8CK.jpg",
-      "genres": [
-        "Comedy"
-      ]
     }
   ],
   "malayalam-series": [
@@ -1556,6 +1557,19 @@
       ]
     },
     {
+      "id": "tt37563829",
+      "type": "movie",
+      "name": "Magudam",
+      "releaseInfo": "2026-08-14",
+      "description": "Peaceful medical representative and shipping harbor worker Linga's life changes because of betrayal and conflict in a coastal community.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-08-14",
+      "poster": "https://image.tmdb.org/t/p/w500/uPsJfQHRw5QiwQqOoOQWkfBmnhE.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/p5LmNUM4T9xLqbeu7nBY47VUh3W.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    {
       "id": "tt37501035",
       "type": "movie",
       "name": "DC",
@@ -1791,20 +1805,6 @@
       "genres": [
         "Action",
         "Fantasy"
-      ]
-    },
-    {
-      "id": "tt37737315",
-      "type": "movie",
-      "name": "29",
-      "releaseInfo": "2026-05-08",
-      "description": "A quirky 29-year-old named Sathya embarks on an unexpected journey of laughter, unlikely friendships, and self-discovery. Through hilarious misadventures and chance encounters, he slowly sees life's bigger picture - its surprises, joys, and second chances.\n\n📺 Streaming on: Netflix\n📅 Release: 2026-05-08\n⭐ Rating: 6.9/10",
-      "poster": "https://image.tmdb.org/t/p/w500/aQZ4OxzaYTN7cRN7fALi9BhPucp.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/gzOamXAMuBpWFcCitMdEoAVAjCf.jpg",
-      "genres": [
-        "Romance",
-        "Comedy",
-        "Drama"
       ]
     },
     {
@@ -2775,18 +2775,6 @@
         "Comedy",
         "Romance"
       ]
-    },
-    {
-      "id": "tt31312310",
-      "type": "movie",
-      "name": "Oho Enthan Baby",
-      "releaseInfo": "2025-07-11",
-      "description": "Ashwin goes to actor Vishnu Vishal’s office to pitch a script and ends up narrating his love story. What the actor thinks to be an interval is Ashwin’s climax, it actually is a stoic end to his romantic relationship with Meera. With Vishnu Vishal’s pursual, Ashwin must confront his former lover again, to complete his story and begin his debut directorial.\n\n📺 Streaming on: Netflix\n📅 Release: 2025-07-11\n⭐ Rating: 5.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/ffnBY54B4Etmu0UCpMXiJNNTlRV.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/avf83LbIvRCVxTJjjpdyDwBZxB9.jpg",
-      "genres": [
-        "Romance"
-      ]
     }
   ],
   "tamil-series": [
@@ -3013,5 +3001,5 @@
       "poster": "https://m.media-amazon.com/images/M/MV5BOTJjNDVhN2YtN2YxZS00NzVmLWI1MTctOTk0Yzc2NDE3ZTQxXkEyXkFqcGc@._V1_SX300.jpg"
     }
   ],
-  "builtAt": "2026-09-11T11:58:38.023Z"
+  "builtAt": "2026-09-11T16:40:10.691Z"
 }
