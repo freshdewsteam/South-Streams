@@ -37,7 +37,7 @@ const BASE        = 'https://api.themoviedb.org/3';
 const IMG         = 'https://image.tmdb.org/t/p/';
 
 const JW_GRAPHQL_URL = 'https://apis.justwatch.com/graphql';
-const JW_DAYS_TO_SCAN = 5; // JustWatch safety-net window (days)
+const JW_DAYS_TO_SCAN = 3; // JustWatch safety-net window (days)
 
 const MON_CHANGES_URL = 'https://api.movieofthenight.com/v4/changes';
 
@@ -897,6 +897,14 @@ async function fetchJustWatch(lang, kind) {
 // Dedup by TMDB id — MoN's exact arrival timestamps win because it runs first.
 async function fetchDay0Items(lang, kind) {
   const byId = new Map();
+
+  // FIRST RUN: the 730-day TMDB rebuild below covers everything — skip the
+  // day-0 machinery entirely to stay under the workflow time budget.
+  const kindKey = (kind === 'SHOW' ? lang + '_series' : lang + '_movie');
+  if (!seen[kindKey]) {
+    console.log('[Day0] FIRST RUN for ' + kindKey + ' — skipping day-0 detection (TMDB foundation covers it)');
+    return [];
+  }
 
   const monRaw = await fetchMonRaw(kind);
   if (monRaw) {
