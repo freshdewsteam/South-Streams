@@ -21,8 +21,9 @@
       "poster": "https://image.tmdb.org/t/p/w500/qFJl3w9KpVXpfZ3rpmv7p0UYZkP.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/zNvSWIvca6aA0eq63JqzVvagqLI.jpg",
       "genres": [
-        "Crime",
         "Thriller",
+        "Crime",
+        "Action",
         "Drama"
       ]
     },
@@ -100,6 +101,20 @@
       "background": "https://image.tmdb.org/t/p/w1280/kAJK8Kp6oPYb3T2gIHfp2SNitJ.jpg",
       "genres": [
         "Action",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt43082675",
+      "type": "movie",
+      "name": "Oru Vadakkan Velicham - A Northern Light",
+      "releaseInfo": "2026-07-12",
+      "description": "When a young man is taken in for questioning about the disappearance of a woman, a seemingly routine interrogation slowly unravels into something far more personal. As hidden relationships, buried secrets, and long-suppressed truths begin to surface, the lines between justice, guilt, and revenge become increasingly blurred. Set against the backdrop of Canada, Oru Vadakkan Velicham is a Malayalam investigative thriller that explores deception, trauma, and the consequences of the past.\n\n📺 Streaming on: ManoramaMAX Amazon Channel\n📅 Release: 2026-07-12\n⭐ Rating: 9.3/10",
+      "poster": "https://image.tmdb.org/t/p/w500/jXHwLavYJVEJ0Ar6GoMoWG4uE7r.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/2Tqc9zsMrHYCFb10KtCuF8YNq0m.jpg",
+      "genres": [
+        "Mystery",
+        "Thriller",
         "Drama"
       ]
     },
@@ -589,6 +604,19 @@
       "background": "https://image.tmdb.org/t/p/w1280/jfzGjZnDYVoID62ogWVRifMdl9m.jpg",
       "genres": [
         "Horror",
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tt37250830",
+      "type": "movie",
+      "name": "Magic Mushrooms",
+      "releaseInfo": "2026-01-23",
+      "description": "Mysterious mushrooms trigger odd events in Kanjikkuzhi village. Friends investigating their origin discover a web of folklore and scientific mysteries that challenge the boundary between natural and supernatural.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-01-23",
+      "poster": "https://image.tmdb.org/t/p/w500/pKszcXMCZxAut8lkRanpVEJfZLc.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/wDDA4NE8zmadua1hzUt33XHOtLd.jpg",
+      "genres": [
+        "Drama",
         "Comedy"
       ]
     },
@@ -1250,72 +1278,6 @@
       "description": "The life of a weather officer harbouring an obsession with certainty gets complicated when a bizarre incident concerning a neighbour incites his suspicions about his own wife.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2025-07-18\n⭐ Rating: 2.5/10",
       "poster": "https://image.tmdb.org/t/p/w500/7lYvcK3rvBBqpr1vG4I7ChTC6NX.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/dbcKWj9365RIwRSxGTT4ZToN8CK.jpg",
-      "genres": [
-        "Comedy"
-      ]
-    },
-    {
-      "id": "tt23458804",
-      "type": "movie",
-      "name": "JSK - Janaki V vs State of Kerala",
-      "releaseInfo": "2025-07-17",
-      "description": "Janaki, an IT professional from Bangalore, returns to her hometown in Kerala for a quiet vacation. But her peace is shattered when she becomes the victim of a horrific incident. As she begins her fight for justice, the case takes an unexpected turn with the entry of Advocate David Abel Donovan.\n\n📺 Streaming on: Zee5\n📅 Release: 2025-07-17\n⭐ Rating: 3.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/s5aKJoOSv3D8snq3Y2N3APeK5vz.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/fKscSOfO1X95gBIDbE9of6yx9EW.jpg",
-      "genres": [
-        "Drama",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt34335405",
-      "type": "movie",
-      "name": "Soothravakyam",
-      "releaseInfo": "2025-07-11",
-      "description": "The Story revolves around Christo Xavier, a circle inspector, who mentors 11th-class students in his spare time and turns his station into a community place to benefit the kids of the town. As his regular work and tutoring go on, one day he finds a suspicious electronic device from a student’s fair exhibit model.\n\n📺 Streaming on: Amazon Prime Video, ManoramaMax, Lionsgate Play, Lionsgate Play Apple TV Channel, Lionsgate Play Amazon Channel, ManoramaMAX Amazon Channel, Amazon Prime Video with Ads, Brew, Plex, Plex Channel\n📅 Release: 2025-07-11\n⭐ Rating: 4.6/10",
-      "poster": "https://image.tmdb.org/t/p/w500/gwaOYtU5kdW1eefsvGcV74r8BBE.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/EXNPelyKWOSvgkYBbn7WhFN1sa.jpg",
-      "genres": [
-        "Mystery",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt37255718",
-      "type": "movie",
-      "name": "Thug CR 143/24",
-      "releaseInfo": "2025-06-06",
-      "description": "Thug CR 143/24 is a gripping Malayalam investigation thriller that unfolds over two high-stakes days. A murder case spirals into a web of shifting narratives, where every character-investigators, suspects, and shadowy figures-adds a new twist to the truth. With no clear hero, the film blurs the lines between guilt and innocence, leaving one haunting question: Who is the real thug?\n\n📺 Streaming on: ManoramaMax, ManoramaMAX Amazon Channel,  AP International South Cinema Amazon Channel\n📅 Release: 2025-06-06\n⭐ Rating: 2.0/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
-      "poster": "https://image.tmdb.org/t/p/w500/hgoyl0TE6p4kECkugyO0SilaHi9.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/dnAJR453JBz3vGvNnlC3FIyiSMZ.jpg",
-      "genres": [
-        "Crime",
-        "Mystery",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt17632818",
-      "type": "movie",
-      "name": "Kooman",
-      "releaseInfo": "2022-11-04",
-      "description": "The story takes place in a hilly village on the Kerala-Tamil Nadu border. The story is about a strict police officer who relocates there and the subsequent events that turn his and many other's lives upside down associated with that police station. Few normal incidents happen in the village, and some from the past suddenly appear to be abnormal. The secrets slowly start unfolding.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads, Ultraplaybox Amazon Channel\n📅 Release: 2022-11-04\n⭐ Rating: 6.7/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
-      "poster": "https://image.tmdb.org/t/p/w500/nhKiu5zi5rUjPwzEQCaLKfbDHrL.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/y0EpsN8VU5SH31Q5PMpk93UjyK9.jpg",
-      "genres": [
-        "Drama",
-        "Mystery",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt6253546",
-      "type": "movie",
-      "name": "Role Models",
-      "releaseInfo": "2017-06-25",
-      "description": "Gowtham is a geeky loner with hardly any social connections, though he was a jovial guy while at college. His parents, being worried about his extreme changes, attempt to bring back his old self with the help of Gowtham’s friends from college days.\n\n📺 Streaming on: VI movies and tv, Ultraplaybox Amazon Channel, JioHotstar\n📅 Release: 2017-06-25\n⭐ Rating: 4.9/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
-      "poster": "https://image.tmdb.org/t/p/w500/3LJzZhLjuicTwC0eoySn5eCvmkd.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/1JZLbC9vE0GGPtkhRnvm3qxaXAV.jpg",
       "genres": [
         "Comedy"
       ]
@@ -2697,7 +2659,7 @@
       "name": "Surrender",
       "releaseInfo": "2025-08-01",
       "description": "The story unfolds Five days prior during election season, where a police team and a notorious gangster are significantly affected by the election. Ultimately, the narrative leads to a decisive resolution of their conflict with many twists, turns, and emotions.\n\n📺 Streaming on: Sun Nxt\n📅 Release: 2025-08-01",
-      "poster": "https://image.tmdb.org/t/p/w500/l4RBmd46UWfTRudGkYOnvFLbtX3.jpg",
+      "poster": "https://image.tmdb.org/t/p/w500/6hO3e3dANv4diElVRZbACxFXAZA.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/bISfAPvTK1d9AJIxfzIEwfwIGMN.jpg",
       "genres": [
         "Crime",
@@ -2825,114 +2787,9 @@
       "genres": [
         "Romance"
       ]
-    },
-    {
-      "id": "tt26887171",
-      "type": "movie",
-      "name": "Petta Rap",
-      "releaseInfo": "2024-09-27",
-      "description": "A movie stuntman begins to lose hope of achieving his dream of becoming an action star.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads, JioHotstar\n📅 Release: 2024-09-27\n\n♻️ Re-release: back on OTT on 2026-09-08",
-      "poster": "https://image.tmdb.org/t/p/w500/pt5Wv7YW6Lv4XbZJ7ZeVrswg2EZ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/6z9puKCNohQ3T535N9MxNcnbzoh.jpg",
-      "genres": [
-        "Action",
-        "Music"
-      ]
-    },
-    {
-      "id": "tt20452494",
-      "type": "movie",
-      "name": "Haraa",
-      "releaseInfo": "2024-06-07",
-      "description": "Ram (a) Ibrahim, who is grieving the loss of his daughter after she dies by suicide. He goes on a mission to uncover secrets and avenge her death.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads, Ultraplaybox Amazon Channel\n📅 Release: 2024-06-07\n⭐ Rating: 6.0/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
-      "poster": "https://image.tmdb.org/t/p/w500/AwoWCdx0udqe0PCTuvG9RtVIpqr.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/bkMgiwBFnen43BVYoYBMCZKEsuH.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt28793781",
-      "type": "movie",
-      "name": "Striker",
-      "releaseInfo": "2023-09-08",
-      "description": "A para-psychology student Joshi and a Youtuber Priya tries to escape from the ghost of Rajendran by using a Ouija board.\n\n📺 Streaming on: Ultraplaybox Amazon Channel\n📅 Release: 2023-09-08\n⭐ Rating: 9.0/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
-      "poster": "https://image.tmdb.org/t/p/w500/vkoDOaNLnBISrLoq2YvmMURBDLW.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/o8dnjoOyJZrHs2X6VVsfqB4kqWX.jpg",
-      "genres": [
-        "Horror",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt24724658",
-      "type": "movie",
-      "name": "Maruthi Nagar Police Station",
-      "releaseInfo": "2023-05-19",
-      "description": "A group of four youngsters band together to eliminate a police officer and a notorious gangster who are responsible for the death of their friend. But they are left baffled when someone else does the job for them.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2023-05-19\n⭐ Rating: 4.5/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
-      "poster": "https://image.tmdb.org/t/p/w500/1ctjc6rGXxg0opjqz4ywmkkqyiT.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/kN8MdCL8uAma6SqXhDFRtEEz1Ec.jpg",
-      "genres": [
-        "Crime",
-        "Action",
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt14962838",
-      "type": "movie",
-      "name": "Memories",
-      "releaseInfo": "2023-03-10",
-      "description": "Venky, suspected of committing multiple murders, suffers from memory loss and finds himself entangled in a web of lies. However, the true identity of Venky and the person responsible for his predicament are complex and multi-layered, leading to the discovery of the real killer.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads, Ultraplaybox Amazon Channel\n📅 Release: 2023-03-10\n⭐ Rating: 6.0/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
-      "poster": "https://image.tmdb.org/t/p/w500/s9RacyjuAERdecfuHXQ8W2L8MLp.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/tW4pCVGfGtODKxIVXWy51mzsEsi.jpg",
-      "genres": [
-        "Thriller",
-        "Mystery"
-      ]
-    },
-    {
-      "id": "tt14526318",
-      "type": "movie",
-      "name": "Sardar",
-      "releaseInfo": "2022-10-21",
-      "description": "An espionage agent who is branded a traitor returns from exile to take down a dubious water project and safeguard the country.\n\n📺 Streaming on: Amazon Prime Video, Sun Nxt, aha, Amazon Prime Video with Ads\n📅 Release: 2022-10-21\n⭐ Rating: 6.8/10\n\n♻️ Re-release: back on OTT on 2026-09-06",
-      "poster": "https://image.tmdb.org/t/p/w500/4uyI0nOaIvKw1EN7EbtVpUzod3s.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/qhqUfdqYwtUhZS7mjWbUyDvt3rC.jpg",
-      "genres": [
-        "Thriller",
-        "Action"
-      ]
-    },
-    {
-      "id": "tt0353590",
-      "type": "movie",
-      "name": "Julie Ganapathi",
-      "releaseInfo": "2003-02-01",
-      "description": "Tenkasi, the creator of a hit television show, finds himself in the house of Julie, a fan, after an accident. However, she reveals herself to be emotionally unstable and potentially dangerous.\n\n📺 Streaming on: Eros Now Select Apple TV channel\n📅 Release: 2003-02-01\n⭐ Rating: 7.3/10\n\n♻️ Re-release: back on OTT on 2026-09-08",
-      "poster": "https://image.tmdb.org/t/p/w500/gChw8ncSoUmUkbvNAyMlxPsMam7.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/h4kMpAzuwLT2xg3mc8eRpL4tZIv.jpg",
-      "genres": [
-        "Horror",
-        "Thriller",
-        "Music"
-      ]
     }
   ],
   "tamil-series": [
-    {
-      "id": "tt44265707",
-      "type": "series",
-      "name": "Bigg Boss The Common Man",
-      "releaseInfo": "2026-09-06",
-      "description": "From ordinary lives to extraordinary drama. Aspiring contestants fight to earn a spot in the Bigg Boss house.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-08-16",
-      "poster": "https://image.tmdb.org/t/p/w500/bQDWORa2JTBawIStjMLzOJIMcPN.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/hnzTQjhhEo67VHneHdHTQjTPzab.jpg",
-      "genres": [
-        "Reality"
-      ]
-    },
     {
       "id": "tt13958504",
       "type": "series",
@@ -2990,7 +2847,8 @@
       "type": "series",
       "name": "Second Love",
       "releaseInfo": "2026-07-13",
-      "description": "📺 Streaming on: JioHotstar\n📅 Release: 2026-07-13"
+      "description": "Fresh from breakups, twelve thirty-somethings live together in a luxurious villa, healing their wounds and searching for romance among fellow survivors of lost love.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-07-13",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMTE0Y2IyZWQtYWRkNC00MTI3LWJhMGYtNzNjNzI0NTY1OWNhXkEyXkFqcGc@._V1_QL75_UY414_CR28,0,280,414_.jpg"
     },
     {
       "id": "tt31924038",
@@ -3009,7 +2867,7 @@
       "type": "series",
       "name": "Brothers and Sisters",
       "releaseInfo": "2026-05-27",
-      "description": "📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-05-27",
+      "description": "Bound by love and unspoken truths, Shanmuga Sundaram and his devoted family's lives revolve around shared rituals... till hidden cracks begin to surface.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-05-27\n⭐ Rating: 9.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/dUmJyNe5UT301KwVWrxctpP2sqU.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/vOXCP8gDeChnUyDVro0jUaT7Acr.jpg",
       "genres": [
@@ -3155,5 +3013,5 @@
       "poster": "https://m.media-amazon.com/images/M/MV5BOTJjNDVhN2YtN2YxZS00NzVmLWI1MTctOTk0Yzc2NDE3ZTQxXkEyXkFqcGc@._V1_SX300.jpg"
     }
   ],
-  "builtAt": "2026-09-09T12:05:37.389Z"
+  "builtAt": "2026-09-11T10:06:18.270Z"
 }
