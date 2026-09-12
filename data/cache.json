@@ -1570,11 +1570,24 @@
       ]
     },
     {
+      "id": "tt35836025",
+      "type": "movie",
+      "name": "Vishwanath & Sons",
+      "releaseInfo": "2026-08-14",
+      "description": "Sanjay Vishwanath is an acclaimed professional handgunner in his 40s with a major stake in fame and wealth. When he comes across a woman named Maddy in her 20s, their dynamic poses many issues that they must come to terms with.\n\n📺 Streaming on: Netflix\n📅 Release: 2026-08-14\n⭐ Rating: 7.3/10",
+      "poster": "https://image.tmdb.org/t/p/w500/mLsvCffzpxxDwC7yVLJSLLjgzoq.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1qPphJz0o0ILae6rIgDK9xoAAvH.jpg",
+      "genres": [
+        "Drama",
+        "Romance"
+      ]
+    },
+    {
       "id": "tt37501035",
       "type": "movie",
       "name": "DC",
       "releaseInfo": "2026-08-07",
-      "description": "Rebel Devadas joins forces with Chandra in a dangerous world where passion and peril collide. Their turbulent alliance demands bloodshed and tests loyalties as survival becomes the ultimate stake in their fight.\n\n📺 Streaming on: Sun Nxt\n📅 Release: 2026-08-07\n⭐ Rating: 7.8/10",
+      "description": "Rebel Devadas (දේව්දාස්) joins forces with Chandra (චන්ද්‍රා) in a dangerous world where passion and peril collide. Their turbulent alliance demands bloodshed and tests loyalties as survival becomes the ultimate stake in their fight.\n\n📺 Streaming on: Sun Nxt\n📅 Release: 2026-08-07\n⭐ Rating: 7.8/10",
       "poster": "https://image.tmdb.org/t/p/w500/cB6ZAWK70cR5HVnGK6BaCr8W4FH.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/9GmAODqkVdRvSgg5C4Vfeomi5Nj.jpg",
       "genres": [
@@ -1792,19 +1805,6 @@
         "Drama",
         "Comedy",
         "Romance"
-      ]
-    },
-    {
-      "id": "tt33988385",
-      "type": "movie",
-      "name": "Karuppu",
-      "releaseInfo": "2026-05-14",
-      "description": "In a world where justice falters, guardian deity Vettai Karuppu takes the guise of a lawyer to battle a corrupt legal system preying on the powerless.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-05-14\n⭐ Rating: 6.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/4KZXlZ5tTT6ghbW77gS4hSLkCd7.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/1eAuwNBy34kkM3xkl202z4f1NiI.jpg",
-      "genres": [
-        "Action",
-        "Fantasy"
       ]
     },
     {
@@ -3015,5 +3015,5 @@
       "poster": "https://m.media-amazon.com/images/M/MV5BOTJjNDVhN2YtN2YxZS00NzVmLWI1MTctOTk0Yzc2NDE3ZTQxXkEyXkFqcGc@._V1_SX300.jpg"
     }
   ],
-  "builtAt": "2026-09-12T13:30:57.536Z"
+  "builtAt": "2026-09-12T17:44:09.045Z"
 }
