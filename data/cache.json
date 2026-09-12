@@ -1808,6 +1808,19 @@
       ]
     },
     {
+      "id": "tt33988385",
+      "type": "movie",
+      "name": "Karuppu",
+      "releaseInfo": "2026-05-14",
+      "description": "In a world where justice falters, guardian deity Vettai Karuppu takes the guise of a lawyer to battle a corrupt legal system preying on the powerless.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-05-14\n⭐ Rating: 6.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/4KZXlZ5tTT6ghbW77gS4hSLkCd7.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1eAuwNBy34kkM3xkl202z4f1NiI.jpg",
+      "genres": [
+        "Action",
+        "Fantasy"
+      ]
+    },
+    {
       "id": "tt37737315",
       "type": "movie",
       "name": "29",
@@ -2776,19 +2789,6 @@
         "Drama",
         "Thriller"
       ]
-    },
-    {
-      "id": "tt7852926",
-      "type": "movie",
-      "name": "Titanic",
-      "releaseInfo": "2025-07-18",
-      "description": "📺 Streaming on: Chaupal Amazon Channel\n📅 Release: 2025-07-18",
-      "poster": "https://image.tmdb.org/t/p/w500/96HzElhMpJ1FxMNwWFULRiE49kX.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/mKqBgSkWbU1TH3kYTSFJz1SGJOj.jpg",
-      "genres": [
-        "Comedy",
-        "Romance"
-      ]
     }
   ],
   "tamil-series": [
@@ -3015,5 +3015,5 @@
       "poster": "https://m.media-amazon.com/images/M/MV5BOTJjNDVhN2YtN2YxZS00NzVmLWI1MTctOTk0Yzc2NDE3ZTQxXkEyXkFqcGc@._V1_SX300.jpg"
     }
   ],
-  "builtAt": "2026-09-12T17:44:09.045Z"
+  "builtAt": "2026-09-12T20:28:25.373Z"
 }
