@@ -10,10 +10,17 @@
  *
  * SCHEDULING ARCHITECTURE (all times IST):
  * - 00:01 run = DEEP SWEEP: MoN 3-day window (8 pages), JustWatch 7-day net,
- *   TMDB Discover with 90-day lookback. Catches late-indexed regional titles
- *   (Aha/SonyLIV/SunNXT lag) AND late-synced TMDB provider tags.
+ *   TMDB Discover with 90-day lookback (12 pages). Catches late-indexed
+ *   regional titles (Aha/SonyLIV/SunNXT lag) AND late-synced provider tags.
  * - All other runs = LEAN: MoN since last fetch (2 pages), JustWatch net still
  *   fires, TMDB Discover 30 days.
+ *
+ * JustWatch pre-filters (zero TMDB cost):
+ * - objectType check drops cross-type pollution (movies appearing in the SHOW
+ *   feed and vice versa — Fast & Furious etc.)
+ * - originalLanguage check drops wrong-language titles before any TMDB call.
+ *   Accepts both ISO-639-1 (ml/ta) and ISO-639-3 (mal/tam) formats. The raw
+ *   format is logged once per run for verification.
  *
  * Day-0 vs renewal logic:
  * - "new" changes include re-licenses/renewals — a title whose TMDB release
@@ -57,7 +64,6 @@ const RETRY_TTL       =  3 * 24 * 60 * 60 * 1000; //  3 days
 
 // Day-0 arrivals whose TMDB release date is older than this are treated as
 // renewals/re-releases (sorted by ORIGINAL date + labeled), not premieres.
-// Indian theatrical→OTT windows are 4–8 weeks, so 90 days is a safe margin.
 const RERELEASE_MAX_AGE_DAYS = 90;
 
 // ── CACHE ─────────────────────────────────────────────────────────────────────
@@ -403,13 +409,7 @@ async function fetchSheetContent(filterLang, filterType) {
 }
 
 // ── MOVIE OF THE NIGHT (OFFICIAL DAY-0 SOURCE — PRIMARY) ─────────────────────
-// GET https://api.movieofthenight.com/v4/changes
-//   country=in, change_type=new, item_type=show, show_type=movie|series,
-//   from=<unix>, order_direction=desc, cursor pagination (25/page)
-// Response: { changes: [...], shows: {...map keyed by show id...}, hasMore, nextCursor }
 
-// Module cache: the build runs 4 scrape calls (ml/ta × movie/series) but MoN
-// changes are country-wide — fetch once per kind, share across languages.
 const monRawCache = { MOVIE: null, SHOW: null };
 
 // Window start: the 00:01 IST run sweeps DEEP (3 days) to catch titles MoN
@@ -418,14 +418,11 @@ const monRawCache = { MOVIE: null, SHOW: null };
 function monWindowStart(kind) {
   const now = Date.now();
 
-  // DEEP SWEEP: the 00:01–01:29 IST runs (18:00–20:00 UTC) scan back 3 days.
   if (isDeepSweepHour()) return now - 3 * 86400 * 1000;
 
-  // First run ever: also deep
   const last = seen['mon_' + kind];
   if (!last || isNaN(last)) return now - 3 * 86400 * 1000;
 
-  // Lean runs: only since the last successful fetch
   return Math.max(last - 3600 * 1000, now - 12 * 3600 * 1000);
 }
 
@@ -436,9 +433,8 @@ async function fetchMonRaw(kind) {
   const showType = kind === 'SHOW' ? 'series' : 'movie';
   const fromUnix = Math.floor(monWindowStart(kind) / 1000);
 
-  // ── FIX: dynamic page cap. Deep sweep: 8 pages (200 changes) — the old
-  // 4-page cap silently truncated the feed at 100, dropping titles that were
-  // pushed out by newer changes. Lean runs: 2 pages (50).
+  // Dynamic page cap: deep sweep 8 pages (200 changes) — the old 4-page cap
+  // silently truncated the feed. Lean runs: 2 pages (50).
   const maxPages = isDeepSweepHour() ? 8 : 2;
   let truncated = false;
 
@@ -462,23 +458,20 @@ async function fetchMonRaw(kind) {
       const text = await fetchUrl(MON_CHANGES_URL + '?' + params.toString(), { 'X-API-Key': MON_API_KEY });
       const data = JSON.parse(text);
 
-      // MoN returns `shows` as an OBJECT MAP keyed by show ID (not an array).
-      // Object.entries() converts it into a list we can iterate. Array support
-      // kept in case they change the shape someday.
+      // MoN returns `shows` as an OBJECT MAP keyed by show ID (not an array)
       let showsList = [];
       if (Array.isArray(data.shows)) {
         showsList = data.shows;
       } else if (data.shows && typeof data.shows === 'object') {
         showsList = Object.entries(data.shows).map(([key, val]) => {
           if (val && typeof val === 'object') {
-            if (val.id === undefined || val.id === null) val.id = key; // ensure id — use the map key
+            if (val.id === undefined || val.id === null) val.id = key;
             return val;
           }
           return { id: key };
         });
       }
 
-      // One-time field dump — verifies the show object shape
       if (page === 0 && showsList.length) {
         console.log('[MoN] Show fields available: ' + Object.keys(showsList[0]).join(', '));
       }
@@ -487,7 +480,7 @@ async function fetchMonRaw(kind) {
       for (const sh of showsList) if (sh && sh.id !== undefined) showsById[String(sh.id)] = sh;
 
       if (!data.hasMore || !data.nextCursor) break;
-      if (page === maxPages - 1) truncated = true; // hasMore true but we're out of pages
+      if (page === maxPages - 1) truncated = true; // hasMore true but out of pages
       cursor = data.nextCursor;
     } catch (e) {
       lastErr = e;
@@ -497,21 +490,19 @@ async function fetchMonRaw(kind) {
   }
 
   if (truncated) {
-    console.warn('[MoN] ⚠️ Feed truncated at ' + changes.length + ' changes — oldest changes in window dropped (JustWatch net covers them)');
+    console.warn('[MoN] ⚠️ Feed truncated at ' + changes.length + ' changes — oldest dropped (JustWatch net covers them)');
   }
 
   if (!changes.length) {
     console.warn('[MoN] ' + showType + ': no changes fetched' + (lastErr ? ' (' + lastErr.message + ')' : ''));
-    return null; // null = failure → JustWatch net still runs from fetchDay0Items
+    return null;
   }
 
-  // SAFETY GUARD: changes without shows are unusable
   if (!Object.keys(showsById).length) {
     console.warn('[MoN] ' + showType + ': changes fetched but no shows parsed');
     return null;
   }
 
-  // Remember fetch time so the next run queries only newer changes
   seen['mon_' + kind] = Date.now();
   cacheDirty = true;
 
@@ -520,20 +511,15 @@ async function fetchMonRaw(kind) {
   return monRawCache[kind];
 }
 
-// Filter MoN changes to one language + resolve to TMDB IDs.
-// Returns [{ id, arrivalDate, title, imdbId, year, isNewSeason }]
 async function resolveMonForLang(raw, lang, kind) {
   const langLabel = lang === 'ml' ? 'Malayalam' : 'Tamil';
   const showType  = kind === 'SHOW' ? 'series' : 'movies';
   const items     = [];
   const seenIds   = new Set();
 
-  // Dedupe by showId keeping the NEWEST change (desc order → first is latest).
-  // Season/episode changes map to their parent show.
   const latestByShow = new Map();
   for (const ch of raw.changes) {
     if (!ch || ch.showId === undefined) continue;
-    // Only genuine streaming arrivals — skip rent/buy noise
     const opt = ch.streamingOptionType;
     if (opt && opt !== 'subscription' && opt !== 'free' && opt !== 'ads' && opt !== 'addon') continue;
     const sid = String(ch.showId);
@@ -550,7 +536,6 @@ async function resolveMonForLang(raw, lang, kind) {
     // Language pre-filter — skips wrong-language titles with ZERO TMDB calls
     if (sh.originalLanguage && String(sh.originalLanguage).toLowerCase() !== lang) continue;
 
-    // Exact arrival date from the change timestamp
     const arrivalDate = ch.timestamp
       ? new Date(ch.timestamp * 1000).toISOString().slice(0, 10)
       : today();
@@ -578,9 +563,10 @@ async function resolveMonForLang(raw, lang, kind) {
       } catch (e) { console.warn('[MoN] Find failed for ' + imdbId + ': ' + e.message); }
     }
 
-    // Path C: title + year search
+    // Path C: title + year search (retry store is kind-correct)
+    const retryStore = kind === 'SHOW' ? seriesCache : movieCache;
     const retryKey = 'mon_' + kind.toLowerCase() + '_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
-    if (readCacheEntry(movieCache[retryKey]) === 'retry') continue;
+    if (readCacheEntry(retryStore[retryKey]) === 'retry') continue;
     try {
       let r = null;
       if (kind === 'SHOW') {
@@ -595,7 +581,7 @@ async function resolveMonForLang(raw, lang, kind) {
       if (r && !seenIds.has(r.id)) { seenIds.add(r.id); items.push({ id: r.id, arrivalDate, title, imdbId, year, isNewSeason }); }
       else {
         console.log('[MoN] "' + title + '" not on TMDB yet — will retry');
-        setRetry(movieCache, retryKey);
+        setRetry(retryStore, retryKey);
       }
     } catch (e) { console.warn('[MoN] Search failed for "' + title + '": ' + e.message); }
   }
@@ -615,13 +601,13 @@ query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: Tit
       node {
         __typename
         ... on MovieOrSeason {
-          objectId
           objectType
           content(country: $country, language: $language) {
             title
             shortDescription
             fullPath
             originalReleaseYear
+            originalLanguage
             externalIds { imdbId tmdbId }
             isReleased
           }
@@ -640,13 +626,13 @@ query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: Tit
       node {
         __typename
         ... on MovieOrSeason {
-          objectId
           objectType
           content(country: $country, language: $language) {
             title
             shortDescription
             fullPath
             originalReleaseYear
+            originalLanguage
             externalIds { imdbId tmdbId }
             isReleased
           }
@@ -657,6 +643,7 @@ query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: Tit
                 title
                 fullPath
                 originalReleaseYear
+                originalLanguage
                 externalIds { imdbId tmdbId }
               }
             }
@@ -680,6 +667,7 @@ query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: Tit
           content(country: $country, language: $language) {
             title
             fullPath
+            originalLanguage
           }
         }
       }
@@ -700,12 +688,14 @@ query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: Tit
           content(country: $country, language: $language) {
             title
             fullPath
+            originalLanguage
           }
           ... on Season {
             show {
               content(country: $country, language: $language) {
                 title
                 fullPath
+                originalLanguage
               }
             }
           }
@@ -727,6 +717,8 @@ function extractJwIdentifiers(node, kind) {
       tmdbId: sc.externalIds && sc.externalIds.tmdbId ? parseInt(sc.externalIds.tmdbId, 10) : NaN,
       imdbId: sc.externalIds && sc.externalIds.imdbId ? sc.externalIds.imdbId : null,
       year: sc.originalReleaseYear || null,
+      originalLanguage: sc.originalLanguage || null,
+      objectType: node.objectType || null,
       isReleased: node.content ? node.content.isReleased !== false : true,
     };
   }
@@ -738,6 +730,8 @@ function extractJwIdentifiers(node, kind) {
     tmdbId: c.externalIds && c.externalIds.tmdbId ? parseInt(c.externalIds.tmdbId, 10) : NaN,
     imdbId: c.externalIds && c.externalIds.imdbId ? c.externalIds.imdbId : null,
     year: c.originalReleaseYear || null,
+    originalLanguage: c.originalLanguage || null,
+    objectType: node.objectType || null,
     isReleased: c.isReleased !== false,
   };
 }
@@ -790,6 +784,7 @@ query JwFetch($filter: TitleFilter!, $country: Country!, $language: Language!, $
           content(country: $country, language: $language) {
             title
             originalReleaseYear
+            originalLanguage
             fullPath
             externalIds { imdbId tmdbId }
           }
@@ -804,6 +799,11 @@ async function fetchJustWatch(lang, kind) {
   const contents  = [];
   const seenKeys  = new Set();
   let lastErr     = null;
+  let sampleLangLogged = false;
+
+  // Accept both ISO-639-1 ('ml'/'ta') and ISO-639-3 ('mal'/'tam') formats —
+  // JustWatch's Language enum format isn't documented, so we accept either.
+  const langCodes = lang === 'ml' ? ['ml', 'mal'] : ['ta', 'tam'];
 
   for (let d = 0; d < JW_DAYS_TO_SCAN; d++) {
     const dateStr = daysAgo(d);
@@ -811,9 +811,27 @@ async function fetchJustWatch(lang, kind) {
       const nodes = await jwNewTitlesForDate(dateStr, { objectTypes: [kind] }, kind);
       let added = 0;
       for (const node of nodes) {
+        // ── FREE PRE-FILTER 1: cross-type pollution ──
+        // JustWatch's SHOW feed contains MOVIE entries and vice versa.
+        if (kind === 'SHOW' && node.objectType === 'MOVIE') continue;
+        if (kind === 'MOVIE' && node.objectType && node.objectType !== 'MOVIE') continue;
+
         const ids = extractJwIdentifiers(node, kind);
         if (!ids || !ids.title) continue;
         if (!ids.isReleased) continue;
+
+        // Log the raw language format once, for verification
+        if (!sampleLangLogged && ids.originalLanguage) {
+          console.log('[JustWatch] Sample originalLanguage value: "' + ids.originalLanguage + '"');
+          sampleLangLogged = true;
+        }
+
+        // ── FREE PRE-FILTER 2: language ──
+        // Unknown language passes (TMDB's strict guard verifies it later);
+        // known wrong-language titles are dropped with ZERO TMDB calls.
+        const ol = (ids.originalLanguage || '').toLowerCase();
+        if (ol && !langCodes.includes(ol)) continue;
+
         const key = (node.content && node.content.fullPath) || (ids.title + '|' + (isNaN(ids.tmdbId) ? '' : ids.tmdbId));
         if (!key || seenKeys.has(key)) continue;
         seenKeys.add(key);
@@ -821,7 +839,7 @@ async function fetchJustWatch(lang, kind) {
         contents.push(ids);
         added++;
       }
-      console.log('[JustWatch] ' + kindLabel + ' arrivals on ' + dateStr + ': ' + nodes.length + ' (' + added + ' new to us)');
+      console.log('[JustWatch] ' + kindLabel + ' arrivals on ' + dateStr + ': ' + nodes.length + ' (' + added + ' passed filters)');
     } catch (e) {
       lastErr = e;
       console.warn('[JustWatch] ' + dateStr + ' failed: ' + (e.message || '').slice(0, 150));
@@ -844,6 +862,8 @@ async function fetchJustWatch(lang, kind) {
       for (const e of edges) {
         if (e && e.node && e.node.content) {
           const c = e.node.content;
+          const ol = (c.originalLanguage || '').toLowerCase();
+          if (ol && !langCodes.includes(ol)) continue; // same language filter on fallback
           contents.push({
             title: (c.title || '').trim(),
             tmdbId: c.externalIds && c.externalIds.tmdbId ? parseInt(c.externalIds.tmdbId, 10) : NaN,
@@ -885,8 +905,10 @@ async function fetchJustWatch(lang, kind) {
       } catch (e) { console.warn('[JustWatch] Find failed for ' + c.imdbId + ': ' + e.message); }
     }
 
+    // Retry store is kind-correct (FIX: series retries belong in seriesCache)
+    const retryStore = kind === 'SHOW' ? seriesCache : movieCache;
     const retryKey = 'jw_' + kind.toLowerCase() + '_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
-    if (readCacheEntry(movieCache[retryKey]) === 'retry') continue;
+    if (readCacheEntry(retryStore[retryKey]) === 'retry') continue;
     try {
       let r = null;
       if (kind === 'SHOW') {
@@ -901,7 +923,7 @@ async function fetchJustWatch(lang, kind) {
       if (r && !seenIds.has(r.id)) { seenIds.add(r.id); resolved.push({ id: r.id, arrivalDate: c._arrivalDate, title: c.title, imdbId: c.imdbId, year: c.year }); }
       else {
         console.log('[JustWatch] "' + title + '" not on TMDB yet — will retry');
-        setRetry(movieCache, retryKey);
+        setRetry(retryStore, retryKey);
       }
     } catch (e) { console.warn('[JustWatch] Search failed for "' + title + '": ' + e.message); }
 
@@ -913,14 +935,12 @@ async function fetchJustWatch(lang, kind) {
 }
 
 // Unified day-0 entry point: MoN (official, exact timestamps) first, and
-// JustWatch ALWAYS runs as a multi-day safety net (it's free). This catches
-// titles MoN indexed late or missed entirely (Aha/SonyLIV regional lag).
-// Dedup by TMDB id — MoN's exact arrival timestamps win because it runs first.
+// JustWatch ALWAYS runs as a multi-day safety net. Dedup by TMDB id — MoN's
+// exact arrival timestamps win because it runs first.
 //
-// FIRST-RUN skip is MOVIES-ONLY: the 730-day TMDB rebuild covers everything
-// and combining both blew the workflow timeout. SERIES never skip — there is
-// no series rebuild, so day-0 is their only automatic source. (This was the
-// bug that made The Court sheet-dependent.)
+// FIRST-RUN skip is MOVIES-ONLY: the 730-day TMDB rebuild covers everything.
+// SERIES never skip — there is no series rebuild, so day-0 is their only
+// automatic source.
 async function fetchDay0Items(lang, kind) {
   const byId = new Map();
 
@@ -952,8 +972,7 @@ async function fetchDay0Items(lang, kind) {
 }
 
 // ── MOVIES: TMDB DISCOVER (FOUNDATION) ────────────────────────────────────────
-// maxPages scales with the lookback: the 90-day deep sweep needs 12 pages to
-// reach titles whose provider tags synced weeks after their release date.
+// maxPages scales with the lookback: the 90-day deep sweep needs 12 pages.
 async function discoverMovies(lang, lookbackDays, maxPages) {
   maxPages = maxPages || 5;
   const dateFrom = daysAgo(lookbackDays);
@@ -1071,7 +1090,7 @@ async function processSeriesJW(item, lang) {
     try {
       detail = await tmdb('/tv/' + tmdbId + '?language=en-US&append_to_response=watch/providers');
     } catch (e) {
-      if (!String(e.message).includes('HTTP 404')) throw e; // real errors propagate
+      if (!String(e.message).includes('HTTP 404')) throw e;
       console.log('[JW Series] TMDB ID ' + tmdbId + ' not found for "' + item.title + '" — re-resolving...');
     }
 
@@ -1294,8 +1313,6 @@ async function scrapeMovies(lang) {
     if (meta && meta.id && !processedImdbIds.has(meta.id) && !metas.some(m => m.id === meta.id)) {
       if (isNewDiscovery) {
         const arrivalDate = day0Item.arrivalDate || today();
-        // meta.releaseInfo = TMDB's release date (theatrical, or OTT date for
-        // direct-to-OTT). Genuine premieres are always recent by that measure.
         const tmdbDate    = meta.releaseInfo || arrivalDate;
         const ageMs       = Date.now() - new Date(tmdbDate).getTime();
         const isRerelease = !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
@@ -1324,9 +1341,8 @@ async function scrapeMovies(lang) {
   // --- STEP 2: TMDB AUTO-DISCOVER (Foundation) ---
   const key      = lang + '_movie';
   const isFirst  = !seen[key];
-  // ── FIX: deep sweep (00:01 IST run) uses a 90-day lookback so titles whose
-  // provider tags synced weeks after release (Varavu/Magudam class) are still
-  // inside the discover window. Lean runs keep 30 days. First run: 730 days.
+  // Deep sweep (00:01 IST run) uses a 90-day lookback so titles whose
+  // provider tags synced weeks after release are still discoverable.
   const isDeep   = isDeepSweepHour();
   const lookback = isFirst ? MOVIE_FIRST_RUN : (isDeep ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK);
   const discoverPages = isDeep ? 12 : 5;
@@ -1365,7 +1381,9 @@ async function scrapeMovies(lang) {
     }
 
     // SMART PATCH: already added by day-0/TMDB, BUT the Sheet has a more
-    // accurate OTT date! Overwrite the date, keep the rest of the metadata.
+    // accurate OTT date! FIX: append to the EXISTING description (meta objects
+    // have no raw overview/rating fields — rebuilding from them wiped the plot,
+    // platform and rating).
     if (checkId && processedImdbIds.has(checkId)) {
       const existingIndex = metas.findIndex(m => m.id === checkId);
       if (existingIndex !== -1) {
@@ -1373,11 +1391,10 @@ async function scrapeMovies(lang) {
 
         existingMeta.releaseInfo = item.date;
 
-        let desc = existingMeta.overview || '';
+        let desc = existingMeta.description || '';
         if (desc) desc += '\n\n';
-        if (item.platform) desc += '📺 Streaming on: ' + item.platform;
-        desc += '\n📅 OTT Release: ' + item.date;
-        if (existingMeta.rating) desc += '\n⭐ Rating: ' + Number(existingMeta.rating).toFixed(1) + '/10';
+        if (item.platform) desc += '📺 Streaming on: ' + item.platform + '\n';
+        desc += '📅 OTT Release: ' + item.date;
         existingMeta.description = desc.trim();
 
         console.log('[Sheet Patch] ✅ Updated OTT date for ' + item.title + ' to ' + item.date);
@@ -1554,7 +1571,6 @@ async function scrapeSeries(lang) {
     if (meta && meta.id && !processedImdbIds.has(meta.id) && !metas.some(m => m.id === meta.id)) {
       if (isNewDiscovery) {
         const arrivalDate = day0Item.arrivalDate || today();
-        // meta.releaseInfo = TMDB first_air_date (set in processSeriesJW)
         const firstAir    = meta.releaseInfo || arrivalDate;
         const ageMs       = Date.now() - new Date(firstAir).getTime();
         // New seasons of returning shows are always fresh content
@@ -1599,7 +1615,8 @@ async function scrapeSeries(lang) {
       }
     }
 
-    // SMART PATCH: already added by day-0, BUT the Sheet has the accurate OTT date
+    // SMART PATCH: already added by day-0, BUT the Sheet has the accurate OTT
+    // date. FIX: append to the EXISTING description (don't wipe plot/platform).
     if (checkId && processedImdbIds.has(checkId)) {
       const existingIndex = metas.findIndex(m => m.id === checkId);
       if (existingIndex !== -1) {
@@ -1607,11 +1624,10 @@ async function scrapeSeries(lang) {
 
         existingMeta.releaseInfo = item.date;
 
-        let desc = existingMeta.overview || '';
+        let desc = existingMeta.description || '';
         if (desc) desc += '\n\n';
-        if (item.platform) desc += '📺 Streaming on: ' + item.platform;
-        desc += '\n📅 OTT Release: ' + item.date;
-        if (existingMeta.rating) desc += '\n⭐ Rating: ' + Number(existingMeta.rating).toFixed(1) + '/10';
+        if (item.platform) desc += '📺 Streaming on: ' + item.platform + '\n';
+        desc += '📅 OTT Release: ' + item.date;
         existingMeta.description = desc.trim();
 
         console.log('[Sheet Patch] ✅ Updated OTT date for series ' + item.title + ' to ' + item.date);
