@@ -2,26 +2,30 @@
  * scraper.js — South Streams
  *
  * Movies  → Movie of the Night changes API (official day-0, primary)
- *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 5 days)
- *           → TMDB Auto-Discover (foundation) → Google Sheet (patch + gaps)
+ *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 7 days)
+ *           → TMDB Auto-Discover (foundation, 90d deep sweep) → Google Sheet
  * Series  → Movie of the Night changes API → JustWatch safety net
- *           → 91mobiles editorial lists (human-curated, regional platforms)
  *           → Google Sheet (patch + gaps)
  * Enrichment → TMDB / OMDb API (posters, descriptions, IMDb IDs)
  *
+ * SCHEDULING ARCHITECTURE (all times IST):
+ * - 00:01 run = DEEP SWEEP: MoN 3-day window (8 pages), JustWatch 7-day net,
+ *   TMDB Discover with 90-day lookback. Catches late-indexed regional titles
+ *   (Aha/SonyLIV/SunNXT lag) AND late-synced TMDB provider tags.
+ * - All other runs = LEAN: MoN since last fetch (2 pages), JustWatch net still
+ *   fires, TMDB Discover 30 days.
+ *
  * Day-0 vs renewal logic:
- * - MoN/JustWatch "new" changes include re-licenses, renewals and back-catalog
- *   acquisitions — NOT just premieres.
- * - A genuine first OTT release is always recent by its TMDB release date
- *   (Indian theatrical→OTT windows are 4–8 weeks). If the title's TMDB release
- *   date is older than RERELEASE_MAX_AGE_DAYS, the "new" arrival is treated as
- *   a renewal: kept in the catalogue, sorted by its ORIGINAL release date and
- *   labeled "♻️ Re-release" — so premieres always sit at the top.
+ * - "new" changes include re-licenses/renewals — a title whose TMDB release
+ *   date is older than RERELEASE_MAX_AGE_DAYS is labeled "♻️ Re-release" and
+ *   sorted by its ORIGINAL date, so premieres always sit at the top.
  * - New seasons (season >= 2) of returning shows are always fresh content.
  *
- * MoN scheduling: the 00:01 IST run sweeps DEEP (3 days) to catch titles MoN
- * indexed late (Aha/SonyLIV regional lag). Other runs are lean (since last
- * fetch). The JustWatch net runs on EVERY run regardless — it is free.
+ * FIRST-RUN behavior:
+ * - Movies: day-0 detection is SKIPPED (the 730-day TMDB rebuild covers
+ *   everything; combining both blew the workflow timeout).
+ * - Series: day-0 ALWAYS fires — there is no series rebuild, so day-0 is
+ *   the only automatic series source.
  */
 
 const https = require('https');
@@ -38,15 +42,15 @@ const BASE        = 'https://api.themoviedb.org/3';
 const IMG         = 'https://image.tmdb.org/t/p/';
 
 const JW_GRAPHQL_URL = 'https://apis.justwatch.com/graphql';
-const JW_DAYS_TO_SCAN = 3; // JustWatch safety-net window (days)
+const JW_DAYS_TO_SCAN = 7; // JustWatch safety-net window — covers missed runs & slow indexing
 
 const MON_CHANGES_URL = 'https://api.movieofthenight.com/v4/changes';
 
 const MOVIE_CACHE_FILE  = path.join(__dirname, '..', 'data', 'movies-cache.json');
 const SERIES_CACHE_FILE = path.join(__dirname, '..', 'data', 'series-cache.json');
-const ALERT_STATE_FILE  = path.join(__dirname, '..', 'data', 'alert-state.json'); // FIX(3)
 
-const MOVIE_LOOKBACK  = 30;
+const MOVIE_LOOKBACK  = 30;  // lean-run TMDB Discover window
+const MOVIE_DEEP_LOOKBACK = 90; // deep-sweep window — catches late provider-tag syncs
 const MOVIE_FIRST_RUN = 730;
 const SKIP_TTL        = 14 * 24 * 60 * 60 * 1000; // 14 days
 const RETRY_TTL       =  3 * 24 * 60 * 60 * 1000; //  3 days
@@ -60,7 +64,6 @@ const RERELEASE_MAX_AGE_DAYS = 90;
 let movieCache  = {};
 let seriesCache = {};
 let seen        = {}; // first-run flags + MoN fetch timestamps
-let alertState  = {}; // FIX(3): consecutive-failure streaks, persisted across runs
 let cacheDirty  = false;
 
 function loadCache() {
@@ -76,9 +79,6 @@ function loadCache() {
       seriesCache = raw._data || {};
       console.log('[Cache] Series: ' + Object.keys(seriesCache).length + ' entries');
     }
-    if (fs.existsSync(ALERT_STATE_FILE)) { // FIX(3)
-      alertState = JSON.parse(fs.readFileSync(ALERT_STATE_FILE, 'utf8')) || {};
-    }
   } catch (e) {
     console.warn('[Cache] Load failed: ' + e.message);
     movieCache = {}; seriesCache = {}; seen = {};
@@ -92,7 +92,6 @@ function saveCache() {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(MOVIE_CACHE_FILE,  JSON.stringify({ _data: movieCache,  _seen: seen }, null, 2));
     fs.writeFileSync(SERIES_CACHE_FILE, JSON.stringify({ _data: seriesCache }, null, 2));
-    fs.writeFileSync(ALERT_STATE_FILE, JSON.stringify(alertState)); // FIX(3)
     console.log('[Cache] Saved ' + Object.keys(movieCache).length + ' movies, ' + Object.keys(seriesCache).length + ' series');
     cacheDirty = false;
   } catch (e) {
@@ -142,30 +141,6 @@ async function sendAlert(message) {
       req.write(body); req.end();
     });
   } catch (e) { console.warn('[Alert] Failed: ' + e.message); }
-}
-
-// FIX(3): alert fatigue guard — only alert after FAIL_ALERT_THRESHOLD
-// CONSECUTIVE failures of the same component. Streaks persist across runs
-// via data/alert-state.json, and a recovery message fires once it heals.
-const FAIL_ALERT_THRESHOLD = 2;
-
-async function sendFailureAlert(key, message) {
-  const st = alertState[key] || { fails: 0, alerted: false };
-  st.fails += 1;
-  alertState[key] = st;
-  cacheDirty = true;
-  if (!st.alerted && st.fails >= FAIL_ALERT_THRESHOLD) {
-    st.alerted = true;
-    await sendAlert('⚠️ ' + message + ' (' + st.fails + ' consecutive failures)');
-  }
-}
-
-async function clearFailure(key) {
-  const st = alertState[key];
-  if (!st) return;
-  delete alertState[key];
-  cacheDirty = true;
-  if (st.alerted) await sendAlert('✅ Recovered: ' + key + ' is working again');
 }
 
 // ── HTTP ──────────────────────────────────────────────────────────────────────
@@ -268,28 +243,19 @@ const _M = {
   september:8,october:9,november:10,december:11
 };
 
-// FIX(2): calendar dates are Indian release dates — anchor them to IST
-// (UTC+5:30) so an evening IST premiere counts as released on its day even
-// though the GitHub runner's clock is UTC.
-const IST_OFFSET_MS = (5 * 60 + 30) * 60 * 1000;
-function istDate(y, mo, d) { return new Date(Date.UTC(y, mo, d) - IST_OFFSET_MS); }
-
-// Format an IST-based Date back to its IST calendar day (YYYY-MM-DD)
-function istDateString(d) { return new Date(d.getTime() + IST_OFFSET_MS).toISOString().slice(0, 10); }
-
 function parseAnyDate(s) {
   if (!s) return null;
   s = String(s).trim();
   if (/soon|tba|tbd|upcoming|expected|coming/i.test(s)) return null;
   let m;
   m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-  if (m) return istDate(+m[1], +m[2]-1, +m[3]);
+  if (m) return new Date(+m[1], +m[2]-1, +m[3]);
   m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
-  if (m) return istDate(+m[3], +m[2]-1, +m[1]);
+  if (m) return new Date(+m[3], +m[2]-1, +m[1]);
   m = s.match(/^(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)\s+(\d{4})$/);
-  if (m) { const mo = _M[m[2].toLowerCase()]; if (mo !== undefined) return istDate(+m[3], mo, +m[1]); }
+  if (m) { const mo = _M[m[2].toLowerCase()]; if (mo !== undefined) return new Date(+m[3], mo, +m[1]); }
   m = s.match(/^([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})$/);
-  if (m) { const mo = _M[m[1].toLowerCase()]; if (mo !== undefined) return istDate(+m[3], mo, +m[2]); }
+  if (m) { const mo = _M[m[1].toLowerCase()]; if (mo !== undefined) return new Date(+m[3], mo, +m[2]); }
   const d = new Date(s);
   return isNaN(d.getTime()) ? null : d;
 }
@@ -303,6 +269,12 @@ function isReleased(dateStr) {
 
 function daysAgo(n) { const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
 function today()    { return new Date().toISOString().slice(0,10); }
+
+// Deep-sweep window check — shared by MoN pages + TMDB lookback (00:01 IST run)
+function isDeepSweepHour() {
+  const h = new Date().getUTCHours();
+  return h >= 18 && h < 20;
+}
 
 // ── TITLE VARIATIONS ──────────────────────────────────────────────────────────
 function getTitleVariations(title) {
@@ -416,17 +388,16 @@ async function fetchSheetContent(filterLang, filterType) {
       if (!isReleased(dateRaw)) continue;
 
       const d = parseAnyDate(dateRaw);
-      const dateISO = d ? istDateString(d) : dateRaw; // FIX(2): IST calendar day
+      const dateISO = d ? d.toISOString().slice(0, 10) : dateRaw;
 
       items.push({ type, title, platform, date: dateISO, imdbId });
     }
 
     console.log('[Sheet] ' + items.length + ' released ' + filterLang + ' ' + filterType);
-    clearFailure('sheet').catch(() => {});
     return items;
   } catch (e) {
     console.warn('[Sheet] Failed: ' + e.message);
-    await sendFailureAlert('sheet', 'Google Sheet fetch failed: ' + e.message);
+    await sendAlert('Google Sheet fetch failed: ' + e.message);
     return [];
   }
 }
@@ -443,14 +414,12 @@ const monRawCache = { MOVIE: null, SHOW: null };
 
 // Window start: the 00:01 IST run sweeps DEEP (3 days) to catch titles MoN
 // indexed late (Aha/SonyLIV regional lag). All other runs are lean — only
-// fetching changes since the last successful fetch (~720 requests/month
-// against the 1,000 free budget).
+// fetching changes since the last successful fetch.
 function monWindowStart(kind) {
   const now = Date.now();
-  const utcHour = new Date().getUTCHours();
 
-  // DEEP SWEEP: the 00:01–01:30 IST runs (18:00–20:00 UTC) scan back 3 days.
-  if (utcHour >= 18 && utcHour < 20) return now - 3 * 86400 * 1000;
+  // DEEP SWEEP: the 00:01–01:29 IST runs (18:00–20:00 UTC) scan back 3 days.
+  if (isDeepSweepHour()) return now - 3 * 86400 * 1000;
 
   // First run ever: also deep
   const last = seen['mon_' + kind];
@@ -467,12 +436,18 @@ async function fetchMonRaw(kind) {
   const showType = kind === 'SHOW' ? 'series' : 'movie';
   const fromUnix = Math.floor(monWindowStart(kind) / 1000);
 
+  // ── FIX: dynamic page cap. Deep sweep: 8 pages (200 changes) — the old
+  // 4-page cap silently truncated the feed at 100, dropping titles that were
+  // pushed out by newer changes. Lean runs: 2 pages (50).
+  const maxPages = isDeepSweepHour() ? 8 : 2;
+  let truncated = false;
+
   const changes   = [];
   const showsById = {};
   let cursor  = null;
   let lastErr = null;
 
-  for (let page = 0; page < 4; page++) { // budget cap: 4 pages × 25 = 100 changes
+  for (let page = 0; page < maxPages; page++) {
     const params = new URLSearchParams({
       country: 'in',
       change_type: 'new',
@@ -503,7 +478,7 @@ async function fetchMonRaw(kind) {
         });
       }
 
-      // One-time field dump — verifies the show object shape (tmdbId? originalLanguage?)
+      // One-time field dump — verifies the show object shape
       if (page === 0 && showsList.length) {
         console.log('[MoN] Show fields available: ' + Object.keys(showsList[0]).join(', '));
       }
@@ -512,12 +487,17 @@ async function fetchMonRaw(kind) {
       for (const sh of showsList) if (sh && sh.id !== undefined) showsById[String(sh.id)] = sh;
 
       if (!data.hasMore || !data.nextCursor) break;
+      if (page === maxPages - 1) truncated = true; // hasMore true but we're out of pages
       cursor = data.nextCursor;
     } catch (e) {
       lastErr = e;
       console.warn('[MoN] ' + showType + ' page ' + (page + 1) + ' failed: ' + e.message);
       break;
     }
+  }
+
+  if (truncated) {
+    console.warn('[MoN] ⚠️ Feed truncated at ' + changes.length + ' changes — oldest changes in window dropped (JustWatch net covers them)');
   }
 
   if (!changes.length) {
@@ -599,10 +579,8 @@ async function resolveMonForLang(raw, lang, kind) {
     }
 
     // Path C: title + year search
-    // FIX(4): series retries belong in seriesCache, not movieCache
-    const retryStoreMon = kind === 'SHOW' ? seriesCache : movieCache;
     const retryKey = 'mon_' + kind.toLowerCase() + '_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
-    if (readCacheEntry(retryStoreMon[retryKey]) === 'retry') continue;
+    if (readCacheEntry(movieCache[retryKey]) === 'retry') continue;
     try {
       let r = null;
       if (kind === 'SHOW') {
@@ -617,7 +595,7 @@ async function resolveMonForLang(raw, lang, kind) {
       if (r && !seenIds.has(r.id)) { seenIds.add(r.id); items.push({ id: r.id, arrivalDate, title, imdbId, year, isNewSeason }); }
       else {
         console.log('[MoN] "' + title + '" not on TMDB yet — will retry');
-        setRetry(retryStoreMon, retryKey);
+        setRetry(movieCache, retryKey);
       }
     } catch (e) { console.warn('[MoN] Search failed for "' + title + '": ' + e.message); }
   }
@@ -879,7 +857,7 @@ async function fetchJustWatch(lang, kind) {
       console.log('[JustWatch] popularTitles fallback: ' + contents.length + ' titles');
     } catch (e) {
       console.warn('[JustWatch] popularTitles fallback also failed: ' + e.message);
-      await sendFailureAlert('justwatch', 'JustWatch failed: ' + e.message);
+      await sendAlert('JustWatch failed: ' + e.message);
       return [];
     }
   }
@@ -907,10 +885,8 @@ async function fetchJustWatch(lang, kind) {
       } catch (e) { console.warn('[JustWatch] Find failed for ' + c.imdbId + ': ' + e.message); }
     }
 
-    // FIX(4): series retries belong in seriesCache, not movieCache
-    const retryStoreJw = kind === 'SHOW' ? seriesCache : movieCache;
     const retryKey = 'jw_' + kind.toLowerCase() + '_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
-    if (readCacheEntry(retryStoreJw[retryKey]) === 'retry') continue;
+    if (readCacheEntry(movieCache[retryKey]) === 'retry') continue;
     try {
       let r = null;
       if (kind === 'SHOW') {
@@ -925,7 +901,7 @@ async function fetchJustWatch(lang, kind) {
       if (r && !seenIds.has(r.id)) { seenIds.add(r.id); resolved.push({ id: r.id, arrivalDate: c._arrivalDate, title: c.title, imdbId: c.imdbId, year: c.year }); }
       else {
         console.log('[JustWatch] "' + title + '" not on TMDB yet — will retry');
-        setRetry(retryStoreJw, retryKey);
+        setRetry(movieCache, retryKey);
       }
     } catch (e) { console.warn('[JustWatch] Search failed for "' + title + '": ' + e.message); }
 
@@ -933,7 +909,6 @@ async function fetchJustWatch(lang, kind) {
   }
 
   console.log('[JustWatch] Resolved ' + resolved.length + ' ' + kindLabel + ' to TMDB IDs');
-  clearFailure('justwatch').catch(() => {});
   return resolved;
 }
 
@@ -941,14 +916,16 @@ async function fetchJustWatch(lang, kind) {
 // JustWatch ALWAYS runs as a multi-day safety net (it's free). This catches
 // titles MoN indexed late or missed entirely (Aha/SonyLIV regional lag).
 // Dedup by TMDB id — MoN's exact arrival timestamps win because it runs first.
+//
+// FIRST-RUN skip is MOVIES-ONLY: the 730-day TMDB rebuild covers everything
+// and combining both blew the workflow timeout. SERIES never skip — there is
+// no series rebuild, so day-0 is their only automatic source. (This was the
+// bug that made The Court sheet-dependent.)
 async function fetchDay0Items(lang, kind) {
   const byId = new Map();
 
-  // FIRST RUN: the 730-day TMDB rebuild below covers everything — skip the
-  // day-0 machinery entirely to stay under the workflow time budget.
-  const kindKey = (kind === 'SHOW' ? lang + '_series' : lang + '_movie');
-  if (!seen[kindKey]) {
-    console.log('[Day0] FIRST RUN for ' + kindKey + ' — skipping day-0 detection (TMDB foundation covers it)');
+  if (kind !== 'SHOW' && !seen[lang + '_movie']) {
+    console.log('[Day0] FIRST RUN for ' + lang + '_movie — skipping day-0 detection (TMDB foundation covers it)');
     return [];
   }
 
@@ -970,34 +947,19 @@ async function fetchDay0Items(lang, kind) {
     console.warn('[Day0] JustWatch net failed: ' + e.message);
   }
 
-  // 91mobiles editorial lists — human-curated weekly + per-language pages.
-  // Strong coverage of regional platforms (SunNXT, Aha, Zee5, ManoramaMAX)
-  // that MoN/JustWatch index late. Zero new dependencies.
-  try {
-    const create91 = require('./source-91mobiles');
-    const src91 = create91({
-      fetchUrl, tmdb, parseAnyDate, isReleased, daysAgo,
-      readCacheEntry, setRetry, movieCache, seriesCache,
-      sendFailureAlert, clearFailure,
-    });
-    for (const it of await src91.fetch91Mobiles(lang, kind)) {
-      if (!byId.has(it.id)) byId.set(it.id, it);
-    }
-  } catch (e) {
-    console.warn('[Day0] 91mobiles source failed: ' + e.message);
-  }
-
   console.log('[Day0] Combined day-0 pool: ' + byId.size + ' titles');
   return Array.from(byId.values());
 }
 
 // ── MOVIES: TMDB DISCOVER (FOUNDATION) ────────────────────────────────────────
-
-async function discoverMovies(lang, lookbackDays) {
+// maxPages scales with the lookback: the 90-day deep sweep needs 12 pages to
+// reach titles whose provider tags synced weeks after their release date.
+async function discoverMovies(lang, lookbackDays, maxPages) {
+  maxPages = maxPages || 5;
   const dateFrom = daysAgo(lookbackDays);
   const results  = [];
 
-  for (let page = 1; page <= 5; page++) {
+  for (let page = 1; page <= maxPages; page++) {
     try {
       const data = await tmdb(
         '/discover/movie?with_original_language=' + lang +
@@ -1362,10 +1324,15 @@ async function scrapeMovies(lang) {
   // --- STEP 2: TMDB AUTO-DISCOVER (Foundation) ---
   const key      = lang + '_movie';
   const isFirst  = !seen[key];
-  const lookback = isFirst ? MOVIE_FIRST_RUN : MOVIE_LOOKBACK;
-  console.log('\n[Movies] ' + lang + ' TMDB | lookback: ' + lookback + 'd' + (isFirst ? ' (FIRST RUN)' : ''));
+  // ── FIX: deep sweep (00:01 IST run) uses a 90-day lookback so titles whose
+  // provider tags synced weeks after release (Varavu/Magudam class) are still
+  // inside the discover window. Lean runs keep 30 days. First run: 730 days.
+  const isDeep   = isDeepSweepHour();
+  const lookback = isFirst ? MOVIE_FIRST_RUN : (isDeep ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK);
+  const discoverPages = isDeep ? 12 : 5;
+  console.log('\n[Movies] ' + lang + ' TMDB | lookback: ' + lookback + 'd' + (isFirst ? ' (FIRST RUN)' : (isDeep ? ' (DEEP SWEEP)' : '')));
 
-  const tmdbItems = await discoverMovies(lang, lookback);
+  const tmdbItems = await discoverMovies(lang, lookback, discoverPages);
 
   for (let i = 0; i < tmdbItems.length; i++) {
     const meta = await processMovie(tmdbItems[i], lang);
@@ -1406,12 +1373,11 @@ async function scrapeMovies(lang) {
 
         existingMeta.releaseInfo = item.date;
 
-        // FIX(1): keep the existing description (plot + platform + rating) and
-        // append the accurate OTT date. Meta objects have no raw overview/
-        // rating fields — rebuilding from them wiped the whole description.
-        let desc = existingMeta.description || '';
+        let desc = existingMeta.overview || '';
         if (desc) desc += '\n\n';
-        desc += '📅 OTT Release: ' + item.date;
+        if (item.platform) desc += '📺 Streaming on: ' + item.platform;
+        desc += '\n📅 OTT Release: ' + item.date;
+        if (existingMeta.rating) desc += '\n⭐ Rating: ' + Number(existingMeta.rating).toFixed(1) + '/10';
         existingMeta.description = desc.trim();
 
         console.log('[Sheet Patch] ✅ Updated OTT date for ' + item.title + ' to ' + item.date);
@@ -1575,6 +1541,8 @@ async function scrapeSeries(lang) {
   const skipped = [];
 
   // --- STEP 1: DAY-0 DETECTION (MoN official + JustWatch always-on net) ---
+  // NOTE: series day-0 fires on EVERY run including the first — there is no
+  // series TMDB rebuild, so day-0 is the only automatic series source.
   console.log('\n[Series] Fetching ' + langLabel + ' series day-0 arrivals (MoN → JustWatch)...');
   const day0Items = await fetchDay0Items(lang, 'SHOW');
   for (const day0Item of day0Items) {
@@ -1639,12 +1607,11 @@ async function scrapeSeries(lang) {
 
         existingMeta.releaseInfo = item.date;
 
-        // FIX(1): keep the existing description (plot + platform + rating) and
-        // append the accurate OTT date. Meta objects have no raw overview/
-        // rating fields — rebuilding from them wiped the whole description.
-        let desc = existingMeta.description || '';
+        let desc = existingMeta.overview || '';
         if (desc) desc += '\n\n';
-        desc += '📅 OTT Release: ' + item.date;
+        if (item.platform) desc += '📺 Streaming on: ' + item.platform;
+        desc += '\n📅 OTT Release: ' + item.date;
+        if (existingMeta.rating) desc += '\n⭐ Rating: ' + Number(existingMeta.rating).toFixed(1) + '/10';
         existingMeta.description = desc.trim();
 
         console.log('[Sheet Patch] ✅ Updated OTT date for series ' + item.title + ' to ' + item.date);
@@ -1700,12 +1667,11 @@ async function scrapeMalayalam(type) {
   loadCache();
   try {
     const result = type === 'series' ? await scrapeSeries('ml') : await scrapeMovies('ml');
-    await clearFailure('malayalam_' + type);
     saveCache();
     return result;
   } catch (e) {
     console.error('[scrapeMalayalam] ' + e.message);
-    await sendFailureAlert('malayalam_' + type, 'Malayalam ' + type + ' failed: ' + e.message);
+    await sendAlert('Malayalam ' + type + ' failed: ' + e.message);
     saveCache(); return [];
   }
 }
@@ -1714,12 +1680,11 @@ async function scrapeTamil(type) {
   loadCache();
   try {
     const result = type === 'series' ? await scrapeSeries('ta') : await scrapeMovies('ta');
-    await clearFailure('tamil_' + type);
     saveCache();
     return result;
   } catch (e) {
     console.error('[scrapeTamil] ' + e.message);
-    await sendFailureAlert('tamil_' + type, 'Tamil ' + type + ' failed: ' + e.message);
+    await sendAlert('Tamil ' + type + ' failed: ' + e.message);
     saveCache(); return [];
   }
 }
