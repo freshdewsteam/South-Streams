@@ -10,28 +10,38 @@
  *           → 91mobiles editorial AJAX → Google Sheet (patch + gaps)
  * Enrichment → TMDB / OMDb API (posters, descriptions, IMDb IDs)
  *
- * SCHEDULING ARCHITECTURE (all times IST):
- * - 00:01 run = DEEP SWEEP: MoN 3-day window (8 pages), JustWatch 7-day net,
- *   91mobiles AJAX net, TMDB Discover with 90-day lookback (12 pages).
- * - All other runs = LEAN: MoN since last fetch (2 pages), JustWatch net,
- *   TMDB Discover 30 days. 91mobiles net deferred to the deep sweep.
+ * CUMULATIVE CATALOG: scrapeMovies/scrapeSeries SEED their catalogue from
+ * the persistent cache (language-verified entries only) at the start of
+ * every run. Without this, a lean run (30-day discover) rebuilds the
+ * catalogue from scratch and it SHRINKS to just the newest titles (the
+ * 120 → 10 collapse). With it, the catalogue only ever GROWS.
+ *
+ * DEEP-SWEEP FLAG: RUN_IS_DEEP is captured ONCE per process. A run that
+ * starts inside the deep-sweep window (00:01–01:30 IST) stays deep for its
+ * whole lifetime — the window previously expired mid-run, silently
+ * deferring the 91m net and downgrading TMDB discover.
+ *
+ * SCHEDULING (all times IST):
+ * - 00:01 run = DEEP SWEEP: MoN 3-day window (8 pages), JustWatch 7-day
+ *   net, 91mobiles AJAX net, TMDB Discover 90-day lookback (12 pages).
+ * - Other runs = LEAN: MoN since last fetch (2 pages), JustWatch net,
+ *   TMDB Discover 30 days. 91mobiles net deferred to deep sweeps.
  *
  * 91mobiles net (AJAX endpoint, verified via DevTools capture Sep 2026):
  * - list_ajax.php with server-side filters: language (28=Mal, 63=Tam),
- *   dubbedVal=notDubbed (dubbed titles excluded by 91mobiles themselves),
- *   sortBy=ottReleaseDate (newest premieres first).
- * - Cloudflare blocks GitHub runner IPs → ScraperAPI routes through
- *   residential IPs and solves the challenge. Response is JSON-wrapped:
+ *   dubbedVal=notDubbed, sortBy=ottReleaseDate (newest premieres first).
+ * - Cloudflare blocks GitHub runner IPs (HTTP 403 verified) → ScraperAPI
+ *   routes through residential IPs. Response is JSON-wrapped:
  *   { response: "<html>", TOTAL_RECORDS } — unwrapped before parsing.
  * - trustedPlatform bypass lets a title enter the catalog the SAME DAY,
  *   before TMDB's provider tags sync.
- * - Graceful degradation: all fetch attempts fail → returns [] → the other
- *   four nets carry on.
+ * - Graceful degradation: all fetch attempts fail → returns [] → other
+ *   nets carry on.
  *
  * Day-0 vs renewal logic:
  * - "new" changes include re-licenses/renewals — a title whose TMDB release
- *   date is older than RERELEASE_MAX_AGE_DAYS is labeled "♻️ Re-release" and
- *   sorted by its ORIGINAL date, so premieres always sit at the top.
+ *   date is older than RERELEASE_MAX_AGE_DAYS is labeled "♻️ Re-release"
+ *   and sorted by its ORIGINAL date, so premieres always sit at the top.
  * - New seasons (season >= 2) of returning shows are always fresh content.
  *
  * FIRST-RUN behavior:
@@ -288,11 +298,17 @@ function isReleased(dateStr) {
 function daysAgo(n) { const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
 function today()    { return new Date().toISOString().slice(0,10); }
 
-// Deep-sweep window check — shared by MoN pages + TMDB lookback + 91m net
+// Deep-sweep window check (00:01–01:30 IST run = 18:00–20:00 UTC)
 function isDeepSweepHour() {
   const h = new Date().getUTCHours();
   return h >= 18 && h < 20;
 }
+
+// ── FIX: captured ONCE per process — a run that STARTS in the deep-sweep
+// window stays deep for its whole lifetime. (The window previously expired
+// mid-run — a 19:59-started run crossed 20:00 while processing and silently
+// deferred the 91m net and downgraded TMDB discover.)
+const RUN_IS_DEEP = isDeepSweepHour();
 
 // ── TITLE VARIATIONS ──────────────────────────────────────────────────────────
 function getTitleVariations(title) {
@@ -427,7 +443,7 @@ const monRawCache = { MOVIE: null, SHOW: null };
 function monWindowStart(kind) {
   const now = Date.now();
 
-  if (isDeepSweepHour()) return now - 3 * 86400 * 1000;
+  if (RUN_IS_DEEP) return now - 3 * 86400 * 1000;
 
   const last = seen['mon_' + kind];
   if (!last || isNaN(last)) return now - 3 * 86400 * 1000;
@@ -443,7 +459,7 @@ async function fetchMonRaw(kind) {
   const fromUnix = Math.floor(monWindowStart(kind) / 1000);
 
   // Dynamic page cap: deep sweep 8 pages (200 changes), lean 2 pages (50)
-  const maxPages = isDeepSweepHour() ? 8 : 2;
+  const maxPages = RUN_IS_DEEP ? 8 : 2;
   let truncated = false;
 
   const changes   = [];
@@ -1194,7 +1210,7 @@ async function fetchDay0Items(lang, kind) {
 
   // 91mobiles net — human-curated editorial lists. Deep sweeps only (the
   // 00:01 IST run), since that's when regional-platform stragglers matter.
-  if (isDeepSweepHour()) {
+  if (RUN_IS_DEEP) {
     try {
       for (const it of await fetch91Mobiles(lang, kind)) {
         if (!byId.has(it.id)) byId.set(it.id, it);
@@ -1552,6 +1568,26 @@ async function scrapeMovies(lang) {
   const metas = [];
   const processedImdbIds = new Set();
 
+  // --- STEP 0: SEED THE CATALOGUE FROM THE PERSISTENT CACHE ---
+  // The catalogue is CUMULATIVE: every discovered title lives in movieCache
+  // under its lang-prefixed key with releaseInfo/platform already set.
+  // Without this seed, a lean run (30-day discover) rebuilds the catalogue
+  // from scratch and it SHRINKS to just the newest titles (120 → 10 collapse).
+  // Only language-verified meta entries are seeded; skip/retry memories are
+  // excluded automatically by readCacheEntry.
+  let seeded = 0;
+  for (const [cacheKey, val] of Object.entries(movieCache)) {
+    if (!cacheKey.startsWith(lang + '_')) continue;
+    const entry = readCacheEntry(val);
+    if (entry && typeof entry === 'object' && entry.id && entry.id.startsWith('tt') &&
+        entry.type === 'movie' && !processedImdbIds.has(entry.id)) {
+      metas.push(entry);
+      processedImdbIds.add(entry.id);
+      seeded++;
+    }
+  }
+  console.log('[Movies] ' + seeded + ' seeded from persistent cache');
+
   // --- STEP 1: DAY-0 DETECTION (MoN + JustWatch + 91m deep sweeps) ---
   console.log('\n[Movies] Fetching ' + langLabel + ' day-0 arrivals (MoN → JustWatch → 91m)...');
   const day0Items = await fetchDay0Items(lang, 'MOVIE');
@@ -1594,10 +1630,9 @@ async function scrapeMovies(lang) {
   const isFirst  = !seen[key];
   // Deep sweep (00:01 IST run) uses a 90-day lookback so titles whose
   // provider tags synced weeks after release are still discoverable.
-  const isDeep   = isDeepSweepHour();
-  const lookback = isFirst ? MOVIE_FIRST_RUN : (isDeep ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK);
-  const discoverPages = isDeep ? 12 : 5;
-  console.log('\n[Movies] ' + lang + ' TMDB | lookback: ' + lookback + 'd' + (isFirst ? ' (FIRST RUN)' : (isDeep ? ' (DEEP SWEEP)' : '')));
+  const lookback = isFirst ? MOVIE_FIRST_RUN : (RUN_IS_DEEP ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK);
+  const discoverPages = RUN_IS_DEEP ? 12 : 5;
+  console.log('\n[Movies] ' + lang + ' TMDB | lookback: ' + lookback + 'd' + (isFirst ? ' (FIRST RUN)' : (RUN_IS_DEEP ? ' (DEEP SWEEP)' : '')));
 
   const tmdbItems = await discoverMovies(lang, lookback, discoverPages);
 
@@ -1634,7 +1669,8 @@ async function scrapeMovies(lang) {
     // SMART PATCH: already added by day-0/TMDB, BUT the Sheet has a more
     // accurate OTT date! Append to the EXISTING description — meta objects
     // have no raw overview/rating fields, so rebuilding from them would wipe
-    // the plot, platform and rating.
+    // the plot, platform and rating. (The patch also persists across runs —
+    // the mutated object IS the cached object.)
     if (checkId && processedImdbIds.has(checkId)) {
       const existingIndex = metas.findIndex(m => m.id === checkId);
       if (existingIndex !== -1) {
@@ -1807,6 +1843,20 @@ async function scrapeSeries(lang) {
   const metas = [];
   const processedImdbIds = new Set();
   const skipped = [];
+
+  // --- STEP 0: SEED THE CATALOGUE FROM THE PERSISTENT CACHE ---
+  let seeded = 0;
+  for (const [cacheKey, val] of Object.entries(seriesCache)) {
+    if (!cacheKey.startsWith(lang + '_series_')) continue;
+    const entry = readCacheEntry(val);
+    if (entry && typeof entry === 'object' && entry.id && entry.id.startsWith('tt') &&
+        entry.type === 'series' && !processedImdbIds.has(entry.id)) {
+      metas.push(entry);
+      processedImdbIds.add(entry.id);
+      seeded++;
+    }
+  }
+  console.log('[Series] ' + seeded + ' seeded from persistent cache');
 
   // --- STEP 1: DAY-0 DETECTION (MoN + JustWatch + 91m deep sweeps) ---
   // NOTE: series day-0 fires on EVERY run including the first — there is no
