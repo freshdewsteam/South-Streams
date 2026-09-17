@@ -52,8 +52,8 @@ const JW_DAYS_TO_SCAN = 7; // JustWatch safety-net window — covers missed runs
 
 const MON_CHANGES_URL = 'https://api.movieofthenight.com/v4/changes';
 
-const MOVIE_CACHE_FILE  = path.join(__dirname, '..', 'data', 'movies-cache.json');
-const SERIES_CACHE_FILE = path.join(__dirname, '..', 'data', 'series-cache.json');
+const MOVIE_CACHE_FILE  = path.join(__dirname, 'data', 'movies-cache.json');
+const SERIES_CACHE_FILE = path.join(__dirname, 'data', 'series-cache.json');
 
 const MOVIE_LOOKBACK  = 30;  // lean-run TMDB Discover window
 const MOVIE_DEEP_LOOKBACK = 90; // deep-sweep window — catches late provider-tag syncs
