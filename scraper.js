@@ -15,12 +15,11 @@
  * - All other runs = LEAN: MoN since last fetch (2 pages), JustWatch net still
  *   fires, TMDB Discover 30 days.
  *
- * JustWatch pre-filters (zero TMDB cost):
+ * JustWatch pre-filter (zero TMDB cost):
  * - objectType check drops cross-type pollution (movies appearing in the SHOW
- *   feed and vice versa — Fast & Furious etc.)
- * - originalLanguage check drops wrong-language titles before any TMDB call.
- *   Accepts both ISO-639-1 (ml/ta) and ISO-639-3 (mal/tam) formats. The raw
- *   format is logged once per run for verification.
+ *   feed and vice versa — Fast & Furious etc.). NOTE: JustWatch has NO
+ *   originalLanguage field on content objects (verified via GraphQL error),
+ *   so language filtering happens at the TMDB guard stage.
  *
  * Day-0 vs renewal logic:
  * - "new" changes include re-licenses/renewals — a title whose TMDB release
@@ -591,6 +590,9 @@ async function resolveMonForLang(raw, lang, kind) {
 }
 
 // ── JUSTWATCH (ALWAYS-ON SAFETY NET — GraphQL newTitles) ──────────────────────
+// NOTE: JustWatch has NO originalLanguage field on content objects (verified
+// via GraphQL error). Language filtering happens at the TMDB guard stage.
+// The objectType field IS valid and is used to drop cross-type pollution.
 
 const JW_NEW_QUERY_MOVIE_RICH = `
 query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: TitleFilter, $first: Int!, $after: String) {
@@ -607,7 +609,6 @@ query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: Tit
             shortDescription
             fullPath
             originalReleaseYear
-            originalLanguage
             externalIds { imdbId tmdbId }
             isReleased
           }
@@ -632,7 +633,6 @@ query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: Tit
             shortDescription
             fullPath
             originalReleaseYear
-            originalLanguage
             externalIds { imdbId tmdbId }
             isReleased
           }
@@ -643,7 +643,6 @@ query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: Tit
                 title
                 fullPath
                 originalReleaseYear
-                originalLanguage
                 externalIds { imdbId tmdbId }
               }
             }
@@ -667,7 +666,6 @@ query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: Tit
           content(country: $country, language: $language) {
             title
             fullPath
-            originalLanguage
           }
         }
       }
@@ -688,14 +686,12 @@ query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: Tit
           content(country: $country, language: $language) {
             title
             fullPath
-            originalLanguage
           }
           ... on Season {
             show {
               content(country: $country, language: $language) {
                 title
                 fullPath
-                originalLanguage
               }
             }
           }
@@ -717,8 +713,6 @@ function extractJwIdentifiers(node, kind) {
       tmdbId: sc.externalIds && sc.externalIds.tmdbId ? parseInt(sc.externalIds.tmdbId, 10) : NaN,
       imdbId: sc.externalIds && sc.externalIds.imdbId ? sc.externalIds.imdbId : null,
       year: sc.originalReleaseYear || null,
-      originalLanguage: sc.originalLanguage || null,
-      objectType: node.objectType || null,
       isReleased: node.content ? node.content.isReleased !== false : true,
     };
   }
@@ -730,8 +724,6 @@ function extractJwIdentifiers(node, kind) {
     tmdbId: c.externalIds && c.externalIds.tmdbId ? parseInt(c.externalIds.tmdbId, 10) : NaN,
     imdbId: c.externalIds && c.externalIds.imdbId ? c.externalIds.imdbId : null,
     year: c.originalReleaseYear || null,
-    originalLanguage: c.originalLanguage || null,
-    objectType: node.objectType || null,
     isReleased: c.isReleased !== false,
   };
 }
@@ -784,7 +776,6 @@ query JwFetch($filter: TitleFilter!, $country: Country!, $language: Language!, $
           content(country: $country, language: $language) {
             title
             originalReleaseYear
-            originalLanguage
             fullPath
             externalIds { imdbId tmdbId }
           }
@@ -799,11 +790,6 @@ async function fetchJustWatch(lang, kind) {
   const contents  = [];
   const seenKeys  = new Set();
   let lastErr     = null;
-  let sampleLangLogged = false;
-
-  // Accept both ISO-639-1 ('ml'/'ta') and ISO-639-3 ('mal'/'tam') formats —
-  // JustWatch's Language enum format isn't documented, so we accept either.
-  const langCodes = lang === 'ml' ? ['ml', 'mal'] : ['ta', 'tam'];
 
   for (let d = 0; d < JW_DAYS_TO_SCAN; d++) {
     const dateStr = daysAgo(d);
@@ -811,26 +797,16 @@ async function fetchJustWatch(lang, kind) {
       const nodes = await jwNewTitlesForDate(dateStr, { objectTypes: [kind] }, kind);
       let added = 0;
       for (const node of nodes) {
-        // ── FREE PRE-FILTER 1: cross-type pollution ──
+        // ── FREE PRE-FILTER: cross-type pollution ──
         // JustWatch's SHOW feed contains MOVIE entries and vice versa.
+        // objectType is a valid field (verified) — drop mismatches here,
+        // saving 1-3 wasted TMDB calls per polluted entry.
         if (kind === 'SHOW' && node.objectType === 'MOVIE') continue;
         if (kind === 'MOVIE' && node.objectType && node.objectType !== 'MOVIE') continue;
 
         const ids = extractJwIdentifiers(node, kind);
         if (!ids || !ids.title) continue;
         if (!ids.isReleased) continue;
-
-        // Log the raw language format once, for verification
-        if (!sampleLangLogged && ids.originalLanguage) {
-          console.log('[JustWatch] Sample originalLanguage value: "' + ids.originalLanguage + '"');
-          sampleLangLogged = true;
-        }
-
-        // ── FREE PRE-FILTER 2: language ──
-        // Unknown language passes (TMDB's strict guard verifies it later);
-        // known wrong-language titles are dropped with ZERO TMDB calls.
-        const ol = (ids.originalLanguage || '').toLowerCase();
-        if (ol && !langCodes.includes(ol)) continue;
 
         const key = (node.content && node.content.fullPath) || (ids.title + '|' + (isNaN(ids.tmdbId) ? '' : ids.tmdbId));
         if (!key || seenKeys.has(key)) continue;
@@ -839,7 +815,7 @@ async function fetchJustWatch(lang, kind) {
         contents.push(ids);
         added++;
       }
-      console.log('[JustWatch] ' + kindLabel + ' arrivals on ' + dateStr + ': ' + nodes.length + ' (' + added + ' passed filters)');
+      console.log('[JustWatch] ' + kindLabel + ' arrivals on ' + dateStr + ': ' + nodes.length + ' (' + added + ' passed type filter)');
     } catch (e) {
       lastErr = e;
       console.warn('[JustWatch] ' + dateStr + ' failed: ' + (e.message || '').slice(0, 150));
@@ -862,8 +838,6 @@ async function fetchJustWatch(lang, kind) {
       for (const e of edges) {
         if (e && e.node && e.node.content) {
           const c = e.node.content;
-          const ol = (c.originalLanguage || '').toLowerCase();
-          if (ol && !langCodes.includes(ol)) continue; // same language filter on fallback
           contents.push({
             title: (c.title || '').trim(),
             tmdbId: c.externalIds && c.externalIds.tmdbId ? parseInt(c.externalIds.tmdbId, 10) : NaN,
@@ -905,7 +879,7 @@ async function fetchJustWatch(lang, kind) {
       } catch (e) { console.warn('[JustWatch] Find failed for ' + c.imdbId + ': ' + e.message); }
     }
 
-    // Retry store is kind-correct (FIX: series retries belong in seriesCache)
+    // Retry store is kind-correct: series retries belong in seriesCache
     const retryStore = kind === 'SHOW' ? seriesCache : movieCache;
     const retryKey = 'jw_' + kind.toLowerCase() + '_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
     if (readCacheEntry(retryStore[retryKey]) === 'retry') continue;
@@ -1381,9 +1355,9 @@ async function scrapeMovies(lang) {
     }
 
     // SMART PATCH: already added by day-0/TMDB, BUT the Sheet has a more
-    // accurate OTT date! FIX: append to the EXISTING description (meta objects
-    // have no raw overview/rating fields — rebuilding from them wiped the plot,
-    // platform and rating).
+    // accurate OTT date! Append to the EXISTING description — meta objects
+    // have no raw overview/rating fields, so rebuilding from them would wipe
+    // the plot, platform and rating.
     if (checkId && processedImdbIds.has(checkId)) {
       const existingIndex = metas.findIndex(m => m.id === checkId);
       if (existingIndex !== -1) {
@@ -1616,7 +1590,7 @@ async function scrapeSeries(lang) {
     }
 
     // SMART PATCH: already added by day-0, BUT the Sheet has the accurate OTT
-    // date. FIX: append to the EXISTING description (don't wipe plot/platform).
+    // date. Append to the EXISTING description (don't wipe plot/platform).
     if (checkId && processedImdbIds.has(checkId)) {
       const existingIndex = metas.findIndex(m => m.id === checkId);
       if (existingIndex !== -1) {
