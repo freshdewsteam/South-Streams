@@ -3,29 +3,25 @@
  *
  * Movies  → Movie of the Night changes API (official day-0, primary)
  *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 7 days)
- *           → 91mobiles editorial lists (human-curated, deep sweeps only)
+ *           → 91mobiles editorial AJAX (human-curated, deep sweeps only)
  *           → TMDB Auto-Discover (foundation, 90d deep sweep) → Google Sheet
  * Series  → Movie of the Night changes API → JustWatch safety net
- *           → 91mobiles editorial lists → Google Sheet (patch + gaps)
+ *           → 91mobiles editorial AJAX → Google Sheet (patch + gaps)
  * Enrichment → TMDB / OMDb API (posters, descriptions, IMDb IDs)
  *
  * SCHEDULING ARCHITECTURE (all times IST):
  * - 00:01 run = DEEP SWEEP: MoN 3-day window (8 pages), JustWatch 7-day net,
- *   91mobiles editorial net, TMDB Discover with 90-day lookback (12 pages).
+ *   91mobiles AJAX net, TMDB Discover with 90-day lookback (12 pages).
  * - All other runs = LEAN: MoN since last fetch (2 pages), JustWatch net,
  *   TMDB Discover 30 days. 91mobiles net deferred to the deep sweep.
  *
- * JustWatch pre-filter (zero TMDB cost):
- * - objectType check drops cross-type pollution (movies in the SHOW feed and
- *   vice versa). NOTE: JustWatch has NO originalLanguage field on content
- *   objects (verified via GraphQL error) — language filtering happens at the
- *   TMDB guard stage.
- *
- * 91mobiles net:
- * - Human-curated editorial lists (server-rendered HTML, verified Sep 2026).
- *   Catches regional-platform premieres (Aha, SonyLIV, SunNXT, ManoramaMAX)
- *   that MoN/JustWatch index late. The trustedPlatform bypass lets a title
- *   enter the catalog the SAME DAY, before TMDB's provider tags sync.
+ * 91mobiles net (AJAX endpoint, verified via DevTools capture Sep 2026):
+ * - list_ajax.php with server-side filters: language (28=Mal, 63=Tam),
+ *   dubbedVal=notDubbed (dubbed titles excluded by 91mobiles themselves),
+ *   sortBy=ottReleaseDate (newest premieres first).
+ * - Falls back to the server-rendered HTML page if the AJAX call fails.
+ * - trustedPlatform bypass lets a title enter the catalog the SAME DAY,
+ *   before TMDB's provider tags sync.
  * - Graceful degradation: Cloudflare block or redesign → returns [] → the
  *   other four nets carry on.
  *
@@ -40,6 +36,10 @@
  *   everything; combining both blew the workflow timeout).
  * - Series: day-0 ALWAYS fires — there is no series rebuild, so day-0 is
  *   the only automatic series source.
+ *
+ * CACHE PATHS: scraper.js lives at the REPO ROOT, so the data dir is a
+ * direct sibling (__dirname/data) — NO '..' (that wrote outside the repo,
+ * which is why the caches never committed for weeks).
  */
 
 const https = require('https');
@@ -60,6 +60,8 @@ const JW_DAYS_TO_SCAN = 7; // JustWatch safety-net window — covers missed runs
 
 const MON_CHANGES_URL = 'https://api.movieofthenight.com/v4/changes';
 
+// ── FIX: no '..' — scraper.js is at the repo root, data/ is a direct sibling.
+// (The old '..' path wrote OUTSIDE the repo, so these caches never committed.)
 const MOVIE_CACHE_FILE  = path.join(__dirname, 'data', 'movies-cache.json');
 const SERIES_CACHE_FILE = path.join(__dirname, 'data', 'series-cache.json');
 
@@ -283,7 +285,7 @@ function isReleased(dateStr) {
 function daysAgo(n) { const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
 function today()    { return new Date().toISOString().slice(0,10); }
 
-// Deep-sweep window check — shared by MoN pages + TMDB lookback (00:01 IST run)
+// Deep-sweep window check — shared by MoN pages + TMDB lookback + 91m net
 function isDeepSweepHour() {
   const h = new Date().getUTCHours();
   return h >= 18 && h < 20;
@@ -419,9 +421,6 @@ async function fetchSheetContent(filterLang, filterType) {
 
 const monRawCache = { MOVIE: null, SHOW: null };
 
-// Window start: the 00:01 IST run sweeps DEEP (3 days) to catch titles MoN
-// indexed late (Aha/SonyLIV regional lag). All other runs are lean — only
-// fetching changes since the last successful fetch.
 function monWindowStart(kind) {
   const now = Date.now();
 
@@ -440,8 +439,7 @@ async function fetchMonRaw(kind) {
   const showType = kind === 'SHOW' ? 'series' : 'movie';
   const fromUnix = Math.floor(monWindowStart(kind) / 1000);
 
-  // Dynamic page cap: deep sweep 8 pages (200 changes) — the old 4-page cap
-  // silently truncated the feed. Lean runs: 2 pages (50).
+  // Dynamic page cap: deep sweep 8 pages (200 changes), lean 2 pages (50)
   const maxPages = isDeepSweepHour() ? 8 : 2;
   let truncated = false;
 
@@ -487,7 +485,7 @@ async function fetchMonRaw(kind) {
       for (const sh of showsList) if (sh && sh.id !== undefined) showsById[String(sh.id)] = sh;
 
       if (!data.hasMore || !data.nextCursor) break;
-      if (page === maxPages - 1) truncated = true; // hasMore true but out of pages
+      if (page === maxPages - 1) truncated = true;
       cursor = data.nextCursor;
     } catch (e) {
       lastErr = e;
@@ -547,20 +545,17 @@ async function resolveMonForLang(raw, lang, kind) {
       ? new Date(ch.timestamp * 1000).toISOString().slice(0, 10)
       : today();
 
-    // Season ≥2 change = returning show's new season → always fresh content
     const isNewSeason = ch.itemType === 'season' && (ch.season || 0) >= 2;
 
     const tmdbId = (sh.tmdbId !== undefined && sh.tmdbId !== null) ? parseInt(sh.tmdbId, 10) : NaN;
     const imdbId = sh.imdbId || null;
     const year   = sh.releaseYear || null;
 
-    // Path A: TMDB ID provided directly
     if (!isNaN(tmdbId) && tmdbId > 0) {
       if (!seenIds.has(tmdbId)) { seenIds.add(tmdbId); items.push({ id: tmdbId, arrivalDate, title, imdbId, year, isNewSeason }); }
       continue;
     }
 
-    // Path B: IMDb ID → TMDB /find
     if (imdbId) {
       try {
         const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
@@ -570,7 +565,6 @@ async function resolveMonForLang(raw, lang, kind) {
       } catch (e) { console.warn('[MoN] Find failed for ' + imdbId + ': ' + e.message); }
     }
 
-    // Path C: title + year search (retry store is kind-correct)
     const retryStore = kind === 'SHOW' ? seriesCache : movieCache;
     const retryKey = 'mon_' + kind.toLowerCase() + '_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
     if (readCacheEntry(retryStore[retryKey]) === 'retry') continue;
@@ -806,7 +800,6 @@ async function fetchJustWatch(lang, kind) {
       let added = 0;
       for (const node of nodes) {
         // ── FREE PRE-FILTER: cross-type pollution ──
-        // JustWatch's SHOW feed contains MOVIE entries and vice versa.
         if (kind === 'SHOW' && node.objectType === 'MOVIE') continue;
         if (kind === 'MOVIE' && node.objectType && node.objectType !== 'MOVIE') continue;
 
@@ -885,7 +878,6 @@ async function fetchJustWatch(lang, kind) {
       } catch (e) { console.warn('[JustWatch] Find failed for ' + c.imdbId + ': ' + e.message); }
     }
 
-    // Retry store is kind-correct: series retries belong in seriesCache
     const retryStore = kind === 'SHOW' ? seriesCache : movieCache;
     const retryKey = 'jw_' + kind.toLowerCase() + '_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
     if (readCacheEntry(retryStore[retryKey]) === 'retry') continue;
@@ -914,26 +906,18 @@ async function fetchJustWatch(lang, kind) {
   return resolved;
 }
 
-// ── 91MOBILES (HUMAN-CURATED EDITORIAL NET) ──────────────────────────────────
-// Scrapes 91mobiles.com entertainment list pages (server-rendered HTML,
-// verified via view-source, Sep 2026). Editors maintain these lists by hand,
-// so they catch regional-platform premieres (Aha, SonyLIV, SunNXT,
-// ManoramaMAX) that MoN/JustWatch index late.
-//
-// Parsing contract (verified against live HTML):
-// - Each item is a <div class="pro_item ..."> block
-// - Title from the title="" attribute on the title link
-// - Meta line "Malayalam | 2h 23min | 11 Sep 2026 (OTT)" — the literal (OTT)
-//   marker separates streaming premieres from theatrical releases
-// - Language MUST match the target (the page mixes in dubbed/other-language
-//   titles — this is the filter that removes them)
-// - Platform(s) follow the "Where To Stream" label, with deep links
-//
-// Limits: only ~24 server-rendered items per page (popularity-sorted, covers
-// 2+ months). Cloudflare may block GitHub runners — failures alert and
-// return [] without breaking the run.
+// ── 91MOBILES (HUMAN-CURATED EDITORIAL NET — AJAX endpoint) ──────────────────
+// Verified via DevTools capture (Sep 2026): the "Load more" button calls
+// list_ajax.php with server-side filters:
+//   qp=contentTypes:movie~languages:28  → type + language (28=Mal, 63=Tam)
+//   dubbedVal=notDubbed                 → dubbed titles excluded server-side
+//   sortBy=ottReleaseDate               → newest OTT premieres first
+// Beats scraping the HTML page: 91mobiles filters dubbed/wrong-language titles
+// itself, and the sort puts fresh premieres at the top.
 
-const M91_BASE = 'https://www.91mobiles.com/entertainment/';
+const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
+const M91_PAGE_URL = 'https://www.91mobiles.com/entertainment/';
+const M91_LANG_ID  = { ml: 28, ta: 63 };   // verified from the site's filter checkboxes
 const M91_LOOKBACK_DAYS = 7;
 const M91_PAGES = {
   ml: { movie: 'new-malayalam-movies',    series: 'new-malayalam-web-series' },
@@ -956,16 +940,58 @@ function m91StripTags(html) {
     .trim();
 }
 
-async function m91FetchPage(slug) {
-  const html = await fetchUrl(M91_BASE + slug, {
+function m91FetchHeaders() {
+  return {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml',
+    'Accept': 'text/html, */*; q=0.01',
     'Accept-Language': 'en-US,en;q=0.9',
-  });
+    'X-Requested-With': 'XMLHttpRequest',   // mimics the site's own jQuery AJAX
+    'Referer': 'https://www.91mobiles.com/entertainment/',
+  };
+}
+
+// Fetch items via the AJAX endpoint (verified parameters). Falls back to the
+// server-rendered HTML page if the AJAX call fails — different endpoints can
+// have different Cloudflare rules.
+async function m91FetchItems(slug, kind, lang) {
+  const isShow = kind === 'SHOW';
+
+  // Attempt 1: AJAX endpoint with the site's own verified parameters
+  try {
+    const params = new URLSearchParams({
+      qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
+      sortOrder: 'desc',
+      sortBy: 'ottReleaseDate',   // newest OTT premieres first (site's own sort option)
+      start: '1',
+      seoSlug: '/' + slug,
+      pType: slug,
+      dubbedVal: 'notDubbed',
+      type: 'loadmore'
+    });
+    let body = await fetchUrl(M91_AJAX_URL + '?' + params.toString(), m91FetchHeaders());
+    if (/challenge-platform|Just a moment|Attention Required/i.test(body)) {
+      throw new Error('Cloudflare challenge on AJAX endpoint');
+    }
+    // Response may be raw HTML fragments or JSON-wrapped HTML — normalize so
+    // the pro_item regexes work either way.
+    if (!/<div\s+class="?pro_item/.test(body) && body.trim().startsWith('{')) {
+      body = body.replace(/\\"/g, '"').replace(/\\u003C/gi, '<').replace(/\\u003E/gi, '>').replace(/\\n/g, '\n');
+    }
+    if (!/<div\s+class="?pro_item/.test(body)) {
+      throw new Error('No pro_item blocks in AJAX response');
+    }
+    console.log('[91m] AJAX fetch OK: ' + slug);
+    return body;
+  } catch (ajaxErr) {
+    console.warn('[91m] AJAX attempt failed: ' + ajaxErr.message + ' — trying HTML page fallback');
+  }
+
+  // Attempt 2: the server-rendered HTML page (original method)
+  const html = await fetchUrl(M91_PAGE_URL + slug, m91FetchHeaders());
   if (/challenge-platform|Just a moment|Attention Required/i.test(html)) {
     throw new Error('Cloudflare challenge page received');
   }
-  if (!/class="pro_item/.test(html)) {
+  if (!/class="?pro_item/.test(html)) {
     throw new Error('No item blocks found (site redesigned?)');
   }
   return html;
@@ -973,9 +999,8 @@ async function m91FetchPage(slug) {
 
 function m91ParsePage(html, langLabel, requireOttMarker) {
   const items = [];
-  // Split into per-item blocks. NOTE: the real HTML has irregular spacing in
-  // "<div  class=" — \s+ handles it.
-  const blocks = html.split(/<div\s+class="pro_item/).slice(1);
+  // Split into per-item blocks. \s+ handles the site's irregular "<div  class="
+  const blocks = html.split(/<div\s+class="?pro_item/).slice(1);
 
   for (const block of blocks) {
     // Title — cleanest source is the title="" attribute (no cert suffix)
@@ -989,7 +1014,7 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
     if (!metaMatch) continue;
     const meta = m91StripTags(metaMatch[1]);
 
-    // Language filter — THE dubbed-content killer. Meta language must match.
+    // Language filter — defense in depth (the AJAX already filters server-side)
     const parts = meta.split('|').map(p => p.trim());
     const itemLang = (parts[0] || '').toLowerCase();
     if (itemLang !== langLabel) continue;
@@ -1033,10 +1058,10 @@ async function fetch91Mobiles(lang, kind) {
   if (!slug) return [];
 
   try {
-    const html = await m91FetchPage(slug);
-    // Movie pages mix in theatrical releases → require the (OTT) marker.
-    // Series pages are web-series lists by definition → marker not required.
-    const items = m91ParsePage(html, M91_LANG_LABEL[lang], !isShow);
+    const body = await m91FetchItems(slug, kind, lang);
+    // Movie pages/endpoints mix in theatrical releases → require the (OTT)
+    // marker. Series endpoints are web-series lists by definition.
+    const items = m91ParsePage(body, M91_LANG_LABEL[lang], !isShow);
     console.log('[91m] ' + slug + ': ' + items.length + ' fresh ' + (isShow ? 'series' : 'movie') + ' item(s)');
 
     const resolved = [];
