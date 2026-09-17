@@ -3,23 +3,31 @@
  *
  * Movies  → Movie of the Night changes API (official day-0, primary)
  *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 7 days)
+ *           → 91mobiles editorial lists (human-curated, deep sweeps only)
  *           → TMDB Auto-Discover (foundation, 90d deep sweep) → Google Sheet
  * Series  → Movie of the Night changes API → JustWatch safety net
- *           → Google Sheet (patch + gaps)
+ *           → 91mobiles editorial lists → Google Sheet (patch + gaps)
  * Enrichment → TMDB / OMDb API (posters, descriptions, IMDb IDs)
  *
  * SCHEDULING ARCHITECTURE (all times IST):
  * - 00:01 run = DEEP SWEEP: MoN 3-day window (8 pages), JustWatch 7-day net,
- *   TMDB Discover with 90-day lookback (12 pages). Catches late-indexed
- *   regional titles (Aha/SonyLIV/SunNXT lag) AND late-synced provider tags.
- * - All other runs = LEAN: MoN since last fetch (2 pages), JustWatch net still
- *   fires, TMDB Discover 30 days.
+ *   91mobiles editorial net, TMDB Discover with 90-day lookback (12 pages).
+ * - All other runs = LEAN: MoN since last fetch (2 pages), JustWatch net,
+ *   TMDB Discover 30 days. 91mobiles net deferred to the deep sweep.
  *
  * JustWatch pre-filter (zero TMDB cost):
- * - objectType check drops cross-type pollution (movies appearing in the SHOW
- *   feed and vice versa — Fast & Furious etc.). NOTE: JustWatch has NO
- *   originalLanguage field on content objects (verified via GraphQL error),
- *   so language filtering happens at the TMDB guard stage.
+ * - objectType check drops cross-type pollution (movies in the SHOW feed and
+ *   vice versa). NOTE: JustWatch has NO originalLanguage field on content
+ *   objects (verified via GraphQL error) — language filtering happens at the
+ *   TMDB guard stage.
+ *
+ * 91mobiles net:
+ * - Human-curated editorial lists (server-rendered HTML, verified Sep 2026).
+ *   Catches regional-platform premieres (Aha, SonyLIV, SunNXT, ManoramaMAX)
+ *   that MoN/JustWatch index late. The trustedPlatform bypass lets a title
+ *   enter the catalog the SAME DAY, before TMDB's provider tags sync.
+ * - Graceful degradation: Cloudflare block or redesign → returns [] → the
+ *   other four nets carry on.
  *
  * Day-0 vs renewal logic:
  * - "new" changes include re-licenses/renewals — a title whose TMDB release
@@ -52,8 +60,8 @@ const JW_DAYS_TO_SCAN = 7; // JustWatch safety-net window — covers missed runs
 
 const MON_CHANGES_URL = 'https://api.movieofthenight.com/v4/changes';
 
-const MOVIE_CACHE_FILE  = path.join(__dirname, 'data', 'movies-cache.json');
-const SERIES_CACHE_FILE = path.join(__dirname, 'data', 'series-cache.json');
+const MOVIE_CACHE_FILE  = path.join(__dirname, '..', 'data', 'movies-cache.json');
+const SERIES_CACHE_FILE = path.join(__dirname, '..', 'data', 'series-cache.json');
 
 const MOVIE_LOOKBACK  = 30;  // lean-run TMDB Discover window
 const MOVIE_DEEP_LOOKBACK = 90; // deep-sweep window — catches late provider-tag syncs
@@ -799,8 +807,6 @@ async function fetchJustWatch(lang, kind) {
       for (const node of nodes) {
         // ── FREE PRE-FILTER: cross-type pollution ──
         // JustWatch's SHOW feed contains MOVIE entries and vice versa.
-        // objectType is a valid field (verified) — drop mismatches here,
-        // saving 1-3 wasted TMDB calls per polluted entry.
         if (kind === 'SHOW' && node.objectType === 'MOVIE') continue;
         if (kind === 'MOVIE' && node.objectType && node.objectType !== 'MOVIE') continue;
 
@@ -908,9 +914,193 @@ async function fetchJustWatch(lang, kind) {
   return resolved;
 }
 
+// ── 91MOBILES (HUMAN-CURATED EDITORIAL NET) ──────────────────────────────────
+// Scrapes 91mobiles.com entertainment list pages (server-rendered HTML,
+// verified via view-source, Sep 2026). Editors maintain these lists by hand,
+// so they catch regional-platform premieres (Aha, SonyLIV, SunNXT,
+// ManoramaMAX) that MoN/JustWatch index late.
+//
+// Parsing contract (verified against live HTML):
+// - Each item is a <div class="pro_item ..."> block
+// - Title from the title="" attribute on the title link
+// - Meta line "Malayalam | 2h 23min | 11 Sep 2026 (OTT)" — the literal (OTT)
+//   marker separates streaming premieres from theatrical releases
+// - Language MUST match the target (the page mixes in dubbed/other-language
+//   titles — this is the filter that removes them)
+// - Platform(s) follow the "Where To Stream" label, with deep links
+//
+// Limits: only ~24 server-rendered items per page (popularity-sorted, covers
+// 2+ months). Cloudflare may block GitHub runners — failures alert and
+// return [] without breaking the run.
+
+const M91_BASE = 'https://www.91mobiles.com/entertainment/';
+const M91_LOOKBACK_DAYS = 7;
+const M91_PAGES = {
+  ml: { movie: 'new-malayalam-movies',    series: 'new-malayalam-web-series' },
+  ta: { movie: 'new-tamil-movies',        series: 'new-tamil-web-series' },
+};
+const M91_LANG_LABEL = { ml: 'malayalam', ta: 'tamil' };
+
+function m91StripTags(html) {
+  return String(html)
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#0*39;|&apos;/gi, "'")
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => String.fromCharCode(parseInt(d, 10)))
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+async function m91FetchPage(slug) {
+  const html = await fetchUrl(M91_BASE + slug, {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml',
+    'Accept-Language': 'en-US,en;q=0.9',
+  });
+  if (/challenge-platform|Just a moment|Attention Required/i.test(html)) {
+    throw new Error('Cloudflare challenge page received');
+  }
+  if (!/class="pro_item/.test(html)) {
+    throw new Error('No item blocks found (site redesigned?)');
+  }
+  return html;
+}
+
+function m91ParsePage(html, langLabel, requireOttMarker) {
+  const items = [];
+  // Split into per-item blocks. NOTE: the real HTML has irregular spacing in
+  // "<div  class=" — \s+ handles it.
+  const blocks = html.split(/<div\s+class="pro_item/).slice(1);
+
+  for (const block of blocks) {
+    // Title — cleanest source is the title="" attribute (no cert suffix)
+    const tMatch = block.match(/<a[^>]+title="([^"]+)"[^>]*class="txt-white/);
+    if (!tMatch) continue;
+    const title = tMatch[1].trim();
+    if (!title || title.length > 150) continue;
+
+    // Meta line: "Language | 2h 23min | 11 Sep 2026 (OTT)"
+    const metaMatch = block.match(/<p class="d-in-block f-s-m">([^<]+)<\/p>/);
+    if (!metaMatch) continue;
+    const meta = m91StripTags(metaMatch[1]);
+
+    // Language filter — THE dubbed-content killer. Meta language must match.
+    const parts = meta.split('|').map(p => p.trim());
+    const itemLang = (parts[0] || '').toLowerCase();
+    if (itemLang !== langLabel) continue;
+
+    const dateMatch = meta.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+    if (!dateMatch) continue;
+    const date = parseAnyDate(dateMatch[0]);
+    if (!date) continue;
+    if (!isReleased(date)) continue; // upcoming → skip
+    const ageDays = (Date.now() - date.getTime()) / 86400000;
+    if (ageDays > M91_LOOKBACK_DAYS) continue; // too old for this net
+
+    const isOtt = /\(OTT\)/i.test(meta);
+    if (requireOttMarker && !isOtt) continue; // theatrical release → skip
+
+    // Platforms: the deep-link divs after the "Where To Stream" label
+    const platforms = [];
+    const wtsIdx = block.indexOf('Where To Stream');
+    if (wtsIdx !== -1) {
+      const tail = block.slice(wtsIdx, wtsIdx + 2000);
+      const pRe = /<div[^>]*class="[^"]*target_link_ext[^"]*"[^>]*>([^<]+)</g;
+      let pm;
+      while ((pm = pRe.exec(tail)) !== null) {
+        const name = pm[1].trim();
+        if (name && !platforms.includes(name)) platforms.push(name);
+      }
+    }
+
+    const bodyText = m91StripTags(block);
+    const isNewSeason = /\bnew season\b|\bnew episode\b/i.test(bodyText);
+
+    items.push({ title, date, year: dateMatch[3], platform: platforms.join(', '), isNewSeason });
+  }
+
+  return items;
+}
+
+async function fetch91Mobiles(lang, kind) {
+  const isShow = kind === 'SHOW';
+  const slug = M91_PAGES[lang] && M91_PAGES[lang][isShow ? 'series' : 'movie'];
+  if (!slug) return [];
+
+  try {
+    const html = await m91FetchPage(slug);
+    // Movie pages mix in theatrical releases → require the (OTT) marker.
+    // Series pages are web-series lists by definition → marker not required.
+    const items = m91ParsePage(html, M91_LANG_LABEL[lang], !isShow);
+    console.log('[91m] ' + slug + ': ' + items.length + ' fresh ' + (isShow ? 'series' : 'movie') + ' item(s)');
+
+    const resolved = [];
+    const seenIds = new Set();
+
+    for (const item of items) {
+      const retryStore = isShow ? seriesCache : movieCache;
+      const retryKey = '91m_' + kind.toLowerCase() + '_' + item.title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
+      if (readCacheEntry(retryStore[retryKey]) === 'retry') continue;
+
+      try {
+        const endpoint = isShow ? '/search/tv?query=' : '/search/movie?query=';
+        let r = null;
+        // Search WITHOUT year first — the OTT year ≠ release year for titles
+        // with long theatrical→OTT windows. Validate by language/region instead
+        // of trusting the top hit (generic names like "Akka", "The Court").
+        for (const v of getTitleVariations(item.title)) {
+          try {
+            const data = await tmdb(endpoint + encodeURIComponent(v) + '&language=en-US&page=1');
+            const candidates = (data.results || []).filter(x =>
+              x.original_language === lang ||
+              (Array.isArray(x.origin_country) && x.origin_country.includes('IN'))
+            );
+            if (candidates.length) { r = candidates[0]; break; }
+          } catch (e) {}
+          await new Promise(res => setTimeout(res, 100));
+        }
+
+        if (r && !seenIds.has(r.id)) {
+          seenIds.add(r.id);
+          resolved.push({
+            id: r.id,
+            arrivalDate: item.date.toISOString().slice(0, 10),
+            title: item.title,
+            imdbId: null,
+            year: item.year,
+            isNewSeason: item.isNewSeason,
+            // 91m verified the platform with a deep link BEFORE TMDB syncs
+            // its provider tags — processMovie trusts this for true day-0.
+            trustedPlatform: item.platform || undefined,
+          });
+          console.log('[91m OK] ' + item.title + ' -> TMDB ' + r.id + (item.platform ? ' on ' + item.platform : '') + ' (OTT ' + item.date.toISOString().slice(0, 10) + ')');
+        } else {
+          console.log('[91m] "' + item.title + '" not on TMDB yet — will retry');
+          setRetry(retryStore, retryKey);
+        }
+      } catch (e) {
+        console.warn('[91m] TMDB search failed for "' + item.title + '": ' + e.message);
+      }
+      await new Promise(res => setTimeout(res, 120));
+    }
+
+    return resolved;
+  } catch (e) {
+    console.warn('[91m] ' + slug + ' failed: ' + e.message);
+    await sendAlert('91mobiles net failed: ' + e.message + ' (other nets unaffected)');
+    return [];
+  }
+}
+
 // Unified day-0 entry point: MoN (official, exact timestamps) first, and
-// JustWatch ALWAYS runs as a multi-day safety net. Dedup by TMDB id — MoN's
-// exact arrival timestamps win because it runs first.
+// JustWatch ALWAYS runs as a multi-day safety net. 91mobiles (human-curated)
+// fires on deep sweeps. Dedup by TMDB id — MoN's exact arrival timestamps
+// win because it runs first.
 //
 // FIRST-RUN skip is MOVIES-ONLY: the 730-day TMDB rebuild covers everything.
 // SERIES never skip — there is no series rebuild, so day-0 is their only
@@ -939,6 +1129,18 @@ async function fetchDay0Items(lang, kind) {
     }
   } catch (e) {
     console.warn('[Day0] JustWatch net failed: ' + e.message);
+  }
+
+  // 91mobiles net — human-curated editorial lists. Deep sweeps only (the
+  // 00:01 IST run), since that's when regional-platform stragglers matter.
+  if (isDeepSweepHour()) {
+    try {
+      for (const it of await fetch91Mobiles(lang, kind)) {
+        if (!byId.has(it.id)) byId.set(it.id, it);
+      }
+    } catch (e) {
+      console.warn('[Day0] 91mobiles net failed: ' + e.message);
+    }
   }
 
   console.log('[Day0] Combined day-0 pool: ' + byId.size + ' titles');
@@ -981,6 +1183,9 @@ async function discoverMovies(lang, lookbackDays, maxPages) {
 // processMovie(item, lang, expectedLang, strictLang)
 // - expectedLang: reject movies whose TMDB original_language doesn't match (day-0 path)
 // - strictLang: when true, English is ALSO rejected (blocks Hollywood from day-0 feed)
+// - item.trustedPlatform (optional): set by the 91mobiles net when it verified
+//   the OTT platform with a deep link BEFORE TMDB's provider tags synced —
+//   allows true day-0 on regional platforms.
 async function processMovie(item, lang, expectedLang, strictLang) {
   const langPfx  = lang + '_';
   const cacheKey = langPfx + item.id;
@@ -1009,16 +1214,24 @@ async function processMovie(item, lang, expectedLang, strictLang) {
 
     const IN  = detail['watch/providers'] && detail['watch/providers'].results && detail['watch/providers'].results.IN;
     const all = IN ? [...(IN.flatrate||[]), ...(IN.free||[]), ...(IN.ads||[])] : [];
-    if (!all.length) {
+
+    let platform;
+    if (all.length) {
+      const seenP = new Set();
+      platform = all
+        .filter(p => { if (seenP.has(p.provider_id)) return false; seenP.add(p.provider_id); return true; })
+        .map(p => p.provider_name).join(', ');
+    } else if (item.trustedPlatform) {
+      // 91mobiles net: the editorial source verified the OTT platform with a
+      // deep link BEFORE TMDB's provider data synced. Trust it — true day-0
+      // on regional platforms is the whole point of this net.
+      platform = item.trustedPlatform;
+      console.log('[Trusted Platform] ' + (detail.title || '') + ' on ' + platform + ' (TMDB providers not synced yet)');
+    } else {
       setRetry(movieCache, cacheKey); // provider tags sync from JustWatch with lag — retry in 3 days
       console.log('[Skip] Not on OTT/IN (will retry): ' + (detail.title || ''));
       return null;
     }
-
-    const seenP    = new Set();
-    const platform = all
-      .filter(p => { if (seenP.has(p.provider_id)) return false; seenP.add(p.provider_id); return true; })
-      .map(p => p.provider_name).join(', ');
 
     const meta = buildMeta({
       imdbId:      detail.imdb_id,
@@ -1131,7 +1344,7 @@ async function processSeriesJW(item, lang) {
     const platform = all.length
       ? all.filter((p, i, arr) => arr.findIndex(x => x.provider_id === p.provider_id) === i)
            .map(p => p.provider_name).join(', ')
-      : '';
+      : (item.trustedPlatform || '');
 
     const meta = buildMeta({
       imdbId:      imdbId,
@@ -1269,14 +1482,14 @@ async function enrichMovie(imdbId, title, lang) {
   }
 }
 
-// ── MOVIES ORCHESTRATOR (MoN → JustWatch → TMDB → Sheet, zero duplicates) ────
+// ── MOVIES ORCHESTRATOR (MoN → JustWatch → 91m → TMDB → Sheet, zero dups) ────
 async function scrapeMovies(lang) {
   const langLabel = lang === 'ml' ? 'Malayalam' : 'Tamil';
   const metas = [];
   const processedImdbIds = new Set();
 
-  // --- STEP 1: DAY-0 DETECTION (MoN official + JustWatch always-on net) ---
-  console.log('\n[Movies] Fetching ' + langLabel + ' day-0 arrivals (MoN → JustWatch)...');
+  // --- STEP 1: DAY-0 DETECTION (MoN + JustWatch + 91m deep sweeps) ---
+  console.log('\n[Movies] Fetching ' + langLabel + ' day-0 arrivals (MoN → JustWatch → 91m)...');
   const day0Items = await fetchDay0Items(lang, 'MOVIE');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_' + day0Item.id;
@@ -1412,7 +1625,7 @@ async function scrapeMovies(lang) {
   return finalResult;
 }
 
-// ── SERIES (MoN day-0 → JustWatch net → Sheet patch/gap-fill) ────────────────
+// ── SERIES (MoN day-0 → JustWatch net → 91m → Sheet patch/gap-fill) ──────────
 async function enrichSeries(imdbId, title, lang) {
   const cacheKey = imdbId && imdbId.startsWith('tt') ? imdbId : 'title_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
   const cached   = readCacheEntry(seriesCache[cacheKey]);
@@ -1531,10 +1744,10 @@ async function scrapeSeries(lang) {
   const processedImdbIds = new Set();
   const skipped = [];
 
-  // --- STEP 1: DAY-0 DETECTION (MoN official + JustWatch always-on net) ---
+  // --- STEP 1: DAY-0 DETECTION (MoN + JustWatch + 91m deep sweeps) ---
   // NOTE: series day-0 fires on EVERY run including the first — there is no
   // series TMDB rebuild, so day-0 is the only automatic series source.
-  console.log('\n[Series] Fetching ' + langLabel + ' series day-0 arrivals (MoN → JustWatch)...');
+  console.log('\n[Series] Fetching ' + langLabel + ' series day-0 arrivals (MoN → JustWatch → 91m)...');
   const day0Items = await fetchDay0Items(lang, 'SHOW');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_series_' + day0Item.id;
