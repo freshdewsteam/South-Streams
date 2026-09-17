@@ -3,7 +3,8 @@
  *
  * Movies  → Movie of the Night changes API (official day-0, primary)
  *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 7 days)
- *           → 91mobiles editorial AJAX (human-curated, deep sweeps only)
+ *           → 91mobiles editorial AJAX (human-curated, deep sweeps only,
+ *             via ScraperAPI → direct AJAX → HTML fallback chain)
  *           → TMDB Auto-Discover (foundation, 90d deep sweep) → Google Sheet
  * Series  → Movie of the Night changes API → JustWatch safety net
  *           → 91mobiles editorial AJAX → Google Sheet (patch + gaps)
@@ -19,11 +20,13 @@
  * - list_ajax.php with server-side filters: language (28=Mal, 63=Tam),
  *   dubbedVal=notDubbed (dubbed titles excluded by 91mobiles themselves),
  *   sortBy=ottReleaseDate (newest premieres first).
- * - Falls back to the server-rendered HTML page if the AJAX call fails.
+ * - Cloudflare blocks GitHub runner IPs → ScraperAPI routes through
+ *   residential IPs and solves the challenge. Response is JSON-wrapped:
+ *   { response: "<html>", TOTAL_RECORDS } — unwrapped before parsing.
  * - trustedPlatform bypass lets a title enter the catalog the SAME DAY,
  *   before TMDB's provider tags sync.
- * - Graceful degradation: Cloudflare block or redesign → returns [] → the
- *   other four nets carry on.
+ * - Graceful degradation: all fetch attempts fail → returns [] → the other
+ *   four nets carry on.
  *
  * Day-0 vs renewal logic:
  * - "new" changes include re-licenses/renewals — a title whose TMDB release
@@ -52,6 +55,7 @@ const OMDB_KEY    = process.env.OMDB_API_KEY    || '';
 const SHEET_URL   = process.env.GOOGLE_SHEET_URL || '';
 const WEBHOOK_URL = process.env.WEBHOOK_URL      || '';
 const MON_API_KEY = process.env.MON_API_KEY      || '';
+const SCRAPERAPI_KEY = process.env.SCRAPERAPI_KEY || '';
 const BASE        = 'https://api.themoviedb.org/3';
 const IMG         = 'https://image.tmdb.org/t/p/';
 
@@ -61,7 +65,6 @@ const JW_DAYS_TO_SCAN = 7; // JustWatch safety-net window — covers missed runs
 const MON_CHANGES_URL = 'https://api.movieofthenight.com/v4/changes';
 
 // ── FIX: no '..' — scraper.js is at the repo root, data/ is a direct sibling.
-// (The old '..' path wrote OUTSIDE the repo, so these caches never committed.)
 const MOVIE_CACHE_FILE  = path.join(__dirname, 'data', 'movies-cache.json');
 const SERIES_CACHE_FILE = path.join(__dirname, 'data', 'series-cache.json');
 
@@ -545,6 +548,7 @@ async function resolveMonForLang(raw, lang, kind) {
       ? new Date(ch.timestamp * 1000).toISOString().slice(0, 10)
       : today();
 
+    // Season ≥2 change = returning show's new season → always fresh content
     const isNewSeason = ch.itemType === 'season' && (ch.season || 0) >= 2;
 
     const tmdbId = (sh.tmdbId !== undefined && sh.tmdbId !== null) ? parseInt(sh.tmdbId, 10) : NaN;
@@ -912,8 +916,9 @@ async function fetchJustWatch(lang, kind) {
 //   qp=contentTypes:movie~languages:28  → type + language (28=Mal, 63=Tam)
 //   dubbedVal=notDubbed                 → dubbed titles excluded server-side
 //   sortBy=ottReleaseDate               → newest OTT premieres first
-// Beats scraping the HTML page: 91mobiles filters dubbed/wrong-language titles
-// itself, and the sort puts fresh premieres at the top.
+// Cloudflare blocks GitHub runner IPs (HTTP 403 verified) → ScraperAPI routes
+// the request through residential IPs and solves the challenge. ScraperAPI's
+// response is JSON-wrapped: { response: "<html>", TOTAL_RECORDS }.
 
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_PAGE_URL = 'https://www.91mobiles.com/entertainment/';
@@ -950,43 +955,74 @@ function m91FetchHeaders() {
   };
 }
 
-// Fetch items via the AJAX endpoint (verified parameters). Falls back to the
-// server-rendered HTML page if the AJAX call fails — different endpoints can
-// have different Cloudflare rules.
+// Normalize whatever container we got into clean HTML for the parsers.
+// ScraperAPI returns JSON: { response: "<escaped html>", TOTAL_RECORDS, ... }
+function m91UnwrapBody(raw) {
+  let body = raw;
+  if (body.trim().startsWith('{')) {
+    try {
+      const j = JSON.parse(body);
+      if (j.response) body = j.response;
+    } catch (e) { /* not JSON — use as-is */ }
+  }
+  // Unescape JSON-escaped HTML remnants
+  body = body.replace(/\\"/g, '"').replace(/\\\//g, '/')
+             .replace(/\\u003C/gi, '<').replace(/\\u003E/gi, '>').replace(/\\n/g, '\n');
+  return body;
+}
+
+// Fetch items: ScraperAPI (bypasses Cloudflare) → direct AJAX → HTML page.
+// Different endpoints have different Cloudflare rules — try all three.
 async function m91FetchItems(slug, kind, lang) {
   const isShow = kind === 'SHOW';
 
-  // Attempt 1: AJAX endpoint with the site's own verified parameters
+  const params = new URLSearchParams({
+    qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
+    sortOrder: 'desc',
+    sortBy: 'ottReleaseDate',   // newest OTT premieres first (site's own sort option)
+    start: '1',
+    seoSlug: '/' + slug,
+    pType: slug,
+    dubbedVal: 'notDubbed',
+    type: 'loadmore'
+  });
+  const target = M91_AJAX_URL + '?' + params.toString();
+
+  // Attempt 1: ScraperAPI (bypasses Cloudflare via residential IPs)
+  if (SCRAPERAPI_KEY) {
+    try {
+      const wrapped = 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
+                      '&country_code=in&url=' + encodeURIComponent(target);
+      let body = m91UnwrapBody(await fetchUrl(wrapped, m91FetchHeaders()));
+      if (/challenge-platform|Just a moment|Attention Required/i.test(body)) {
+        throw new Error('Cloudflare challenge even via ScraperAPI');
+      }
+      if (!/<div\s+class="?pro_item/.test(body)) {
+        throw new Error('No pro_item blocks in ScraperAPI response');
+      }
+      console.log('[91m] ScraperAPI fetch OK: ' + slug);
+      return body;
+    } catch (saErr) {
+      console.warn('[91m] ScraperAPI attempt failed: ' + saErr.message + ' — trying direct AJAX');
+    }
+  }
+
+  // Attempt 2: direct AJAX (works from residential IPs; 403 from runners)
   try {
-    const params = new URLSearchParams({
-      qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
-      sortOrder: 'desc',
-      sortBy: 'ottReleaseDate',   // newest OTT premieres first (site's own sort option)
-      start: '1',
-      seoSlug: '/' + slug,
-      pType: slug,
-      dubbedVal: 'notDubbed',
-      type: 'loadmore'
-    });
-    let body = await fetchUrl(M91_AJAX_URL + '?' + params.toString(), m91FetchHeaders());
+    let body = m91UnwrapBody(await fetchUrl(target, m91FetchHeaders()));
     if (/challenge-platform|Just a moment|Attention Required/i.test(body)) {
       throw new Error('Cloudflare challenge on AJAX endpoint');
-    }
-    // Response may be raw HTML fragments or JSON-wrapped HTML — normalize so
-    // the pro_item regexes work either way.
-    if (!/<div\s+class="?pro_item/.test(body) && body.trim().startsWith('{')) {
-      body = body.replace(/\\"/g, '"').replace(/\\u003C/gi, '<').replace(/\\u003E/gi, '>').replace(/\\n/g, '\n');
     }
     if (!/<div\s+class="?pro_item/.test(body)) {
       throw new Error('No pro_item blocks in AJAX response');
     }
-    console.log('[91m] AJAX fetch OK: ' + slug);
+    console.log('[91m] Direct AJAX fetch OK: ' + slug);
     return body;
   } catch (ajaxErr) {
     console.warn('[91m] AJAX attempt failed: ' + ajaxErr.message + ' — trying HTML page fallback');
   }
 
-  // Attempt 2: the server-rendered HTML page (original method)
+  // Attempt 3: server-rendered HTML page (last resort)
   const html = await fetchUrl(M91_PAGE_URL + slug, m91FetchHeaders());
   if (/challenge-platform|Just a moment|Attention Required/i.test(html)) {
     throw new Error('Cloudflare challenge page received');
@@ -1014,7 +1050,7 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
     if (!metaMatch) continue;
     const meta = m91StripTags(metaMatch[1]);
 
-    // Language filter — defense in depth (the AJAX already filters server-side)
+    // Language filter — defense in depth (AJAX already filters server-side)
     const parts = meta.split('|').map(p => p.trim());
     const itemLang = (parts[0] || '').toLowerCase();
     if (itemLang !== langLabel) continue;
@@ -1123,9 +1159,9 @@ async function fetch91Mobiles(lang, kind) {
 }
 
 // Unified day-0 entry point: MoN (official, exact timestamps) first, and
-// JustWatch ALWAYS runs as a multi-day safety net. 91mobiles (human-curated)
-// fires on deep sweeps. Dedup by TMDB id — MoN's exact arrival timestamps
-// win because it runs first.
+// JustWatch ALWAYS runs as a multi-day safety net. 91mobiles (human-curated,
+// via ScraperAPI) fires on deep sweeps. Dedup by TMDB id — MoN's exact
+// arrival timestamps win because it runs first.
 //
 // FIRST-RUN skip is MOVIES-ONLY: the 730-day TMDB rebuild covers everything.
 // SERIES never skip — there is no series rebuild, so day-0 is their only
@@ -1232,7 +1268,7 @@ async function processMovie(item, lang, expectedLang, strictLang) {
     if (expectedLang && detail.original_language &&
         detail.original_language !== expectedLang &&
         (strictLang || detail.original_language !== 'en')) {
-      setSkip(movieCache, cacheKey);
+      setSkip(movieCache, cacheKey); // 14-day memory — wrong-language rejects are not re-fetched
       console.log('[Skip] Wrong language (' + detail.original_language + '): ' + (detail.title || ''));
       return null;
     }
@@ -1339,7 +1375,10 @@ async function processSeriesJW(item, lang) {
       return null;
     }
 
-    // STRICT language guard: day-0-sourced series must be exactly the target language
+    // STRICT language guard: day-0-sourced series must be exactly the target
+    // language. setSkip (14-day memory) — the 400+ wrong-language titles the
+    // nets pass through are rejected ONCE, then skipped for FREE on every
+    // subsequent run.
     if (!detail.original_language || detail.original_language !== lang) {
       setSkip(seriesCache, cacheKey);
       console.log('[Skip] Wrong language (' + (detail.original_language || '?') + '): ' + (detail.name || ''));
