@@ -4,7 +4,7 @@
  * Movies  → Movie of the Night changes API (official day-0, primary)
  *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 7 days)
  *           → 91mobiles editorial AJAX (7-day sweep, deep sweep only)
- *           → TMDB Auto-Discover (/discover/movie, foundation)
+ *           → TMDB Auto-Discover (/discover/movie, foundation with auto-bootstrap)
  * Series  → Movie of the Night changes API → JustWatch safety net
  *           → 91mobiles editorial AJAX (7-day sweep, deep sweep only)
  *           → TMDB Auto-Discover (/discover/tv, foundation)
@@ -285,7 +285,6 @@ function isReleased(dateStr) {
 function daysAgo(n) { const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
 function today()    { return new Date().toISOString().slice(0,10); }
 
-// Deep-sweep window: 00:01–01:30 IST (18:00–20:00 UTC)
 function isDeepSweepHour() {
   const h = new Date().getUTCHours();
   return h >= 18 && h < 20;
@@ -539,7 +538,7 @@ function extractJwIdentifiers(node, kind) {
   return {
     title: (c.title || '').trim(),
     tmdbId: c.externalIds && c.externalIds.tmdbId ? parseInt(c.externalIds.tmdbId, 10) : NaN,
-    imdbId: c.externalIds && c.externalIds.imdbId ? sc.externalIds.imdbId : null,
+    imdbId: c.externalIds && c.externalIds.imdbId ? c.externalIds.imdbId : null,
     year: c.originalReleaseYear || null,
     isReleased: c.isReleased !== false,
   };
@@ -618,7 +617,7 @@ async function fetchJustWatch(lang, kind) {
 // ── 91MOBILES (LEAN 7-DAY WINDOW — CONSERVES SCRAPERAPI CREDITS) ───────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_LANG_ID  = { ml: 28, ta: 63 };
-const M91_LOOKBACK_DAYS = 7; // Clean 7-day lookback for daily updates
+const M91_LOOKBACK_DAYS = 7;
 const M91_PAGES = {
   ml: { movie: 'new-malayalam-movies', series: 'new-malayalam-web-series' },
   ta: { movie: 'new-tamil-movies',     series: 'new-tamil-web-series' },
@@ -661,7 +660,6 @@ function m91UnwrapBody(raw) {
 
 async function m91FetchItems(slug, kind, lang) {
   const isShow = kind === 'SHOW';
-  // Single-page fetch for fast, quota-safe day-to-day runs
   const params = new URLSearchParams({
     qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
     sortOrder: 'desc',
@@ -800,7 +798,6 @@ async function fetchDay0Items(lang, kind) {
     }
   } catch (e) {}
 
-  // 91mobiles fires during deep sweeps (IST midnight window) to catch regional drops
   if (RUN_IS_DEEP) {
     try {
       for (const it of await fetch91Mobiles(lang, kind)) {
@@ -901,7 +898,6 @@ async function processMovie(item, lang, expectedLang, strictLang) {
       return null;
     }
 
-    // Prefer OTT arrival date (from 91mobiles / Day-0) over TMDB theatrical release date
     const ottDate = item.arrivalDate || detail.release_date || '';
 
     const meta = buildMeta({
@@ -988,7 +984,7 @@ async function processSeriesJW(item, lang) {
         : (item.trustedPlatform || '')
     );
 
-    // Prefer last_air_date so newly airing seasons/episodes sort to the current year[cite: 1]
+    // Prefer last_air_date so newly airing seasons/episodes sort to the current year
     const latestAirDate = detail.last_air_date || detail.first_air_date || item.arrivalDate || today();
 
     const meta = buildMeta({
@@ -1018,7 +1014,7 @@ async function scrapeMovies(lang) {
   const metas = [];
   const processedImdbIds = new Set();
 
-  // STEP 0: Seed existing cache[cite: 1]
+  // STEP 0: Seed existing cache
   for (const [cacheKey, val] of Object.entries(movieCache)) {
     if (!cacheKey.startsWith(lang + '_')) continue;
     const entry = readCacheEntry(val);
@@ -1029,13 +1025,13 @@ async function scrapeMovies(lang) {
     }
   }
 
-  // STEP 1: Live Day-0 & 91mobiles Arrivals with In-Place Cache Update[cite: 1]
+  // STEP 1: Live Day-0 & 91mobiles Arrivals with In-Place Cache Update
   const day0Items = await fetchDay0Items(lang, 'MOVIE');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_' + day0Item.id;
     const arrivalDate = day0Item.arrivalDate || today();
 
-    // Match existing movie by TMDB ID, IMDb ID, or verified title[cite: 1]
+    // Match existing movie by TMDB ID, IMDb ID, or verified title
     const existingIndex = metas.findIndex(m => {
       if (movieCache[cacheKey] && movieCache[cacheKey].id === m.id) return true;
       if (day0Item.imdbId && m.id === day0Item.imdbId) return true;
@@ -1043,7 +1039,7 @@ async function scrapeMovies(lang) {
       return false;
     });
 
-    // In-place date overwrite: update movie to authoritative OTT date[cite: 1]
+    // In-place date overwrite: update movie to authoritative OTT date
     if (existingIndex !== -1) {
       const existingMeta = metas[existingIndex];
       if (arrivalDate && (!existingMeta.releaseInfo || existingMeta.releaseInfo < arrivalDate)) {
@@ -1081,9 +1077,11 @@ async function scrapeMovies(lang) {
     }
   }
 
-  // STEP 2: TMDB Discover Foundation
-  const lookback = RUN_IS_DEEP ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK;
-  const discoverPages = RUN_IS_DEEP ? 12 : 5;
+  // STEP 2: TMDB Discover Foundation (Auto-Bootstrap if cache is lean or freshly cleared)
+  const isLeanCache = Object.keys(movieCache).filter(k => k.startsWith(lang + '_')).length < 50;
+  const lookback = isLeanCache ? MOVIE_FIRST_RUN : (RUN_IS_DEEP ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK);
+  const discoverPages = isLeanCache ? 25 : (RUN_IS_DEEP ? 12 : 5);
+
   const tmdbItems = await discoverMovies(lang, lookback, discoverPages);
   for (const item of tmdbItems) {
     const meta = await processMovie(item, lang);
@@ -1093,7 +1091,7 @@ async function scrapeMovies(lang) {
     }
   }
 
-  // Sort by OTT date (newest premieres at the top)[cite: 1]
+  // Sort by OTT date (newest premieres at the top)
   metas.sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''));
   const finalResult = metas.slice(0, 120);
   console.log('[Movies] ' + lang + ': ' + finalResult.length + ' in catalogue');
