@@ -3,7 +3,7 @@
  *
  * Movies  → Movie of the Night changes API (official day-0, primary)
  *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 7 days)
- *           → 91mobiles editorial AJAX (STRICT OTT WHITELIST ONLY)
+ *           → 91mobiles editorial AJAX (STRICT OTT WHITELIST ONLY, 7-day lean sweep)
  *           → TMDB Auto-Discover (/discover/movie with watch_region=IN)
  * Series  → Movie of the Night changes API → JustWatch safety net
  *           → 91mobiles editorial AJAX → TMDB Auto-Discover (/discover/tv)
@@ -31,8 +31,8 @@ const MON_CHANGES_URL = 'https://api.movieofthenight.com/v4/changes';
 const MOVIE_CACHE_FILE  = path.join(__dirname, 'data', 'movies-cache.json');
 const SERIES_CACHE_FILE = path.join(__dirname, 'data', 'series-cache.json');
 
-const MOVIE_LOOKBACK      = 90;
-const MOVIE_DEEP_LOOKBACK = 180;
+const MOVIE_LOOKBACK      = 30;
+const MOVIE_DEEP_LOOKBACK = 90;
 const MOVIE_FIRST_RUN     = 730;
 const SKIP_TTL            = 14 * 24 * 60 * 60 * 1000;
 const RETRY_TTL           =  3 * 24 * 60 * 60 * 1000;
@@ -74,7 +74,6 @@ function extractValidOttPlatforms(rawStr) {
 
 function isPureTheatrical(str) {
   if (!str) return false;
-  // If it contains cinema booking terms and NO valid OTT provider
   const hasTheatrical = THEATRICAL_REGEX.test(str);
   const hasValidOtt   = extractValidOttPlatforms(str).length > 0;
   return hasTheatrical && !hasValidOtt;
@@ -618,10 +617,10 @@ async function fetchJustWatch(lang, kind) {
   return resolved;
 }
 
-// ── 91MOBILES (STRICT OTT ONLY — THEATRICAL EXCLUDED) ─────────────────────────
+// ── 91MOBILES (LEAN 7-DAY WINDOW — STRICT OTT ONLY) ───────────────────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_LANG_ID  = { ml: 28, ta: 63 };
-const M91_LOOKBACK_DAYS = 30;
+const M91_LOOKBACK_DAYS = 7;
 const M91_PAGES = {
   ml: { movie: 'new-malayalam-movies', series: 'new-malayalam-web-series' },
   ta: { movie: 'new-tamil-movies',     series: 'new-tamil-web-series' },
@@ -717,10 +716,8 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
     const ageDays = (Date.now() - date.getTime()) / 86400000;
     if (ageDays > M91_LOOKBACK_DAYS) continue;
 
-    // Strict: Check if it's explicitly an OTT item, not in-cinemas
     if (requireOttMarker && !/\(OTT\)/i.test(meta)) continue;
 
-    // Reject block if it mentions booking tickets or cinemas
     if (THEATRICAL_REGEX.test(block) && !VALID_OTT_PLATFORMS.some(p => p.match.test(block))) {
       continue;
     }
@@ -740,7 +737,6 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
       }
     }
 
-    // Must have a confirmed OTT platform from our whitelist
     const finalPlatform = extractValidOttPlatforms(platforms.join(', '));
     if (!finalPlatform) continue;
 
@@ -884,7 +880,6 @@ async function processMovie(item, lang, expectedLang, strictLang) {
 
   if (cached === 'skip') return null;
   if (cached && cached !== 'retry') {
-    // Purge cached theatrical releases on load
     if (isPureTheatrical(cached.description) || !extractValidOttPlatforms(cached.description)) {
       setSkip(movieCache, cacheKey);
       return null;
@@ -919,11 +914,10 @@ async function processMovie(item, lang, expectedLang, strictLang) {
     let platform = '';
     if (all.length) {
       platform = extractValidOttPlatforms(all.map(p => p.provider_name).join(', '));
-    } else if (item.trustedPlatform) {
+    } else if (item.trustedPlatform && !isPureTheatrical(item.trustedPlatform)) {
       platform = extractValidOttPlatforms(item.trustedPlatform);
     }
 
-    // STRICT GUARD: If no confirmed OTT platform, this is a cinema release. Drop it!
     if (!platform || isPureTheatrical(platform)) {
       setSkip(movieCache, cacheKey);
       return null;
@@ -1053,14 +1047,12 @@ async function scrapeMovies(lang) {
   const metas = [];
   const processedImdbIds = new Set();
 
-  // STEP 0: Seed existing cache & PURGE ANY THEATRICAL TICKETING MOVIES
   for (const [cacheKey, val] of Object.entries(movieCache)) {
     if (!cacheKey.startsWith(lang + '_')) continue;
     const entry = readCacheEntry(val);
     if (entry && typeof entry === 'object' && entry.id && entry.id.startsWith('tt') &&
         entry.type === 'movie' && !processedImdbIds.has(entry.id)) {
 
-      // Check if this cached entry has BookMyShow or lacks a real OTT platform
       if (isPureTheatrical(entry.description) || !extractValidOttPlatforms(entry.description)) {
         setSkip(movieCache, cacheKey);
         continue;
@@ -1071,7 +1063,6 @@ async function scrapeMovies(lang) {
     }
   }
 
-  // STEP 1: Live Day-0 & 91mobiles Arrivals with In-Place Cache Update
   const day0Items = await fetchDay0Items(lang, 'MOVIE');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_' + day0Item.id;
@@ -1121,7 +1112,6 @@ async function scrapeMovies(lang) {
     }
   }
 
-  // STEP 2: TMDB Discover Foundation
   const isLeanCache = metas.length < 100;
   const lookback = isLeanCache ? MOVIE_FIRST_RUN : (RUN_IS_DEEP ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK);
   const discoverPages = isLeanCache ? 25 : (RUN_IS_DEEP ? 12 : 5);
