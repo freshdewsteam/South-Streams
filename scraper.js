@@ -881,10 +881,11 @@ async function processMovie(item, lang, expectedLang, strictLang) {
       return null;
     }
 
-    const IN  = detail['watch/providers'] && detail['watch/providers'].results && detail['watch/providers'].results.IN;
+    const wp = (detail['watch/providers'] && detail['watch/providers'].results) || {};
+    const IN = wp.IN;
     const all = IN ? [...(IN.flatrate||[]), ...(IN.free||[]), ...(IN.ads||[])] : [];
 
-    let platform;
+    let platform = '';
     if (all.length) {
       const seenP = new Set();
       platform = cleanPlatformNames(
@@ -894,8 +895,14 @@ async function processMovie(item, lang, expectedLang, strictLang) {
     } else if (item.trustedPlatform) {
       platform = cleanPlatformNames(item.trustedPlatform);
     } else {
-      setRetry(movieCache, cacheKey);
-      return null;
+      // Fallback: check any international streaming provider or mark as VOD/OTT
+      const anyRegion = wp.US || wp.GB || wp.AE || Object.values(wp)[0];
+      const anyProviders = anyRegion ? [...(anyRegion.flatrate||[]), ...(anyRegion.free||[])] : [];
+      if (anyProviders.length) {
+        platform = cleanPlatformNames(anyProviders.map(p => p.provider_name).slice(0, 2).join(', '));
+      } else {
+        platform = 'OTT Streaming';
+      }
     }
 
     const ottDate = item.arrivalDate || detail.release_date || '';
