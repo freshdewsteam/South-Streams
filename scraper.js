@@ -3,11 +3,11 @@
  *
  * Movies  → Movie of the Night changes API (official day-0, primary)
  *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 7 days)
- *           → 91mobiles editorial AJAX
- *           → TMDB Auto-Discover (/discover/movie)
+ *           → 91mobiles editorial AJAX (7-day sweep, deep sweep only)
+ *           → TMDB Auto-Discover (/discover/movie, foundation)
  * Series  → Movie of the Night changes API → JustWatch safety net
- *           → 91mobiles editorial AJAX
- *           → TMDB Auto-Discover (/discover/tv) [FIX: fills the series catalog]
+ *           → 91mobiles editorial AJAX (7-day sweep, deep sweep only)
+ *           → TMDB Auto-Discover (/discover/tv, foundation)
  * Enrichment → TMDB / OMDb API (posters, descriptions, IMDb IDs)
  */
 
@@ -248,7 +248,12 @@ function isReleased(dateStr) {
 function daysAgo(n) { const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
 function today()    { return new Date().toISOString().slice(0,10); }
 
-const RUN_IS_DEEP = true;
+// Deep-sweep window: 00:01–01:30 IST (18:00–20:00 UTC)[cite: 1]
+function isDeepSweepHour() {
+  const h = new Date().getUTCHours();
+  return h >= 18 && h < 20;
+}
+const RUN_IS_DEEP = isDeepSweepHour();
 
 function getTitleVariations(title) {
   const v = new Set([title]);
@@ -304,7 +309,7 @@ async function fetchMonRaw(kind) {
 
   const showType = kind === 'SHOW' ? 'series' : 'movie';
   const fromUnix = Math.floor(monWindowStart(kind) / 1000);
-  const maxPages = 8;
+  const maxPages = RUN_IS_DEEP ? 8 : 2;
   const changes   = [];
   const showsById = {};
   let cursor  = null;
@@ -573,10 +578,10 @@ async function fetchJustWatch(lang, kind) {
   return resolved;
 }
 
-// ── 91MOBILES ─────────────────────────────────────────────────────────────────
+// ── 91MOBILES (REVERTED TO 7 DAYS) ────────────────────────────────────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_LANG_ID  = { ml: 28, ta: 63 };
-const M91_LOOKBACK_DAYS = 30;
+const M91_LOOKBACK_DAYS = 7;
 const M91_PAGES = {
   ml: { movie: 'new-malayalam-movies', series: 'new-malayalam-web-series' },
   ta: { movie: 'new-tamil-movies',     series: 'new-tamil-web-series' },
@@ -619,43 +624,33 @@ function m91UnwrapBody(raw) {
 
 async function m91FetchItems(slug, kind, lang) {
   const isShow = kind === 'SHOW';
-  let combinedHtml = '';
+  const params = new URLSearchParams({
+    qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
+    sortOrder: 'desc',
+    sortBy: 'ottReleaseDate',
+    start: '1',
+    seoSlug: '/' + slug,
+    pType: slug,
+    dubbedVal: 'notDubbed',
+    type: 'loadmore'
+  });
+  const target = M91_AJAX_URL + '?' + params.toString();
 
-  for (const pageStart of [1, 11, 21]) {
-    const params = new URLSearchParams({
-      qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
-      sortOrder: 'desc',
-      sortBy: 'ottReleaseDate',
-      start: String(pageStart),
-      seoSlug: '/' + slug,
-      pType: slug,
-      dubbedVal: 'notDubbed',
-      type: 'loadmore'
-    });
-    const target = M91_AJAX_URL + '?' + params.toString();
-
-    let body = '';
-    if (SCRAPERAPI_KEY) {
-      try {
-        const wrapped = 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
-                        '&country_code=in&url=' + encodeURIComponent(target);
-        body = m91UnwrapBody(await fetchUrl(wrapped, m91FetchHeaders()));
-      } catch (e) {}
-    }
-
-    if (!body || !/<div\s+class="?pro_item/.test(body)) {
-      try {
-        body = m91UnwrapBody(await fetchUrl(target, m91FetchHeaders()));
-      } catch (e) {}
-    }
-
-    if (body && /<div\s+class="?pro_item/.test(body)) {
-      combinedHtml += '\n' + body;
-    }
-    await new Promise(r => setTimeout(r, 200));
+  if (SCRAPERAPI_KEY) {
+    try {
+      const wrapped = 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
+                      '&country_code=in&url=' + encodeURIComponent(target);
+      const body = m91UnwrapBody(await fetchUrl(wrapped, m91FetchHeaders()));
+      if (/<div\s+class="?pro_item/.test(body)) return body;
+    } catch (e) {}
   }
 
-  return combinedHtml;
+  try {
+    const body = m91UnwrapBody(await fetchUrl(target, m91FetchHeaders()));
+    if (/<div\s+class="?pro_item/.test(body)) return body;
+  } catch (e) {}
+
+  return '';
 }
 
 function m91ParsePage(html, langLabel, requireOttMarker) {
@@ -767,17 +762,18 @@ async function fetchDay0Items(lang, kind) {
     }
   } catch (e) {}
 
-  try {
-    for (const it of await fetch91Mobiles(lang, kind)) {
-      if (!byId.has(it.id)) byId.set(it.id, it);
-    }
-  } catch (e) {}
+  if (RUN_IS_DEEP) {
+    try {
+      for (const it of await fetch91Mobiles(lang, kind)) {
+        if (!byId.has(it.id)) byId.set(it.id, it);
+      }
+    } catch (e) {}
+  }
 
-  console.log('[Day0] Combined pool: ' + byId.size + ' titles for ' + lang + ' ' + kind);
   return Array.from(byId.values());
 }
 
-// ── TMDB DISCOVER (MOVIES & SERIES) ───────────────────────────────────────────
+// ── TMDB DISCOVER ─────────────────────────────────────────────────────────────
 async function discoverMovies(lang, lookbackDays, maxPages) {
   maxPages = maxPages || 5;
   const dateFrom = daysAgo(lookbackDays);
@@ -808,9 +804,8 @@ async function discoverMovies(lang, lookbackDays, maxPages) {
   return results;
 }
 
-// NEW: Discover TV Series on OTT
 async function discoverSeries(lang, maxPages) {
-  maxPages = maxPages || 8;
+  maxPages = maxPages || 5;
   const results = [];
 
   for (let page = 1; page <= maxPages; page++) {
@@ -948,12 +943,15 @@ async function processSeriesJW(item, lang) {
       ? all.filter((p, i, arr) => arr.findIndex(x => x.provider_id === p.provider_id) === i).map(p => p.provider_name).join(', ')
       : (item.trustedPlatform || '');
 
+    // Prefer last_air_date so returning shows with new seasons (e.g. Bigg Boss) bubble up to their newest episode
+    const latestAirDate = detail.last_air_date || detail.first_air_date || item.arrivalDate || today();
+
     const meta = buildMeta({
       imdbId:      imdbId,
       type:        'series',
       title:       detail.name || '',
       platform,
-      releaseDate: detail.first_air_date || item.arrivalDate || today(),
+      releaseDate: latestAirDate,
       overview:    detail.overview || '',
       rating:      detail.vote_average,
       posterPath:  detail.poster_path,
@@ -992,7 +990,7 @@ async function scrapeMovies(lang) {
     const isNewDiscovery = cachedEntry === undefined || cachedEntry === 'retry';
 
     const meta = await processMovie(day0Item, lang, lang, true);
-    if (meta && meta.id && !processedImdbIds.has(meta.id) && !metas.some(m => m.id === meta.id)) {
+    if (meta && meta.id && !processedImdbIds.has(meta.id)) {
       if (isNewDiscovery) {
         const arrivalDate = day0Item.arrivalDate || today();
         const tmdbDate    = meta.releaseInfo || arrivalDate;
@@ -1013,7 +1011,9 @@ async function scrapeMovies(lang) {
     }
   }
 
-  const tmdbItems = await discoverMovies(lang, 90, 12);
+  const lookback = RUN_IS_DEEP ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK;
+  const discoverPages = RUN_IS_DEEP ? 12 : 5;
+  const tmdbItems = await discoverMovies(lang, lookback, discoverPages);
   for (const item of tmdbItems) {
     const meta = await processMovie(item, lang);
     if (meta && meta.id && !processedImdbIds.has(meta.id)) {
@@ -1032,7 +1032,6 @@ async function scrapeSeries(lang) {
   const metas = [];
   const processedImdbIds = new Set();
 
-  // STEP 0: Seed existing cache
   for (const [cacheKey, val] of Object.entries(seriesCache)) {
     if (!cacheKey.startsWith(lang + '_series_')) continue;
     const entry = readCacheEntry(val);
@@ -1043,7 +1042,6 @@ async function scrapeSeries(lang) {
     }
   }
 
-  // STEP 1: Day-0 & 91mobiles Arrivals
   const day0Items = await fetchDay0Items(lang, 'SHOW');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_series_' + day0Item.id;
@@ -1051,7 +1049,7 @@ async function scrapeSeries(lang) {
     const isNewDiscovery = cachedEntry === undefined || cachedEntry === 'retry';
 
     const meta = await processSeriesJW(day0Item, lang);
-    if (meta && meta.id && !processedImdbIds.has(meta.id) && !metas.some(m => m.id === meta.id)) {
+    if (meta && meta.id && !processedImdbIds.has(meta.id)) {
       if (isNewDiscovery) {
         const arrivalDate = day0Item.arrivalDate || today();
         const firstAir    = meta.releaseInfo || arrivalDate;
@@ -1073,8 +1071,7 @@ async function scrapeSeries(lang) {
     }
   }
 
-  // STEP 2: TMDB Auto-Discover for Series Foundation (Pulls all OTT web series)
-  const tmdbSeries = await discoverSeries(lang, 8);
+  const tmdbSeries = await discoverSeries(lang, 5);
   for (const item of tmdbSeries) {
     const meta = await processSeriesJW(item, lang);
     if (meta && meta.id && !processedImdbIds.has(meta.id)) {
