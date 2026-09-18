@@ -2,7 +2,7 @@
   "id": "com.freshdewsteam.southstreams",
   "name": "South Streams",
   "description": "South Streams brings you the latest Malayalam and Tamil OTT movies and web series. Automatically updated with new releases every day.",
-  "version": "1.6.3",
+  "version": "1.7.0",
   "resources": [
     "catalog",
     "meta"
@@ -15,22 +15,54 @@
     {
       "type": "movie",
       "id": "malayalam-movies",
-      "name": "Latest Malayalam Movies"
+      "name": "Latest Malayalam Movies",
+      "extra": [
+        {
+          "name": "genre",
+          "options": ["Action", "Adventure", "Comedy", "Crime", "Drama", "Family", "Fantasy", "Horror", "Mystery", "Romance", "Science Fiction", "Thriller"],
+          "isRequired": false
+        },
+        { "name": "skip", "isRequired": false }
+      ]
     },
     {
       "type": "series",
       "id": "malayalam-series",
-      "name": "Latest Malayalam Series"
+      "name": "Latest Malayalam Series",
+      "extra": [
+        {
+          "name": "genre",
+          "options": ["Action & Adventure", "Comedy", "Crime", "Documentary", "Drama", "Family", "Mystery", "Reality"],
+          "isRequired": false
+        },
+        { "name": "skip", "isRequired": false }
+      ]
     },
     {
       "type": "movie",
       "id": "tamil-movies",
-      "name": "Latest Tamil Movies"
+      "name": "Latest Tamil Movies",
+      "extra": [
+        {
+          "name": "genre",
+          "options": ["Action", "Adventure", "Comedy", "Crime", "Drama", "Family", "Fantasy", "History", "Horror", "Music", "Mystery", "Romance", "Science Fiction", "Thriller", "War"],
+          "isRequired": false
+        },
+        { "name": "skip", "isRequired": false }
+      ]
     },
     {
       "type": "series",
       "id": "tamil-series",
-      "name": "Latest Tamil Series"
+      "name": "Latest Tamil Series",
+      "extra": [
+        {
+          "name": "genre",
+          "options": ["Action & Adventure", "Comedy", "Crime", "Drama", "Family", "Mystery", "Romance"],
+          "isRequired": false
+        },
+        { "name": "skip", "isRequired": false }
+      ]
     }
   ],
   "idPrefixes": [
