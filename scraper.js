@@ -1,58 +1,16 @@
 /**
- * scraper.js — South Streams
+ * scraper.js — South Streams (30-Day Catch-Up Build)
  *
  * Movies  → Movie of the Night changes API (official day-0, primary)
  *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 7 days)
- *           → 91mobiles editorial AJAX (human-curated, deep sweeps only,
- *             via ScraperAPI → direct AJAX → HTML fallback chain)
- *           → TMDB Auto-Discover (foundation, 90d deep sweep) → Google Sheet
+ *           → 91mobiles editorial AJAX (30-day sweep with pagination)
+ *           → TMDB Auto-Discover (foundation)
  * Series  → Movie of the Night changes API → JustWatch safety net
- *           → 91mobiles editorial AJAX → Google Sheet (patch + gaps)
+ *           → 91mobiles editorial AJAX (30-day sweep with pagination)
  * Enrichment → TMDB / OMDb API (posters, descriptions, IMDb IDs)
  *
- * CUMULATIVE CATALOG: scrapeMovies/scrapeSeries SEED their catalogue from
- * the persistent cache (language-verified entries only) at the start of
- * every run. Without this, a lean run (30-day discover) rebuilds the
- * catalogue from scratch and it SHRINKS to just the newest titles (the
- * 120 → 10 collapse). With it, the catalogue only ever GROWS.
- *
- * DEEP-SWEEP FLAG: RUN_IS_DEEP is captured ONCE per process. A run that
- * starts inside the deep-sweep window (00:01–01:30 IST) stays deep for its
- * whole lifetime — the window previously expired mid-run, silently
- * deferring the 91m net and downgrading TMDB discover.
- *
- * SCHEDULING (all times IST):
- * - 00:01 run = DEEP SWEEP: MoN 3-day window (8 pages), JustWatch 7-day
- *   net, 91mobiles AJAX net, TMDB Discover 90-day lookback (12 pages).
- * - Other runs = LEAN: MoN since last fetch (2 pages), JustWatch net,
- *   TMDB Discover 30 days. 91mobiles net deferred to deep sweeps.
- *
- * 91mobiles net (AJAX endpoint, verified via DevTools capture Sep 2026):
- * - list_ajax.php with server-side filters: language (28=Mal, 63=Tam),
- *   dubbedVal=notDubbed, sortBy=ottReleaseDate (newest premieres first).
- * - Cloudflare blocks GitHub runner IPs (HTTP 403 verified) → ScraperAPI
- *   routes through residential IPs. Response is JSON-wrapped:
- *   { response: "<html>", TOTAL_RECORDS } — unwrapped before parsing.
- * - trustedPlatform bypass lets a title enter the catalog the SAME DAY,
- *   before TMDB's provider tags sync.
- * - Graceful degradation: all fetch attempts fail → returns [] → other
- *   nets carry on.
- *
- * Day-0 vs renewal logic:
- * - "new" changes include re-licenses/renewals — a title whose TMDB release
- *   date is older than RERELEASE_MAX_AGE_DAYS is labeled "♻️ Re-release"
- *   and sorted by its ORIGINAL date, so premieres always sit at the top.
- * - New seasons (season >= 2) of returning shows are always fresh content.
- *
- * FIRST-RUN behavior:
- * - Movies: day-0 detection is SKIPPED (the 730-day TMDB rebuild covers
- *   everything; combining both blew the workflow timeout).
- * - Series: day-0 ALWAYS fires — there is no series rebuild, so day-0 is
- *   the only automatic series source.
- *
- * CACHE PATHS: scraper.js lives at the REPO ROOT, so the data dir is a
- * direct sibling (__dirname/data) — NO '..' (that wrote outside the repo,
- * which is why the caches never committed for weeks).
+ * NOTE: Google Sheet patching has been removed.
+ * NOTE: RUN_IS_DEEP is temporarily forced to TRUE so 91mobiles runs on all triggers.
  */
 
 const https = require('https');
@@ -60,38 +18,34 @@ const zlib  = require('zlib');
 const fs    = require('fs');
 const path  = require('path');
 
-const TMDB_KEY    = process.env.TMDB_API_KEY    || '';
-const OMDB_KEY    = process.env.OMDB_API_KEY    || '';
-const SHEET_URL   = process.env.GOOGLE_SHEET_URL || '';
-const WEBHOOK_URL = process.env.WEBHOOK_URL      || '';
-const MON_API_KEY = process.env.MON_API_KEY      || '';
-const SCRAPERAPI_KEY = process.env.SCRAPERAPI_KEY || '';
-const BASE        = 'https://api.themoviedb.org/3';
-const IMG         = 'https://image.tmdb.org/t/p/';
+const TMDB_KEY       = process.env.TMDB_API_KEY       || '';
+const OMDB_KEY       = process.env.OMDB_API_KEY       || '';
+const WEBHOOK_URL    = process.env.WEBHOOK_URL         || '';
+const MON_API_KEY    = process.env.MON_API_KEY         || '';
+const SCRAPERAPI_KEY = process.env.SCRAPERAPI_KEY    || '';
+const BASE           = 'https://api.themoviedb.org/3';
+const IMG            = 'https://image.tmdb.org/t/p/';
 
 const JW_GRAPHQL_URL = 'https://apis.justwatch.com/graphql';
-const JW_DAYS_TO_SCAN = 7; // JustWatch safety-net window — covers missed runs & slow indexing
+const JW_DAYS_TO_SCAN = 7;
 
 const MON_CHANGES_URL = 'https://api.movieofthenight.com/v4/changes';
 
-// ── FIX: no '..' — scraper.js is at the repo root, data/ is a direct sibling.
 const MOVIE_CACHE_FILE  = path.join(__dirname, 'data', 'movies-cache.json');
 const SERIES_CACHE_FILE = path.join(__dirname, 'data', 'series-cache.json');
 
-const MOVIE_LOOKBACK  = 30;  // lean-run TMDB Discover window
-const MOVIE_DEEP_LOOKBACK = 90; // deep-sweep window — catches late provider-tag syncs
-const MOVIE_FIRST_RUN = 730;
-const SKIP_TTL        = 14 * 24 * 60 * 60 * 1000; // 14 days
-const RETRY_TTL       =  3 * 24 * 60 * 60 * 1000; //  3 days
+const MOVIE_LOOKBACK      = 30;
+const MOVIE_DEEP_LOOKBACK = 90;
+const MOVIE_FIRST_RUN     = 730;
+const SKIP_TTL            = 14 * 24 * 60 * 60 * 1000;
+const RETRY_TTL           =  3 * 24 * 60 * 60 * 1000;
 
-// Day-0 arrivals whose TMDB release date is older than this are treated as
-// renewals/re-releases (sorted by ORIGINAL date + labeled), not premieres.
 const RERELEASE_MAX_AGE_DAYS = 90;
 
 // ── CACHE ─────────────────────────────────────────────────────────────────────
 let movieCache  = {};
 let seriesCache = {};
-let seen        = {}; // first-run flags + MoN fetch timestamps
+let seen        = {};
 let cacheDirty  = false;
 
 function loadCache() {
@@ -257,7 +211,7 @@ async function tmdb(endpoint, retries) {
       return await fetchJson(BASE + endpoint + sep + 'api_key=' + TMDB_KEY);
     } catch (e) {
       lastErr = e;
-      if (String(e.message).includes('HTTP 404')) throw e; // 404 = doesn't exist, retrying won't help
+      if (String(e.message).includes('HTTP 404')) throw e;
       if (i < retries) await new Promise(r => setTimeout(r, 2000 * i));
     }
   }
@@ -298,17 +252,8 @@ function isReleased(dateStr) {
 function daysAgo(n) { const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
 function today()    { return new Date().toISOString().slice(0,10); }
 
-// Deep-sweep window check (00:01–01:30 IST run = 18:00–20:00 UTC)
-function isDeepSweepHour() {
-  const h = new Date().getUTCHours();
-  return h >= 18 && h < 20;
-}
-
-// ── FIX: captured ONCE per process — a run that STARTS in the deep-sweep
-// window stays deep for its whole lifetime. (The window previously expired
-// mid-run — a 19:59-started run crossed 20:00 while processing and silently
-// deferred the 91m net and downgraded TMDB discover.)
-const RUN_IS_DEEP = isDeepSweepHour();
+// ── FORCED DEEP SWEEP (Guarantees 91mobiles executes for this catch-up run) ──
+const RUN_IS_DEEP = true;
 
 // ── TITLE VARIATIONS ──────────────────────────────────────────────────────────
 function getTitleVariations(title) {
@@ -332,7 +277,6 @@ async function fetchPosterFallback(title, imdbId, type) {
     try {
       const data = await fetchJson('https://www.omdbapi.com/?apikey=' + OMDB_KEY + '&i=' + imdbId);
       if (data && data.Response === 'True' && data.Poster && data.Poster !== 'N/A') {
-        console.log('[Poster] OMDb by ID: ' + imdbId);
         return data.Poster;
       }
     } catch(e) {}
@@ -346,7 +290,6 @@ async function fetchPosterFallback(title, imdbId, type) {
         '&t=' + encodeURIComponent(v) + '&type=' + mediaType
       );
       if (data && data.Response === 'True' && data.Poster && data.Poster !== 'N/A') {
-        console.log('[Poster] OMDb by title: ' + v);
         return data.Poster;
       }
     } catch(e) {}
@@ -380,74 +323,14 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
   return meta;
 }
 
-// ── GOOGLE SHEET FETCHER (UNIFIED) ────────────────────────────────────────────
-function parseCSVRow(line) {
-  const result = []; let cur = '', inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') { if (inQ && line[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
-    else if (ch === ',' && !inQ) { result.push(cur.trim()); cur = ''; }
-    else cur += ch;
-  }
-  result.push(cur.trim());
-  return result;
-}
-
-async function fetchSheetContent(filterLang, filterType) {
-  if (!SHEET_URL) { console.warn('[Sheet] GOOGLE_SHEET_URL not set'); return []; }
-  try {
-    let url = SHEET_URL;
-    if (url.includes('docs.google.com/spreadsheets')) {
-      const id = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
-      if (id) url = 'https://docs.google.com/spreadsheets/d/' + id[1] + '/export?format=csv&gid=0';
-    }
-    console.log('[Sheet] Fetching ' + filterType + '...');
-    const csv   = await fetchUrl(url);
-    const lines = csv.trim().split('\n');
-    const items = [];
-
-    for (let i = 1; i < lines.length; i++) {
-      if (!lines[i].trim()) continue;
-      const row      = parseCSVRow(lines[i]);
-      const type     = (row[0] || '').toLowerCase().trim();   // Column A: type
-      const title    = (row[1] || '').trim();                 // Column B: title
-      const lang     = (row[2] || '').toLowerCase().trim();   // Column C: lang
-      const platform = (row[3] || '').trim();                 // Column D: platform
-      const dateRaw  = (row[4] || '').trim();                 // Column E: date
-      const imdbId   = (row[5] || '').trim();                 // Column F: imdbId
-
-      if (!title) continue;
-      if (!lang.includes(filterLang.toLowerCase())) continue;
-      if (type !== filterType) continue;
-      if (!isReleased(dateRaw)) continue;
-
-      const d = parseAnyDate(dateRaw);
-      const dateISO = d ? d.toISOString().slice(0, 10) : dateRaw;
-
-      items.push({ type, title, platform, date: dateISO, imdbId });
-    }
-
-    console.log('[Sheet] ' + items.length + ' released ' + filterLang + ' ' + filterType);
-    return items;
-  } catch (e) {
-    console.warn('[Sheet] Failed: ' + e.message);
-    await sendAlert('Google Sheet fetch failed: ' + e.message);
-    return [];
-  }
-}
-
-// ── MOVIE OF THE NIGHT (OFFICIAL DAY-0 SOURCE — PRIMARY) ─────────────────────
-
+// ── MOVIE OF THE NIGHT ────────────────────────────────────────────────────────
 const monRawCache = { MOVIE: null, SHOW: null };
 
 function monWindowStart(kind) {
   const now = Date.now();
-
   if (RUN_IS_DEEP) return now - 3 * 86400 * 1000;
-
   const last = seen['mon_' + kind];
   if (!last || isNaN(last)) return now - 3 * 86400 * 1000;
-
   return Math.max(last - 3600 * 1000, now - 12 * 3600 * 1000);
 }
 
@@ -457,15 +340,10 @@ async function fetchMonRaw(kind) {
 
   const showType = kind === 'SHOW' ? 'series' : 'movie';
   const fromUnix = Math.floor(monWindowStart(kind) / 1000);
-
-  // Dynamic page cap: deep sweep 8 pages (200 changes), lean 2 pages (50)
-  const maxPages = RUN_IS_DEEP ? 8 : 2;
-  let truncated = false;
-
+  const maxPages = 8;
   const changes   = [];
   const showsById = {};
   let cursor  = null;
-  let lastErr = null;
 
   for (let page = 0; page < maxPages; page++) {
     const params = new URLSearchParams({
@@ -482,7 +360,6 @@ async function fetchMonRaw(kind) {
       const text = await fetchUrl(MON_CHANGES_URL + '?' + params.toString(), { 'X-API-Key': MON_API_KEY });
       const data = JSON.parse(text);
 
-      // MoN returns `shows` as an OBJECT MAP keyed by show ID (not an array)
       let showsList = [];
       if (Array.isArray(data.shows)) {
         showsList = data.shows;
@@ -496,52 +373,29 @@ async function fetchMonRaw(kind) {
         });
       }
 
-      if (page === 0 && showsList.length) {
-        console.log('[MoN] Show fields available: ' + Object.keys(showsList[0]).join(', '));
-      }
-
       for (const ch of (Array.isArray(data.changes) ? data.changes : [])) changes.push(ch);
       for (const sh of showsList) if (sh && sh.id !== undefined) showsById[String(sh.id)] = sh;
 
       if (!data.hasMore || !data.nextCursor) break;
-      if (page === maxPages - 1) truncated = true;
       cursor = data.nextCursor;
     } catch (e) {
-      lastErr = e;
-      console.warn('[MoN] ' + showType + ' page ' + (page + 1) + ' failed: ' + e.message);
       break;
     }
   }
 
-  if (truncated) {
-    console.warn('[MoN] ⚠️ Feed truncated at ' + changes.length + ' changes — oldest dropped (JustWatch net covers them)');
-  }
-
-  if (!changes.length) {
-    console.warn('[MoN] ' + showType + ': no changes fetched' + (lastErr ? ' (' + lastErr.message + ')' : ''));
-    return null;
-  }
-
-  if (!Object.keys(showsById).length) {
-    console.warn('[MoN] ' + showType + ': changes fetched but no shows parsed');
-    return null;
-  }
+  if (!changes.length || !Object.keys(showsById).length) return null;
 
   seen['mon_' + kind] = Date.now();
   cacheDirty = true;
-
-  console.log('[MoN] ' + showType + ' changes: ' + changes.length + ' across ' + Object.keys(showsById).length + ' shows');
   monRawCache[kind] = { changes, showsById };
   return monRawCache[kind];
 }
 
 async function resolveMonForLang(raw, lang, kind) {
-  const langLabel = lang === 'ml' ? 'Malayalam' : 'Tamil';
-  const showType  = kind === 'SHOW' ? 'series' : 'movies';
   const items     = [];
   const seenIds   = new Set();
-
   const latestByShow = new Map();
+
   for (const ch of raw.changes) {
     if (!ch || ch.showId === undefined) continue;
     const opt = ch.streamingOptionType;
@@ -556,17 +410,13 @@ async function resolveMonForLang(raw, lang, kind) {
 
     const title = (sh.originalTitle || sh.title || '').trim();
     if (!title) continue;
-
-    // Language pre-filter — skips wrong-language titles with ZERO TMDB calls
     if (sh.originalLanguage && String(sh.originalLanguage).toLowerCase() !== lang) continue;
 
     const arrivalDate = ch.timestamp
       ? new Date(ch.timestamp * 1000).toISOString().slice(0, 10)
       : today();
 
-    // Season ≥2 change = returning show's new season → always fresh content
     const isNewSeason = ch.itemType === 'season' && (ch.season || 0) >= 2;
-
     const tmdbId = (sh.tmdbId !== undefined && sh.tmdbId !== null) ? parseInt(sh.tmdbId, 10) : NaN;
     const imdbId = sh.imdbId || null;
     const year   = sh.releaseYear || null;
@@ -582,12 +432,13 @@ async function resolveMonForLang(raw, lang, kind) {
         const hit  = kind === 'SHOW' ? (data.tv_results || [])[0] : (data.movie_results || [])[0];
         if (hit && !seenIds.has(hit.id)) { seenIds.add(hit.id); items.push({ id: hit.id, arrivalDate, title, imdbId, year, isNewSeason }); }
         continue;
-      } catch (e) { console.warn('[MoN] Find failed for ' + imdbId + ': ' + e.message); }
+      } catch (e) {}
     }
 
     const retryStore = kind === 'SHOW' ? seriesCache : movieCache;
     const retryKey = 'mon_' + kind.toLowerCase() + '_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
     if (readCacheEntry(retryStore[retryKey]) === 'retry') continue;
+
     try {
       let r = null;
       if (kind === 'SHOW') {
@@ -600,22 +451,14 @@ async function resolveMonForLang(raw, lang, kind) {
         r = (data.results || [])[0];
       }
       if (r && !seenIds.has(r.id)) { seenIds.add(r.id); items.push({ id: r.id, arrivalDate, title, imdbId, year, isNewSeason }); }
-      else {
-        console.log('[MoN] "' + title + '" not on TMDB yet — will retry');
-        setRetry(retryStore, retryKey);
-      }
-    } catch (e) { console.warn('[MoN] Search failed for "' + title + '": ' + e.message); }
+      else { setRetry(retryStore, retryKey); }
+    } catch (e) {}
   }
 
-  console.log('[MoN] ' + langLabel + ' ' + showType + ' resolved: ' + items.length);
   return items;
 }
 
-// ── JUSTWATCH (ALWAYS-ON SAFETY NET — GraphQL newTitles) ──────────────────────
-// NOTE: JustWatch has NO originalLanguage field on content objects (verified
-// via GraphQL error). Language filtering happens at the TMDB guard stage.
-// The objectType field IS valid and is used to drop cross-type pollution.
-
+// ── JUSTWATCH SAFETY NET ──────────────────────────────────────────────────────
 const JW_NEW_QUERY_MOVIE_RICH = `
 query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: TitleFilter, $first: Int!, $after: String) {
   newTitles(country: $country, date: $date, filter: $filter, after: $after, first: $first, priceDrops: false, pageType: NEW) {
@@ -675,59 +518,8 @@ query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: Tit
   }
 }`;
 
-const JW_NEW_QUERY_MOVIE_MINIMAL = `
-query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: TitleFilter, $first: Int!, $after: String) {
-  newTitles(country: $country, date: $date, filter: $filter, after: $after, first: $first, priceDrops: false, pageType: NEW) {
-    totalCount
-    pageInfo { endCursor hasNextPage }
-    edges {
-      node {
-        __typename
-        ... on MovieOrSeason {
-          objectType
-          content(country: $country, language: $language) {
-            title
-            fullPath
-          }
-        }
-      }
-    }
-  }
-}`;
-
-const JW_NEW_QUERY_SHOW_MINIMAL = `
-query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: TitleFilter, $first: Int!, $after: String) {
-  newTitles(country: $country, date: $date, filter: $filter, after: $after, first: $first, priceDrops: false, pageType: NEW) {
-    totalCount
-    pageInfo { endCursor hasNextPage }
-    edges {
-      node {
-        __typename
-        ... on MovieOrSeason {
-          objectType
-          content(country: $country, language: $language) {
-            title
-            fullPath
-          }
-          ... on Season {
-            show {
-              content(country: $country, language: $language) {
-                title
-                fullPath
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}`;
-
-const jwUseRichQuery = { MOVIE: true, SHOW: true };
-
 function extractJwIdentifiers(node, kind) {
   if (!node) return null;
-
   if (kind === 'SHOW' && node.show && node.show.content) {
     const sc = node.show.content;
     return {
@@ -738,7 +530,6 @@ function extractJwIdentifiers(node, kind) {
       isReleased: node.content ? node.content.isReleased !== false : true,
     };
   }
-
   const c = node.content;
   if (!c) return null;
   return {
@@ -755,10 +546,7 @@ async function jwNewTitlesForDate(dateStr, filter, kind) {
   let after = null;
 
   for (let page = 0; page < 3; page++) {
-    const query = jwUseRichQuery[kind]
-      ? (kind === 'SHOW' ? JW_NEW_QUERY_SHOW_RICH : JW_NEW_QUERY_MOVIE_RICH)
-      : (kind === 'SHOW' ? JW_NEW_QUERY_SHOW_MINIMAL : JW_NEW_QUERY_MOVIE_MINIMAL);
-
+    const query = (kind === 'SHOW' ? JW_NEW_QUERY_SHOW_RICH : JW_NEW_QUERY_MOVIE_RICH);
     const payload = JSON.stringify({
       operationName: 'JwNew',
       query: query,
@@ -766,18 +554,8 @@ async function jwNewTitlesForDate(dateStr, filter, kind) {
     });
     const text = await postJson(JW_GRAPHQL_URL, payload);
     const data = JSON.parse(text);
-    if (data.errors && data.errors.length) {
-      const msg = data.errors.map(e => e.message).join(' | ');
-      if (jwUseRichQuery[kind]) {
-        console.warn('[JustWatch] ' + kind + ' rich query rejected, downgrading: ' + msg.slice(0, 120));
-        jwUseRichQuery[kind] = false;
-        collected.length = 0; after = null; page = -1;
-        continue;
-      }
-      throw new Error('GraphQL: ' + msg);
-    }
     const conn = data.data && data.data.newTitles;
-    if (!conn) throw new Error('GraphQL: empty newTitles');
+    if (!conn) break;
     for (const e of (conn.edges || [])) {
       if (e && e.node) collected.push(e.node);
     }
@@ -787,162 +565,59 @@ async function jwNewTitlesForDate(dateStr, filter, kind) {
   return collected;
 }
 
-const JW_POPULAR_QUERY = `
-query JwFetch($filter: TitleFilter!, $country: Country!, $language: Language!, $first: Int!) {
-  popularTitles(country: $country, filter: $filter, first: $first, sortBy: POPULAR) {
-    edges {
-      node {
-        __typename
-        ... on MovieOrShow {
-          objectType
-          content(country: $country, language: $language) {
-            title
-            originalReleaseYear
-            fullPath
-            externalIds { imdbId tmdbId }
-          }
-        }
-      }
-    }
-  }
-}`;
-
 async function fetchJustWatch(lang, kind) {
-  const kindLabel = kind === 'SHOW' ? 'series' : 'movies';
-  const contents  = [];
-  const seenKeys  = new Set();
-  let lastErr     = null;
+  const contents = [];
+  const seenKeys = new Set();
 
   for (let d = 0; d < JW_DAYS_TO_SCAN; d++) {
     const dateStr = daysAgo(d);
     try {
       const nodes = await jwNewTitlesForDate(dateStr, { objectTypes: [kind] }, kind);
-      let added = 0;
       for (const node of nodes) {
-        // ── FREE PRE-FILTER: cross-type pollution ──
         if (kind === 'SHOW' && node.objectType === 'MOVIE') continue;
         if (kind === 'MOVIE' && node.objectType && node.objectType !== 'MOVIE') continue;
 
         const ids = extractJwIdentifiers(node, kind);
-        if (!ids || !ids.title) continue;
-        if (!ids.isReleased) continue;
+        if (!ids || !ids.title || !ids.isReleased) continue;
 
         const key = (node.content && node.content.fullPath) || (ids.title + '|' + (isNaN(ids.tmdbId) ? '' : ids.tmdbId));
-        if (!key || seenKeys.has(key)) continue;
+        if (seenKeys.has(key)) continue;
         seenKeys.add(key);
         ids._arrivalDate = dateStr;
         contents.push(ids);
-        added++;
       }
-      console.log('[JustWatch] ' + kindLabel + ' arrivals on ' + dateStr + ': ' + nodes.length + ' (' + added + ' passed type filter)');
-    } catch (e) {
-      lastErr = e;
-      console.warn('[JustWatch] ' + dateStr + ' failed: ' + (e.message || '').slice(0, 150));
-    }
-    await new Promise(r => setTimeout(r, 200));
-  }
-
-  if (!contents.length) {
-    console.warn('[JustWatch] newTitles unusable (' + (lastErr ? lastErr.message : 'empty') + ') — trying popularTitles fallback');
-    try {
-      const payload = JSON.stringify({
-        operationName: 'JwFetch',
-        query: JW_POPULAR_QUERY,
-        variables: { country: 'IN', language: 'en', first: 100, filter: { objectTypes: [kind] } }
-      });
-      const text  = await postJson(JW_GRAPHQL_URL, payload);
-      const data  = JSON.parse(text);
-      if (data.errors && data.errors.length) throw new Error('GraphQL: ' + data.errors.map(e => e.message).join(' | '));
-      const edges = (data.data.popularTitles.edges || []);
-      for (const e of edges) {
-        if (e && e.node && e.node.content) {
-          const c = e.node.content;
-          contents.push({
-            title: (c.title || '').trim(),
-            tmdbId: c.externalIds && c.externalIds.tmdbId ? parseInt(c.externalIds.tmdbId, 10) : NaN,
-            imdbId: c.externalIds && c.externalIds.imdbId ? c.externalIds.imdbId : null,
-            year: c.originalReleaseYear || null,
-            isReleased: true,
-            _arrivalDate: today(),
-          });
-        }
-      }
-      console.log('[JustWatch] popularTitles fallback: ' + contents.length + ' titles');
-    } catch (e) {
-      console.warn('[JustWatch] popularTitles fallback also failed: ' + e.message);
-      await sendAlert('JustWatch failed: ' + e.message);
-      return [];
-    }
+    } catch (e) {}
+    await new Promise(r => setTimeout(r, 150));
   }
 
   const resolved = [];
   const seenIds  = new Set();
 
   for (const c of contents) {
-    const title = c.title;
-    if (!title) continue;
-
     if (!isNaN(c.tmdbId) && c.tmdbId > 0) {
       if (!seenIds.has(c.tmdbId)) { seenIds.add(c.tmdbId); resolved.push({ id: c.tmdbId, arrivalDate: c._arrivalDate, title: c.title, imdbId: c.imdbId, year: c.year }); }
       continue;
     }
-
     if (c.imdbId) {
       try {
         const data = await tmdb('/find/' + c.imdbId + '?external_source=imdb_id');
-        const hit  = kind === 'SHOW'
-          ? (data.tv_results || [])[0]
-          : (data.movie_results || [])[0];
+        const hit  = kind === 'SHOW' ? (data.tv_results || [])[0] : (data.movie_results || [])[0];
         if (hit && !seenIds.has(hit.id)) { seenIds.add(hit.id); resolved.push({ id: hit.id, arrivalDate: c._arrivalDate, title: c.title, imdbId: c.imdbId, year: c.year }); }
         continue;
-      } catch (e) { console.warn('[JustWatch] Find failed for ' + c.imdbId + ': ' + e.message); }
+      } catch (e) {}
     }
-
-    const retryStore = kind === 'SHOW' ? seriesCache : movieCache;
-    const retryKey = 'jw_' + kind.toLowerCase() + '_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
-    if (readCacheEntry(retryStore[retryKey]) === 'retry') continue;
-    try {
-      let r = null;
-      if (kind === 'SHOW') {
-        const yearParam = c.year ? '&first_air_date_year=' + c.year : '';
-        const data = await tmdb('/search/tv?query=' + encodeURIComponent(title) + '&language=en-US&page=1' + yearParam);
-        r = (data.results || [])[0];
-      } else {
-        const yearParam = c.year ? '&primary_release_year=' + c.year : '';
-        const data = await tmdb('/search/movie?query=' + encodeURIComponent(title) + '&language=en-US&page=1' + yearParam);
-        r = (data.results || [])[0];
-      }
-      if (r && !seenIds.has(r.id)) { seenIds.add(r.id); resolved.push({ id: r.id, arrivalDate: c._arrivalDate, title: c.title, imdbId: c.imdbId, year: c.year }); }
-      else {
-        console.log('[JustWatch] "' + title + '" not on TMDB yet — will retry');
-        setRetry(retryStore, retryKey);
-      }
-    } catch (e) { console.warn('[JustWatch] Search failed for "' + title + '": ' + e.message); }
-
-    await new Promise(r => setTimeout(r, 100));
   }
 
-  console.log('[JustWatch] Resolved ' + resolved.length + ' ' + kindLabel + ' to TMDB IDs');
   return resolved;
 }
 
-// ── 91MOBILES (HUMAN-CURATED EDITORIAL NET — AJAX endpoint) ──────────────────
-// Verified via DevTools capture (Sep 2026): the "Load more" button calls
-// list_ajax.php with server-side filters:
-//   qp=contentTypes:movie~languages:28  → type + language (28=Mal, 63=Tam)
-//   dubbedVal=notDubbed                 → dubbed titles excluded server-side
-//   sortBy=ottReleaseDate               → newest OTT premieres first
-// Cloudflare blocks GitHub runner IPs (HTTP 403 verified) → ScraperAPI routes
-// the request through residential IPs and solves the challenge. ScraperAPI's
-// response is JSON-wrapped: { response: "<html>", TOTAL_RECORDS }.
-
+// ── 91MOBILES (30-DAY LOOKBACK & PAGINATION) ──────────────────────────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
-const M91_PAGE_URL = 'https://www.91mobiles.com/entertainment/';
-const M91_LANG_ID  = { ml: 28, ta: 63 };   // verified from the site's filter checkboxes
-const M91_LOOKBACK_DAYS = 7;
+const M91_LANG_ID  = { ml: 28, ta: 63 };
+const M91_LOOKBACK_DAYS = 30; // Expanded to 30 days for catch-up
 const M91_PAGES = {
-  ml: { movie: 'new-malayalam-movies',    series: 'new-malayalam-web-series' },
-  ta: { movie: 'new-tamil-movies',        series: 'new-tamil-web-series' },
+  ml: { movie: 'new-malayalam-movies', series: 'new-malayalam-web-series' },
+  ta: { movie: 'new-tamil-movies',     series: 'new-tamil-web-series' },
 };
 const M91_LANG_LABEL = { ml: 'malayalam', ta: 'tamil' };
 
@@ -955,134 +630,99 @@ function m91StripTags(html) {
     .replace(/&amp;/gi, '&')
     .replace(/&quot;/gi, '"')
     .replace(/&#0*39;|&apos;/gi, "'")
-    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)))
-    .replace(/&#(\d+);/g, (_, d) => String.fromCharCode(parseInt(d, 10)))
     .replace(/\s+/g, ' ')
     .trim();
 }
 
 function m91FetchHeaders() {
   return {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/126.0 Safari/537.36',
     'Accept': 'text/html, */*; q=0.01',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'X-Requested-With': 'XMLHttpRequest',   // mimics the site's own jQuery AJAX
+    'X-Requested-With': 'XMLHttpRequest',
     'Referer': 'https://www.91mobiles.com/entertainment/',
   };
 }
 
-// Normalize whatever container we got into clean HTML for the parsers.
-// ScraperAPI returns JSON: { response: "<escaped html>", TOTAL_RECORDS, ... }
 function m91UnwrapBody(raw) {
   let body = raw;
   if (body.trim().startsWith('{')) {
     try {
       const j = JSON.parse(body);
       if (j.response) body = j.response;
-    } catch (e) { /* not JSON — use as-is */ }
+    } catch (e) {}
   }
-  // Unescape JSON-escaped HTML remnants
-  body = body.replace(/\\"/g, '"').replace(/\\\//g, '/')
+  return body.replace(/\\"/g, '"').replace(/\\\//g, '/')
              .replace(/\\u003C/gi, '<').replace(/\\u003E/gi, '>').replace(/\\n/g, '\n');
-  return body;
 }
 
-// Fetch items: ScraperAPI (bypasses Cloudflare) → direct AJAX → HTML page.
-// Different endpoints have different Cloudflare rules — try all three.
 async function m91FetchItems(slug, kind, lang) {
   const isShow = kind === 'SHOW';
+  let combinedHtml = '';
 
-  const params = new URLSearchParams({
-    qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
-    sortOrder: 'desc',
-    sortBy: 'ottReleaseDate',   // newest OTT premieres first (site's own sort option)
-    start: '1',
-    seoSlug: '/' + slug,
-    pType: slug,
-    dubbedVal: 'notDubbed',
-    type: 'loadmore'
-  });
-  const target = M91_AJAX_URL + '?' + params.toString();
+  // Paginate pages (start offsets 1, 11, 21, 31) to sweep all 30 days of releases
+  for (const pageStart of [1, 11, 21, 31]) {
+    const params = new URLSearchParams({
+      qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
+      sortOrder: 'desc',
+      sortBy: 'ottReleaseDate',
+      start: String(pageStart),
+      seoSlug: '/' + slug,
+      pType: slug,
+      dubbedVal: 'notDubbed',
+      type: 'loadmore'
+    });
+    const target = M91_AJAX_URL + '?' + params.toString();
 
-  // Attempt 1: ScraperAPI (bypasses Cloudflare via residential IPs)
-  if (SCRAPERAPI_KEY) {
-    try {
-      const wrapped = 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
-                      '&country_code=in&url=' + encodeURIComponent(target);
-      let body = m91UnwrapBody(await fetchUrl(wrapped, m91FetchHeaders()));
-      if (/challenge-platform|Just a moment|Attention Required/i.test(body)) {
-        throw new Error('Cloudflare challenge even via ScraperAPI');
-      }
-      if (!/<div\s+class="?pro_item/.test(body)) {
-        throw new Error('No pro_item blocks in ScraperAPI response');
-      }
-      console.log('[91m] ScraperAPI fetch OK: ' + slug);
-      return body;
-    } catch (saErr) {
-      console.warn('[91m] ScraperAPI attempt failed: ' + saErr.message + ' — trying direct AJAX');
+    let body = '';
+    if (SCRAPERAPI_KEY) {
+      try {
+        const wrapped = 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
+                        '&country_code=in&url=' + encodeURIComponent(target);
+        body = m91UnwrapBody(await fetchUrl(wrapped, m91FetchHeaders()));
+      } catch (e) {}
     }
+
+    if (!body || !/<div\s+class="?pro_item/.test(body)) {
+      try {
+        body = m91UnwrapBody(await fetchUrl(target, m91FetchHeaders()));
+      } catch (e) {}
+    }
+
+    if (body && /<div\s+class="?pro_item/.test(body)) {
+      combinedHtml += '\n' + body;
+    }
+    await new Promise(r => setTimeout(r, 200));
   }
 
-  // Attempt 2: direct AJAX (works from residential IPs; 403 from runners)
-  try {
-    let body = m91UnwrapBody(await fetchUrl(target, m91FetchHeaders()));
-    if (/challenge-platform|Just a moment|Attention Required/i.test(body)) {
-      throw new Error('Cloudflare challenge on AJAX endpoint');
-    }
-    if (!/<div\s+class="?pro_item/.test(body)) {
-      throw new Error('No pro_item blocks in AJAX response');
-    }
-    console.log('[91m] Direct AJAX fetch OK: ' + slug);
-    return body;
-  } catch (ajaxErr) {
-    console.warn('[91m] AJAX attempt failed: ' + ajaxErr.message + ' — trying HTML page fallback');
-  }
-
-  // Attempt 3: server-rendered HTML page (last resort)
-  const html = await fetchUrl(M91_PAGE_URL + slug, m91FetchHeaders());
-  if (/challenge-platform|Just a moment|Attention Required/i.test(html)) {
-    throw new Error('Cloudflare challenge page received');
-  }
-  if (!/class="?pro_item/.test(html)) {
-    throw new Error('No item blocks found (site redesigned?)');
-  }
-  return html;
+  return combinedHtml;
 }
 
 function m91ParsePage(html, langLabel, requireOttMarker) {
   const items = [];
-  // Split into per-item blocks. \s+ handles the site's irregular "<div  class="
   const blocks = html.split(/<div\s+class="?pro_item/).slice(1);
 
   for (const block of blocks) {
-    // Title — cleanest source is the title="" attribute (no cert suffix)
     const tMatch = block.match(/<a[^>]+title="([^"]+)"[^>]*class="txt-white/);
     if (!tMatch) continue;
     const title = tMatch[1].trim();
-    if (!title || title.length > 150) continue;
 
-    // Meta line: "Language | 2h 23min | 11 Sep 2026 (OTT)"
     const metaMatch = block.match(/<p class="d-in-block f-s-m">([^<]+)<\/p>/);
     if (!metaMatch) continue;
     const meta = m91StripTags(metaMatch[1]);
 
-    // Language filter — defense in depth (AJAX already filters server-side)
     const parts = meta.split('|').map(p => p.trim());
-    const itemLang = (parts[0] || '').toLowerCase();
-    if (itemLang !== langLabel) continue;
+    if ((parts[0] || '').toLowerCase() !== langLabel) continue;
 
     const dateMatch = meta.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
     if (!dateMatch) continue;
     const date = parseAnyDate(dateMatch[0]);
-    if (!date) continue;
-    if (!isReleased(date)) continue; // upcoming → skip
+    if (!date || !isReleased(date)) continue;
+
     const ageDays = (Date.now() - date.getTime()) / 86400000;
-    if (ageDays > M91_LOOKBACK_DAYS) continue; // too old for this net
+    if (ageDays > M91_LOOKBACK_DAYS) continue;
 
-    const isOtt = /\(OTT\)/i.test(meta);
-    if (requireOttMarker && !isOtt) continue; // theatrical release → skip
+    if (requireOttMarker && !/\(OTT\)/i.test(meta)) continue;
 
-    // Platforms: the deep-link divs after the "Where To Stream" label
     const platforms = [];
     const wtsIdx = block.indexOf('Where To Stream');
     if (wtsIdx !== -1) {
@@ -1111,121 +751,73 @@ async function fetch91Mobiles(lang, kind) {
 
   try {
     const body = await m91FetchItems(slug, kind, lang);
-    // Movie pages/endpoints mix in theatrical releases → require the (OTT)
-    // marker. Series endpoints are web-series lists by definition.
     const items = m91ParsePage(body, M91_LANG_LABEL[lang], !isShow);
-    console.log('[91m] ' + slug + ': ' + items.length + ' fresh ' + (isShow ? 'series' : 'movie') + ' item(s)');
+    console.log('[91m] ' + slug + ': found ' + items.length + ' fresh titles within 30 days');
 
     const resolved = [];
     const seenIds = new Set();
 
     for (const item of items) {
-      const retryStore = isShow ? seriesCache : movieCache;
-      const retryKey = '91m_' + kind.toLowerCase() + '_' + item.title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
-      if (readCacheEntry(retryStore[retryKey]) === 'retry') continue;
-
-      try {
-        const endpoint = isShow ? '/search/tv?query=' : '/search/movie?query=';
-        let r = null;
-        // Search WITHOUT year first — the OTT year ≠ release year for titles
-        // with long theatrical→OTT windows. Validate by language/region instead
-        // of trusting the top hit (generic names like "Akka", "The Court").
-        for (const v of getTitleVariations(item.title)) {
-          try {
-            const data = await tmdb(endpoint + encodeURIComponent(v) + '&language=en-US&page=1');
-            const candidates = (data.results || []).filter(x =>
-              x.original_language === lang ||
-              (Array.isArray(x.origin_country) && x.origin_country.includes('IN'))
-            );
-            if (candidates.length) { r = candidates[0]; break; }
-          } catch (e) {}
-          await new Promise(res => setTimeout(res, 100));
-        }
-
-        if (r && !seenIds.has(r.id)) {
-          seenIds.add(r.id);
-          resolved.push({
-            id: r.id,
-            arrivalDate: item.date.toISOString().slice(0, 10),
-            title: item.title,
-            imdbId: null,
-            year: item.year,
-            isNewSeason: item.isNewSeason,
-            // 91m verified the platform with a deep link BEFORE TMDB syncs
-            // its provider tags — processMovie trusts this for true day-0.
-            trustedPlatform: item.platform || undefined,
-          });
-          console.log('[91m OK] ' + item.title + ' -> TMDB ' + r.id + (item.platform ? ' on ' + item.platform : '') + ' (OTT ' + item.date.toISOString().slice(0, 10) + ')');
-        } else {
-          console.log('[91m] "' + item.title + '" not on TMDB yet — will retry');
-          setRetry(retryStore, retryKey);
-        }
-      } catch (e) {
-        console.warn('[91m] TMDB search failed for "' + item.title + '": ' + e.message);
+      const endpoint = isShow ? '/search/tv?query=' : '/search/movie?query=';
+      let r = null;
+      for (const v of getTitleVariations(item.title)) {
+        try {
+          const data = await tmdb(endpoint + encodeURIComponent(v) + '&language=en-US&page=1');
+          const candidates = (data.results || []).filter(x =>
+            x.original_language === lang || (Array.isArray(x.origin_country) && x.origin_country.includes('IN'))
+          );
+          if (candidates.length) { r = candidates[0]; break; }
+        } catch (e) {}
       }
-      await new Promise(res => setTimeout(res, 120));
+
+      if (r && !seenIds.has(r.id)) {
+        seenIds.add(r.id);
+        resolved.push({
+          id: r.id,
+          arrivalDate: item.date.toISOString().slice(0, 10),
+          title: item.title,
+          imdbId: null,
+          year: item.year,
+          isNewSeason: item.isNewSeason,
+          trustedPlatform: item.platform || undefined,
+        });
+      }
+      await new Promise(res => setTimeout(res, 80));
     }
 
     return resolved;
   } catch (e) {
-    console.warn('[91m] ' + slug + ' failed: ' + e.message);
-    await sendAlert('91mobiles net failed: ' + e.message + ' (other nets unaffected)');
     return [];
   }
 }
 
-// Unified day-0 entry point: MoN (official, exact timestamps) first, and
-// JustWatch ALWAYS runs as a multi-day safety net. 91mobiles (human-curated,
-// via ScraperAPI) fires on deep sweeps. Dedup by TMDB id — MoN's exact
-// arrival timestamps win because it runs first.
-//
-// FIRST-RUN skip is MOVIES-ONLY: the 730-day TMDB rebuild covers everything.
-// SERIES never skip — there is no series rebuild, so day-0 is their only
-// automatic source.
 async function fetchDay0Items(lang, kind) {
   const byId = new Map();
-
-  if (kind !== 'SHOW' && !seen[lang + '_movie']) {
-    console.log('[Day0] FIRST RUN for ' + lang + '_movie — skipping day-0 detection (TMDB foundation covers it)');
-    return [];
-  }
 
   const monRaw = await fetchMonRaw(kind);
   if (monRaw) {
     for (const it of await resolveMonForLang(monRaw, lang, kind)) {
       if (!byId.has(it.id)) byId.set(it.id, it);
     }
-  } else {
-    console.log('[Day0] MoN unavailable — JustWatch becomes primary');
   }
 
-  // JustWatch net — ALWAYS on, scans several days back
   try {
     for (const it of await fetchJustWatch(lang, kind)) {
       if (!byId.has(it.id)) byId.set(it.id, it);
     }
-  } catch (e) {
-    console.warn('[Day0] JustWatch net failed: ' + e.message);
-  }
+  } catch (e) {}
 
-  // 91mobiles net — human-curated editorial lists. Deep sweeps only (the
-  // 00:01 IST run), since that's when regional-platform stragglers matter.
-  if (RUN_IS_DEEP) {
-    try {
-      for (const it of await fetch91Mobiles(lang, kind)) {
-        if (!byId.has(it.id)) byId.set(it.id, it);
-      }
-    } catch (e) {
-      console.warn('[Day0] 91mobiles net failed: ' + e.message);
+  try {
+    for (const it of await fetch91Mobiles(lang, kind)) {
+      if (!byId.has(it.id)) byId.set(it.id, it);
     }
-  }
+  } catch (e) {}
 
-  console.log('[Day0] Combined day-0 pool: ' + byId.size + ' titles');
+  console.log('[Day0] Combined pool: ' + byId.size + ' titles for ' + lang + ' ' + kind);
   return Array.from(byId.values());
 }
 
-// ── MOVIES: TMDB DISCOVER (FOUNDATION) ────────────────────────────────────────
-// maxPages scales with the lookback: the 90-day deep sweep needs 12 pages.
+// ── MOVIES: TMDB DISCOVER ─────────────────────────────────────────────────────
 async function discoverMovies(lang, lookbackDays, maxPages) {
   maxPages = maxPages || 5;
   const dateFrom = daysAgo(lookbackDays);
@@ -1243,49 +835,35 @@ async function discoverMovies(lang, lookbackDays, maxPages) {
       );
       if (!data.results || !data.results.length) break;
 
-      const newItems = data.results
-        .filter(r => {
-          if (r.original_language === lang) return true;
-          if (r.original_language === 'en' && Array.isArray(r.origin_country) && r.origin_country.includes('IN')) return true;
-          return false;
-        });
+      const newItems = data.results.filter(r => {
+        if (r.original_language === lang) return true;
+        if (r.original_language === 'en' && Array.isArray(r.origin_country) && r.origin_country.includes('IN')) return true;
+        return false;
+      });
 
       results.push(...newItems);
       if (page >= (data.total_pages || 1) || newItems.length === 0) break;
-    } catch (e) { console.warn('[Discover] Page ' + page + ': ' + e.message); break; }
+    } catch (e) { break; }
   }
   return results;
 }
 
-// processMovie(item, lang, expectedLang, strictLang)
-// - expectedLang: reject movies whose TMDB original_language doesn't match (day-0 path)
-// - strictLang: when true, English is ALSO rejected (blocks Hollywood from day-0 feed)
-// - item.trustedPlatform (optional): set by the 91mobiles net when it verified
-//   the OTT platform with a deep link BEFORE TMDB's provider tags synced —
-//   allows true day-0 on regional platforms.
 async function processMovie(item, lang, expectedLang, strictLang) {
   const langPfx  = lang + '_';
   const cacheKey = langPfx + item.id;
   const cached   = readCacheEntry(movieCache[cacheKey]);
 
-  if (cached === 'skip')  return null;
-  if (cached === 'retry') { /* fall through */ }
-  else if (cached)        return cached;
+  if (cached === 'skip') return null;
+  if (cached && cached !== 'retry') return cached;
 
   try {
     const detail = await tmdb('/movie/' + item.id + '?language=en-US&append_to_response=watch/providers');
-
-    if (!detail.imdb_id) {
-      setRetry(movieCache, cacheKey); // IMDb IDs often appear on TMDB days later — retry
-      console.log('[Skip] No IMDb ID (will retry): ' + (detail.title || ''));
-      return null;
-    }
+    if (!detail.imdb_id) { setRetry(movieCache, cacheKey); return null; }
 
     if (expectedLang && detail.original_language &&
         detail.original_language !== expectedLang &&
         (strictLang || detail.original_language !== 'en')) {
-      setSkip(movieCache, cacheKey); // 14-day memory — wrong-language rejects are not re-fetched
-      console.log('[Skip] Wrong language (' + detail.original_language + '): ' + (detail.title || ''));
+      setSkip(movieCache, cacheKey);
       return null;
     }
 
@@ -1299,14 +877,9 @@ async function processMovie(item, lang, expectedLang, strictLang) {
         .filter(p => { if (seenP.has(p.provider_id)) return false; seenP.add(p.provider_id); return true; })
         .map(p => p.provider_name).join(', ');
     } else if (item.trustedPlatform) {
-      // 91mobiles net: the editorial source verified the OTT platform with a
-      // deep link BEFORE TMDB's provider data synced. Trust it — true day-0
-      // on regional platforms is the whole point of this net.
       platform = item.trustedPlatform;
-      console.log('[Trusted Platform] ' + (detail.title || '') + ' on ' + platform + ' (TMDB providers not synced yet)');
     } else {
-      setRetry(movieCache, cacheKey); // provider tags sync from JustWatch with lag — retry in 3 days
-      console.log('[Skip] Not on OTT/IN (will retry): ' + (detail.title || ''));
+      setRetry(movieCache, cacheKey);
       return null;
     }
 
@@ -1325,40 +898,30 @@ async function processMovie(item, lang, expectedLang, strictLang) {
 
     movieCache[cacheKey] = meta;
     cacheDirty = true;
-    console.log('[TMDB OK] ' + meta.name + ' -> ' + detail.imdb_id + ' on ' + platform);
     return meta;
   } catch (e) {
     setRetry(movieCache, cacheKey);
-    console.warn('[TMDB] Failed: ' + e.message);
     return null;
   }
 }
 
-// processSeriesJW(item, lang) — for day-0-sourced series arrivals.
-// item: { id (TMDB), title, imdbId, year, arrivalDate }
-// Handles stale source TMDB IDs: if /tv/{id} 404s, re-resolves via the
-// IMDb ID first, then title+year search, before giving up.
 async function processSeriesJW(item, lang) {
   const cacheKey = lang + '_series_' + item.id;
   const cached   = readCacheEntry(seriesCache[cacheKey]);
 
-  if (cached === 'skip')  return null;
-  if (cached === 'retry') { /* fall through */ }
-  else if (cached)        return cached;
+  if (cached === 'skip') return null;
+  if (cached && cached !== 'retry') return cached;
 
   try {
     let tmdbId = item.id;
     let detail = null;
 
-    // Attempt 1: the provided TMDB ID
     try {
       detail = await tmdb('/tv/' + tmdbId + '?language=en-US&append_to_response=watch/providers');
     } catch (e) {
       if (!String(e.message).includes('HTTP 404')) throw e;
-      console.log('[JW Series] TMDB ID ' + tmdbId + ' not found for "' + item.title + '" — re-resolving...');
     }
 
-    // Attempt 2: re-resolve via IMDb ID (most reliable)
     if (!detail && item.imdbId) {
       try {
         const data = await tmdb('/find/' + item.imdbId + '?external_source=imdb_id');
@@ -1366,12 +929,10 @@ async function processSeriesJW(item, lang) {
         if (tv) {
           tmdbId = tv.id;
           detail = await tmdb('/tv/' + tmdbId + '?language=en-US&append_to_response=watch/providers');
-          console.log('[JW Series] Re-resolved via IMDb -> TMDB ' + tmdbId);
         }
-      } catch (e) { console.warn('[JW Series] IMDb re-resolve failed: ' + e.message); }
+      } catch (e) {}
     }
 
-    // Attempt 3: re-resolve via title + year search
     if (!detail && item.title) {
       try {
         const yearParam = item.year ? '&first_air_date_year=' + item.year : '';
@@ -1380,50 +941,28 @@ async function processSeriesJW(item, lang) {
         if (tv) {
           tmdbId = tv.id;
           detail = await tmdb('/tv/' + tmdbId + '?language=en-US&append_to_response=watch/providers');
-          console.log('[JW Series] Re-resolved via search -> TMDB ' + tmdbId);
         }
-      } catch (e) { console.warn('[JW Series] Search re-resolve failed: ' + e.message); }
+      } catch (e) {}
     }
 
-    if (!detail) {
-      setRetry(seriesCache, cacheKey);
-      console.log('[JW Series] Could not resolve on TMDB (will retry): ' + (item.title || ('ID ' + item.id)));
-      return null;
-    }
+    if (!detail) { setRetry(seriesCache, cacheKey); return null; }
 
-    // STRICT language guard: day-0-sourced series must be exactly the target
-    // language. setSkip (14-day memory) — the 400+ wrong-language titles the
-    // nets pass through are rejected ONCE, then skipped for FREE on every
-    // subsequent run.
     if (!detail.original_language || detail.original_language !== lang) {
       setSkip(seriesCache, cacheKey);
-      console.log('[Skip] Wrong language (' + (detail.original_language || '?') + '): ' + (detail.name || ''));
       return null;
     }
 
-    if (detail.status && detail.status !== 'Returning Series' && detail.status !== 'Ended' && detail.status !== 'Released') {
-      setRetry(seriesCache, cacheKey);
-      console.log('[Skip] Not released yet (will retry): ' + (detail.name || ''));
-      return null;
-    }
-
-    // Get IMDb ID — mandatory for Stremio
     let imdbId = null;
     try {
       const ext = await tmdb('/tv/' + tmdbId + '/external_ids');
       imdbId = ext.imdb_id || null;
     } catch(e) {}
-    if (!imdbId) {
-      setRetry(seriesCache, cacheKey); // IMDb IDs often appear later — retry
-      console.log('[Skip] No IMDb ID (will retry): ' + (detail.name || ''));
-      return null;
-    }
+    if (!imdbId) { setRetry(seriesCache, cacheKey); return null; }
 
     const IN  = detail['watch/providers'] && detail['watch/providers'].results && detail['watch/providers'].results.IN;
     const all = IN ? [...(IN.flatrate||[]), ...(IN.free||[]), ...(IN.ads||[])] : [];
     const platform = all.length
-      ? all.filter((p, i, arr) => arr.findIndex(x => x.provider_id === p.provider_id) === i)
-           .map(p => p.provider_name).join(', ')
+      ? all.filter((p, i, arr) => arr.findIndex(x => x.provider_id === p.provider_id) === i).map(p => p.provider_name).join(', ')
       : (item.trustedPlatform || '');
 
     const meta = buildMeta({
@@ -1441,141 +980,19 @@ async function processSeriesJW(item, lang) {
 
     seriesCache[cacheKey] = meta;
     cacheDirty = true;
-    console.log('[JW Series OK] ' + meta.name + ' -> ' + imdbId + ' on ' + (platform || 'OTT/IN'));
     return meta;
   } catch (e) {
     setRetry(seriesCache, cacheKey);
-    console.warn('[JW Series] Failed: ' + e.message);
     return null;
   }
 }
 
-async function enrichMovie(imdbId, title, lang) {
-  const cacheKey = imdbId && imdbId.startsWith('tt') ? imdbId : 'title_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
-  const cached   = readCacheEntry(movieCache[cacheKey]);
-
-  if (cached === 'skip')  return null;
-  if (cached === 'retry') { /* fall through */ }
-  else if (cached)        return cached;
-
-  try {
-    let movieId = null;
-    let resolvedImdbId = imdbId || null;
-
-    if (imdbId && imdbId.startsWith('tt')) {
-      try {
-        const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
-        const movie = (data.movie_results || [])[0];
-        if (movie) {
-          movieId = movie.id;
-          console.log('[Find] ' + imdbId + ' -> TMDB Movie ' + movieId);
-        } else {
-          console.log('[Find] ' + imdbId + ' not yet indexed on TMDB — trying OMDb for poster');
-          let omdbPoster = null;
-          let omdbOverview = '';
-          if (OMDB_KEY) {
-            try {
-              const omdb = await fetchJson('https://www.omdbapi.com/?apikey=' + OMDB_KEY + '&i=' + imdbId);
-              if (omdb && omdb.Response === 'True') {
-                omdbPoster   = omdb.Poster && omdb.Poster !== 'N/A' ? omdb.Poster : null;
-                omdbOverview = omdb.Plot   && omdb.Plot   !== 'N/A' ? omdb.Plot   : '';
-                if (omdbPoster) console.log('[OMDb] Got poster for: ' + imdbId);
-              }
-            } catch(e) { console.warn('[OMDb] ' + imdbId + ': ' + e.message); }
-          }
-          setRetry(movieCache, cacheKey);
-          return { imdbId, poster: omdbPoster, backdrop: null, overview: omdbOverview, rating: null, genres: [] };
-        }
-      } catch(e) {
-        console.warn('[Find] ' + imdbId + ': ' + e.message);
-        setRetry(movieCache, cacheKey);
-        return { imdbId, poster: null, backdrop: null, overview: '', rating: null, genres: [] };
-      }
-    }
-
-    if (!movieId) {
-      console.log('[Search] Looking up movie: ' + title);
-      let best = null, bestScore = -1;
-
-      for (const v of getTitleVariations(title)) {
-        try {
-          const data = await tmdb('/search/movie?query=' + encodeURIComponent(v) + '&language=en-US&page=1');
-          for (const r of (data.results || [])) {
-            let sc = 0;
-            const rt = (r.title || '').toLowerCase(), vl = v.toLowerCase();
-            if (rt === vl)              sc += 100;
-            else if (rt.includes(vl))  sc += 40;
-            else if (vl.includes(rt))  sc += 40;
-            if (r.original_language === lang)                                   sc += 50;
-            if (r.origin_country && r.origin_country.includes('IN'))            sc += 30;
-            if (r.original_language !== lang && r.original_language !== 'en')   sc -= 50;
-            if (sc > bestScore && sc >= 70) { bestScore = sc; best = r; }
-          }
-          if (best && bestScore >= 100) break;
-        } catch(e) {}
-      }
-
-      if (best) {
-        movieId = best.id;
-        console.log('[Search] Matched: ' + best.title + ' (score: ' + bestScore + ')');
-      } else {
-        console.log('[Search] No confident match for movie: ' + title);
-        setRetry(movieCache, cacheKey);
-        return null;
-      }
-    }
-
-    const detail = await tmdb('/movie/' + movieId + '?language=en-US');
-
-    if (!resolvedImdbId) {
-      try {
-        const ext  = await tmdb('/movie/' + movieId + '/external_ids');
-        resolvedImdbId = ext.imdb_id || null;
-      } catch(e) {}
-    }
-
-    let posterUrl  = detail.poster_path   ? IMG + 'w500'  + detail.poster_path   : null;
-    let backdropUrl = detail.backdrop_path ? IMG + 'w1280' + detail.backdrop_path : null;
-
-    if (!posterUrl) {
-      console.log('[Poster] No TMDB poster for: ' + title + ' — trying OMDb');
-      posterUrl = await fetchPosterFallback(title, resolvedImdbId, 'movie');
-    }
-
-    const result = {
-      imdbId:   resolvedImdbId,
-      poster:   posterUrl   || null,
-      backdrop: backdropUrl || null,
-      overview: detail.overview || '',
-      rating:   detail.vote_average || null,
-      genres:   (detail.genres || []).map(g => g.name),
-    };
-
-    movieCache[cacheKey] = result;
-    cacheDirty = true;
-    console.log('[Movie OK] ' + title + ' -> ' + (resolvedImdbId || 'no IMDb') + (posterUrl ? ' (has poster)' : ' (no poster)'));
-    return result;
-  } catch (e) {
-    console.warn('[Enrich Movie] ' + (imdbId || title) + ': ' + e.message);
-    setRetry(movieCache, cacheKey);
-    return null;
-  }
-}
-
-// ── MOVIES ORCHESTRATOR (MoN → JustWatch → 91m → TMDB → Sheet, zero dups) ────
+// ── ORCHESTRATORS (GOOGLE SHEET OMITTED) ───────────────────────────────────────
 async function scrapeMovies(lang) {
-  const langLabel = lang === 'ml' ? 'Malayalam' : 'Tamil';
   const metas = [];
   const processedImdbIds = new Set();
 
-  // --- STEP 0: SEED THE CATALOGUE FROM THE PERSISTENT CACHE ---
-  // The catalogue is CUMULATIVE: every discovered title lives in movieCache
-  // under its lang-prefixed key with releaseInfo/platform already set.
-  // Without this seed, a lean run (30-day discover) rebuilds the catalogue
-  // from scratch and it SHRINKS to just the newest titles (120 → 10 collapse).
-  // Only language-verified meta entries are seeded; skip/retry memories are
-  // excluded automatically by readCacheEntry.
-  let seeded = 0;
+  // STEP 0: Seed from cache
   for (const [cacheKey, val] of Object.entries(movieCache)) {
     if (!cacheKey.startsWith(lang + '_')) continue;
     const entry = readCacheEntry(val);
@@ -1583,13 +1000,10 @@ async function scrapeMovies(lang) {
         entry.type === 'movie' && !processedImdbIds.has(entry.id)) {
       metas.push(entry);
       processedImdbIds.add(entry.id);
-      seeded++;
     }
   }
-  console.log('[Movies] ' + seeded + ' seeded from persistent cache');
 
-  // --- STEP 1: DAY-0 DETECTION (MoN + JustWatch + 91m deep sweeps) ---
-  console.log('\n[Movies] Fetching ' + langLabel + ' day-0 arrivals (MoN → JustWatch → 91m)...');
+  // STEP 1: Day-0 & 91mobiles 30-day Catch-up
   const day0Items = await fetchDay0Items(lang, 'MOVIE');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_' + day0Item.id;
@@ -1605,13 +1019,8 @@ async function scrapeMovies(lang) {
         const isRerelease = !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
 
         if (isRerelease) {
-          // Renewal: keep ORIGINAL date → sorts where it belongs, not on top
-          let desc = meta.description || '';
-          desc += '\n\n♻️ Re-release: back on OTT on ' + arrivalDate;
-          meta.description = desc.trim();
-          console.log('[Rerelease] ' + meta.name + ' (from ' + tmdbDate + ') — back on OTT ' + arrivalDate);
+          meta.description = ((meta.description || '') + '\n\n♻️ Re-release: back on OTT on ' + arrivalDate).trim();
         } else {
-          // Genuine first OTT release → arrival date is the release date
           meta.releaseInfo = arrivalDate;
         }
 
@@ -1621,231 +1030,29 @@ async function scrapeMovies(lang) {
       metas.push(meta);
       processedImdbIds.add(meta.id);
     }
-    await new Promise(r => setTimeout(r, 100));
   }
-  console.log('[Movies] ' + metas.length + ' after day-0 detection');
 
-  // --- STEP 2: TMDB AUTO-DISCOVER (Foundation) ---
-  const key      = lang + '_movie';
-  const isFirst  = !seen[key];
-  // Deep sweep (00:01 IST run) uses a 90-day lookback so titles whose
-  // provider tags synced weeks after release are still discoverable.
-  const lookback = isFirst ? MOVIE_FIRST_RUN : (RUN_IS_DEEP ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK);
-  const discoverPages = RUN_IS_DEEP ? 12 : 5;
-  console.log('\n[Movies] ' + lang + ' TMDB | lookback: ' + lookback + 'd' + (isFirst ? ' (FIRST RUN)' : (RUN_IS_DEEP ? ' (DEEP SWEEP)' : '')));
-
-  const tmdbItems = await discoverMovies(lang, lookback, discoverPages);
-
-  for (let i = 0; i < tmdbItems.length; i++) {
-    const meta = await processMovie(tmdbItems[i], lang);
+  // STEP 2: TMDB Discover Foundation
+  const tmdbItems = await discoverMovies(lang, 90, 12);
+  for (const item of tmdbItems) {
+    const meta = await processMovie(item, lang);
     if (meta && meta.id && !processedImdbIds.has(meta.id)) {
       metas.push(meta);
       processedImdbIds.add(meta.id);
     }
-    if ((i+1) % 10 === 0) await new Promise(r => setTimeout(r, 300));
-  }
-  seen[key] = true;
-  console.log('[Movies] ' + metas.length + ' after TMDB Discover');
-
-  // --- STEP 3: GOOGLE SHEET (Patching OTT dates & filling gaps) ---
-  console.log('\n[Movies] Checking ' + langLabel + ' Sheet for OTT date patches and missing movies...');
-  const sheetItems = await fetchSheetContent(langLabel, 'movie');
-
-  for (const item of sheetItems.slice(0, 50)) {
-    let checkId = item.imdbId || null;
-
-    if (!checkId) {
-      console.log('[Sheet] No IMDb ID for "' + item.title + '" — searching...');
-      const searchData = await tmdb('/search/movie?query=' + encodeURIComponent(item.title) + '&language=en-US&page=1');
-      const match = searchData.results.find(r => r.original_language === lang || (r.origin_country && r.origin_country.includes('IN')));
-      if (match) {
-        try {
-          const ext = await tmdb('/movie/' + match.id + '/external_ids');
-          checkId = ext.imdb_id || null;
-        } catch(e) {}
-      }
-    }
-
-    // SMART PATCH: already added by day-0/TMDB, BUT the Sheet has a more
-    // accurate OTT date! Append to the EXISTING description — meta objects
-    // have no raw overview/rating fields, so rebuilding from them would wipe
-    // the plot, platform and rating. (The patch also persists across runs —
-    // the mutated object IS the cached object.)
-    if (checkId && processedImdbIds.has(checkId)) {
-      const existingIndex = metas.findIndex(m => m.id === checkId);
-      if (existingIndex !== -1) {
-        const existingMeta = metas[existingIndex];
-
-        existingMeta.releaseInfo = item.date;
-
-        let desc = existingMeta.description || '';
-        if (desc) desc += '\n\n';
-        if (item.platform) desc += '📺 Streaming on: ' + item.platform + '\n';
-        desc += '📅 OTT Release: ' + item.date;
-        existingMeta.description = desc.trim();
-
-        console.log('[Sheet Patch] ✅ Updated OTT date for ' + item.title + ' to ' + item.date);
-      }
-      continue;
-    }
-
-    // Day-0 & TMDB both missed it — process from scratch
-    const tmdbData    = await enrichMovie(item.imdbId, item.title, lang);
-    const finalImdbId = item.imdbId || (tmdbData && tmdbData.imdbId) || checkId || null;
-
-    if (!finalImdbId) {
-      console.log('[Sheet] ⚠️  Could not resolve IMDb ID for: ' + item.title);
-      continue;
-    }
-
-    const meta = buildMeta({
-      imdbId:      finalImdbId,
-      type:        'movie',
-      title:       item.title,
-      platform:    item.platform,
-      releaseDate: item.date,
-      overview:    tmdbData && tmdbData.overview || '',
-      rating:      tmdbData && tmdbData.rating   || null,
-      posterUrl:   tmdbData && tmdbData.poster   || undefined,
-      backdropUrl: tmdbData && tmdbData.backdrop || undefined,
-      genres:      tmdbData && tmdbData.genres   || [],
-    });
-
-    metas.push(meta);
-    processedImdbIds.add(finalImdbId);
-    console.log('[Sheet OK] ' + item.title + ' -> ' + finalImdbId + ' (missed by day-0 & TMDB)');
-    await new Promise(r => setTimeout(r, 100));
   }
 
-  // Final Sort
   metas.sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''));
   const finalResult = metas.slice(0, 120);
-
-  console.log('[Movies] ' + lang + ': ' + finalResult.length + ' total in catalogue');
+  console.log('[Movies] ' + lang + ': ' + finalResult.length + ' in catalogue');
   return finalResult;
 }
 
-// ── SERIES (MoN day-0 → JustWatch net → 91m → Sheet patch/gap-fill) ──────────
-async function enrichSeries(imdbId, title, lang) {
-  const cacheKey = imdbId && imdbId.startsWith('tt') ? imdbId : 'title_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
-  const cached   = readCacheEntry(seriesCache[cacheKey]);
-
-  if (cached === 'skip')  return null;
-  if (cached === 'retry') { /* fall through */ }
-  else if (cached)        return cached;
-
-  try {
-    let tvId = null;
-    let resolvedImdbId = imdbId || null;
-
-    if (imdbId && imdbId.startsWith('tt')) {
-      try {
-        const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
-        const tv   = (data.tv_results || [])[0];
-        if (tv) {
-          tvId = tv.id;
-          console.log('[Find] ' + imdbId + ' -> TMDB TV ' + tvId);
-        } else {
-          console.log('[Find] ' + imdbId + ' not yet indexed on TMDB — trying OMDb for poster');
-          let omdbPoster = null;
-          let omdbOverview = '';
-          if (OMDB_KEY) {
-            try {
-              const omdb = await fetchJson('https://www.omdbapi.com/?apikey=' + OMDB_KEY + '&i=' + imdbId);
-              if (omdb && omdb.Response === 'True') {
-                omdbPoster   = omdb.Poster && omdb.Poster !== 'N/A' ? omdb.Poster   : null;
-                omdbOverview = omdb.Plot   && omdb.Plot   !== 'N/A' ? omdb.Plot     : '';
-                if (omdbPoster) console.log('[OMDb] Got poster for: ' + imdbId);
-              }
-            } catch(e) { console.warn('[OMDb] ' + imdbId + ': ' + e.message); }
-          }
-          setRetry(seriesCache, cacheKey);
-          return { imdbId, poster: omdbPoster, backdrop: null, overview: omdbOverview, rating: null, genres: [] };
-        }
-      } catch(e) {
-        console.warn('[Find] ' + imdbId + ': ' + e.message);
-        setRetry(seriesCache, cacheKey);
-        return { imdbId, poster: null, backdrop: null, overview: '', rating: null, genres: [] };
-      }
-    }
-
-    if (!tvId) {
-      console.log('[Search] Looking up series: ' + title);
-      let best = null, bestScore = -1;
-
-      for (const v of getTitleVariations(title)) {
-        try {
-          const data = await tmdb('/search/tv?query=' + encodeURIComponent(v) + '&language=en-US&page=1');
-          for (const r of (data.results || [])) {
-            let sc = 0;
-            const rt = (r.name || '').toLowerCase(), vl = v.toLowerCase();
-            if (rt === vl)              sc += 100;
-            else if (rt.includes(vl))  sc += 40;
-            else if (vl.includes(rt))  sc += 40;
-            if (r.original_language === lang)                                   sc += 50;
-            if (r.origin_country && r.origin_country.includes('IN'))            sc += 30;
-            if (r.original_language !== lang && r.original_language !== 'en')   sc -= 50;
-            if (sc > bestScore && sc >= 70) { bestScore = sc; best = r; }
-          }
-          if (best && bestScore >= 100) break;
-        } catch(e) {}
-      }
-
-      if (best) {
-        tvId = best.id;
-        console.log('[Search] Matched: ' + best.name + ' (score: ' + bestScore + ')');
-      } else {
-        console.log('[Search] No confident match for series: ' + title);
-        setRetry(seriesCache, cacheKey);
-        return null;
-      }
-    }
-
-    const detail = await tmdb('/tv/' + tvId + '?language=en-US');
-
-    if (!resolvedImdbId) {
-      try {
-        const ext  = await tmdb('/tv/' + tvId + '/external_ids');
-        resolvedImdbId = ext.imdb_id || null;
-      } catch(e) {}
-    }
-
-    let posterUrl  = detail.poster_path   ? IMG + 'w500'  + detail.poster_path   : null;
-    let backdropUrl = detail.backdrop_path ? IMG + 'w1280' + detail.backdrop_path : null;
-
-    if (!posterUrl) {
-      console.log('[Poster] No TMDB poster for: ' + title + ' — trying OMDb');
-      posterUrl = await fetchPosterFallback(title, resolvedImdbId, 'series');
-    }
-
-    const result = {
-      imdbId:   resolvedImdbId,
-      poster:   posterUrl   || null,
-      backdrop: backdropUrl || null,
-      overview: detail.overview || '',
-      rating:   detail.vote_average || null,
-      genres:   (detail.genres || []).map(g => g.name),
-    };
-
-    seriesCache[cacheKey] = result;
-    cacheDirty = true;
-    console.log('[Series OK] ' + title + ' -> ' + (resolvedImdbId || 'no IMDb') + (posterUrl ? ' (has poster)' : ' (no poster)'));
-    return result;
-  } catch (e) {
-    console.warn('[Enrich Series] ' + (imdbId || title) + ': ' + e.message);
-    setRetry(seriesCache, cacheKey);
-    return null;
-  }
-}
-
 async function scrapeSeries(lang) {
-  const langLabel = lang === 'ml' ? 'Malayalam' : 'Tamil';
   const metas = [];
   const processedImdbIds = new Set();
-  const skipped = [];
 
-  // --- STEP 0: SEED THE CATALOGUE FROM THE PERSISTENT CACHE ---
-  let seeded = 0;
+  // STEP 0: Seed from cache
   for (const [cacheKey, val] of Object.entries(seriesCache)) {
     if (!cacheKey.startsWith(lang + '_series_')) continue;
     const entry = readCacheEntry(val);
@@ -1853,15 +1060,10 @@ async function scrapeSeries(lang) {
         entry.type === 'series' && !processedImdbIds.has(entry.id)) {
       metas.push(entry);
       processedImdbIds.add(entry.id);
-      seeded++;
     }
   }
-  console.log('[Series] ' + seeded + ' seeded from persistent cache');
 
-  // --- STEP 1: DAY-0 DETECTION (MoN + JustWatch + 91m deep sweeps) ---
-  // NOTE: series day-0 fires on EVERY run including the first — there is no
-  // series TMDB rebuild, so day-0 is the only automatic series source.
-  console.log('\n[Series] Fetching ' + langLabel + ' series day-0 arrivals (MoN → JustWatch → 91m)...');
+  // STEP 1: Day-0 & 91mobiles 30-day Catch-up
   const day0Items = await fetchDay0Items(lang, 'SHOW');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_series_' + day0Item.id;
@@ -1874,17 +1076,13 @@ async function scrapeSeries(lang) {
         const arrivalDate = day0Item.arrivalDate || today();
         const firstAir    = meta.releaseInfo || arrivalDate;
         const ageMs       = Date.now() - new Date(firstAir).getTime();
-        // New seasons of returning shows are always fresh content
         const isNewSeason = day0Item.isNewSeason === true;
         const isRerelease = !isNewSeason && !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
 
         if (isRerelease) {
-          let desc = meta.description || '';
-          desc += '\n\n♻️ Re-release: back on OTT on ' + arrivalDate;
-          meta.description = desc.trim();
-          console.log('[Rerelease] ' + meta.name + ' (first aired ' + firstAir + ') — back on OTT ' + arrivalDate);
+          meta.description = ((meta.description || '') + '\n\n♻️ Re-release: back on OTT on ' + arrivalDate).trim();
         } else {
-          meta.releaseInfo = arrivalDate; // premiere OR new season
+          meta.releaseInfo = arrivalDate;
         }
 
         seriesCache[cacheKey] = meta;
@@ -1893,89 +1091,11 @@ async function scrapeSeries(lang) {
       metas.push(meta);
       processedImdbIds.add(meta.id);
     }
-    await new Promise(r => setTimeout(r, 100));
-  }
-  console.log('[Series] ' + metas.length + ' after day-0 detection');
-
-  // --- STEP 2: GOOGLE SHEET (Patching OTT dates & filling gaps) ---
-  console.log('\n[Series] Checking ' + langLabel + ' Sheet for OTT date patches and missing series...');
-  const sheetItems = await fetchSheetContent(langLabel, 'series');
-
-  for (const item of sheetItems.slice(0, 50)) {
-    let checkId = item.imdbId || null;
-
-    if (!checkId) {
-      console.log('[Sheet] No IMDb ID for "' + item.title + '" — searching...');
-      const searchData = await tmdb('/search/tv?query=' + encodeURIComponent(item.title) + '&language=en-US&page=1');
-      const match = searchData.results.find(r => r.original_language === lang || (r.origin_country && r.origin_country.includes('IN')));
-      if (match) {
-        try {
-          const ext = await tmdb('/tv/' + match.id + '/external_ids');
-          checkId = ext.imdb_id || null;
-        } catch(e) {}
-      }
-    }
-
-    // SMART PATCH: already added by day-0, BUT the Sheet has the accurate OTT
-    // date. Append to the EXISTING description (don't wipe plot/platform).
-    if (checkId && processedImdbIds.has(checkId)) {
-      const existingIndex = metas.findIndex(m => m.id === checkId);
-      if (existingIndex !== -1) {
-        const existingMeta = metas[existingIndex];
-
-        existingMeta.releaseInfo = item.date;
-
-        let desc = existingMeta.description || '';
-        if (desc) desc += '\n\n';
-        if (item.platform) desc += '📺 Streaming on: ' + item.platform + '\n';
-        desc += '📅 OTT Release: ' + item.date;
-        existingMeta.description = desc.trim();
-
-        console.log('[Sheet Patch] ✅ Updated OTT date for series ' + item.title + ' to ' + item.date);
-      }
-      continue;
-    }
-
-    // Day-0 missed it — process from scratch via Sheet enrichment
-    const tmdbData    = await enrichSeries(item.imdbId, item.title, lang);
-    const finalImdbId = item.imdbId || (tmdbData && tmdbData.imdbId) || checkId || null;
-
-    if (!finalImdbId) {
-      skipped.push(item.title);
-      console.log('[Series] ⚠️  No IMDb ID: ' + item.title);
-      continue;
-    }
-
-    const meta = buildMeta({
-      imdbId:      finalImdbId,
-      type:        'series',
-      title:       item.title,
-      platform:    item.platform,
-      releaseDate: item.date,
-      overview:    tmdbData && tmdbData.overview || '',
-      rating:      tmdbData && tmdbData.rating   || null,
-      posterUrl:   tmdbData && tmdbData.poster   || undefined,
-      backdropUrl: tmdbData && tmdbData.backdrop || undefined,
-      genres:      tmdbData && tmdbData.genres   || [],
-    });
-
-    metas.push(meta);
-    processedImdbIds.add(finalImdbId);
-    console.log('[Sheet OK] ' + item.title + ' -> ' + finalImdbId + ' (missed by day-0)');
-    await new Promise(r => setTimeout(r, 100));
   }
 
-  if (skipped.length > 0) {
-    console.log('\n[Series] ⚠️  ' + skipped.length + ' skipped (no IMDb ID found):');
-    skipped.forEach(t => console.log('   • ' + t));
-    await sendAlert('Series skipped (no IMDb ID): ' + skipped.join(', '));
-  }
-
-  // Final Sort (newest OTT arrivals first)
   metas.sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''));
   const finalResult = metas.slice(0, 80);
-
-  console.log('[Series] ' + lang + ': ' + finalResult.length + ' total in catalogue');
+  console.log('[Series] ' + lang + ': ' + finalResult.length + ' in catalogue');
   return finalResult;
 }
 
@@ -1988,7 +1108,6 @@ async function scrapeMalayalam(type) {
     return result;
   } catch (e) {
     console.error('[scrapeMalayalam] ' + e.message);
-    await sendAlert('Malayalam ' + type + ' failed: ' + e.message);
     saveCache(); return [];
   }
 }
@@ -2001,7 +1120,6 @@ async function scrapeTamil(type) {
     return result;
   } catch (e) {
     console.error('[scrapeTamil] ' + e.message);
-    await sendAlert('Tamil ' + type + ' failed: ' + e.message);
     saveCache(); return [];
   }
 }
