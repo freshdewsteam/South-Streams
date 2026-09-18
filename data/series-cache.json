@@ -797,8 +797,16 @@
       "_at": 1789672841958
     },
     "ml_series_11436": {
-      "_status": "skip",
-      "_at": 1789672842133
+      "id": "tt8537520",
+      "type": "series",
+      "name": "Bigg Boss",
+      "releaseInfo": "2026-09-18",
+      "description": "The Malayalam version of the reality show where a number of contestants (known as \"housemates\") live in a purpose-built house and are isolated from the rest of the world. Each week, housemates nominate two of their fellow housemates for eviction, and the housemates who receive the most nominations faces a public vote out.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2018-06-24\n⭐ Rating: 4.4/10\n\n♻️ Re-release: back on OTT on 2026-09-12",
+      "poster": "https://image.tmdb.org/t/p/w500/o75RAzbauCTLnchulrlLGK3mTgo.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cogvLaZrWRZYjSgRHTvVhkORbPj.jpg",
+      "genres": [
+        "Reality"
+      ]
     },
     "ml_series_319722": {
       "_status": "skip",
@@ -1584,7 +1592,7 @@
       "id": "tt8537520",
       "type": "series",
       "name": "Bigg Boss",
-      "releaseInfo": "2026-09-12",
+      "releaseInfo": "2026-09-18",
       "description": "The Malayalam version of the reality show where a number of contestants (known as \"housemates\") live in a purpose-built house and are isolated from the rest of the world. Each week, housemates nominate two of their fellow housemates for eviction, and the housemates who receive the most nominations faces a public vote out.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2018-06-24\n⭐ Rating: 4.4/10\n\n♻️ Re-release: back on OTT on 2026-09-12",
       "poster": "https://image.tmdb.org/t/p/w500/o75RAzbauCTLnchulrlLGK3mTgo.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/cogvLaZrWRZYjSgRHTvVhkORbPj.jpg",
@@ -4320,7 +4328,7 @@
     },
     "ml_series_320606": {
       "_status": "retry",
-      "_at": 1789760667973
+      "_at": 1789763860953
     },
     "ml_series_307900": {
       "id": "tt32105473",
@@ -4424,7 +4432,7 @@
     },
     "ml_series_275993": {
       "_status": "retry",
-      "_at": 1789760668140
+      "_at": 1789763860976
     },
     "ml_series_216636": {
       "id": "tt24364990",
@@ -4454,7 +4462,7 @@
     },
     "ml_series_275992": {
       "_status": "retry",
-      "_at": 1789760668301
+      "_at": 1789763861018
     },
     "ml_series_236058": {
       "id": "tt28675376",
@@ -4471,7 +4479,7 @@
     },
     "ml_series_279335": {
       "_status": "retry",
-      "_at": 1789760668463
+      "_at": 1789763861042
     },
     "ml_series_228658": {
       "id": "tt27128638",
@@ -4489,143 +4497,143 @@
     },
     "ml_series_275988": {
       "_status": "retry",
-      "_at": 1789760668618
+      "_at": 1789763861065
     },
     "ml_series_282063": {
       "_status": "retry",
-      "_at": 1789760668793
+      "_at": 1789763861089
     },
     "ml_series_275991": {
       "_status": "retry",
-      "_at": 1789760668951
+      "_at": 1789763861113
     },
     "ml_series_236891": {
       "_status": "retry",
-      "_at": 1789760669124
+      "_at": 1789763861138
     },
     "ml_series_282066": {
       "_status": "retry",
-      "_at": 1789760669286
+      "_at": 1789763861159
     },
     "ml_series_235168": {
       "_status": "retry",
-      "_at": 1789760679982
+      "_at": 1789763870450
     },
     "ml_series_278977": {
       "_status": "retry",
-      "_at": 1789760680154
+      "_at": 1789763870475
     },
     "ml_series_278976": {
       "_status": "retry",
-      "_at": 1789760680331
+      "_at": 1789763870500
     },
     "ml_series_275676": {
       "_status": "retry",
-      "_at": 1789760680486
+      "_at": 1789763870533
     },
     "ml_series_277814": {
       "_status": "retry",
-      "_at": 1789760680649
+      "_at": 1789763870556
     },
     "ml_series_278979": {
       "_status": "retry",
-      "_at": 1789760680812
+      "_at": 1789763870579
     },
     "ml_series_278978": {
       "_status": "retry",
-      "_at": 1789760680973
+      "_at": 1789763870601
     },
     "ml_series_236425": {
       "_status": "retry",
-      "_at": 1789760681133
+      "_at": 1789763870626
     },
     "ml_series_277808": {
       "_status": "retry",
-      "_at": 1789760681296
+      "_at": 1789763870649
     },
     "ml_series_155959": {
       "_status": "retry",
-      "_at": 1789760681473
+      "_at": 1789763870671
     },
     "ml_series_281584": {
       "_status": "retry",
-      "_at": 1789760681642
+      "_at": 1789763870692
     },
     "ml_series_235155": {
       "_status": "retry",
-      "_at": 1789760681813
+      "_at": 1789763870718
     },
     "ml_series_235332": {
       "_status": "retry",
-      "_at": 1789760681998
+      "_at": 1789763870742
     },
     "ml_series_235214": {
       "_status": "retry",
-      "_at": 1789760682164
+      "_at": 1789763870762
     },
     "ml_series_277806": {
       "_status": "retry",
-      "_at": 1789760682320
+      "_at": 1789763870788
     },
     "ml_series_281596": {
       "_status": "retry",
-      "_at": 1789760682484
+      "_at": 1789763870811
     },
     "ml_series_277813": {
       "_status": "retry",
-      "_at": 1789760682647
+      "_at": 1789763870834
     },
     "ml_series_281582": {
       "_status": "retry",
-      "_at": 1789760682800
+      "_at": 1789763885559
     },
     "ml_series_282889": {
       "_status": "retry",
-      "_at": 1789760695174
+      "_at": 1789763885587
     },
     "ml_series_282686": {
       "_status": "retry",
-      "_at": 1789760695329
+      "_at": 1789763885622
     },
     "ml_series_281579": {
       "_status": "retry",
-      "_at": 1789760695490
+      "_at": 1789763885645
     },
     "ml_series_281333": {
       "_status": "retry",
-      "_at": 1789760695654
+      "_at": 1789763885670
     },
     "ml_series_281328": {
       "_status": "retry",
-      "_at": 1789760695818
+      "_at": 1789763885693
     },
     "ml_series_137810": {
       "_status": "retry",
-      "_at": 1789760695980
+      "_at": 1789763885717
     },
     "ml_series_277334": {
       "_status": "retry",
-      "_at": 1789760696148
+      "_at": 1789763885742
     },
     "ml_series_235210": {
       "_status": "retry",
-      "_at": 1789760696311
+      "_at": 1789763885778
     },
     "ml_series_235288": {
       "_status": "retry",
-      "_at": 1789760696476
+      "_at": 1789763885802
     },
     "ml_series_281320": {
       "_status": "retry",
-      "_at": 1789760696627
+      "_at": 1789763885843
     },
     "ml_series_277325": {
       "_status": "retry",
-      "_at": 1789760696786
+      "_at": 1789763885883
     },
     "ml_series_277331": {
       "_status": "retry",
-      "_at": 1789760696956
+      "_at": 1789763885908
     },
     "ml_series_224729": {
       "id": "tt14682792",
@@ -4642,31 +4650,31 @@
     },
     "ml_series_281327": {
       "_status": "retry",
-      "_at": 1789760697119
+      "_at": 1789763885943
     },
     "ml_series_277329": {
       "_status": "retry",
-      "_at": 1789760697271
+      "_at": 1789763885972
     },
     "ml_series_281317": {
       "_status": "retry",
-      "_at": 1789760697424
+      "_at": 1789763885995
     },
     "ml_series_277340": {
       "_status": "retry",
-      "_at": 1789760697599
+      "_at": 1789763886025
     },
     "ml_series_277492": {
       "_status": "retry",
-      "_at": 1789760697822
+      "_at": 1789763886053
     },
     "ml_series_281324": {
       "_status": "retry",
-      "_at": 1789760710213
+      "_at": 1789763900679
     },
     "ml_series_281325": {
       "_status": "retry",
-      "_at": 1789760710371
+      "_at": 1789763900700
     },
     "ml_series_101181": {
       "id": "tt11252864",
@@ -4683,15 +4691,15 @@
     },
     "ml_series_277493": {
       "_status": "retry",
-      "_at": 1789760710536
+      "_at": 1789763900722
     },
     "ml_series_277322": {
       "_status": "retry",
-      "_at": 1789760710690
+      "_at": 1789763900746
     },
     "ml_series_281329": {
       "_status": "retry",
-      "_at": 1789760710916
+      "_at": 1789763900770
     },
     "ml_series_73704": {
       "id": "tt6650508",
@@ -4708,23 +4716,23 @@
     },
     "ml_series_235324": {
       "_status": "retry",
-      "_at": 1789760711075
+      "_at": 1789763900816
     },
     "ml_series_275684": {
       "_status": "retry",
-      "_at": 1789760711237
+      "_at": 1789763900841
     },
     "ml_series_275683": {
       "_status": "retry",
-      "_at": 1789760711405
+      "_at": 1789763900862
     },
     "ml_series_275681": {
       "_status": "retry",
-      "_at": 1789760711571
+      "_at": 1789763900884
     },
     "ml_series_235327": {
       "_status": "retry",
-      "_at": 1789760711736
+      "_at": 1789763900906
     },
     "ta_series_331758": {
       "id": "tt44265707",
@@ -4812,7 +4820,7 @@
     },
     "ta_series_310127": {
       "_status": "retry",
-      "_at": 1789760732386
+      "_at": 1789763917632
     },
     "ta_series_307959": {
       "id": "tt39182415",
@@ -4972,7 +4980,7 @@
     },
     "ta_series_261718": {
       "_status": "retry",
-      "_at": 1789760732576
+      "_at": 1789763917667
     },
     "ta_series_259242": {
       "id": "tt28434030",
@@ -4989,7 +4997,7 @@
     },
     "ta_series_263299": {
       "_status": "retry",
-      "_at": 1789760740481
+      "_at": 1789763917689
     },
     "ta_series_254896": {
       "id": "tt32176709",
@@ -5007,7 +5015,7 @@
     },
     "ta_series_276584": {
       "_status": "retry",
-      "_at": 1789760740638
+      "_at": 1789763917712
     },
     "ta_series_254837": {
       "id": "tt32241474",
@@ -5060,7 +5068,7 @@
     },
     "ta_series_278802": {
       "_status": "retry",
-      "_at": 1789760740807
+      "_at": 1789763917735
     },
     "ta_series_276612": {
       "id": "tt32335206",
@@ -5115,7 +5123,7 @@
     },
     "ta_series_276607": {
       "_status": "retry",
-      "_at": 1789760741013
+      "_at": 1789763917761
     },
     "ta_series_235372": {
       "id": "tt29548810",
@@ -5159,7 +5167,7 @@
     },
     "ta_series_278795": {
       "_status": "retry",
-      "_at": 1789760741181
+      "_at": 1789763917782
     },
     "ta_series_200874": {
       "id": "tt21883062",
@@ -5176,7 +5184,7 @@
     },
     "ta_series_276615": {
       "_status": "retry",
-      "_at": 1789760741344
+      "_at": 1789763917814
     },
     "ta_series_224816": {
       "id": "tt27510191",
@@ -5265,7 +5273,7 @@
     },
     "ta_series_278797": {
       "_status": "retry",
-      "_at": 1789760741526
+      "_at": 1789763927022
     },
     "ta_series_200881": {
       "id": "tt21908550",
@@ -5283,11 +5291,11 @@
     },
     "ta_series_236567": {
       "_status": "retry",
-      "_at": 1789760741682
+      "_at": 1789763927042
     },
     "ta_series_278796": {
       "_status": "retry",
-      "_at": 1789760741848
+      "_at": 1789763927072
     },
     "ta_series_214666": {
       "id": "tt22805340",
@@ -5303,11 +5311,11 @@
     },
     "ta_series_287517": {
       "_status": "retry",
-      "_at": 1789760742011
+      "_at": 1789763927096
     },
     "ta_series_287516": {
       "_status": "retry",
-      "_at": 1789760742180
+      "_at": 1789763927152
     },
     "ta_series_207950": {
       "id": "tt21340072",
@@ -5350,11 +5358,11 @@
     },
     "ta_series_206390": {
       "_status": "retry",
-      "_at": 1789760742345
+      "_at": 1789763927180
     },
     "ta_series_285361": {
       "_status": "retry",
-      "_at": 1789760742506
+      "_at": 1789763927200
     },
     "ta_series_219101": {
       "id": "tt21231814",
@@ -5384,11 +5392,11 @@
     },
     "ta_series_285359": {
       "_status": "retry",
-      "_at": 1789760742660
+      "_at": 1789763927223
     },
     "ta_series_282257": {
       "_status": "retry",
-      "_at": 1789760742815
+      "_at": 1789763927245
     },
     "ta_series_198124": {
       "id": "tt19733404",
@@ -5404,35 +5412,35 @@
     },
     "ta_series_201375": {
       "_status": "retry",
-      "_at": 1789760742999
+      "_at": 1789763927282
     },
     "ta_series_279177": {
       "_status": "retry",
-      "_at": 1789760743177
+      "_at": 1789763927320
     },
     "ta_series_279170": {
       "_status": "retry",
-      "_at": 1789760755503
+      "_at": 1789763927343
     },
     "ta_series_278049": {
       "_status": "retry",
-      "_at": 1789760755669
+      "_at": 1789763927370
     },
     "ta_series_285358": {
       "_status": "retry",
-      "_at": 1789760755834
+      "_at": 1789763927392
     },
     "ta_series_277892": {
       "_status": "retry",
-      "_at": 1789760755998
+      "_at": 1789763927414
     },
     "ta_series_285360": {
       "_status": "retry",
-      "_at": 1789760756164
+      "_at": 1789763927435
     },
     "ta_series_287436": {
       "_status": "retry",
-      "_at": 1789760756323
+      "_at": 1789763927457
     },
     "ta_series_157164": {
       "id": "tt15716624",
@@ -5463,7 +5471,7 @@
     },
     "ta_series_281570": {
       "_status": "retry",
-      "_at": 1789760756486
+      "_at": 1789763927478
     },
     "ta_series_155603": {
       "id": "tt15509558",
@@ -5479,35 +5487,35 @@
     },
     "ta_series_285364": {
       "_status": "retry",
-      "_at": 1789760756669
+      "_at": 1789763942146
     },
     "ta_series_278051": {
       "_status": "retry",
-      "_at": 1789760756839
+      "_at": 1789763942169
     },
     "ta_series_277891": {
       "_status": "retry",
-      "_at": 1789760756997
+      "_at": 1789763942199
     },
     "ta_series_235422": {
       "_status": "retry",
-      "_at": 1789760757171
+      "_at": 1789763942221
     },
     "ta_series_277890": {
       "_status": "retry",
-      "_at": 1789760757327
+      "_at": 1789763942241
     },
     "ta_series_277879": {
       "_status": "retry",
-      "_at": 1789760757485
+      "_at": 1789763942265
     },
     "ta_series_281786": {
       "_status": "retry",
-      "_at": 1789760757644
+      "_at": 1789763942286
     },
     "ta_series_281573": {
       "_status": "retry",
-      "_at": 1789760757811
+      "_at": 1789763942331
     },
     "ta_series_224129": {
       "id": "tt17493622",
@@ -5524,19 +5532,19 @@
     },
     "ta_series_277893": {
       "_status": "retry",
-      "_at": 1789760757968
+      "_at": 1789763942353
     },
     "ta_series_277889": {
       "_status": "retry",
-      "_at": 1789760758197
+      "_at": 1789763942377
     },
     "ta_series_277877": {
       "_status": "retry",
-      "_at": 1789760758361
+      "_at": 1789763942402
     },
     "ta_series_287435": {
       "_status": "retry",
-      "_at": 1789760770705
+      "_at": 1789763942433
     },
     "ta_series_133828": {
       "id": "tt15195094",
@@ -5552,11 +5560,11 @@
     },
     "ta_series_281789": {
       "_status": "retry",
-      "_at": 1789760770871
+      "_at": 1789763942456
     },
     "ta_series_282919": {
       "_status": "retry",
-      "_at": 1789760771031
+      "_at": 1789763942478
     },
     "ta_series_132092": {
       "id": "tt15198122",
@@ -6066,6 +6074,14 @@
     "ta_series_281569": {
       "_status": "retry",
       "_at": 1789757229647
+    },
+    "ml_series_98357": {
+      "_status": "skip",
+      "_at": 1789763860883
+    },
+    "ta_series_98357": {
+      "_status": "skip",
+      "_at": 1789763917520
     }
   }
 }

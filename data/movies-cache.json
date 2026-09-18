@@ -72,7 +72,7 @@
       "id": "tt37079110",
       "type": "movie",
       "name": "Uyir",
-      "releaseInfo": "2026-06-26",
+      "releaseInfo": "2026-08-04",
       "description": "SI Ajeeb, a probationary officer posted in a Kerala town, investigates the mysterious death of an unidentified woman whose decomposed body is found in a well. Despite a lack of evidence and official support, he relentlessly pursues the truth with the help of ASI Joy while battling his own psychological struggles. Inspired by true events, the film follows his quest for justice in a case that changes his life forever.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-06-26\n⭐ Rating: 5.3/10",
       "poster": "https://image.tmdb.org/t/p/w500/r512xdTd9aXjpIxjY2JlhvJYvIb.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/sxs1ME8rwQIccp7SL37fRgt0sFH.jpg",
@@ -98,7 +98,7 @@
       "id": "tt35076988",
       "type": "movie",
       "name": "Chinna Chinna Aasai",
-      "releaseInfo": "2026-06-19",
+      "releaseInfo": "2026-07-28",
       "description": "On the enchanting shores of Varanasi, two souls meet by chance. Somewhere within this unfolding chaos, an unspoken bond begins to form, slowly slipping beyond friendship.\n\n📺 Streaming on: JioHotstar, Sun Nxt\n📅 Release: 2026-06-19\n⭐ Rating: 8.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/bPP7IWH0GeQDZ5VC9QsE6lRlijI.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/1KXnH4NcCQTAxV0pZwvIIGCepIx.jpg",
@@ -108,7 +108,7 @@
     },
     "ml_1720240": {
       "_status": "retry",
-      "_at": 1789760014823
+      "_at": 1789763851272
     },
     "ml_1677340": {
       "id": "tt41944664",
@@ -2380,7 +2380,7 @@
       "id": "tt37501035",
       "type": "movie",
       "name": "DC",
-      "releaseInfo": "2026-08-07",
+      "releaseInfo": "2026-09-04",
       "description": "Rebel Devadas  joins forces with Chandra in a dangerous world where passion and peril collide. Their turbulent alliance demands bloodshed and tests loyalties as survival becomes the ultimate stake in their fight.\n\n📺 Streaming on: Sun Nxt\n📅 Release: 2026-08-07\n⭐ Rating: 8.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/cB6ZAWK70cR5HVnGK6BaCr8W4FH.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/9GmAODqkVdRvSgg5C4Vfeomi5Nj.jpg",
@@ -2407,7 +2407,7 @@
       "id": "tt40706424",
       "type": "movie",
       "name": "Arulvaan",
-      "releaseInfo": "2026-07-17",
+      "releaseInfo": "2026-09-04",
       "description": "Follows Muthuvel, a resolute collector who overcomes all obstacles to educate a tribal girl and provide school access for the entire forest community.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-07-17",
       "poster": "https://image.tmdb.org/t/p/w500/m9KJuxjN0n9VnHDACqLEfltZv8z.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/x1GPEffctNTnoqmUXQeP3iTcslW.jpg",
@@ -8640,7 +8640,7 @@
     },
     "ta_1762080": {
       "_status": "retry",
-      "_at": 1789757078870
+      "_at": 1789763908563
     },
     "ta_1607634": {
       "id": "tt39300072",
@@ -8662,6 +8662,36 @@
     "ml_239563": {
       "_status": "skip",
       "_at": 1789756967112
+    },
+    "ml_1616268": {
+      "id": "tt43612978",
+      "type": "movie",
+      "name": "Aroopi",
+      "releaseInfo": "2026-08-14",
+      "description": "A vengeful Yakshini, once sealed inside a doll at the Aryanattu estate, is accidentally unleashed by two thieves. When a brutal murder draws Niranjan, the last surviving heir of the lineage, back to his ancestral home, he must confront an ancient curse and the dark secrets surrounding his family's past.\n\n📺 Streaming on: Lionsgate Play\n📅 OTT Release: 2026-08-14\n⭐ Rating: 1.3/10",
+      "poster": "https://image.tmdb.org/t/p/w500/yLDuHm2QgsNHuENoBvOlDKRwMyF.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/nMQMfDBmjDn9jsXVXagGwUBWUSs.jpg",
+      "genres": [
+        "Horror",
+        "Thriller"
+      ]
+    },
+    "ml_730177": {
+      "_status": "retry",
+      "_at": 1789763851292
+    },
+    "ml_1410937": {
+      "id": "tt35254624",
+      "type": "movie",
+      "name": "Balan - The Boy",
+      "releaseInfo": "2026-07-31",
+      "description": "A teenage boy searches for his missing mother following a turbulent childhood and her subsequent disappearance, exploring his search for closure and the truth about his past.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2026-07-31\n⭐ Rating: 7.6/10",
+      "poster": "https://image.tmdb.org/t/p/w500/boKxdR9tgXfkazf6yWgiDdleBy0.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cb4b4K3E2jBGaSjkuIkZHJHmoWG.jpg",
+      "genres": [
+        "Drama",
+        "Thriller"
+      ]
     }
   },
   "_seen": {
