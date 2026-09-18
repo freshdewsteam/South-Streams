@@ -140,7 +140,7 @@
     },
     "ml_672751": {
       "_status": "retry",
-      "_at": 1789767890293
+      "_at": 1789768337705
     },
     "ml_11460": {
       "_status": "skip",
@@ -168,7 +168,7 @@
     },
     "ml_730301": {
       "_status": "retry",
-      "_at": 1789767890397
+      "_at": 1789768337782
     },
     "ml_82283": {
       "_status": "skip",
@@ -184,11 +184,11 @@
     },
     "ml_1770237": {
       "_status": "retry",
-      "_at": 1789767890480
+      "_at": 1789768337853
     },
     "ml_1770234": {
       "_status": "retry",
-      "_at": 1789767890523
+      "_at": 1789768337922
     },
     "ml_1772176": {
       "_status": "skip",
@@ -362,24 +362,15 @@
     },
     "ml_661918": {
       "_status": "retry",
-      "_at": 1789767890573
+      "_at": 1789768337997
     },
     "ml_769701": {
       "_status": "skip",
       "_at": 1789766617507
     },
     "ml_83242": {
-      "id": "tt34614859",
-      "type": "movie",
-      "name": "Innocent",
-      "releaseInfo": "2026-09-17",
-      "description": "Vinod, 29, is a man of routine. Living in Karunagappally and working at the Planning Office in Thiruvananthapuram, he spends his days in a carefully controlled cycle of train commutes, meticulous work, and an almost obsessive adherence to order.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-07\n⭐ Rating: 5.3/10",
-      "poster": "https://image.tmdb.org/t/p/w500/A1z6Uhk63p6kh43mkuTfECIkcRQ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/rl4Ke2Cq3VH4j9rQNE1uP2iffys.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322376
     },
     "ml_6072": {
       "_status": "skip",
@@ -507,7 +498,7 @@
     },
     "ml_1627761": {
       "_status": "retry",
-      "_at": 1789767890619
+      "_at": 1789768338067
     },
     "ml_569494": {
       "_status": "skip",
@@ -618,16 +609,8 @@
       "_at": 1789766647117
     },
     "ml_1422822": {
-      "id": "tt35963439",
-      "type": "movie",
-      "name": "It's a Medical Miracle",
-      "releaseInfo": "2026-09-16",
-      "description": "A young man declared brain-dead suddenly awakens with the ability to hear everything. Seeking the nurse whose voice saved him, he's drawn into a dark game of masks, memories, and revenge where every sound may be a clue or a trap.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-16",
-      "poster": "https://image.tmdb.org/t/p/w500/ymlqg5qqwzAC74IXi2smf8OZeN7.jpg",
-      "genres": [
-        "Fantasy",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322376
     },
     "ml_1766087": {
       "_status": "skip",
@@ -815,7 +798,7 @@
     },
     "ml_1643810": {
       "_status": "retry",
-      "_at": 1789767890690
+      "_at": 1789768338141
     },
     "ml_576696": {
       "_status": "skip",
@@ -883,7 +866,7 @@
     },
     "ml_938186": {
       "_status": "retry",
-      "_at": 1789767890738
+      "_at": 1789768338210
     },
     "ml_1225787": {
       "_status": "skip",
@@ -891,7 +874,7 @@
     },
     "ml_1589714": {
       "_status": "retry",
-      "_at": 1789767890786
+      "_at": 1789768338280
     },
     "ml_1756890": {
       "_status": "skip",
@@ -903,7 +886,7 @@
     },
     "ml_1742434": {
       "_status": "retry",
-      "_at": 1789767890851
+      "_at": 1789768338353
     },
     "ml_1510235": {
       "_status": "skip",
@@ -967,7 +950,7 @@
     },
     "ml_496172": {
       "_status": "retry",
-      "_at": 1789767890962
+      "_at": 1789768338430
     },
     "ml_7978": {
       "_status": "skip",
@@ -1015,7 +998,7 @@
     },
     "ml_1720240": {
       "_status": "retry",
-      "_at": 1789767891048
+      "_at": 1789768338506
     },
     "ml_1233244": {
       "_status": "skip",
@@ -1152,7 +1135,7 @@
     },
     "ml_1736719": {
       "_status": "retry",
-      "_at": 1789767891112
+      "_at": 1789768338582
     },
     "ml_1204889": {
       "_status": "skip",
@@ -1164,7 +1147,7 @@
     },
     "ml_1249468": {
       "_status": "retry",
-      "_at": 1789767891198
+      "_at": 1789768338655
     },
     "ml_1214770": {
       "_status": "skip",
@@ -1172,110 +1155,47 @@
     },
     "ml_1260252": {
       "_status": "retry",
-      "_at": 1789767891242
+      "_at": 1789768338722
     },
     "ml_543905": {
       "_status": "skip",
       "_at": 1789766707329
     },
     "ml_1588472": {
-      "id": "tt43625955",
-      "type": "movie",
-      "name": "L&O - Law and Order",
-      "releaseInfo": "2026-09-18",
-      "description": "After losing his son to a drug empire, DYSP Balagopal joins four fearless recruits to take down the ruthless Pacha and his cartel. The return of legendary gangster Karikkamuri Shanmughan sets the stage for an explosive final showdown\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-18",
-      "poster": "https://image.tmdb.org/t/p/w500/mZ3lbnM9I9FZBzZzZAYHykBWBVn.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/bd8A5P7NtBRme88OW86hGNY0TdY.jpg",
-      "genres": [
-        "Crime",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322376
     },
     "ml_1070172": {
-      "id": "tt36821438",
-      "type": "movie",
-      "name": "Ottam Thullal",
-      "releaseInfo": "2026-09-18",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-18",
-      "poster": "https://image.tmdb.org/t/p/w500/cVp1n8FZPtVILNAvXpdlrD4XXT6.jpg",
-      "genres": [
-        "Comedy",
-        "Drama",
-        "Family"
-      ]
+      "_status": "skip",
+      "_at": 1789768322376
     },
     "ml_1411598": {
-      "id": "tt35288628",
-      "type": "movie",
-      "name": "HALF",
-      "releaseInfo": "2026-09-17",
-      "description": "Twin half-blooded vampires wage war with desert highway hijackers.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-17",
-      "poster": "https://image.tmdb.org/t/p/w500/sOj8YLjkbmdTlZZglCMweJUyrgS.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/pY2VWI37XjtGsJmMBfSlBljhG5F.jpg",
-      "genres": [
-        "Horror",
-        "Action",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322376
     },
     "ml_1759325": {
       "_status": "retry",
       "_at": 1789766708684
     },
     "ml_1544847": {
-      "id": "tt38265603",
-      "type": "movie",
-      "name": "Pradhama Drishtya Kuttakkar",
-      "releaseInfo": "2026-09-11",
-      "description": "Follows a woman constable who joins the police force through appointment after the death of her husband.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-11\n⭐ Rating: 6.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/zcxFgdE2aHOQq3tlKDDn6RYdVWr.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/bgneM7nHQVl8SxbL5FkupFLJ1Fd.jpg",
-      "genres": [
-        "Thriller",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322376
     },
     "ml_1513475": {
-      "id": "tt37894980",
-      "type": "movie",
-      "name": "Aasha",
-      "releaseInfo": "2026-09-11",
-      "description": "Follows a stubborn, short-tempered widow named Aasha who gets into a tense altercation with a volatile man named Jeemon following a minor road accident.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-11",
-      "poster": "https://image.tmdb.org/t/p/w500/dZyMVwRhI0Y1ANDRM4sAk7P4hYC.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/tkRcmn2ZpXq3k6JEeilgVXGAVJ0.jpg",
-      "genres": [
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322376
     },
     "ml_1766084": {
       "_status": "retry",
       "_at": 1789766721765
     },
     "ml_1250502": {
-      "id": "tt34284946",
-      "type": "movie",
-      "name": "I'm Game",
-      "releaseInfo": "2026-09-03",
-      "description": "A fearless gambler who trusts luck more than life gets caught in a series of crazy and unexpected events that turn his world upside down.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-03\n⭐ Rating: 8.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/h1ezPKcMYv5FHbHDuHcZfTbWTY5.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/z8PMsnvYs2t3fmKpK1ZYPMz4QQ9.jpg",
-      "genres": [
-        "Action",
-        "Thriller",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322376
     },
     "ml_1585736": {
-      "id": "tt38776466",
-      "type": "movie",
-      "name": "Kalari Kid – She Hits Back",
-      "releaseInfo": "2026-09-01",
-      "description": "In a society marked by gendered violence, nine-year-old Arushi and Milena, twenty-one, reclaim space through Kalari—the world’s oldest martial art. The film follows their fight for self-empowerment and the freedom to be the women they chose to be.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-01",
-      "poster": "https://image.tmdb.org/t/p/w500/nc7lCQWA68w2xq85PHQ2pg53QqZ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/qAf5mjeXbPEtB8c1fEs0yhlZ4Ox.jpg",
-      "genres": [
-        "Documentary"
-      ]
+      "_status": "skip",
+      "_at": 1789768322376
     },
     "ml_1758210": {
       "_status": "retry",
@@ -1286,73 +1206,28 @@
       "_at": 1789766721908
     },
     "ml_1508168": {
-      "id": "tt37535100",
-      "type": "movie",
-      "name": "Bethlehem Kudumba Unit",
-      "releaseInfo": "2026-08-21",
-      "description": "Ashley's homecoming from abroad takes an emotional turn when a wedding next door stirs memories of her first love, Justin.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-08-21\n⭐ Rating: 8.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/uaSZiH6yoGaVJcqzKtrfSkqDuHX.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/wbG0vchqVbRiknu3JKtfIAX295Y.jpg",
-      "genres": [
-        "Romance",
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322376
     },
     "ml_1036081": {
-      "id": "tt22797990",
-      "type": "movie",
-      "name": "Khalifa: The Ruler",
-      "releaseInfo": "2026-08-20",
-      "description": "Aamir Ali, a notorious gold smuggling kingpin who inherited his multi-million dollar criminal enterprise from a lineage of gangsters, is drawn into a web of vengeance, legacy and power.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-08-20\n⭐ Rating: 7.1/10",
-      "poster": "https://image.tmdb.org/t/p/w500/cAl7uuRojdxysptYBj9Mg0czGmI.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/6Jz7rnnZrSkgs9ySWUxewpcxr7Q.jpg",
-      "genres": [
-        "Crime",
-        "Action"
-      ]
+      "_status": "skip",
+      "_at": 1789768322376
     },
     "ml_1773419": {
-      "id": "tt44125424",
-      "type": "movie",
-      "name": "Eerie (Short)",
-      "releaseInfo": "2026-08-14",
-      "description": "The story revolve around a city born small boy who visit his parental home during his summer vacation where he was welcomed with a variety of things which he had never  experienced before. What he saw and experienced in those days haunt him through out his life and even after.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-08-14",
-      "poster": "https://image.tmdb.org/t/p/w500/8R5PCKPMwbPWRF0ivOCKw2UdODI.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/pBfSIbUrOM0VHgHfm2HxjESRfyO.jpg",
-      "genres": [
-        "Horror",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322376
     },
     "ml_1748380": {
       "_status": "retry",
       "_at": 1789766722078
     },
     "ml_1566124": {
-      "id": "tt41944351",
-      "type": "movie",
-      "name": "Madhuramee Jeevitham",
-      "releaseInfo": "2026-08-14",
-      "description": "Madhuramee Jeevitham is a poignant family drama that explores aging, relationships, and the quiet beauty of everyday life.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-08-14",
-      "genres": [
-        "Family",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322376
     },
     "ml_1731502": {
-      "id": "tt43675327",
-      "type": "movie",
-      "name": "Vivaah",
-      "releaseInfo": "2026-08-07",
-      "description": "Vivaah revolves around four married couples as they navigate the chaotic challenges of modern relationships. From unexpected restrictions and arranged marriages to a wife's romantic longings amid a workaholic husband's neglect, the narrative follows four women fighting unique emotional battles in search of fulfilment and understanding.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-08-07\n⭐ Rating: 1.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/x0U4ZSi740GBPCBGJvh2k2mA3W8.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/7re2w7c5TPdfOTyZQg6wYdDUVDj.jpg",
-      "genres": [
-        "Romance",
-        "Drama",
-        "Family"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1506736": {
       "id": "tt37510017",
@@ -1368,40 +1243,16 @@
       ]
     },
     "ml_1741737": {
-      "id": "tt38884361",
-      "type": "movie",
-      "name": "Kaalam Paranja Kadha",
-      "releaseInfo": "2026-07-31",
-      "description": "A protagonist commits six brutal killings in broad daylight. Examines the psychology driving the violence and the disturbing questions that emerge from these acts.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-31",
-      "poster": "https://image.tmdb.org/t/p/w500/296cxuI9qgcwLX7eflAfe9knYXr.jpg",
-      "genres": [
-        "Crime",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1545486": {
-      "id": "tt38286171",
-      "type": "movie",
-      "name": "Unmadham",
-      "releaseInfo": "2026-07-31",
-      "description": "A police constable reopens a long-forgotten case and experiences an unsettling world.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-31\n⭐ Rating: 6.9/10",
-      "poster": "https://image.tmdb.org/t/p/w500/6AIMHBUY6PCHVYASWZ0GcTA9Kph.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/o0Ai0yCq1jyLE3K55Nk3bAl4D9h.jpg",
-      "genres": [
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1473603": {
-      "id": "tt36670542",
-      "type": "movie",
-      "name": "LURK",
-      "releaseInfo": "2026-07-24",
-      "description": "Man-animal conflict, exploring who the real predator is, man or animal, with inspiration from real incidents and forest life.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-24",
-      "poster": "https://image.tmdb.org/t/p/w500/a8YUKtD4zNRGY5OpZVg1M2gLlMW.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/9rF3CfdH7tXyeaiWp5POgfOpctU.jpg",
-      "genres": [
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1742917": {
       "_status": "retry",
@@ -1421,29 +1272,12 @@
       ]
     },
     "ml_1732499": {
-      "id": "tt11724682",
-      "type": "movie",
-      "name": "Antappante Athbudha Pravarthikal",
-      "releaseInfo": "2026-07-17",
-      "description": "Antappan is a man with an extraordinary belief: he is convinced that he is Jesus Christ, returned to Earth with a mission that only he fully understands. His family, neighbors, and the wider community see his words and behavior as signs of mental illness, but Antappan refuses to accept their judgment. To him, every rejection is a test of faith, and every person in pain is someone he has been sent to help.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-17",
-      "poster": "https://image.tmdb.org/t/p/w500/gWH0TP2AKO98pFErOJTgrLma8l5.jpg",
-      "genres": [
-        "Comedy",
-        "Fantasy"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1542187": {
-      "id": "tt37963237",
-      "type": "movie",
-      "name": "Varavu",
-      "releaseInfo": "2026-07-16",
-      "description": "A family falls victim to the powerful elite in a small town. One man's return forces a confrontation that will expose decades of lies and corruption\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-16\n⭐ Rating: 4.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/xUBo6JBHGV52xbfPwg3xxyvBLPx.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/321ed6TvXWw5Y6SRcFF2DuAgpjC.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1730915": {
       "id": "tt43082675",
@@ -1479,32 +1313,16 @@
       ]
     },
     "ml_1722975": {
-      "id": "tt41021131",
-      "type": "movie",
-      "name": "Kla Kla Klee Klee Nazriya Thirinjunookki",
-      "releaseInfo": "2026-07-03",
-      "description": "When office colleagues Adithyan and Nazriya fall for each other, their romance quickly spirals into a whirlwind of unpredictable twists and absolute chaos.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-03",
-      "genres": [
-        "Romance",
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1628756": {
       "_status": "retry",
       "_at": 1789766722627
     },
     "ml_1616268": {
-      "id": "tt43612978",
-      "type": "movie",
-      "name": "Aroopi",
-      "releaseInfo": "2026-07-03",
-      "description": "A vengeful Yakshini, once sealed inside a doll at the Aryanattu estate, is accidentally unleashed by two thieves. When a brutal murder draws Niranjan, the last surviving heir of the lineage, back to his ancestral home, he must confront an ancient curse and the dark secrets surrounding his family's past.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-03\n⭐ Rating: 1.3/10",
-      "poster": "https://image.tmdb.org/t/p/w500/yLDuHm2QgsNHuENoBvOlDKRwMyF.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/nMQMfDBmjDn9jsXVXagGwUBWUSs.jpg",
-      "genres": [
-        "Horror",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1722546": {
       "_status": "retry",
@@ -1545,17 +1363,8 @@
       ]
     },
     "ml_1410937": {
-      "id": "tt35254624",
-      "type": "movie",
-      "name": "Balan - The Boy",
-      "releaseInfo": "2026-06-19",
-      "description": "A teenage boy searches for his missing mother following a turbulent childhood and her subsequent disappearance, exploring his search for closure and the truth about his past.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-06-19\n⭐ Rating: 7.6/10",
-      "poster": "https://image.tmdb.org/t/p/w500/boKxdR9tgXfkazf6yWgiDdleBy0.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/cb4b4K3E2jBGaSjkuIkZHJHmoWG.jpg",
-      "genres": [
-        "Drama",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1404521": {
       "id": "tt35076988",
@@ -1587,15 +1396,8 @@
       "_at": 1789766723403
     },
     "ml_1712008": {
-      "id": "tt43461202",
-      "type": "movie",
-      "name": "Served Cold",
-      "releaseInfo": "2026-06-07",
-      "description": "Trapped in a loveless marriage with her domineering husband Raghu, homemaker Ammu moves through the routines of her household with quiet resignation. In a home where even food becomes a symbol of control and neglect, she is often denied the care and dignity she deserves. Ammu finds solace in Pathu, her neighbor and the wife of Raghu’s rival Shihab. Pathu expresses her affection through food quietly shared across boundaries, offering Ammu the nourishment and warmth withheld from her own home. In return, Ammu gives Pathu something just as vital: the freedom to speak, to be seen, and to exist beyond silence. In a world that often pits women against each other, their bond becomes a quiet act of woman for woman solidarity.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-06-07",
-      "poster": "https://image.tmdb.org/t/p/w500/k3dNu4J2ByfRFo3dwcoaUgHR3FT.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1248251": {
       "id": "tt29959401",
@@ -1649,29 +1451,12 @@
       "_at": 1789766737099
     },
     "ml_1718698": {
-      "id": "tt42636911",
-      "type": "movie",
-      "name": "Kolahalamedu",
-      "releaseInfo": "2026-05-22",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-05-22",
-      "poster": "https://image.tmdb.org/t/p/w500/i6kGE2jrbQhy8JDtzVUvY5gqbtn.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/4F2tEUW8Ns4dwyioCuaMpTwE7nC.jpg",
-      "genres": [
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1700879": {
-      "id": "tt42956366",
-      "type": "movie",
-      "name": "Puttum Halwem",
-      "releaseInfo": "2026-05-22",
-      "description": "Two intimate episodes from a young man's life, one twisted conversation.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-05-22",
-      "poster": "https://image.tmdb.org/t/p/w500/6ZCRgBl060wdGLmqpuUCahaDbQ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/4ROa3GlxrpNKoQ5FOHkYUd9ml2u.jpg",
-      "genres": [
-        "Drama",
-        "Fantasy"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1516529": {
       "id": "tt38573318",
@@ -2015,15 +1800,8 @@
       "_at": 1789766752256
     },
     "ml_1647641": {
-      "id": "tt27389753",
-      "type": "movie",
-      "name": "Butterfly_Girl_85",
-      "releaseInfo": "2026-03-06",
-      "description": "She believed, and she did it.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-03-06",
-      "poster": "https://image.tmdb.org/t/p/w500/hz7NYsyc24TJ4YW0dr4ydVziVof.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1469458": {
       "id": "tt36628923",
@@ -2040,17 +1818,8 @@
       ]
     },
     "ml_1375987": {
-      "id": "tt34172063",
-      "type": "movie",
-      "name": "Faces",
-      "releaseInfo": "2026-03-06",
-      "description": "Nitya grapples with post-traumatic stress disorder after her partner, Michael, vanishes. Consequently, she identifies his features in strangers while investigating the mystery of his disappearance.\n\n📺 Streaming on: Mewatch\n📅 OTT Release: 2026-03-06\n⭐ Rating: 2.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/lRIv7XwlSeVb0W3YlTuv54trwZn.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/ymHj4JIrjFhmHXlU8XxZLDlgyxO.jpg",
-      "genres": [
-        "Mystery",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1646390": {
       "_status": "retry",
@@ -2071,40 +1840,16 @@
       ]
     },
     "ml_1177873": {
-      "id": "tt27494463",
-      "type": "movie",
-      "name": "Tha Thavalayude Tha",
-      "releaseInfo": "2026-02-27",
-      "description": "“When the prince, cursed by the witch, weeps for his beloved princess, it pours.” Once, Balu’s grandmother narrates this tale to him. Balu, who loved his grandma dearly, thought the tale to be true. Later, the teacher inquired of everyone in class,\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-27",
-      "poster": "https://image.tmdb.org/t/p/w500/bRYDf8WswBuXYwvr4bzWIRJ1H6q.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/vuaH4dJmDGvO3botUxef0TVdA6Y.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1102533": {
-      "id": "tt27189785",
-      "type": "movie",
-      "name": "ICU",
-      "releaseInfo": "2026-02-27",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-27",
-      "poster": "https://image.tmdb.org/t/p/w500/yptmMlu702EcBldnI9fElgSMd9V.jpg",
-      "genres": [
-        "Thriller",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1640628": {
-      "id": "tt40131161",
-      "type": "movie",
-      "name": "Pupa",
-      "releaseInfo": "2026-02-21",
-      "description": "Jeevan arrives at a motel named Malabar Lodge after a journey from Malabar to Varanasi. However, he soon realizes that the place he's ended up in is far from safe. He locks himself in his room. But A sex worker named Kajal manages to enter the room using subtle tactics. she initiates a conversation.They slowly become friendly. As the night progresses, several other individuals arrive at the brothel under various circumstances. It leads to inner changes in each character. \"Pupa\" is a blend of romance, suspense, and drama. It reminds us that within every human being lies a primitive creature in the process of evolution.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-21",
-      "poster": "https://image.tmdb.org/t/p/w500/5QYarzvhdyDft501p2ZediEiGtm.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/h6SYTEESKeIAqaqd4RDOd8HdLz2.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1765365": {
       "_status": "retry",
@@ -2119,36 +1864,16 @@
       "_at": 1789766752692
     },
     "ml_1737673": {
-      "id": "tt43377599",
-      "type": "movie",
-      "name": "Juniors Journey",
-      "releaseInfo": "2026-02-13",
-      "description": "Follows an aspiring civil servant who arrives in Malayalam a quiet village to prepare for the IAS exam, but his disciplined world collides with an unexpected local mystery.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-13",
-      "poster": "https://image.tmdb.org/t/p/w500/txndSmfQSjXINfnqqKqR0noQAvo.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/bmWD20sMFwX5pFXCE9sLr7mAnvQ.jpg",
-      "genres": [
-        "Crime"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1675178": {
-      "id": "tt33043645",
-      "type": "movie",
-      "name": "Naalppathukalile Pranayam",
-      "releaseInfo": "2026-02-13",
-      "description": "The movie revolves around a woman writer who, after going through a divorce, finds love again with a publisher who intends to marry her.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-13",
-      "poster": "https://image.tmdb.org/t/p/w500/b8JUkFz2ldN5enX9it1t17K7hRg.jpg"
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1625599": {
-      "id": "tt36256226",
-      "type": "movie",
-      "name": "Ee Thani Niram",
-      "releaseInfo": "2026-02-13",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-13",
-      "poster": "https://image.tmdb.org/t/p/w500/2mXBxdMiiiVkFCoPwxAgZz47ODG.jpg",
-      "genres": [
-        "Crime",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1607926": {
       "_status": "retry",
@@ -2181,41 +1906,16 @@
       ]
     },
     "ml_947036": {
-      "id": "tt34210614",
-      "type": "movie",
-      "name": "Sukhamano Sukhamann",
-      "releaseInfo": "2026-02-13",
-      "description": "Theo, an ambulance driver stigmatized by his town, begins seeing visions of deceased people he transports. His troubled mind, shaped by childhood loss, creates these apparitions as emotional substitutes for connection.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-13\n⭐ Rating: 4.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/7kPUvSFAz95BDs2Wdsz4JLafaIN.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/xuRKnyritayMCGDNbm7PY71ix34.jpg",
-      "genres": [
-        "Fantasy",
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_938087": {
-      "id": "tt21816890",
-      "type": "movie",
-      "name": "AT (Welcome to the Dark Side)",
-      "releaseInfo": "2026-02-13",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-13",
-      "poster": "https://image.tmdb.org/t/p/w500/arkvG2T7GYec8z1tZQ6tk4GUQPA.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/3kicY6opNYEqi5P55U7lBIy8R2v.jpg",
-      "genres": [
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1429861": {
-      "id": "tt35380630",
-      "type": "movie",
-      "name": "Koodothram",
-      "releaseInfo": "2026-02-12",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-12",
-      "poster": "https://image.tmdb.org/t/p/w500/3nklmAA4bRuYsLwmTZgx89GnjJz.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1622147": {
       "_status": "retry",
@@ -2230,36 +1930,16 @@
       "_at": 1789766753679
     },
     "ml_1632803": {
-      "id": "tt39346155",
-      "type": "movie",
-      "name": "Karuthal",
-      "releaseInfo": "2026-02-06",
-      "description": "A jobless graduate torn between love, friendship, and responsibility sets out for a new life abroad, but a shocking tragedy brings him back home where he finds purpose, truth, and redemption.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-06",
-      "poster": "https://image.tmdb.org/t/p/w500/hAuSWfCpCCouLmVImRTv0S3xbgW.jpg",
-      "genres": [
-        "Drama",
-        "Family"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1632228": {
-      "id": "tt39737293",
-      "type": "movie",
-      "name": "The Late Kunjappa",
-      "releaseInfo": "2026-02-06",
-      "description": "Kunjappa, a poor old man, dies in a village. As his relatives gather with the body through the night, small incidents unfold, revealing quiet human truths.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-06"
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1509694": {
-      "id": "tt37537155",
-      "type": "movie",
-      "name": "Ashakal Aayiram",
-      "releaseInfo": "2026-02-06",
-      "description": "A social media enthusiast chases fame until a major film production arrives in his neighborhood, suddenly bringing his dreams of stardom within reach in ways he never imagined.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-06\n⭐ Rating: 4.6/10",
-      "poster": "https://image.tmdb.org/t/p/w500/dn025nJaG2ZKDA19ymPfZWUwPEH.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/j4YdIxiZwz2MqyqYAdiHeoh0y8V.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1429319": {
       "id": "tt34733903",
@@ -2383,28 +2063,12 @@
       "_at": 1789766767662
     },
     "ml_1668440": {
-      "id": "tt36177959",
-      "type": "movie",
-      "name": "Krishnashtami: The Book of Dry Leaves",
-      "releaseInfo": "2026-01-16",
-      "description": "The first still-image feature in India, inspired by Vyloppilli Sreedhara Menon's 1958 poem. It portrays marginalized lives held in an illegitimate detention centre, using dry leaves and storms as metaphors. An omniscient narrator from an undefined future recalls fragments lost to censorship, inviting others to complete the story. Through static images, memories, and voices, the film reflects on art, poverty, imagination, divinity, and power.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-16",
-      "poster": "https://image.tmdb.org/t/p/w500/4HJ1zvsbPuRqVtDbc0pIeboAZUA.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1651296": {
-      "id": "tt15528720",
-      "type": "movie",
-      "name": "Oru Wayanadan Pranayakadha",
-      "releaseInfo": "2026-01-16",
-      "description": "Set in the scenic Wayanad, a mischievous student falls for his classmate, sparking playful and heartfelt moments as he navigates her strict father, caring mother, and protective brother. A lighthearted, feel-good story of first love and village life.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-16\n⭐ Rating: 1.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/tF5b0XHnUB9q5CwvsQfYz6jVYx1.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/lLnTJGdZKJF3PJZoAODUoYQdwxE.jpg",
-      "genres": [
-        "Romance",
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1617975": {
       "id": "tt25052490",
@@ -2459,12 +2123,8 @@
       ]
     },
     "ml_1676221": {
-      "id": "tt35449689",
-      "type": "movie",
-      "name": "Super Jimni",
-      "releaseInfo": "2026-01-01",
-      "description": "In a rural community plagued by health crises, corruption, and drug mafias, Veena fights to protect an abused child while grappling with her estranged, ailing mother and her drug-addicted daughter.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-01",
-      "poster": "https://image.tmdb.org/t/p/w500/tj8gmXXWCWCZm61zOW3gmxHHZws.jpg"
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1601798": {
       "_status": "retry",
@@ -2479,16 +2139,8 @@
       "_at": 1789766768475
     },
     "ml_1516545": {
-      "id": "tt38781186",
-      "type": "movie",
-      "name": "Aghosham",
-      "releaseInfo": "2025-12-25",
-      "description": "When a serious incident puts a university and its students at risk, a stoic lecturer devises a plan to protect them.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-25",
-      "poster": "https://image.tmdb.org/t/p/w500/wr19UMYGEORF0oCcPbDvZF8WU6E.jpg",
-      "genres": [
-        "Crime",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1473354": {
       "id": "tt32362695",
@@ -2517,17 +2169,8 @@
       ]
     },
     "ml_1151083": {
-      "id": "tt27496044",
-      "type": "movie",
-      "name": "Vrusshabha",
-      "releaseInfo": "2025-12-25",
-      "description": "What happens if two sworn enemies from a previous life are reborn as father-son in a new birth?\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-25",
-      "poster": "https://image.tmdb.org/t/p/w500/hRKxGHeQBdwKswKgkmDrrMCDqoQ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/eDXviWshlrhrUskquIREBtFEm8C.jpg",
-      "genres": [
-        "Action",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_911244": {
       "id": "tt21379570",
@@ -2547,18 +2190,8 @@
       "_at": 1789766768696
     },
     "ml_1567457": {
-      "id": "tt39286085",
-      "type": "movie",
-      "name": "ELIZA",
-      "releaseInfo": "2025-12-19",
-      "description": "The Movie Starts with a flashback where beautiful visuals of a mother feeding her daughter Shifting to present day there are two youngsters ‘ Sandeep ’ and ‘ Melvin ’ who have a brotherly relationship. Melvin is in love with ‘ Eliza ’ whom he met 2 months back online. He is requesting ‘ Sandeep ’ to accompany him to meet his love forthe first time\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-19",
-      "poster": "https://image.tmdb.org/t/p/w500/6i29g8yryCvLUeB7df4pNwcmh75.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/pr3we4dcVfYAyFMWym0vJ23T5ww.jpg",
-      "genres": [
-        "Crime",
-        "Thriller",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1528489": {
       "_status": "retry",
@@ -2615,15 +2248,8 @@
       "_at": 1789766782317
     },
     "ml_1578880": {
-      "id": "tt39167158",
-      "type": "movie",
-      "name": "Desire",
-      "releaseInfo": "2025-12-13",
-      "description": "In a bid to escape the grip of law and punishment, Shanu, a man with secret schemes, ensnares Amala - a woman grappling with psychological struggles. Together on a stolen bike, they embark on a journey where some desires are abandoned, while others reach completion.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-13",
-      "poster": "https://image.tmdb.org/t/p/w500/2VDQXiRYxI3h8obwsx76DUsrOq2.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1578877": {
       "_status": "retry",
@@ -2638,24 +2264,12 @@
       "_at": 1789766782469
     },
     "ml_1290221": {
-      "id": "tt35379570",
-      "type": "movie",
-      "name": "Ebb",
-      "releaseInfo": "2025-12-13",
-      "description": "Adarsh and Maria, a married couple, appear to share the warmth and freedom of close friends. When Maria's male friend, Sidharth, grows more attached, it has a distinct impact on Adarsh. Subsequently, Adarsh finds himself disturbed and distressed. 'Ebb' delves into the ways love, emotions and their various nuances influence both women and men.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-13",
-      "poster": "https://image.tmdb.org/t/p/w500/lunZ6DMeytpuvC2LfxOWxZXCrGL.jpg"
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1618440": {
-      "id": "tt38965964",
-      "type": "movie",
-      "name": "Sree Ayyappan",
-      "releaseInfo": "2025-12-12",
-      "description": "Lord Ayyappa takes human form to stop terrorists targeting a major temple. The National Anti-Terrorist Squad and Indian Army launch a joint operation to counter the planned attack.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-12\n⭐ Rating: 2.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/yg0LbADAAeWqz31QXojtS4PNYG5.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/b8mHA1jCDr7SVHjrqzoGaz3E2cz.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1596637": {
       "id": "tt14289230",
@@ -2670,15 +2284,8 @@
       ]
     },
     "ml_1593963": {
-      "id": "tt39014003",
-      "type": "movie",
-      "name": "Adinaasam Vellapokkam",
-      "releaseInfo": "2025-12-12",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-12",
-      "poster": "https://image.tmdb.org/t/p/w500/fpk5cPzQf1fpsxBRlWERVSbuJ3H.jpg",
-      "genres": [
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1628741": {
       "_status": "retry",
@@ -2697,29 +2304,12 @@
       ]
     },
     "ml_1595447": {
-      "id": "tt35766105",
-      "type": "movie",
-      "name": "Bhoothayanam",
-      "releaseInfo": "2025-12-05",
-      "description": "Lonely and desperate, an elderly matriarch will go to any length to be reunited with her beloved granddaughter.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-05",
-      "poster": "https://image.tmdb.org/t/p/w500/6e7fZM2qQH23TDCAV996VVnydHx.jpg",
-      "genres": [
-        "Horror",
-        "Mystery",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1589370": {
-      "id": "tt38681970",
-      "type": "movie",
-      "name": "The Ride",
-      "releaseInfo": "2025-12-05",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-05",
-      "poster": "https://image.tmdb.org/t/p/w500/Afu1QT5IaTr8vS0SAttU17WoWV0.jpg",
-      "genres": [
-        "Drama",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1429311": {
       "id": "tt33014579",
@@ -2783,27 +2373,12 @@
       "_at": 1789766783502
     },
     "ml_1570902": {
-      "id": "tt38691185",
-      "type": "movie",
-      "name": "Madura Kanakku",
-      "releaseInfo": "2025-12-04",
-      "description": "A teacher's life unravels when he falls into debt after mortgaging his house to pay for his daughter's wedding.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-04\n⭐ Rating: 2.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/7kCZoAT0QKBM9RkyX8PSVsWoSeV.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1377424": {
-      "id": "tt35450328",
-      "type": "movie",
-      "name": "Victoria",
-      "releaseInfo": "2025-11-28",
-      "description": "Victoria, a young beautician in a suburban beauty parlour, decides to elope with her Hindu boyfriend after a fierce clash with her conservative Catholic parents. Amidst the turmoil, a neighbour asks her to temporarily house an offering rooster destined for a festival at St. George church inside the parlour. Juggling the rooster's antics, unexpected clients, and her boyfriend's uncertainty, Victoria grapples with conflicting emotions leading to a day of intense personal and spiritual revelations.\n\n📺 Streaming on: Fawesome\n📅 OTT Release: 2025-11-28\n⭐ Rating: 7.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/hbGSvJyOgK4LNfsYdUj7QSzXex2.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/lSZI11kbZIYA3YkMcHoHJRQFGeh.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322377
     },
     "ml_1587112": {
       "_status": "retry",
@@ -2843,29 +2418,16 @@
       ]
     },
     "ml_864772": {
-      "id": "tt13998526",
-      "type": "movie",
-      "name": "Vilaayath Budha",
-      "releaseInfo": "2025-11-21",
-      "description": "In the secluded hills of Marayur, a region steeped in the scent and lore of sandalwood, Vilayath Buddha unfolds as a potent character drama anchored in pride, memory, and resistance.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-21",
-      "poster": "https://image.tmdb.org/t/p/w500/nNzsQs6XbPucfpAQpatWOl4aiFb.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/ynn6vQEBwq1QvTCTv5Fv0rsY0Hk.jpg",
-      "genres": [
-        "Action",
-        "Drama",
-        "Crime"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1572724": {
       "_status": "retry",
       "_at": 1789766783850
     },
     "ml_1580580": {
-      "id": "tt38895566",
-      "type": "movie",
-      "name": "Page",
-      "releaseInfo": "2025-11-14",
-      "description": "John Paul is a leading Motivational Speaker who leads peaceful family life with his wife and two children. One day John met a man in his fearful dream. Ironically his son met that same man in real life.The real story begins with that twist.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-14"
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1579952": {
       "id": "tt38721171",
@@ -2905,14 +2467,8 @@
       ]
     },
     "ml_1590227": {
-      "id": "tt3433162",
-      "type": "movie",
-      "name": "Holidays",
-      "releaseInfo": "2025-11-12",
-      "description": "A bunch of friends on a holiday save a young girl from the hands of a few goons but later find her murdered. Before long, they flee to some place but the murderer scampers after them.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-12",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1564387": {
       "_status": "retry",
@@ -2940,17 +2496,8 @@
       ]
     },
     "ml_1181110": {
-      "id": "tt34614859",
-      "type": "movie",
-      "name": "Innocent",
-      "releaseInfo": "2026-09-17",
-      "description": "Vinod, 29, is a man of routine. Living in Karunagappally and working at the Planning Office in Thiruvananthapuram, he spends his days in a carefully controlled cycle of train commutes, meticulous work, and an almost obsessive adherence to order.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-07\n⭐ Rating: 5.3/10",
-      "poster": "https://image.tmdb.org/t/p/w500/A1z6Uhk63p6kh43mkuTfECIkcRQ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/rl4Ke2Cq3VH4j9rQNE1uP2iffys.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1589356": {
       "_status": "retry",
@@ -2961,16 +2508,8 @@
       "_at": 1789766797584
     },
     "ml_885206": {
-      "id": "tt15554778",
-      "type": "movie",
-      "name": "Madhuram Jeevamruthabindu",
-      "releaseInfo": "2025-10-31",
-      "description": "Explores Different Shades Of Human Desire Through Jessie, Ilyas, Samuel, And Bhaskaran - Each Chasing Passion, Longing, Or Curiosity In Their Own Way, Revealing How Desires Shape Life And Lead To Self-Realisation.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-10-31\n⭐ Rating: 3.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/pFf4WFC8lcmdEcaQXMeUDTbdok3.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/vVNaQvEpDugLUxV6NBdJdivTT2E.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1566673": {
       "_status": "retry",
@@ -2990,17 +2529,8 @@
       ]
     },
     "ml_1603841": {
-      "id": "tt36853425",
-      "type": "movie",
-      "name": "Cherukkanum Pennum",
-      "releaseInfo": "2025-10-25",
-      "description": "Two IT professionals, Balu and Ritha, face unforeseen challenges that test their relationship after their recent marriage.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-10-25\n⭐ Rating: 1.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/sOynBnlgNYb67Koevr9BAbj2jQl.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/9O43Bx1N07JZddEaSQQ9vcOkSbQ.jpg",
-      "genres": [
-        "Romance",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1565734": {
       "_status": "retry",
@@ -3046,17 +2576,8 @@
       ]
     },
     "ml_1270908": {
-      "id": "tt33333712",
-      "type": "movie",
-      "name": "The Pet Detective",
-      "releaseInfo": "2025-10-16",
-      "description": "A couple of amateur sleuths attempt to solve the mystery behind disappearing pets, but become embroiled in far more sinister crimes.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-10-16\n⭐ Rating: 4.3/10",
-      "poster": "https://image.tmdb.org/t/p/w500/ydaAO8A9pIdtLN6K3hSAGVn08rH.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/8FLuDc1GhtTjAGTsCERkEKyxSO2.jpg",
-      "genres": [
-        "Action",
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1687305": {
       "_status": "retry",
@@ -3103,43 +2624,20 @@
       ]
     },
     "ml_1554302": {
-      "id": "tt40338390",
-      "type": "movie",
-      "name": "Palama: Do You See Me?",
-      "releaseInfo": "2025-10-04",
-      "description": "A heartfelt exploration of plurality and diversity, this documentary centers on those labeled as “other” by society—those who don’t conform to mainstream norms or the majority’s expectations. Rooted in the belief that true acceptance requires embracing difference, it tells the stories of marginalized voices navigating a world that often excludes them. Created by the teachers and students collective NASYM, the feature weaves a fresh, humanistic narrative that celebrates individuality, connection, and the courage to exist authentically in the face of societal pressures. Through its intimate storytelling, the film invites reflection on belonging, empathy, and the power of recognizing the “other” as part of the shared human experience.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-10-04",
-      "poster": "https://image.tmdb.org/t/p/w500/hDVNug8Vv5jiAeEuM3NAPayuQEx.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/bNVZ1nGbl9bRMDySK9rPY49mKWp.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1607899": {
-      "id": "tt37675925",
-      "type": "movie",
-      "name": "Kalaratri",
-      "releaseInfo": "2025-09-28",
-      "description": "A tragic car crash leaves a wealthy couple stranded on a remote road. Seeking shelter in a secluded house, they uncover dark secrets and become entangled in a deadly game of murder, deception, and revenge-where nothing is as it seems.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-28",
-      "poster": "https://image.tmdb.org/t/p/w500/Au4Sb4wx1MnunNxtklAMjIJFI2u.jpg",
-      "genres": [
-        "Crime",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1553641": {
       "_status": "retry",
       "_at": 1789766798263
     },
     "ml_1742604": {
-      "id": "tt38682142",
-      "type": "movie",
-      "name": "Nizhal (The Shadow)",
-      "releaseInfo": "2025-09-27",
-      "description": "Through silence and imagery, Nizhal (The Shadow) explores how the echoes of the past linger in the present - A visual story where emotions speak louder than words.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-27",
-      "poster": "https://image.tmdb.org/t/p/w500/uOUI7UyWQpSdu96PrczAr1uGTth.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1442544": {
       "id": "tt38428625",
@@ -3184,34 +2682,16 @@
       ]
     },
     "ml_1561807": {
-      "id": "tt38641070",
-      "type": "movie",
-      "name": "Passingness",
-      "releaseInfo": "2025-09-24",
-      "description": "Passingness is a haunting exploration of identity, memory, and the fragile edge of reality. As the narrative unfolds through emotionally charged performances and a tense, introspective atmosphere, the audience is drawn into a fragile space between being and disappearing. A haunting meditation on identity, loneliness, and the terror of not being seen. Driven by intense, intimate performances, the story unfolds in layers of psychological tension, revealing inner scars, blurred truths, and the quiet terror of not knowing who you are or if you ever were.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-24",
-      "poster": "https://image.tmdb.org/t/p/w500/mBs1Arhr8jBq6kvP2fje6BazzSF.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/8Rs2Bq1XxOu6RyEAou9q5aPbG6K.jpg",
-      "genres": [
-        "Thriller",
-        "Drama",
-        "Mystery"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1549889": {
       "_status": "retry",
       "_at": 1789766798523
     },
     "ml_1532393": {
-      "id": "tt38355154",
-      "type": "movie",
-      "name": "If on a Winter's Night",
-      "releaseInfo": "2025-09-20",
-      "description": "Portrays a couple form Kerala who lost their house during harsh winter days while trying settle down in Delhi, building a bond amid challenges in a strange city.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-20",
-      "poster": "https://image.tmdb.org/t/p/w500/yWIMk0hCyPacK6Sy8OXehdiJnTC.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/cNTEe9o4ExMjQTXQRt9PkHlOUX1.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1609880": {
       "_status": "retry",
@@ -3325,41 +2805,20 @@
       "_at": 1789766812706
     },
     "ml_1554275": {
-      "id": "tt38354247",
-      "type": "movie",
-      "name": "Ricard Dance",
-      "releaseInfo": "2025-08-26",
-      "description": "\"Ricard Dance,\" once a beloved South Indian art form, now struggles to survive. Once as popular as movie stars, artists like Kochu, Santhosh, Kamaru, and many others spent decades traveling across Kerala with the Sree Durga Ricard Dance Group, bringing thousands of characters to life on stage and captivating audiences. Today, their fame has faded, and they face the painful reality that the stage may soon fall silent. Yet, even amid the dominance of modern media, this glimpse into their journey reveals how the art form still finds love and resilience, cherished by those who remember its power.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-26",
-      "poster": "https://image.tmdb.org/t/p/w500/obzOYNlCmkK66wMoeb5Rzf1l4zj.jpg"
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1552555": {
       "_status": "retry",
       "_at": 1789766812783
     },
     "ml_1703520": {
-      "id": "tt43099154",
-      "type": "movie",
-      "name": "Kruddhar",
-      "releaseInfo": "2025-08-25",
-      "description": "Stalin, a university student returning from a campus strike, finds his village gripped by fear of roaming robbers. Amid strained family ties, a troubled romance, and clashing ideologies, he faces turmoil that sparks his transformation.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-25",
-      "poster": "https://image.tmdb.org/t/p/w500/xcNjMbH31RRtLSCaiD3ierFrWwK.jpg",
-      "genres": [
-        "Family",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1530668": {
-      "id": "tt43475676",
-      "type": "movie",
-      "name": "Symptoms of Love",
-      "releaseInfo": "2025-08-24",
-      "description": "Convinced he’s dying, a hypochondriac is pulled into life by a free-spirited woman who shows him that the true danger is learning how to live.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-24",
-      "poster": "https://image.tmdb.org/t/p/w500/sWONZbuMIuQRkTdNv8nihKIlR0i.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/c0hK1YAUdAUfq5y8nhAjUmOqjip.jpg",
-      "genres": [
-        "Drama",
-        "Romance"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1300027": {
       "id": "tt31721293",
@@ -3452,16 +2911,8 @@
       ]
     },
     "ml_1519042": {
-      "id": "tt37682350",
-      "type": "movie",
-      "name": "Private",
-      "releaseInfo": "2025-08-01",
-      "description": "When an old man and a teenager from different walks of life are brought together by chance, they form an unlikely connection that transforms them both in unexpected ways.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-01\n⭐ Rating: 4.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/9pRKlkCLO3BKG8xGM1vGvVwfW47.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/sG7tcBjgX2unNNX1DoGEwnrxA4x.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1296338": {
       "id": "tt33037773",
@@ -3502,25 +2953,12 @@
       ]
     },
     "ml_1610569": {
-      "id": "tt26755355",
-      "type": "movie",
-      "name": "Jagala",
-      "releaseInfo": "2025-07-18",
-      "description": "Jagala is a story of a young Muslim man named Chekku who lived in Eranad during the Mappila Rebellion era of 1920s.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-07-18",
-      "poster": "https://image.tmdb.org/t/p/w500/2uwlO3d9RueXJklWsYjpSO4EJZR.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/tMCcJ9tyHqZnkWYtYkMXscUgiwv.jpg"
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1398750": {
-      "id": "tt33368472",
-      "type": "movie",
-      "name": "Sea of Love",
-      "releaseInfo": "2025-07-18",
-      "description": "Ratheesh develops strong romantic feelings for his neighbour, Jumaila, but she ends up rejecting him. Things take a turn when Jumaila's sexuality is uncovered.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-07-18",
-      "poster": "https://image.tmdb.org/t/p/w500/v8rgamMxasTboYzzx4gdS0JSE2G.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/qSAnxDnkawpvQkNCHKd3I2CHJPM.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1314702": {
       "id": "tt35110563",
@@ -3612,16 +3050,8 @@
       ]
     },
     "ml_1000508": {
-      "id": "tt11706552",
-      "type": "movie",
-      "name": "Moppala",
-      "releaseInfo": "2025-07-04",
-      "description": "The life of a Theyyam exponent and his grandson, who is the child of an inter-caste marriage, is topsy-turvy due to caste hierarchy and prejudices. Devanandan, the grandson who is very much passionate about Theyyam, is not allowed to perform the art by the diehard followers of caste systems. So Devanandan leaves the scene wearing the attires and makeup of Theyyam.\n\n📺 Streaming on: Plex, Plex Channel\n📅 OTT Release: 2025-07-04",
-      "poster": "https://image.tmdb.org/t/p/w500/3l1NbEjIxfnCkT3sJqkXIN0piFj.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/aQfAhXknT6zGw3PcbB80ffoVlxh.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1499582": {
       "_status": "retry",
@@ -3632,40 +3062,16 @@
       "_at": 1789766827784
     },
     "ml_1429294": {
-      "id": "tt37173525",
-      "type": "movie",
-      "name": "Koodal",
-      "releaseInfo": "2025-06-27",
-      "description": "When two girls cross paths with their former classmate's murderer, camp director Bobby tries to keep them safe. However, things take a turn as a series of unsettling events begins to unravel.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-06-27\n⭐ Rating: 1.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/16ldo70b01IJdX3x6MYWkrJUvfT.jpg",
-      "genres": [
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1235846": {
-      "id": "tt29308665",
-      "type": "movie",
-      "name": "Behindd",
-      "releaseInfo": "2025-06-27",
-      "description": "The film is about a mother's (Sonia Agarwal) struggle to protect her daughter from some terrifying experiences. Initially her husband (Jinu E Thomas) ignore her words, but later he too experiences the same. The movie continues with the question whether the family will succeed to overcome the situation or not and what will be the further changes in their life...\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-06-27",
-      "poster": "https://image.tmdb.org/t/p/w500/hASdEortep480b7y2zdUeKiwZvK.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/kV36TT5mDXAH631iA9TwLRy7OAs.jpg",
-      "genres": [
-        "Horror",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1541676": {
-      "id": "tt36853756",
-      "type": "movie",
-      "name": "Police  Day",
-      "releaseInfo": "2025-06-20",
-      "description": "A sudden death of DYSP leads to suicide at first sight and then it turns suspicious murder. Was the DYSP's death a sucide or a murder? The investigation officer Lal MOhan IPS gets into action that leads to more mystery.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-06-20\n⭐ Rating: 2.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/w2eOIeoHDvRK5vJVnlpGzODut5G.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/23x3nFzhmP0dfZKHVdOr5jfptqw.jpg",
-      "genres": [
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1380900": {
       "id": "tt32166743",
@@ -3693,28 +3099,12 @@
       ]
     },
     "ml_900902": {
-      "id": "tt13269788",
-      "type": "movie",
-      "name": "Nancy Rani",
-      "releaseInfo": "2025-06-18",
-      "description": "It follows the story of Nancy Rani, a girl with big dreams, one of which is becoming a movie star, but when she has the opportunity to become an actress, she experiences a big tragedy.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-06-18\n⭐ Rating: 3.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/35U1sy1rVr6g7Mm47FNKuzNWQok.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1634615": {
-      "id": "tt34748847",
-      "type": "movie",
-      "name": "The Protector",
-      "releaseInfo": "2025-06-13",
-      "description": "A detective investigates mysterious deaths at Manakkal Tharavadu manor in Airavathakkuzhi village, where locals fear evil haunts. His probe into family secrets unleashes dangerous events affecting the community.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-06-13\n⭐ Rating: 1.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/8L9SFfRmtQj6bvKWzm36xmBzT3f.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/onxTCFGVrqVTddBVYRVOVWrFQHM.jpg",
-      "genres": [
-        "Mystery",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1339055": {
       "id": "tt33294533",
@@ -3734,17 +3124,8 @@
       "_at": 1789766828140
     },
     "ml_1560745": {
-      "id": "tt37241204",
-      "type": "movie",
-      "name": "Thelivu Sahitham",
-      "releaseInfo": "2025-06-06",
-      "description": "During a village carnival, a shocking murder plunges the quiet community of Kuttikadavu into chaos.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-06-06\n⭐ Rating: 1.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/60LkqcbuhcckrGjgXl8oCpWOB2l.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/voWF0Tb1nFJ7YpZWiJUjlngaY4k.jpg",
-      "genres": [
-        "Crime",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1493335": {
       "id": "tt37255718",
@@ -3774,16 +3155,8 @@
       ]
     },
     "ml_1496372": {
-      "id": "tt28799180",
-      "type": "movie",
-      "name": "Mary",
-      "releaseInfo": "2025-06-05",
-      "description": "Mary, an Indian nurse in Switzerland, receives an invitation to a Christmas party from a doctor, where she meets Edi. As she navigates the budding feelings, Mary grapples with the looming specter of an arranged marriage awaiting her back home.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-06-05",
-      "poster": "https://image.tmdb.org/t/p/w500/nQb1FanawFFg0hwQINuCcGnCV2p.jpg",
-      "genres": [
-        "Drama",
-        "Romance"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1101684": {
       "id": "tt27170332",
@@ -3803,40 +3176,16 @@
       "_at": 1789766828388
     },
     "ml_1000747": {
-      "id": "tt36187527",
-      "type": "movie",
-      "name": "Once Upon A Time There Was A Kallan",
-      "releaseInfo": "2025-05-30",
-      "description": "Neelankavil Joseph Kurien is a rich, lonely old man who lives by himself in a big house. One day, a thief breaks in, but ends up getting stuck. The old man befriends the thief, and his presence brings comfort to the old man's isolated life.\n\n📺 Streaming on: STARZPLAY\n📅 OTT Release: 2025-05-30\n⭐ Rating: 3.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/d5gIJoPCjnARZD8shxOVZIcMEsz.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/saFARY988VnWHJNiggUGfAXteM2.jpg",
-      "genres": [
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_792855": {
-      "id": "tt14177202",
-      "type": "movie",
-      "name": "Moonwalk",
-      "releaseInfo": "2025-05-30",
-      "description": "It's the year 1987. Youngsters living in the outskirts of Thiruvananthapuram start exploring breakdancing.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-05-30\n⭐ Rating: 6.2/10",
-      "poster": "https://image.tmdb.org/t/p/w500/72UnYskIKh9LTVIIV9wmDjTsB6d.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/yb6BBgvHJp6Q3JYuSEeckm1uWZE.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1575849": {
-      "id": "tt33733760",
-      "type": "movie",
-      "name": "Nerariyum Nerathu",
-      "releaseInfo": "2025-05-23",
-      "description": "In a quiet village surrounded by mist covered hills and ancient legends, Abhiram Radhakrishnan plays Arjun, a young documentary filmmaker who arrives searching for truth behind a mysterious ritual performed only at midnight.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-05-23",
-      "poster": "https://image.tmdb.org/t/p/w500/jwbyJErqvPSgZrB6BL0XcrTB2MX.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/ajYAVBHYzSqtBIwrz5DRl1pxXZc.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1427824": {
       "id": "tt36329718",
@@ -3853,17 +3202,8 @@
       ]
     },
     "ml_1318735": {
-      "id": "tt33029493",
-      "type": "movie",
-      "name": "Mr and Mrs Bachelor",
-      "releaseInfo": "2025-05-23",
-      "description": "Stephy, a bride-to-be, escapes from her wedding and meets Siddhu, a carefree bachelor in his 40s. The film follows their spontaneous journey together filled with humorous and emotional moments.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-05-23\n⭐ Rating: 3.6/10",
-      "poster": "https://image.tmdb.org/t/p/w500/9BcYqA2yxMBenjFob4ZHJWvvz9N.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/wiP6kO1SuUtcnbLiUTjz9lS1PFx.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1115022": {
       "id": "tt27494358",
@@ -3892,29 +3232,12 @@
       ]
     },
     "ml_1396851": {
-      "id": "tt36276442",
-      "type": "movie",
-      "name": "Samshayam",
-      "releaseInfo": "2025-05-16",
-      "description": "One day, Vimala develops an unshakeable suspicion. Her husband Manojan's search for answers to her doubt leads him on a journey that could destroy everything he knows.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-05-16\n⭐ Rating: 5.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/zrA2F1fwSwkYGi2KW9S0mG5L0yX.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/itee1SrAUvXrudEkU9RJUWKqXIM.jpg",
-      "genres": [
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1134456": {
-      "id": "tt27917202",
-      "type": "movie",
-      "name": "Lovely",
-      "releaseInfo": "2025-05-16",
-      "description": "A young man develops an unexpected friendship with a talking housefly.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-05-16\n⭐ Rating: 1.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/kmLCYspwxeR3fPvW0iIIKtMrKdN.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/e7RLgiHJ0RkedjZp7SM4PAihYPF.jpg",
-      "genres": [
-        "Fantasy",
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_936667": {
       "id": "tt28479285",
@@ -3930,16 +3253,8 @@
       ]
     },
     "ml_1557402": {
-      "id": "tt35777241",
-      "type": "movie",
-      "name": "Oru Vadakkan Pranaya Parvam",
-      "releaseInfo": "2025-05-09",
-      "description": "At S.N. College Kannur in 2012, popular student leader JP faces unexpected rivalry when transfer student Sapna arrives, leading to campus tensions and romantic complications.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-05-09\n⭐ Rating: 4.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/188wI3KQLBrIvpsk6Byox5XuiLW.jpg",
-      "genres": [
-        "Romance",
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1268170": {
       "id": "tt32105116",
@@ -4006,12 +3321,8 @@
       "_at": 1789766842665
     },
     "ml_1066830": {
-      "id": "tt33183885",
-      "type": "movie",
-      "name": "Padakkuthira",
-      "releaseInfo": "2025-04-24",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-04-24",
-      "poster": "https://image.tmdb.org/t/p/w500/agn2uX3XpTSx87LOdzelYOpiO6L.jpg"
+      "_status": "skip",
+      "_at": 1789768322378
     },
     "ml_1261125": {
       "id": "tt31969600",
@@ -4084,17 +3395,8 @@
       "_at": 1789766963618
     },
     "ta_1685882": {
-      "id": "tt42262473",
-      "type": "movie",
-      "name": "Modha Rathri",
-      "releaseInfo": "2026-09-17",
-      "description": "Two strangers are brought together at an unusual wedding where, in one night, too many surprises unfold and several lies are told, spiraling into chaos that changes everything.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-17\n⭐ Rating: 7.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/lZiTSLDLIkW9YS6CWo8uaXZMcO6.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/11TnS5t4jJrD6Rl0mv6Klckxv7U.jpg",
-      "genres": [
-        "Romance",
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1441228": {
       "_status": "skip",
@@ -4196,7 +3498,7 @@
     },
     "ta_672751": {
       "_status": "retry",
-      "_at": 1789767966386
+      "_at": 1789768413697
     },
     "ta_11460": {
       "_status": "skip",
@@ -4224,7 +3526,7 @@
     },
     "ta_730301": {
       "_status": "retry",
-      "_at": 1789767966488
+      "_at": 1789768413775
     },
     "ta_82283": {
       "_status": "skip",
@@ -4240,11 +3542,11 @@
     },
     "ta_1770237": {
       "_status": "retry",
-      "_at": 1789767966545
+      "_at": 1789768413788
     },
     "ta_1770234": {
       "_status": "retry",
-      "_at": 1789767966564
+      "_at": 1789768413793
     },
     "ta_1772176": {
       "_status": "skip",
@@ -4409,7 +3711,7 @@
     },
     "ta_661918": {
       "_status": "retry",
-      "_at": 1789767966588
+      "_at": 1789768413800
     },
     "ta_769701": {
       "_status": "skip",
@@ -4464,16 +3766,8 @@
       "_at": 1789767008925
     },
     "ta_588280": {
-      "id": "tt9905796",
-      "type": "movie",
-      "name": "July Kaatril",
-      "releaseInfo": "2026-09-17",
-      "description": "A happy-go-lucky youngster’s approach towards romance changes after he becomes close with three women in different phases of his life.\n\n📺 Streaming on: AP International\n📅 OTT Release: 2026-09-17",
-      "poster": "https://image.tmdb.org/t/p/w500/ixXzDWYp1PBAR5xTHOHgzjYdnWt.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/6tp5e6xkcKFa9VouAOyb0HX4HG2.jpg",
-      "genres": [
-        "Romance"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1006780": {
       "_status": "skip",
@@ -4520,16 +3814,8 @@
       "_at": 1789767009166
     },
     "ta_263685": {
-      "id": "tt0248131",
-      "type": "movie",
-      "name": "Kaavalkaaran",
-      "releaseInfo": "2026-09-17",
-      "description": "Mani is employed as a driver with Marudachalam. Mani and his employer's daughter Susheela fall in love with each other and get married against Marudachalam's wishes. This also enrages Nagu, her father's business partner who intended to marry Susheela. In order to make her marriage successful, Susheela disowns her father and his wealth. Mani, on the other hand, loses his mother after a prolonged illness.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-17\n⭐ Rating: 7.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/sDKnA4BAUZA3XYEgbvEcPblANXN.jpg",
-      "genres": [
-        "Drama",
-        "Action"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_228064": {
       "_status": "skip",
@@ -4561,7 +3847,7 @@
     },
     "ta_1627761": {
       "_status": "retry",
-      "_at": 1789767966608
+      "_at": 1789768413805
     },
     "ta_569494": {
       "_status": "skip",
@@ -4668,33 +3954,16 @@
       "_at": 1789767024289
     },
     "ta_1686999": {
-      "id": "tt33095205",
-      "type": "movie",
-      "name": "Enna Vilai",
-      "releaseInfo": "2026-09-16",
-      "description": "A humble fisherman from Rameswaram lives a quiet life with his family until he finds a gold pendant washed ashore. What initially seems like a blessing soon turns into a nightmare when false accusations threaten his peace and dignity, forcing him to stand up against a powerful system.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-16",
-      "poster": "https://image.tmdb.org/t/p/w500/cfDAwfo6z4KRAe9Cqv7mOzhc2I5.jpg",
-      "genres": [
-        "Drama",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1422822": {
       "_status": "skip",
       "_at": 1789767024315
     },
     "ta_1766087": {
-      "id": "tt44915127",
-      "type": "movie",
-      "name": "Nalla Padam",
-      "releaseInfo": "2026-09-16",
-      "description": "Kumaran, a man whose entire life revolves around alcohol, is supported by his mother but constantly opposed by his sister and girlfriend, who want him to change. When alcohol lovers form an association and make Kumaran their leader, his life takes an unexpected turn.  Everything changes when the Central Government announces a nationwide ban on alcohol. Forced to survive without his addiction, Kumaran goes to hilarious and desperate lengths to get a drink. Will Kumaran quit alcohol or find a way to continue? What happens to the Association for Alcohol—and to families across India after prohibition? A mix of humour, romance, emotion, mass moments, social message and revolutionary ideas.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-16",
-      "poster": "https://image.tmdb.org/t/p/w500/9BrzZU201b14LIpw401AYZTM0GT.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/6FnlIWNSdwmtXLkREejOQDy9Km6.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1242197": {
       "_status": "skip",
@@ -4721,15 +3990,8 @@
       "_at": 1789767024432
     },
     "ta_1627516": {
-      "id": "tt11947240",
-      "type": "movie",
-      "name": "Sandakari",
-      "releaseInfo": "2026-09-16",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-16",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1706764": {
       "_status": "skip",
@@ -4885,7 +4147,7 @@
     },
     "ta_1643810": {
       "_status": "retry",
-      "_at": 1789767966634
+      "_at": 1789768413812
     },
     "ta_576696": {
       "_status": "skip",
@@ -4953,7 +4215,7 @@
     },
     "ta_938186": {
       "_status": "retry",
-      "_at": 1789767966653
+      "_at": 1789768413817
     },
     "ta_1225787": {
       "_status": "skip",
@@ -4961,7 +4223,7 @@
     },
     "ta_1589714": {
       "_status": "retry",
-      "_at": 1789767966676
+      "_at": 1789768413824
     },
     "ta_1756890": {
       "_status": "skip",
@@ -4973,7 +4235,7 @@
     },
     "ta_1742434": {
       "_status": "retry",
-      "_at": 1789767966730
+      "_at": 1789768413895
     },
     "ta_1510235": {
       "_status": "skip",
@@ -5037,7 +4299,7 @@
     },
     "ta_496172": {
       "_status": "retry",
-      "_at": 1789767966801
+      "_at": 1789768413968
     },
     "ta_7978": {
       "_status": "skip",
@@ -5085,7 +4347,7 @@
     },
     "ta_1720240": {
       "_status": "retry",
-      "_at": 1789767966860
+      "_at": 1789768413982
     },
     "ta_1233244": {
       "_status": "skip",
@@ -5242,7 +4504,7 @@
     },
     "ta_1736719": {
       "_status": "retry",
-      "_at": 1789767966924
+      "_at": 1789768414054
     },
     "ta_1204889": {
       "_status": "skip",
@@ -5254,7 +4516,7 @@
     },
     "ta_1249468": {
       "_status": "retry",
-      "_at": 1789767966987
+      "_at": 1789768414067
     },
     "ta_1214770": {
       "_status": "skip",
@@ -5262,204 +4524,83 @@
     },
     "ta_1260252": {
       "_status": "retry",
-      "_at": 1789767967007
+      "_at": 1789768414074
     },
     "ta_543905": {
       "_status": "skip",
       "_at": 1789767084810
     },
     "ta_1758603": {
-      "id": "tt44420904",
-      "type": "movie",
-      "name": "BeeP",
-      "releaseInfo": "2026-09-18",
-      "description": "BeeP is a mind-bending crime-fantasy about Ilandevan, a young man who can step inside photographs and uncover the thoughts hidden behind them. But when a life-changing event leaves his extraordinary ability useless, he must find another way to uncover the truth while two seemingly unrelated worlds of college dreams, drugs and murder collide.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-18",
-      "poster": "https://image.tmdb.org/t/p/w500/kZq0kfFErlzl30J5NlfnjxwH3ni.jpg",
-      "genres": [
-        "Crime",
-        "Thriller",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1618200": {
       "_status": "retry",
       "_at": 1789767085667
     },
     "ta_1603779": {
-      "id": "tt38126135",
-      "type": "movie",
-      "name": "Paris Cafe",
-      "releaseInfo": "2026-09-18",
-      "description": "Olivizhiyaal, from the u.s., dreams of introducing her soulmate kavinSamson, a phd scholar, to the two people she admires most — her parents inIndia. She wants to share a happy news to them. But her smile fades when she learns that her parents, dr. Gautam raja, aSurgeon, and thara, an architect, a fiery social activist, have separated. A buried secret. A shattered trust. A photograph in a paris café that brings thePast crashing back. What did dr. Gautam do? Why did thara, a woman of unshakable ideals, walk away? As oli and kavin dive into the mystery, they uncover a hidden sin, a cry forJustice, and a chance for redemption. A family broken by truth... A daughter determined to heal it. In the end, will forgiveness light the way?\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-18",
-      "poster": "https://image.tmdb.org/t/p/w500/5rPqzWDqEFjcLGJ5Rvt8SbV3BRv.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/xt7vBik3rdZF1EivvCIGnzAhYmW.jpg",
-      "genres": [
-        "Drama",
-        "Romance"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1576223": {
-      "id": "tt38891015",
-      "type": "movie",
-      "name": "Rage",
-      "releaseInfo": "2026-09-18",
-      "description": "Anbu, a taxi driver from Kannagi Nagar, meets Regina, a mute IT employee, during his regular trips and falls for her. When he learns about her troubled personal life, he suppresses his feelings. One night, Regina dies in what appears to be an accident—but soon, it’s revealed to be a planned murder. Shockingly, multiple unconnected people are involved. RAGE follows Anbu’s journey to uncover the truth behind Regina’s death and the tangled motives that led to it.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-18",
-      "poster": "https://image.tmdb.org/t/p/w500/AkHcgW99FWcbJWKh7zmbxQaIDMf.jpg",
-      "genres": [
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1745960": {
-      "id": "tt43748741",
-      "type": "movie",
-      "name": "Till The Milk Runs Dry",
-      "releaseInfo": "2026-09-14",
-      "description": "A young Bharatanatyam dancer at a prestigious academy faces mounting pressure to end an unexpected pregnancy or risk losing the only life she’s ever known.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-14",
-      "genres": [
-        "Music"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1465943": {
-      "id": "tt36596965",
-      "type": "movie",
-      "name": "Mandaadi",
-      "releaseInfo": "2026-09-10",
-      "description": "A fishing captain applies his maritime knowledge in a traditional boat race along Tamil Nadu's coast during a festival, leading a six-person team against other crews.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-10\n⭐ Rating: 8.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/cDFW9BI1PSqrBWu8W0ZoeUQivEM.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/dJ4sqrmX2KviF8HBKlLrDedUhnh.jpg",
-      "genres": [
-        "Action",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1317872": {
-      "id": "tt28541577",
-      "type": "movie",
-      "name": "Sardar 2",
-      "releaseInfo": "2026-09-10",
-      "description": "When the mysterious Black Dagger threatens national security, Inspector Vijay embarks on his most dangerous mission yet. As the battle unfolds, the extraordinary origin of legendary spy Sardar is finally revealed, uncovering the sacrifices that forged a legend and the secrets that could shape the future.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-10\n⭐ Rating: 4.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/muGsRtsNrG1gnlF2fPYrBa4TGlr.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/i39M5xz57fEkPLtuiAXqWwMNMyN.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1764385": {
       "_status": "retry",
       "_at": 1789767099606
     },
     "ta_1764201": {
-      "id": "tt42897565",
-      "type": "movie",
-      "name": "Yen Ennai Edho Seidhai",
-      "releaseInfo": "2026-09-04",
-      "description": "Broken young man trapped in emotional darkness finds unexpected healing when Madhu's love guides him from self destruction toward hope, purpose, and light.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-04",
-      "poster": "https://image.tmdb.org/t/p/w500/A5B8tt7aM7SbAKs7I9jRunaAR3Q.jpg",
-      "genres": [
-        "Drama",
-        "Romance"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1762080": {
       "_status": "retry",
-      "_at": 1789767967054
+      "_at": 1789768414143
     },
     "ta_1728047": {
-      "id": "tt35434009",
-      "type": "movie",
-      "name": "Delivery Boy",
-      "releaseInfo": "2026-09-04",
-      "description": "A young food delivery rider, who dreams of becoming a police officer, is forced to steal money to save his critically injured mother. Months later, when he discovers that the same man has been falsely accused of murder, he risks everything to save the life he once unknowingly changed forever.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-04",
-      "poster": "https://image.tmdb.org/t/p/w500/5JykVg5yWm5QiFyeEBq3diDmI5.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/simwM18UKG0DSZXvzdKYM6ihUch.jpg",
-      "genres": [
-        "Action",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1542884": {
-      "id": "tt38947564",
-      "type": "movie",
-      "name": "4 Idiots",
-      "releaseInfo": "2026-09-04",
-      "description": "King, Queen, Jack, and Ace-four misfits surviving through petty crimes in Chennai-found their world turned upside down when COVID-19 lockdowns shut down public transport, their main source of income. Desperate for a way out, King discovered an audio recording about a bungalow filled with black money, supposedly guarded by a lone watchman. Seeing it as their golden opportunity, the gang set out to execute the perfect heist. However, upon entering the bungalow, the door slammed shut behind them, and a chilling voice welcomed them. The so-called security guard was none other than Pulibaba, a notorious gangster. With a gun in hand, he forced them to surrender their belongings and made a sinister phone call: \"Doctor, the delivery is ready... Eight kidneys.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-04\n⭐ Rating: 5.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/zcHMRPurZAF9SOrKIwT2WtjX9JH.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/ikKdgB2wHJo17OF2R9ejllsYPgk.jpg",
-      "genres": [
-        "Comedy",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1505305": {
-      "id": "tt36931126",
-      "type": "movie",
-      "name": "Immortal",
-      "releaseInfo": "2026-09-04",
-      "description": "An unsuspecting man finds himself at the center of a series of mysterious deaths, forcing him to confront a truth that could cost him everything.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-09-04",
-      "poster": "https://image.tmdb.org/t/p/w500/8Ev68TZqunJ31uvn7cbchALeDkn.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/4akmXHqanJ2r7efr9tyJT08oFMm.jpg",
-      "genres": [
-        "Romance",
-        "Thriller",
-        "Horror",
-        "Fantasy"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1763029": {
       "_status": "retry",
       "_at": 1789767099834
     },
     "ta_1709263": {
-      "id": "tt38786666",
-      "type": "movie",
-      "name": "IRUL VAAN MUGIL",
-      "releaseInfo": "2026-08-28",
-      "description": "In the stillness of a lonely house, Rishi drifts between memory and reality, haunted by echoes of lost love. Irul Vaan Mugil explores grief, silence, and the inner battle to let go and be reborn.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-08-28",
-      "poster": "https://image.tmdb.org/t/p/w500/5wAk3VpRBSuBHqb7n5QB76vfoGy.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1318304": {
-      "id": "tt32758159",
-      "type": "movie",
-      "name": "Once More",
-      "releaseInfo": "2026-08-28",
-      "description": "Raghu, a man caught up with a deep hold of grief comes across Anjali, who is spinning everything in her capacity to win him over. The love you gave away always comes back they say. In one way or other. Sometimes from a different human. This is a story of love coming back into the life of someone who doesn’t want to take it. A tale of second chances.. happy healing and bitter sweet closures.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-08-28",
-      "poster": "https://image.tmdb.org/t/p/w500/ljk9oaU1AtLYZWULmNLtJdtAKzX.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/nO6FYYAH71vOk6MKNiYzY3akBdM.jpg",
-      "genres": [
-        "Music",
-        "Romance",
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1314279": {
-      "id": "tt33029123",
-      "type": "movie",
-      "name": "Hi!",
-      "releaseInfo": "2026-08-28",
-      "description": "Two individuals initially exchange a simple \"Hi,\" but through a series of chance encounters, shared experiences, and deep conversations, they gradually develop a strong connection and eventually fall in love.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-08-28\n⭐ Rating: 7.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/4oXPb2fRTWBmIOxyyj2M64Nx33C.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/rGj0Td5ncKiTRCAw5OSDGV3kz1D.jpg",
-      "genres": [
-        "Romance",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1755757": {
-      "id": "tt43751620",
-      "type": "movie",
-      "name": "Poovellaam Kettuppaar",
-      "releaseInfo": "2026-08-27",
-      "description": "A research project pulls Sathiya and Kartigeyan into the isolated world of Maaran and Nathiya. As the past meets the present, one conversation is all it takes to change their lives forever.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-08-27",
-      "poster": "https://image.tmdb.org/t/p/w500/wLjlGUQp6xdnlcfdPQ9ZOqqLnmD.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/cTKTllmbnv0K86kQHKkSdL9c5ym.jpg",
-      "genres": [
-        "Adventure",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1538273": {
       "id": "tt39260895",
@@ -5476,18 +4617,8 @@
       ]
     },
     "ta_1581313": {
-      "id": "tt39299957",
-      "type": "movie",
-      "name": "Ananya's Call",
-      "releaseInfo": "2026-08-17",
-      "description": "Faced with an impossible encounter in her own home, a young woman must race against time to stop a tragedy that defies the laws of nature.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-08-17\n⭐ Rating: 8.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/y9jYOo9z1FIav4YNAFkGAZDq0HR.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/A4FmQg9KKDxpAsWpP13535HNNJw.jpg",
-      "genres": [
-        "Fantasy",
-        "Thriller",
-        "Science Fiction"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1571138": {
       "_status": "retry",
@@ -5558,18 +4689,8 @@
       ]
     },
     "ta_1654365": {
-      "id": "tt40242037",
-      "type": "movie",
-      "name": "Sweet Rogue Killer",
-      "releaseInfo": "2026-07-19",
-      "description": "After destroying the Forelli empire, SRK discovers that the last surviving Forelli bloodline is secretly rebuilding its power through corruption and political influence. As a dangerous conspiracy threatens the township once again, SRK launches a final mission to expose the truth, eliminate the heir, and end the Forelli legacy forever.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-19",
-      "poster": "https://image.tmdb.org/t/p/w500/4GO0hCv3AowTaSXlBDyzxlThmez.jpg",
-      "genres": [
-        "Action",
-        "Crime",
-        "Comedy",
-        "Mystery"
-      ]
+      "_status": "skip",
+      "_at": 1789768398183
     },
     "ta_1616237": {
       "id": "tt40706424",
@@ -5584,40 +4705,20 @@
       ]
     },
     "ta_1607634": {
-      "id": "tt39300072",
-      "type": "movie",
-      "name": "Anbe Diana",
-      "releaseInfo": "2026-08-28",
-      "description": "Set in Perambur, a local Telugu youth falls for an Anglo-Indian girl, sparking a chaotic and humorous clash of cultures between their families.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-17\n⭐ Rating: 5.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/201CEvG6ayNj71iSLxxEk7pUv0N.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/l4xqxKS7nlOni6bnTHWi3USyp4o.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1607621": {
       "_status": "retry",
       "_at": 1789767100484
     },
     "ta_1740386": {
-      "id": "tt42942813",
-      "type": "movie",
-      "name": "Tholaivil Oru Kadhal",
-      "releaseInfo": "2026-07-16",
-      "description": "Love, gossip, and misunderstandings collide at a Tamil-run tech company in the US as four lives become tangled in unexpected ways.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-16"
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1620357": {
-      "id": "tt38990721",
-      "type": "movie",
-      "name": "Lakshmikanthan Kolai Vazhakku",
-      "releaseInfo": "2026-07-10",
-      "description": "A young man convicted of murder awaits execution, while a conflicted judge, an aging hangman, and a morally torn jailer confront the weight of justice, guilt, and humanity in the final hours before dawn.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-10",
-      "poster": "https://image.tmdb.org/t/p/w500/pGS1KRODHNYzR35slcgJp9NzMiP.jpg",
-      "genres": [
-        "Crime",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1579405": {
       "id": "tt42203456",
@@ -5655,17 +4756,8 @@
       "_at": 1789767100732
     },
     "ta_1514180": {
-      "id": "tt28750477",
-      "type": "movie",
-      "name": "Dark",
-      "releaseInfo": "2026-07-03",
-      "description": "A police investigation frames the story of an atheist office worker whose life descends into terror, frustration and paranoia after relocating to a home with a troubled past. He is forced to question his distorted sense of reality and his views on the paranormal as hidden truths resurface.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-03",
-      "poster": "https://image.tmdb.org/t/p/w500/iACWDjP0DtB4Wmrq2wFImsCXlfs.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/4icunF54TBgRCfLtS2hn3MieojK.jpg",
-      "genres": [
-        "Horror",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1509599": {
       "id": "tt37458495",
@@ -5681,16 +4773,8 @@
       ]
     },
     "ta_1738076": {
-      "id": "tt32644729",
-      "type": "movie",
-      "name": "Andharan",
-      "releaseInfo": "2026-06-26",
-      "description": "Karthika's fiancés mysteriously die before marriage. Officer Chezhiyan investigates the deaths and discovers dark secrets from her past, revealing the hidden forces haunting her life as truth and fear collide.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-06-26",
-      "poster": "https://image.tmdb.org/t/p/w500/3cy5aVMPcIkEn99lDbgnH7j4QOj.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/kaTGifoQW0qpR2ryK9Yy0iGoQgF.jpg",
-      "genres": [
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1596008": {
       "id": "tt39182439",
@@ -5707,17 +4791,8 @@
       ]
     },
     "ta_1485325": {
-      "id": "tt37174734",
-      "type": "movie",
-      "name": "Angikaaram",
-      "releaseInfo": "2026-06-26",
-      "description": "Inspired by true events, this film follows the journey of a man who has had enough, fights for recognition against a system shaped strictly by politics and power.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-06-26",
-      "poster": "https://image.tmdb.org/t/p/w500/rRyz56Fubfwmre6F5QiYyIzKmnT.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/w5EprlCldSQ5lPTHFmhvXAsb8VB.jpg",
-      "genres": [
-        "Drama",
-        "Action"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1434102": {
       "id": "tt35741123",
@@ -5738,17 +4813,8 @@
       "_at": 1789767114736
     },
     "ta_1715800": {
-      "id": "tt42803237",
-      "type": "movie",
-      "name": "Dark Giant",
-      "releaseInfo": "2026-06-19",
-      "description": "Dark Giant is a Supernatural Horror and Psychological Family Drama. It Explores How Greed, Guilt, and Generational Trauma Can Manifest as a Literal Curse, Destroying a Family From the Inside Out\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-06-19",
-      "poster": "https://image.tmdb.org/t/p/w500/jKeyjIdRacMd3iDvSVhdRtF4GJY.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/6iJo5yTh2lEqOWL8TZkpKvH8ZSO.jpg",
-      "genres": [
-        "Horror",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1544326": {
       "id": "tt38267486",
@@ -5782,28 +4848,12 @@
       ]
     },
     "ta_1655049": {
-      "id": "tt41101621",
-      "type": "movie",
-      "name": "Habeebi",
-      "releaseInfo": "2026-06-12",
-      "description": "Follows a boy and girl in a Muslim neighbourhood in southern Tamil Nadu whose romance divides their community.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-06-12",
-      "poster": "https://image.tmdb.org/t/p/w500/kHU73XK0DHhphgo7U6MUQz8ADYv.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/hdQRhWMUg6cKSWcTCCyqWXcv8Ly.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1595789": {
-      "id": "tt39141842",
-      "type": "movie",
-      "name": "Valluvan",
-      "releaseInfo": "2026-06-12",
-      "description": "When a string of high-profile murders rocks the city, investigators uncover a dark secret linking the victims to an unspeakable crime. But even after the alleged killer is caught, the killings don’t stop—revealing a far deeper conspiracy where justice comes at a deadly price.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-06-12",
-      "poster": "https://image.tmdb.org/t/p/w500/iq9HZqIhcUe3eYwUdiWxqmGzxSu.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1565790": {
       "id": "tt36853497",
@@ -5846,27 +4896,12 @@
       ]
     },
     "ta_1716785": {
-      "id": "tt43521066",
-      "type": "movie",
-      "name": "Manasukkul Oru Mazhaicharal",
-      "releaseInfo": "2026-06-05",
-      "description": "The hero Nakulan is on his way back home enjoying all the changes his village has undergone since he had travelled after for higher studies. He makes a surprise entry and brings in smile in his parents and sisters face. He gives all the gifts which he has bought for them and keeps aside the parcel he had bought for his lover Arthi. After that he goes in search of his school friend Muthu who has his own shop in the market and after that happens to meet his girlfriend and conveys his love for her and she rejects the same. Arthi who is the bread winner for her family rejects Nakuls love, but later situations make her realize his true love and they get united. The situations which bring them together is being neatly showcased in the movie Manasukkul Oru Mazhaicharal.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-06-05",
-      "poster": "https://image.tmdb.org/t/p/w500/tmWnKifjZWBvlGL7W6XiOmIMbZb.jpg",
-      "genres": [
-        "Romance",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1709970": {
-      "id": "tt39902032",
-      "type": "movie",
-      "name": "Alagana Mamiya",
-      "releaseInfo": "2026-06-05",
-      "description": "A drunkard dies, leaving his family without any support. The mother raises her only daughter while facing severe financial crisis. How the female child, the heroine, manages her life and overcomes the struggles forms the core of the story.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-06-05",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1602337": {
       "id": "tt39385419",
@@ -5910,16 +4945,8 @@
       "_at": 1789767115344
     },
     "ta_1696756": {
-      "id": "tt41943990",
-      "type": "movie",
-      "name": "Karaa",
-      "releaseInfo": "2026-05-15",
-      "description": "A series of bizarre, comical crimes spirals into chaos, taking a dark turn when characters become trapped in crocodile-infested floodwaters, leading to a deadly encounter with the predators.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-05-15",
-      "poster": "https://image.tmdb.org/t/p/w500/toWMJcEqHIt7Tqk5UoMGElbDSNI.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1507097": {
       "id": "tt40601101",
@@ -5950,17 +4977,8 @@
       ]
     },
     "ta_1688710": {
-      "id": "tt42382067",
-      "type": "movie",
-      "name": "டே 11",
-      "releaseInfo": "2026-05-08",
-      "description": "Five youngsters become addicted to a mysterious fantasy game that grants every wish instantly. As reality begins to blur, one girl suddenly disappears and is presumed dead. Realizing the game holds the truth, the others re-enter it to uncover its hidden rules.  They discover every wish comes at a cost and must make a painful sacrifice to bring her back forever changed by the consequences of their desires.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-05-08",
-      "poster": "https://image.tmdb.org/t/p/w500/qSlg9ai7x0LFjtfPvIGxfvIsHJD.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/99YfgvvUI38Z04vHPOP3g1wzltM.jpg",
-      "genres": [
-        "Horror",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1510769": {
       "id": "tt37737315",
@@ -5977,27 +4995,12 @@
       ]
     },
     "ta_1766375": {
-      "id": "tt43697175",
-      "type": "movie",
-      "name": "Sattendru Maarudhu Vaanilai",
-      "releaseInfo": "2026-05-07",
-      "description": "Haunted by his past and devoted to his sister, Pugazh's life changes when three strangers offer him different forms of hope, leading him on a journey through family, friendship, and love.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-05-07",
-      "poster": "https://image.tmdb.org/t/p/w500/48cKhtBv7RH2O4mDjT7w9gX0is2.jpg",
-      "genres": [
-        "Romance"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1606210": {
-      "id": "tt38349827",
-      "type": "movie",
-      "name": "Bromance Kadhal",
-      "releaseInfo": "2026-05-01",
-      "description": "In a swipe-right generation, an unromantic boy dares to love the old-school way and proves that staying real is the boldest move of all.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-05-01",
-      "poster": "https://image.tmdb.org/t/p/w500/gm8XaKWxu7LKJRrqyQrdABaBJCl.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1433117": {
       "id": "tt37458112",
@@ -6015,29 +5018,12 @@
       ]
     },
     "ta_1730982": {
-      "id": "tt42952112",
-      "type": "movie",
-      "name": "Dark Face",
-      "releaseInfo": "2026-04-26",
-      "description": "When a man is sentenced to death for rape and hailed as justice served, the world moves on satisfied. But on the eve of his execution, a final meeting with his lawyer shatters that certainty. He may be innocent.  Refusing to let the truth die with him, the lawyer reopens the case and what begins as a single thread quickly unravels into something far darker. Behind the crime, the conviction, and a suspicious suicide lies a carefully concealed conspiracy. The deeper the investigation goes, the more dangerous the question becomes: Who is really guilty?\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-04-26",
-      "poster": "https://image.tmdb.org/t/p/w500/yDC9z6tquPS0Nc4JZaHNjSpGon.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/lZVAQNOYCGyr3YfD3LmulMjaIdf.jpg",
-      "genres": [
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1678388": {
-      "id": "tt41979642",
-      "type": "movie",
-      "name": "Commandovin Love Story",
-      "releaseInfo": "2026-04-24",
-      "description": "A commando returns home as a Republic Day chief guest and forms a quiet bond with a Ph.D. student during his journey. As duty calls him away, he leaves behind an unsent letter, raising questions of love, fate, and whether their unfinished story finds closure.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-04-24",
-      "poster": "https://image.tmdb.org/t/p/w500/cSMgWqXRVK4Q1q9xDqUpa8fLlgL.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/n62ybuJje0XZJuqP1WNHZ0CLskW.jpg",
-      "genres": [
-        "Drama",
-        "Romance"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1677611": {
       "id": "tt34239633",
@@ -6053,43 +5039,16 @@
       ]
     },
     "ta_1575753": {
-      "id": "tt38890924",
-      "type": "movie",
-      "name": "Battle",
-      "releaseInfo": "2026-04-24",
-      "description": "Born mute until the age of ten, a boy rises to fame as a celebrated Rap singer, but the trials of love, fame, and social conflict lead him into turmoil and push him to the edge, until he discovers the true soul and purpose of his art.\n\n📺 Streaming on: Mewatch\n📅 OTT Release: 2026-04-24",
-      "poster": "https://image.tmdb.org/t/p/w500/priP1Z204giCpGZDacTMv1JP2jO.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/2LZBdvHURYREuDPnrINxT6F5MH9.jpg",
-      "genres": [
-        "Drama",
-        "Romance"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1402008": {
-      "id": "tt41082393",
-      "type": "movie",
-      "name": "Paavakoothu",
-      "releaseInfo": "2026-04-24",
-      "description": "Rajesh is in love with a girl named Amudhamozhi in college. She tells him to read a book called Paavakoothu and then tells him what she wants. The book describes stories from different angles, such as Theru koothu, stage play, and cinema. After reading it, he goes to talk to her.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-04-24",
-      "poster": "https://image.tmdb.org/t/p/w500/o1TTMEVo4wl7ByjcMDK9tK98BLO.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/vFtNhlPDOwIemJrK341L9cDiZLU.jpg",
-      "genres": [
-        "Drama",
-        "Romance"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1126723": {
-      "id": "tt26258714",
-      "type": "movie",
-      "name": "Mr. X",
-      "releaseInfo": "2026-04-17",
-      "description": "Centers on secret intelligence agency cases involving five major national threats that were thwarted through covert operations.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-04-17\n⭐ Rating: 5.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/7aqx7T9FNu1HPCyb0CBjJtjshoU.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/pHYVsFUjKnYpHmhvTILd3XqXwRM.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1669443": {
       "_status": "retry",
@@ -6100,23 +5059,12 @@
       "_at": 1789767129836
     },
     "ta_1651262": {
-      "id": "tt40658675",
-      "type": "movie",
-      "name": "Bullet Virumandi",
-      "releaseInfo": "2026-04-10",
-      "description": "In a village, people treat Virumandi like a god. With the help of his Bullet bike, he contests in an election. Unable to tolerate his popularity, the opposition leader Kanniyappan murders him. After his death, Virumandi appears in his assistant’s dreams and guides him to destroy the enemies and take revenge.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-04-10",
-      "genres": [
-        "Thriller",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1638094": {
-      "id": "tt39988920",
-      "type": "movie",
-      "name": "TAXILA",
-      "releaseInfo": "2026-04-10",
-      "description": "When Earth is obliterated, its shattered fragments and encoded legacy are cast across the stars. Light-years away, a barren world, Taxila, awakens as Earth’s remnants seed it with life, turning humanity’s end into the universe’s next beginning.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-04-10",
-      "poster": "https://image.tmdb.org/t/p/w500/glwttqpXxFyFt9wnuSp7I4Cxwo3.jpg"
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1556783": {
       "id": "tt38489752",
@@ -6160,17 +5108,8 @@
       ]
     },
     "ta_1660681": {
-      "id": "tt40475760",
-      "type": "movie",
-      "name": "Maragatha Malai",
-      "releaseInfo": "2026-04-03",
-      "description": "Set in the 18th century, Maragatha Malai follows a zamindar, Parthiban, who protects his ancestral treasure from a ruthless gang led by Kabala Vendan. During the conflict, his family gets separated when his young son goes missing in the forest. Years later, through struggle, fate, and divine grace, the family reunites and safeguards their legacy in this period fantasy adventure.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-04-03",
-      "poster": "https://image.tmdb.org/t/p/w500/lzb1QiuVWSJ89rJWsfJEqWvAfmX.jpg",
-      "genres": [
-        "Drama",
-        "Adventure",
-        "Fantasy"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1652180": {
       "id": "tt30956744",
@@ -6239,17 +5178,8 @@
       ]
     },
     "ta_1634666": {
-      "id": "tt39922368",
-      "type": "movie",
-      "name": "Muga Naga",
-      "releaseInfo": "2026-03-27",
-      "description": "When a person, driven by self-hatred and inner pain, harms others and betrays friendship in the name of revenge.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-03-27",
-      "poster": "https://image.tmdb.org/t/p/w500/bEz9lkKteL4TeBEe9m5xgkYftzL.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/uqGtcw5CAvwIK1XffJirAXb8TCq.jpg",
-      "genres": [
-        "Crime",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1518247": {
       "id": "tt39122419",
@@ -6309,56 +5239,20 @@
       ]
     },
     "ta_1646090": {
-      "id": "tt39785724",
-      "type": "movie",
-      "name": "Vowels",
-      "releaseInfo": "2026-03-13",
-      "description": "A romantic anthology of five love stories exploring different dimensions: Attraction, Emotion, Intimacy, Obsession, and Unconditional love, each reflecting diverse emotional experiences.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-03-13",
-      "poster": "https://image.tmdb.org/t/p/w500/BqHup9TCZtCJfHx5AmYNuOjMCM.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/wEdCISkrdAdTgVz8obeqhMS4AIU.jpg",
-      "genres": [
-        "Romance",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1642665": {
-      "id": "tt11247720",
-      "type": "movie",
-      "name": "Anthony",
-      "releaseInfo": "2026-03-13",
-      "description": "Set along the coastal shores of Jaffna, the story follows a fisherman and his family  whose lives are inseparably tied to the sea. As he struggles to balance his responsibilities toward his profession and his family, a tender love story unfolds, shaping his choices and testing his values. Daily life within the fishing community  its hardships, traditions, and unspoken bonds, forms the backdrop of the narrative. When personal desires begin to clash with family expectations, the protagonist is forced to confront sacrifice, loyalty, and the true meaning of love. Through moments of romance, conflict, and emotional depth, the film reveals the  strength of family ties and the resilience of a community that survives by trusting the sea and each other.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-03-13",
-      "poster": "https://image.tmdb.org/t/p/w500/iSTE5UGlQ5YlPiMdsuCOAnChY9X.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/qNEwPLOkD6VbNh8iUS4kRzNSZF6.jpg",
-      "genres": [
-        "Family",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1617089": {
-      "id": "tt39368916",
-      "type": "movie",
-      "name": "Vengeance",
-      "releaseInfo": "2026-03-13",
-      "description": "Vengeance follows a young woman with a mysterious past that slowly comes to light. Driven by an unrelenting purpose, she transforms into someone capable of crossing any boundary to fulfill her mission. Each obstacle she faces only sharpens her resolve, pulling her deeper into a ruthless path.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-03-13",
-      "poster": "https://image.tmdb.org/t/p/w500/smBBimYvcIbVrDNwHY3aUD39dmD.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/7QnZlrJBYm2xBWPuSIPV08Dj93M.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1597280": {
-      "id": "tt31455863",
-      "type": "movie",
-      "name": "Kenatha Kanom",
-      "releaseInfo": "2026-03-13",
-      "description": "Desperate to find water, residents of a parched village start digging a new well, but what they find is not water but a dinosaur fossil.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-03-13",
-      "poster": "https://image.tmdb.org/t/p/w500/4jFuUoddURp94ZvL7haeunK7fsm.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/aq9wblh5J9TmVBsJ1Bx98Cw6bAZ.jpg",
-      "genres": [
-        "Comedy",
-        "Drama",
-        "Family"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1561687": {
       "id": "tt38674977",
@@ -6373,16 +5267,8 @@
       ]
     },
     "ta_1645748": {
-      "id": "tt40385117",
-      "type": "movie",
-      "name": "Chellamada Nee Enakku",
-      "releaseInfo": "2026-03-06",
-      "description": "Chellamada Nee Enakku is a Tamil movie starring Vashi Karan, Neha Sri and Boss Venkat in prominent roles. It is directed by Anand Shivam\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-03-06",
-      "poster": "https://image.tmdb.org/t/p/w500/bR5aPZadKKgOJs4qTTZBc7NAEDb.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/BYDxiE5xRxUU4aa8dyNZRGanz5.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1631856": {
       "id": "tt39762179",
@@ -6398,29 +5284,16 @@
       ]
     },
     "ta_1606490": {
-      "id": "tt39311709",
-      "type": "movie",
-      "name": "Andakagasam",
-      "releaseInfo": "2026-03-06",
-      "description": "Someone who wants to be a hero...He enters a 100-year-old castle where kings lived in search of money...whether he takes the money or not is the story...a story that takes place one night...\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-03-06",
-      "poster": "https://image.tmdb.org/t/p/w500/taJN2jorDasNzD3Uw9dHnXeTMh5.jpg"
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1595494": {
       "_status": "retry",
       "_at": 1789767131005
     },
     "ta_1593339": {
-      "id": "tt39130951",
-      "type": "movie",
-      "name": "Yaarra Antha Paiyan Naanthan Antha Paiyan",
-      "releaseInfo": "2026-03-06",
-      "description": "Vijay and Shalini’s marriage is crumbling under constant misunderstandings. In the same city, Deepika loses her alcoholic husband Manikandan and is left drowning in loneliness.  Seeking comfort, Deepika and Vijay cross the line and fall into a secret affair.But danger strikes when Sukumar, a corrupt sub-inspector obsessed with Deepika, begins  hunting her for his own desires. As guilt closes in on Vijay and suspicion rises for Shalini, Deepika is trapped between a forbidden relationship and a ruthless predator.  Will Shalini discover the truth? And can Deepika escape Sukumar’s grip before everything collapses?\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-03-06",
-      "poster": "https://image.tmdb.org/t/p/w500/dfyjU8XdjWzhVYGEhMYR16wrxu8.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/ajPkRtIi64sDWXQ5VE6vy2dzO4E.jpg",
-      "genres": [
-        "Drama",
-        "Romance"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1568600": {
       "id": "tt38779833",
@@ -6449,17 +5322,8 @@
       ]
     },
     "ta_1029483": {
-      "id": "tt28867812",
-      "type": "movie",
-      "name": "Aasai",
-      "releaseInfo": "2026-03-06",
-      "description": "A young couple are mentally and physically harassed by two men while on a road trip. However, the situation puts their love to the test, making them go their separate ways.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-03-06",
-      "poster": "https://image.tmdb.org/t/p/w500/AsFIlHLtpwhfebwLSHgH9A0iw9R.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/5Xt24YwBpANzG4s0JNijM5MzE3I.jpg",
-      "genres": [
-        "Thriller",
-        "Romance"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_973190": {
       "id": "tt29004931",
@@ -6496,95 +5360,32 @@
       ]
     },
     "ta_1607661": {
-      "id": "tt23865792",
-      "type": "movie",
-      "name": "Aazhi",
-      "releaseInfo": "2026-02-27",
-      "description": "Mukhila's Father Murthy comes to know about Arul and Mukhilas love affair. Murthy, who works as a boat mechanic, kidnaps Arul in a boat and beats him up. He plans to kill Arul so that he will not fall in love with his daughter. When the boat breaks down in the sea, Murthy, foot stuck in the motor and is both of them survived the rainstorm or not.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-27",
-      "poster": "https://image.tmdb.org/t/p/w500/1SQ0PL6bf0IHdf2xV8sIiMbc8Wq.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/tYCUdUBtVWLKj7MghRFkUi3ZDRY.jpg",
-      "genres": [
-        "Action",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398184
     },
     "ta_1602783": {
-      "id": "tt39255646",
-      "type": "movie",
-      "name": "Thaai Kizhavi",
-      "releaseInfo": "2026-02-27",
-      "description": "An elderly and feared moneylender from a village near Madurai falls seriously ill, prompting her estranged sons and extended family to reunite after years of separation. As tensions rise inside the household, hidden motives, family conflicts, and expectations over her wealth turn her uncertain condition into the center of a chaotic family drama.\n\n📺 Streaming on: Disney+\n📅 OTT Release: 2026-02-27\n⭐ Rating: 7.1/10",
-      "poster": "https://image.tmdb.org/t/p/w500/21dLAnBhu3dMjQ89UIHGEtkoQ02.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/uXnVsLFzxt8zTTPgzFhqeSkI3ce.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1637915": {
-      "id": "tt39980503",
-      "type": "movie",
-      "name": "Siva Sambo",
-      "releaseInfo": "2026-02-20",
-      "description": "Siva, an ambitious youth aspiring to be a police officer, wins Sivani's love and marries her, only for her to be abducted the very next day by a powerful minister intent on forcing her into marriage. With a dangerous criminal also hunting her, the story centers on Sivani's strength and whether Siva can rescue her from his enemies.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-20",
-      "poster": "https://image.tmdb.org/t/p/w500/7m30qiKershRFUciU4v5YVf6Amt.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/7sp4FNrBOlehOH6VNbUUC7MLvJ.jpg",
-      "genres": [
-        "Romance",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1637907": {
-      "id": "tt39940797",
-      "type": "movie",
-      "name": "L.S.S: Love Subscribe Share",
-      "releaseInfo": "2026-02-20",
-      "description": "Shiva is an Intelligent. Smart College boy, Pooja a pretty young girl from a rich family study in the same college, Pooja falls in love with Shiva behalf of his kindness and gentility. Pooja decides to meet her Divorcee Mother living in Kashi, then Pooja going to Kashi with Shiva to meet her mother. Unfortunately Pooja met with an accident and hospitalized in Brain dead condition. Police takes Shiva to custody. Pooja’s Father Manipal and Uncle Sunil rushes to Kashi on search of Pooja, then all four go in search for Pooja all around the Kashi and Find her in Hospital at last in a brain dead condition. What happens next? Is she recovered from Brain dead condition, is the joins with Shiva? Is the twisted climax of the story.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-20",
-      "poster": "https://image.tmdb.org/t/p/w500/hylzMKvq8X750xOxQnx1Gb0rVWM.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/mLmfP84K8xrqtWfu0x9VSXqDiXP.jpg",
-      "genres": [
-        "Romance",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1595203": {
-      "id": "tt38781200",
-      "type": "movie",
-      "name": "Arivaan",
-      "releaseInfo": "2026-02-20",
-      "description": "Surya an honest yet hot tempered COP Known for his encounter killings is transferred to Neyveli after another controversial case soon after his arrival. A murder involving a woman named Vinisha shakes the town as Suryadives into the case He must navigate between truth and deceit to protect both Love and Justice.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-20",
-      "poster": "https://image.tmdb.org/t/p/w500/ag9CHUq5KNw4Di19WRQqfAKsqOq.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/nlT5ciXmeaAHddrXxKaKEfIGEOU.jpg",
-      "genres": [
-        "Thriller",
-        "Crime"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1324842": {
-      "id": "tt39182425",
-      "type": "movie",
-      "name": "Lucky the Superstar",
-      "releaseInfo": "2026-02-20",
-      "description": "A stray puppy's adventure transforms lives: helping a child heal, bringing a family together, and causing political mayhem while finding her way home.\n\n📺 Streaming on: Disney+\n📅 OTT Release: 2026-02-20\n⭐ Rating: 2.3/10",
-      "poster": "https://image.tmdb.org/t/p/w500/fb5ao0wON2Dq3atOy3rikyL8IsP.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/cg2ioY2B4LpnpaYfzSExvmGqy1c.jpg",
-      "genres": [
-        "Drama",
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1616817": {
-      "id": "tt39383516",
-      "type": "movie",
-      "name": "Members of the Problematic Family",
-      "releaseInfo": "2026-02-18",
-      "description": "A man dies young. Funeral rites – yes; mourning – not so much. A death that stirs and shakes things up. A film that shows the violence of family relationships with uncanny subtlety and verve, the pendulum of void and solace.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-18\n⭐ Rating: 9.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/nGSxYOikhHaG6LYwk2zVzDz1nyj.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/iX2gk9J96Ut4KzOftsIIMUmY6GB.jpg",
-      "genres": [
-        "Drama",
-        "Family"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1648738": {
       "_status": "retry",
@@ -6595,72 +5396,24 @@
       "_at": 1789767145134
     },
     "ta_1631717": {
-      "id": "tt39674550",
-      "type": "movie",
-      "name": "Dream Girl",
-      "releaseInfo": "2026-02-13",
-      "description": "He Falls in Love With an Angel Who Appears in His Dreams. That Love Ends in Heartbreak. Yet The Same Emotions Continue in Real Life Without Changing a Single Frame. The Story Follows How the Hero, Carrying the Same Love in His Heart, Finds a Way to Reclaim the Angel He Lost in His Dream, This Time in Reality\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-13",
-      "poster": "https://image.tmdb.org/t/p/w500/lFGujFFdclNXyqr9Yq2bpUxnLVP.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/5BKPdDLOUc0T8zLPnvkfPOswDRV.jpg",
-      "genres": [
-        "Romance",
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1629469": {
-      "id": "tt39398861",
-      "type": "movie",
-      "name": "Sweety Naughty Crazy",
-      "releaseInfo": "2026-02-13",
-      "description": "Shiva, a charming college student juggling three different relationships. As he tries to keep them secret, love, lust, and chaos collide in a playful mix of adult humor, romance, and comedy.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-13",
-      "poster": "https://image.tmdb.org/t/p/w500/8TUdDDC26HQWNS7SdrYHSzyfYgZ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/r0FiGLP1dbD9gBnCFt7UOpQqAfe.jpg",
-      "genres": [
-        "Romance",
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1571507": {
-      "id": "tt39827795",
-      "type": "movie",
-      "name": "Therincha Kadhalinga",
-      "releaseInfo": "2026-02-13",
-      "description": "Karthi falls in love with a village girl named Pechi,and brings her to Chennai. Karthi suspects Pechi of having illicit relationship with his friends. Pechi does not like Karhik\"s suspecting character,as a result she returns to her village and marries Surender.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-13",
-      "poster": "https://image.tmdb.org/t/p/w500/viW3z1y9RABpkqNyeosLw3JskId.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/whrGCTpoEiklU51Exe8RYeQjty4.jpg",
-      "genres": [
-        "Romance",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1560749": {
-      "id": "tt29996704",
-      "type": "movie",
-      "name": "Mylanji",
-      "releaseInfo": "2026-02-13",
-      "description": "Surya, a National Geographic photographer who struggles with a rare speech disorder, travels to Ooty to capture a rare bird and unexpectedly meets Charu, a lively orphan trapped by a forced marriage. Desperate to escape, Charu decides to fall in love with another man, while unknowingly growing closer to Surya during their birding journeys.. On the day Kathir comes to take Charu away, fate stands still—leaving one haunting question: will love choose truth, or sacrifice?\n\n📺 Streaming on: Hungama Play\n📅 OTT Release: 2026-02-13",
-      "poster": "https://image.tmdb.org/t/p/w500/88CE1iiFGBZWM2JgWaqta7XloXu.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/gAnlzHn9xMxh19Os4p52VHW2uFD.jpg",
-      "genres": [
-        "Drama",
-        "Romance"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1539987": {
-      "id": "tt38109700",
-      "type": "movie",
-      "name": "Pookie",
-      "releaseInfo": "2026-02-13",
-      "description": "He struggles to tell her he wants to separate. When he finally does, she shares the same thoughts. Suddenly realizing he doesn't want to lose her, they reconcile though both still privately consider breaking up.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-13",
-      "poster": "https://image.tmdb.org/t/p/w500/6b03JRKA8rSmSq8VTh3ssXSpBfr.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/ltgNAwnue0o7736HpG2IoqqYWLs.jpg",
-      "genres": [
-        "Romance",
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1427157": {
       "id": "tt32864368",
@@ -6688,17 +5441,8 @@
       ]
     },
     "ta_1632340": {
-      "id": "tt39007449",
-      "type": "movie",
-      "name": "Red Label",
-      "releaseInfo": "2026-02-06",
-      "description": "An ex-student leader returns to campus politics to confront a bully.\n\n📺 Streaming on: AP International\n📅 OTT Release: 2026-02-06",
-      "poster": "https://image.tmdb.org/t/p/w500/4igrj26TQvSCQ60vgVFSEQfIqeF.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/bA4ard6P4MRRmlOaVbU9uEYLg31.jpg",
-      "genres": [
-        "Drama",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1628578": {
       "id": "tt37028716",
@@ -6714,17 +5458,8 @@
       ]
     },
     "ta_1627911": {
-      "id": "tt25377130",
-      "type": "movie",
-      "name": "Kadhal Kadhai Sollava",
-      "releaseInfo": "2026-02-06",
-      "description": "This story tells about \"Micheal And Shreya\" who participate in the Program , which Actor Vijaysethupathi Conducts through FM \"Kadhal Kadhai Sollava\"\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-02-06",
-      "poster": "https://image.tmdb.org/t/p/w500/5bnBIP6brIVCOgQ6D4lIQ6CbUvs.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/6zwziT2NgTXDFe8BsmvJGlYonsZ.jpg",
-      "genres": [
-        "Romance",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1508564": {
       "id": "tt38123566",
@@ -6740,40 +5475,16 @@
       ]
     },
     "ta_1568076": {
-      "id": "tt38773508",
-      "type": "movie",
-      "name": "Mayilaa",
-      "releaseInfo": "2026-01-31",
-      "description": "Mayilaa embarks on a journey as a travelling salesperson in Southern India to fulfil her expensive obligations. The only problem: she doesn’t know how to sell. A sharp yet heartwarming tale of a mother-daughter duo finding their feet on the road.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-31",
-      "poster": "https://image.tmdb.org/t/p/w500/57fdtOf3g6yxfSB322pTMN9Ke0t.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/bHSVmaKUBWw2uyMv4nkbhm6jAub.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1628307": {
-      "id": "tt39366667",
-      "type": "movie",
-      "name": "Karuppu Pulsar",
-      "releaseInfo": "2026-01-30",
-      "description": "Set against the backdrop of jallikattu culture. Two men's lives intersect - one from Chennai who owns a Pulsar motorcycle and another from Madurai with a bull named Karuppu.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-30",
-      "poster": "https://image.tmdb.org/t/p/w500/83i18z9j9Pezyfbd9vO2sz74GcT.jpg",
-      "genres": [
-        "Action"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1627642": {
-      "id": "tt33333859",
-      "type": "movie",
-      "name": "Thiraivi",
-      "releaseInfo": "2026-01-30",
-      "description": "A woman is talking to a man about a plan. The man says that he needs to kill someone, but the woman says that he should not do it. The woman is shocked and does not know what to do. Then, the woman was bound and gagged by the man\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-30",
-      "poster": "https://image.tmdb.org/t/p/w500/1GKLS6uH0erNZYvZP0pTVXDNxYL.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/6fM3ybUtRttE4IwPEUByB3Pbr4w.jpg",
-      "genres": [
-        "Mystery",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1623927": {
       "id": "tt39522563",
@@ -6788,17 +5499,8 @@
       ]
     },
     "ta_1566325": {
-      "id": "tt38496328",
-      "type": "movie",
-      "name": "Mellisai",
-      "releaseInfo": "2026-01-30",
-      "description": "A beautiful family drama woven around a central theme of father daughter bond which emphasizes human emotions at its depths.A daughters wish to make her dad participate in a reality show singing competition forms the crux of this emotional family dramaThe story takes place in two different time lines which reflects all these emotions in a poetic harmony of love, ambition, failure, success and the wheel of life.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-30",
-      "poster": "https://image.tmdb.org/t/p/w500/tkXbSUHh9XhEwUQkSiCZxUfbtYm.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/gQDE6lZPqnIQk3hI5YXWyBb1aWf.jpg",
-      "genres": [
-        "Drama",
-        "Family"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1298092": {
       "id": "tt32278140",
@@ -6839,55 +5541,20 @@
       ]
     },
     "ta_1552952": {
-      "id": "tt39122441",
-      "type": "movie",
-      "name": "Jockey",
-      "releaseInfo": "2026-01-23",
-      "description": "The film Jackie is based on the ancient goat fighting tradition of Madurai. In a village in Madurai, Ramar and Karthi enter their goats into a goat fight competition. Ramars goat wins the competition. Envious, Karthi tries to take revenge on Ramar and his goat, causing various troubles for Ramar. Ramar thwarts these attempts and protects his goat.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-23",
-      "poster": "https://image.tmdb.org/t/p/w500/69zi48P9NIwPq7qdssxQ8qqbBNG.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/dlYqT4INqj1mKI7OmFXHKN86as6.jpg",
-      "genres": [
-        "Action"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1536580": {
-      "id": "tt33063741",
-      "type": "movie",
-      "name": "Draupathi 2",
-      "releaseInfo": "2026-01-23",
-      "description": "In 14th century AD, people were suffering from the brutality of the Madurai Sultanate and the Delhi Sultan. The Hoysala Emperor Vallalar III protected his empire and people with diplomacy. The sacrifice and betrayal of some changed the course of a kingdom. Insidious interventions disrupt the lives of people and the stability of the state.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-23",
-      "poster": "https://image.tmdb.org/t/p/w500/vojJemS5USdagshMLWS8JyrU8x6.jpg",
-      "genres": [
-        "Action",
-        "Drama",
-        "History"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_564338": {
-      "id": "tt8555488",
-      "type": "movie",
-      "name": "Maayabimbum",
-      "releaseInfo": "2026-01-23",
-      "description": "A man’s illusion of love turns tragic when misplaced desire and misunderstanding pull him into consequences he never anticipated.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-23",
-      "poster": "https://image.tmdb.org/t/p/w500/6zMiVFdjJ4JXlkeHctHYQQOtEoy.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/1MHPvsrLnntPnR2KjyGr5LmUdJX.jpg",
-      "genres": [
-        "Romance",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1712038": {
-      "id": "tt43329494",
-      "type": "movie",
-      "name": "Three Pieces",
-      "releaseInfo": "2026-01-22",
-      "description": "Three friends quickly realize they keep ending up at the same location repeatedly (marked at 10:33 on a timer/clock). Every time they try to move forward, they're pulled back to the exact same spot, experiencing the same bell sound and events over and over again.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-22",
-      "poster": "https://image.tmdb.org/t/p/w500/9HThRZw3CchnswMvPe7OUJl1NtD.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/jNAfGInxVusFEdjP0jtEuM37OBJ.jpg",
-      "genres": [
-        "Mystery",
-        "Science Fiction"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1752236": {
       "_status": "retry",
@@ -6964,58 +5631,24 @@
       ]
     },
     "ta_1606938": {
-      "id": "tt39292347",
-      "type": "movie",
-      "name": "Kaakaa",
-      "releaseInfo": "2026-01-02",
-      "description": "A rough person from madurai, an educated person from thiruchchi, and a curiosity disorder person from chennai and there was a situation where these three persons had to fall in love with two elder sisters and one younger sister. and there was competition and challenges arise but the rest of the story was about whom the sisters will fall in love and get married. this is a full-length comedy film and love story named kaaka.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-02",
-      "poster": "https://image.tmdb.org/t/p/w500/fl7vU6bo6ShoaxPCC8WXnVZKD3i.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/x9syhwrx3Ol9pl8Y7LyyNkXByZ3.jpg",
-      "genres": [
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1604186": {
       "_status": "retry",
       "_at": 1789767160104
     },
     "ta_1603231": {
-      "id": "tt39195777",
-      "type": "movie",
-      "name": "Justice for Jeni",
-      "releaseInfo": "2026-01-02",
-      "description": "Jeni and priyanka are best friends andambitious medical students with dreams of making a difference in the world.their bond is unbreakable. however, their lives take a tragic turn when jenigets brutally raped and dies unexpectedly. devastated by the loss, priya isconsumed by grief and anger. she decides to seek justice for her friend'suntimely death. as she navigates the complex legal process, she becomesincreasingly disillusioned with the system and status quo.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-02",
-      "poster": "https://image.tmdb.org/t/p/w500/lxNJzRszqYgRSdWlyyXUJD0RHm4.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/tJ9EqEpu5Lnu0tLYMbmOOWerov.jpg",
-      "genres": [
-        "Thriller",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1600735": {
-      "id": "tt39228907",
-      "type": "movie",
-      "name": "Anali",
-      "releaseInfo": "2026-01-02",
-      "description": "Entire Story takes place over a single night. It revolves around Jansi and her 8yr old child, who gets trapped between third world war tensions and dangereous men Lal Chetta, Khan Bhai & Ranga Reddy. These men far more dangerous than wild animals. The Note film thrillingly portraits by how Jansi uses her intelligence to escape and bring everything to an end.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-01-02",
-      "poster": "https://image.tmdb.org/t/p/w500/swU1gHR88apVPthor7RVv8AOa1j.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/xUAmKnnYiikp2ayEAZi7pJLyFBh.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1554304": {
-      "id": "tt38566328",
-      "type": "movie",
-      "name": "Francis: Chapter 1",
-      "releaseInfo": "2025-12-25",
-      "description": "Francis' father raises his voice for an important issue and ends up being killed by those involved in the issue. In this situation, Francis keeps himself away from everything, thinking that his sister's life is more important than avenging the people who killed his father. One day, his sister's husband gets into trouble with the gang. To save him, Francis turns into a complete beast and takes revenge on all those who caused his father's death.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-25",
-      "poster": "https://image.tmdb.org/t/p/w500/tpIRhyx0pIJnAhaZUDBcFQ7cWGl.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/4R0vrmsSz5dHwPtg0q3BBncRlEp.jpg",
-      "genres": [
-        "Action"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1487142": {
       "id": "tt35684868",
@@ -7057,46 +5690,20 @@
       ]
     },
     "ta_1310458": {
-      "id": "tt39195686",
-      "type": "movie",
-      "name": "Saayavanam",
-      "releaseInfo": "2025-12-19",
-      "description": "Sita tries to live an honest and truthful life following all religious and social norms of her upbringing while unraveling the true agenda of men around her. In this process, she emerges victorious as a strong and brave woman.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-19",
-      "poster": "https://image.tmdb.org/t/p/w500/FfkveUaCib1ukPkBMeU2IFQcqw.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/anz69m07H9b2zG5Hw5OSQ71dwxJ.jpg",
-      "genres": [
-        "Thriller",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_985354": {
-      "id": "tt15176374",
-      "type": "movie",
-      "name": "UnPaarvayil",
-      "releaseInfo": "2025-12-19",
-      "description": "When tragedy strikes twice, Bhavya refuses to remain a victim. Visually impaired, she is drawn into a perilous hunt for the truth behind the mysterious deaths of her husband & twin sister - uncovering a dark world where nothing is as it seems.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-19\n⭐ Rating: 7.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/3eMbzqxiq4P0KrdQSov2G9x6wyc.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/eHBJKttEXUkxQMv2eiAgyt9AZw0.jpg",
-      "genres": [
-        "Thriller",
-        "Mystery"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1597781": {
       "_status": "retry",
       "_at": 1789767160484
     },
     "ta_1595744": {
-      "id": "tt39165054",
-      "type": "movie",
-      "name": "Yaru Potta Kodu",
-      "releaseInfo": "2025-12-12",
-      "description": "In a village bound by the shackles of untouchability and superstition,  a courageous teacher and  his students embark on a perilous quest for social justice, sparking a revolution that will transform their lives and their village forever.  In the heart of rural India, a heroic educator dares to challenge the status quo , inspiring a movement that will awaken a community  and the villain to its own power and demand change. As they fight for their rights and confront the entrenched forces of oppression, they ignite a beacon of hope that will illuminate a brighter future.But will their courageous be enough to overcome the darkness of the past, or will the shadows of oppression silence their voices forever?  This will be the climax of the movie.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-12",
-      "poster": "https://image.tmdb.org/t/p/w500/yN3wynYmLDu11STt8AEXWJ00ptQ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/8cXhg8usZBX8907rB6DfIZAO08H.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1592043": {
       "id": "tt39007848",
@@ -7112,19 +5719,8 @@
       ]
     },
     "ta_1730079": {
-      "id": "tt39110374",
-      "type": "movie",
-      "name": "Saa Vee",
-      "releaseInfo": "2025-12-05",
-      "description": "A young man's life turns into a nightmare when his uncle's dead body disappears the moment he closes his eyes.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-05\n⭐ Rating: 10.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/pVswY8WgLXOfuiAYlxVqwnNxUf6.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/doJLLp0xfpUjp3GhXeB69Yns7Ad.jpg",
-      "genres": [
-        "Comedy",
-        "Mystery",
-        "Thriller",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1593062": {
       "_status": "retry",
@@ -7139,16 +5735,8 @@
       "_at": 1789767160744
     },
     "ta_1562008": {
-      "id": "tt37899932",
-      "type": "movie",
-      "name": "Game of Loans",
-      "releaseInfo": "2025-12-05",
-      "description": "Over the course of a single day, a jobless compulsive gambler finds his world spiraling out of control when a noise at his door draws him into a dangerous confrontation that blurs the line between debt and survival. The film follows Daniel, a jobless compulsive gambler whose life revolves around the instant gratification of online betting. One seemingly ordinary day, while his wife and child are away, Daniel’s monotonous gambling routine is interrupted by a sharp, unexplained noise at his doorstep. What begins as mild curiosity spirals into a tense and unpredictable encounter, as he is confronted by unexpected visitors who draw him into a dangerous game far beyond the digital realm.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-05",
-      "poster": "https://image.tmdb.org/t/p/w500/gEaJ4gBkAzWgsHDGwmnM3dJf6Eh.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/xugQJH7WM2ABTrLGNpG2jDXi80Q.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1561955": {
       "id": "tt38681567",
@@ -7176,17 +5764,8 @@
       ]
     },
     "ta_1123859": {
-      "id": "tt30526246",
-      "type": "movie",
-      "name": "Blues",
-      "releaseInfo": "2025-12-04",
-      "description": "Karthi, a disgruntled assistant on commercial productions, is working on an honest, personal film script, but his project is without industry backers. In the dispiriting pursuit of his dream, he loses his love and sinks into alcoholism, until he meets a kindred spirit adrift in the world.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-12-04",
-      "poster": "https://image.tmdb.org/t/p/w500/z0loATnDKCR9LdF9lFRjzQ1KuLi.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/Wukvmtu4iMDBRMrbMXoUlbXAn9.jpg",
-      "genres": [
-        "Drama",
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1620037": {
       "_status": "retry",
@@ -7197,61 +5776,24 @@
       "_at": 1789767161298
     },
     "ta_1680497": {
-      "id": "tt39018855",
-      "type": "movie",
-      "name": "Galatta Family",
-      "releaseInfo": "2025-11-28",
-      "description": "The plot follows a struggling man who swaps identities with his gangster lookalike, resulting in chaotic consequences\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-28",
-      "poster": "https://image.tmdb.org/t/p/w500/wuXE99zta3rMrsrLSZ5yQ785zsa.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1638930": {
-      "id": "tt36966119",
-      "type": "movie",
-      "name": "Ondimuniyum Nallapaadanum",
-      "releaseInfo": "2025-11-28",
-      "description": "A poor low-caste farmer wants to sacrifice his goat to deity Ondimuni for saving his son, but temple festivities are suspended due to upper-caste feuding. Can he fulfill his vow?\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-28"
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1602372": {
-      "id": "tt38821165",
-      "type": "movie",
-      "name": "Friday",
-      "releaseInfo": "2025-11-28",
-      "description": "Mani, a determined gangster seeking revenge for his brothers death, sets out to kill Jagan, a feared local don. But when his trusted ally Gopi jeopardizes the plan, Mani abandons the mission to protect him. Forced into hiding, Mani finally reveals the painful truth of how his brother was killed six months ago, setting the stage for a tense journey fueled by loyalty, loss and vengeance.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-28\n⭐ Rating: 10.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/p7b9U8F2XcT40B0kWREN8UCIY1G.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1586508": {
-      "id": "tt36294859",
-      "type": "movie",
-      "name": "BP 180",
-      "releaseInfo": "2025-11-28",
-      "description": "Thangam is an honest doctor working at Pennery Hospital. He has a sister named Selvi and a brother named Stalin. Arnold, a villain from Kasimedu area,Through this, Thangams brother Stalin is killed. The story revolves around whether Thangam did a postmortem on Bharathis body.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-28",
-      "poster": "https://image.tmdb.org/t/p/w500/xtmiUl8lvjAVlQq0pjVgdzNMlGP.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/k89tGC4nQDf4klSEiHRKHvqtW53.jpg",
-      "genres": [
-        "Crime",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1565650": {
-      "id": "tt38772178",
-      "type": "movie",
-      "name": "IPL: Indian Penal Law",
-      "releaseInfo": "2025-11-28",
-      "description": "Gunasekaran drives his own car. Anbu and Kanimozhi fall in love. In order to prevent the Chief Ministers video from getting out, Chief Minister Assistant and Inspector Muthu Karupan kills a young man. They put the blame on Gunasekar. This story is about how Anbu saves Gunasekaran from this.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-28",
-      "poster": "https://image.tmdb.org/t/p/w500/vXNuxvpzCkw22wnO9Uvjn7KmV1I.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/2pWpKLBGq4FUTFBBtV5eSrZAIpG.jpg",
-      "genres": [
-        "Crime",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398185
     },
     "ta_1563959": {
       "_status": "retry",
@@ -7285,17 +5827,8 @@
       ]
     },
     "ta_1728546": {
-      "id": "tt36313032",
-      "type": "movie",
-      "name": "Adhiran",
-      "releaseInfo": "2025-11-22",
-      "description": "Aadhi, framed in a drug bust, is sent to a secret island prison. Fueled by love for Kavi, he battles the mafia's wrath and fights to escape. Can he survive and return home?\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-22",
-      "poster": "https://image.tmdb.org/t/p/w500/gQ18DXk5rxUYYHylsA73BBb9UNp.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/7wtWyADA4g72abIbUuMN7YKdGEw.jpg",
-      "genres": [
-        "Romance",
-        "Crime"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1608032": {
       "id": "tt38798360",
@@ -7316,28 +5849,12 @@
       "_at": 1789767175145
     },
     "ta_1584857": {
-      "id": "tt38984160",
-      "type": "movie",
-      "name": "Murugesan +2",
-      "releaseInfo": "2025-11-21",
-      "description": "Murugesan+2 is a darkly comic tale about Murugesan, a truck driver leading a secret double life with two families. When he is presumed dead after a severe accident, a promised settlement sparks a bitter feud between his wives and their families, each scheming for control of the money. Just as the battle turns vicious, Murugesan returns alive, only to become a burden to those who once mourned him. Faced with betrayal and greed, Murugesan and his disillusioned sons walk away, leaving behind a biting satire on family, loyalty, and the corrupting power of money.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-21",
-      "poster": "https://image.tmdb.org/t/p/w500/aqKD86ZJTPnM0YrEH3toHzQhSTc.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/5M0Cz6MpHlwAttSUfD9cyuQDQuy.jpg",
-      "genres": [
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1578379": {
-      "id": "tt38880071",
-      "type": "movie",
-      "name": "Iravin Vizhigal",
-      "releaseInfo": "2025-11-21",
-      "description": "This World is Sleeping in the Darkness of Websites.in Such a Situation, the Direction of One's Life Changes...i Can't Bear It. The Story is What He Wakes Up Like the Eyes of the Night to Correct This World That is Sleeping on the Web in That Anger.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-21",
-      "poster": "https://image.tmdb.org/t/p/w500/lZv2p2wWfRi6ffNayXpPlm56DH8.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/7DKVx4DDBwP4PlBXi0c1831G9Tt.jpg",
-      "genres": [
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1566666": {
       "id": "tt14465196",
@@ -7353,19 +5870,8 @@
       ]
     },
     "ta_1314278": {
-      "id": "tt32423736",
-      "type": "movie",
-      "name": "Mask",
-      "releaseInfo": "2025-11-21",
-      "description": "440 crores stolen. Seven days to get it back. A game of greed, betrayal and intrigue culminates in an explosive climax in this story of a greedy man, a conniving woman and an uncanny guy with a bag full of tricks.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-21\n⭐ Rating: 6.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/apEDL4eZ5xrEnFeQJvxST6Rm8Ub.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/wBIL8UN2i2UtxRwPRT05riwhEk2.jpg",
-      "genres": [
-        "Comedy",
-        "Crime",
-        "Thriller",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_946040": {
       "id": "tt15380786",
@@ -7381,16 +5887,8 @@
       ]
     },
     "ta_1567963": {
-      "id": "tt38493089",
-      "type": "movie",
-      "name": "Auto Queens",
-      "releaseInfo": "2025-11-16",
-      "description": "Mohana is the president of the first trade union for women auto rickshaw drivers in the southeast Indian state of Tamil Nadu. As well as maneuvering her own auto through the busy streets of Chennai, she has to navigate a sexist and patriarchal system to secure equal opportunities for women drivers. She faces constant resistance—with conflicts and humiliations every day.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-16",
-      "poster": "https://image.tmdb.org/t/p/w500/uFeMvkREfImHvwuIgqN6UJXwy3o.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/Afa6a2IIKTI9KyBXiODdqwTmyJT.jpg",
-      "genres": [
-        "Documentary"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1581336": {
       "_status": "retry",
@@ -7401,17 +5899,8 @@
       "_at": 1789767175492
     },
     "ta_1544976": {
-      "id": "tt8042310",
-      "type": "movie",
-      "name": "Kumki 2",
-      "releaseInfo": "2025-11-14",
-      "description": "Bhumi sees an elephant in the jungle growing up without his others love. His teacher advises him to love nature and protect the birds and animals in the forest and live in harmony with them and he decided to protect the elephant. The broker offers the elephant as a sacrifice for the ministers post. Hearing this, Bhumi fights with them.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-14",
-      "poster": "https://image.tmdb.org/t/p/w500/wBz0uP5urY0JqNERnCCTtSVB0HK.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/s7apjEi6QJWzX0gt9GF3pIfHJcp.jpg",
-      "genres": [
-        "Drama",
-        "Adventure"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1544547": {
       "_status": "retry",
@@ -7436,17 +5925,8 @@
       "_at": 1789767175670
     },
     "ta_1404000": {
-      "id": "tt35295835",
-      "type": "movie",
-      "name": "Macai",
-      "releaseInfo": "2025-11-13",
-      "description": "A drug dealer finds himself in hot water when the merchandise he’s carrying for a local kingpin is lost. Fearing his vicious boss’ retribution, he sets off to make amends, in a visceral, kinetic film that knowingly plays with genre conventions.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-13",
-      "poster": "https://image.tmdb.org/t/p/w500/8CCADHl6kh3B7YVuBtXbbEUG1yg.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/dzBK8i8V9V0DIgksbUSnWOtLpNd.jpg",
-      "genres": [
-        "Crime",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1250508": {
       "id": "tt28508934",
@@ -7467,42 +5947,16 @@
       "_at": 1789767175782
     },
     "ta_1565129": {
-      "id": "tt36505217",
-      "type": "movie",
-      "name": "Cristina Kathirvelan",
-      "releaseInfo": "2025-11-07",
-      "description": "Kathirvelan is in love with Cristina . Both are give their documents to the witnesses for the registered marriage of the sister of the rowdy. In it, the hero and heroine who gave the documents to the witnesses receive a wrong marriage certificate as if they were married. The heroine Cristina is engaged to marry a stranger. Kathir fights and join.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-07",
-      "poster": "https://image.tmdb.org/t/p/w500/smcFLjNtPgCv6VyKHCb8QveXhG8.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/aaE7h6SurE3aBIy9qPK7su3NYwD.jpg",
-      "genres": [
-        "Romance",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1562299": {
-      "id": "tt38682736",
-      "type": "movie",
-      "name": "Parrisu",
-      "releaseInfo": "2025-11-07",
-      "description": "Parrisu is a tamil movie starring Jaanvekaa Subramaniam and Kiran Pradeep  in prominent roles. It is directed by Kala Alluri.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-07",
-      "poster": "https://image.tmdb.org/t/p/w500/dihLZKIjuKqMwrMGaQEQIukU9bH.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/f3g27FJ7Dxqg5IrwVRy8L6rYD3Z.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1551992": {
-      "id": "tt38428591",
-      "type": "movie",
-      "name": "Vattakhanal",
-      "releaseInfo": "2025-11-07",
-      "description": "Kathiravan raises three orphans—Sathya, Surya, and Shiva—as his own, grooming them to unknowingly support his illegal mushroom drug empire. Despite being used as pawns, the trio remains loyal out of love. After killing his former boss and seizing control of the business, Kathiravan earns the wrath of Radha, the boss’s widow, who plots revenge. Meanwhile, Varsha, a local woman and love interest of Sathya, plans to transfer her estate to its workers. Threatened by this, Kathiravan manipulates the employees, turning them against her. As Varsha’s life hangs in the balance, Sathya and Radha must confront Kathiravan—leading to a climactic reckoning.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-07",
-      "poster": "https://image.tmdb.org/t/p/w500/kU7x4Ki24zE6i8sFluM6Xf9mcg3.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/vxbu74eYk6gf30vp4arFrR6D4bo.jpg",
-      "genres": [
-        "Thriller",
-        "Mystery"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1531058": {
       "id": "tt37897558",
@@ -7536,42 +5990,20 @@
       "_at": 1789767176286
     },
     "ta_1645649": {
-      "id": "tt35231012",
-      "type": "movie",
-      "name": "Messenger",
-      "releaseInfo": "2025-10-31",
-      "description": "After a heartbreak, engineer Sakthi attempts suicide but is saved by messages from Anandhi, a deceased Facebook friend. He falls in love with her spirit and marries her, until she threatens to leave, testing their supernatural bond.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-10-31",
-      "poster": "https://image.tmdb.org/t/p/w500/o3pi33NfDtGVSrueuMVg1GC6IDa.jpg",
-      "genres": [
-        "Fantasy",
-        "Romance"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1569802": {
       "_status": "retry",
       "_at": 1789767176355
     },
     "ta_1562718": {
-      "id": "tt38745413",
-      "type": "movie",
-      "name": "THADAI ATHAI UDAI",
-      "releaseInfo": "2025-10-31",
-      "description": "Three aspiring filmmakers from a humble brick kiln background set out to prove their talent. After their first village drama is dismissed as outdated, they decide to reinvent themselves. What begins as a daring YouTube channel sting soon spirals into danger, loss, and a shocking revelation—with twists and turns—all part of their bold second film. Their vision ultimately wins over the producer, marking the true beginning of their filmmaking journey.\n\n📺 Streaming on: Fawesome\n📅 OTT Release: 2025-10-31",
-      "poster": "https://image.tmdb.org/t/p/w500/kqWfVxa6RO39EvtkZ7te3euWvXY.jpg"
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1435139": {
-      "id": "tt32284122",
-      "type": "movie",
-      "name": "Aan Paavam Pollathathu",
-      "releaseInfo": "2025-10-31",
-      "description": "A year into their marriage, unable to distinguish between toxicity and mere misunderstandings, Sakthi decides to part ways with Siva. The couple navigate their separation, and whether they ultimately proceed with divorce forms the emotional climax.\n\n📺 Streaming on: Hulu\n📅 OTT Release: 2025-10-31\n⭐ Rating: 5.4/10",
-      "poster": "https://image.tmdb.org/t/p/w500/5eZzBvETRK8uDz3mUK0Feio2T5C.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/d3HvCcvR1JbLrloXYGb0QhRiOma.jpg",
-      "genres": [
-        "Comedy",
-        "Romance",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1318308": {
       "id": "tt28434143",
@@ -7588,28 +6020,12 @@
       ]
     },
     "ta_1578351": {
-      "id": "tt22942216",
-      "type": "movie",
-      "name": "Desiya Thalaivar",
-      "releaseInfo": "2025-10-30",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-10-30",
-      "poster": "https://image.tmdb.org/t/p/w500/gYdnSQKrPyUW3ZaqFWBm0T7mKTM.jpg",
-      "genres": [
-        "History",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1576690": {
-      "id": "tt38799980",
-      "type": "movie",
-      "name": "Irudhi Strike",
-      "releaseInfo": "2025-10-30",
-      "description": "In the quiet village of 'Muppathen Kambom', a retired footballer takes it upon himself to train a group of local boys, using sport as a path to discipline and hope. But their journey is threatened by a ruthless syndicate that exploits uneducated youth for profit, dragging them into a life of corruption. As the stakes rise, the Coach and his team must fight not just for victory on the court, but for the future of their community.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-10-30",
-      "poster": "https://image.tmdb.org/t/p/w500/lrhLNwHEOfNURGmOGDVgcL1kxU1.jpg",
-      "genres": [
-        "Thriller",
-        "Action"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1565017": {
       "_status": "retry",
@@ -7624,13 +6040,8 @@
       "_at": 1789767176701
     },
     "ta_1565132": {
-      "id": "tt36350741",
-      "type": "movie",
-      "name": "Dear Jeeva: An Unconditional Love Story",
-      "releaseInfo": "2025-10-19",
-      "description": "Jeeva,a next-door guy who is seeking a job and living alone and Ms Jeeva is a focused workaholic. When they met for an interview, they began to like each other and fell in love.After a lot of emotional journey, both got married and started their lives happily. However, after a few months of marriage, Jeeva lost his job. Mrs. Jeeva received an onsite opportunity simultaneously.Ego starts to build between them and at one point Mrs. Jeeva wants to distance herself from him, but The news of Covid-lockdown has left them with no choice but to stay together.The rest of the story is about how situations during the lockdown helped them understand each other, whether they separated or accepted each other.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-10-19",
-      "poster": "https://image.tmdb.org/t/p/w500/8t5cXP8e0NJN4wOnwDtJuMBmLxe.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/4JofBZ4BBrflllNt1LFB6hqQqbH.jpg"
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1560204": {
       "_status": "retry",
@@ -7691,19 +6102,8 @@
       ]
     },
     "ta_1559092": {
-      "id": "tt35465495",
-      "type": "movie",
-      "name": "Will",
-      "releaseInfo": "2025-10-10",
-      "description": "Will, Amid a Ghost Employment Scam, a Determined Daughter Races to Prove Her Father’s Innocence, Only to Be Trapped in a Gripping Mystery After a Financier’s Sudden Death.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-10-10",
-      "poster": "https://image.tmdb.org/t/p/w500/7eUMnu3jsZ9RVsV3nooUebKcinn.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/11nQkkjNGvWxXRwHMQRTU7l6JrH.jpg",
-      "genres": [
-        "Crime",
-        "Thriller",
-        "Family",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1558252": {
       "_status": "retry",
@@ -7722,29 +6122,12 @@
       ]
     },
     "ta_1433133": {
-      "id": "tt38598807",
-      "type": "movie",
-      "name": "Rambo",
-      "releaseInfo": "2025-10-10",
-      "description": "Gowtham a ruthless heir to an education empire and Ram, a kind hearted orphanage caretaker, are raised with opposing beliefs. When Malar exposes Gowtham's dark secret, the two men face off in a brutal test of power and fists.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-10-10\n⭐ Rating: 5.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/qqlcaDSFv9bPJFLH4TV5iPpXiJ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/vDAjjvOOxOo6ESegvuIsOtTerph.jpg",
-      "genres": [
-        "Action",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1551146": {
-      "id": "tt37444485",
-      "type": "movie",
-      "name": "Maria",
-      "releaseInfo": "2025-10-03",
-      "description": "The story explores about the liberation and freedom of a Nun, where she wants to live like a normal woman but society and the family around her makes it difficult, finally what happens to her at the end.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-10-03",
-      "poster": "https://image.tmdb.org/t/p/w500/rzxyi36dgsjgnIyw8RethRBUWC2.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/gFCjRcUjXycpNfqIYsK54yXV5SL.jpg",
-      "genres": [
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398186
     },
     "ta_1561399": {
       "_status": "retry",
@@ -7777,43 +6160,16 @@
       "_at": 1789767190692
     },
     "ta_1551138": {
-      "id": "tt38394613",
-      "type": "movie",
-      "name": "Right",
-      "releaseInfo": "2025-09-26",
-      "description": "A desperate father searching for his missing son finds himself trapped inside a police station when a mysterious entity seals the station building, forcing those within to confront their secrets as a deadly game.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-26",
-      "poster": "https://image.tmdb.org/t/p/w500/yA3g7UZeYkku6kfmrbikZ745PTQ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/8BhdR1eqbIO6RxIg2EN279EK9BR.jpg",
-      "genres": [
-        "Thriller",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1548586": {
-      "id": "tt36772224",
-      "type": "movie",
-      "name": "Kutram Thavir",
-      "releaseInfo": "2025-09-26",
-      "description": "Kutram Thavir is about Rudra, whose elder sister dies due to a fraudulent medical insurance scheme, leading him to discover a conspiracy that exploits the poor. Driven by grief and anger, Rudra seeks revenge and exposes the truth behind his sister's death.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-26",
-      "poster": "https://image.tmdb.org/t/p/w500/z6EDR1nsO4oAQ8eeSTxDQqpQubm.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/cvo4OsrxzFjawavD2AAw1HeupqA.jpg",
-      "genres": [
-        "Crime",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1492963": {
-      "id": "tt37182837",
-      "type": "movie",
-      "name": "Kiss Me Idiot",
-      "releaseInfo": "2025-09-26",
-      "description": "After damaging Veerat’s car by accident, college student Srileela agrees to work as his assistant for two months. During this time, she falls in love with him, but he sends her away before she confesses. Realizing his feelings later, Veerat tries to win her back. Will love succeed?\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-26\n⭐ Rating: 10.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/e16b4KzHfWqrnebJ1vJo3CLuYWt.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/AUKx2KuFJCWdaWm8tSk5Si4zHR.jpg",
-      "genres": [
-        "Romance",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1425630": {
       "id": "tt35624287",
@@ -7857,16 +6213,8 @@
       ]
     },
     "ta_1538926": {
-      "id": "tt39008733",
-      "type": "movie",
-      "name": "Dalit Subbaiah: Voice of the Rebels",
-      "releaseInfo": "2025-09-17",
-      "description": "The award-winning documentary celebrates the legacy of Dalit Subbaiah, who attained prominence for his advocacy for the rights and empowerment of Dalits through revolutionary music and activism.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-17",
-      "poster": "https://image.tmdb.org/t/p/w500/xm0AfE4X7qyb4KODgc9Db86GNBN.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/rOxnpTZieUuBF7ibmq3f3hA5pnE.jpg",
-      "genres": [
-        "Documentary"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1501962": {
       "_status": "retry",
@@ -7877,62 +6225,28 @@
       "_at": 1789767191601
     },
     "ta_1583926": {
-      "id": "tt38098022",
-      "type": "movie",
-      "name": "Uruttu Uruttu",
-      "releaseInfo": "2025-09-12",
-      "description": "A village girl's heart unexpectedly belongs to a gang member who allegedly wronged her. As she defies her gangster father to protect him, their forbidden love unleashes chaos in their dangerous world.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-12",
-      "poster": "https://image.tmdb.org/t/p/w500/xV0SIhzhuiKqXBSKKDaTWMfjZLF.jpg",
-      "genres": [
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1542842": {
-      "id": "tt37997809",
-      "type": "movie",
-      "name": "Andha 7 Naatkal",
-      "releaseInfo": "2025-09-12",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-12",
-      "poster": "https://image.tmdb.org/t/p/w500/dH7t44SnDNFH230Ju6HmJBdXe9l.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/agMKlW2FB23keGKTRxbWTmO5bH4.jpg",
-      "genres": [
-        "Romance",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1542183": {
       "_status": "retry",
       "_at": 1789767191716
     },
     "ta_1540782": {
-      "id": "tt37365029",
-      "type": "movie",
-      "name": "Kaayal",
-      "releaseInfo": "2025-09-12",
-      "description": "A girl, much into anti suicidal campaigns commits suicide after six months of self-imposed marital bondage. What reflections do her death leave on her family and loved ones? This film, in a nutshell, is a journey of her ashes from Pondicherry to Dhanushkodj  to be immersed by her family. The boy with whom she had been in love joins the journey at a juncture and what happens then is the film.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-12",
-      "poster": "https://image.tmdb.org/t/p/w500/2s68KJY86yKZM0S2UjqJ7Cele85.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/bJwFyIxQUZXz58lXIRyiNgZz194.jpg",
-      "genres": [
-        "Drama",
-        "Family"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1540478": {
       "_status": "retry",
       "_at": 1789767191780
     },
     "ta_1534309": {
-      "id": "tt33343562",
-      "type": "movie",
-      "name": "Kumaara Sambavam",
-      "releaseInfo": "2025-09-12",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-12",
-      "poster": "https://image.tmdb.org/t/p/w500/L5wkNEZWBpMY6aq9jtZ3sjInZo.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/71yBdIU2th5hB8XlhIDsXhllc9j.jpg",
-      "genres": [
-        "Drama",
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1499180": {
       "id": "tt28717622",
@@ -7948,18 +6262,8 @@
       ]
     },
     "ta_1090991": {
-      "id": "tt11923962",
-      "type": "movie",
-      "name": "Thanal",
-      "releaseInfo": "2025-09-12",
-      "description": "Fuelled by a lifetime of suffering, an ex army man embarks on a vengeful quest. Standing in his way is a police constable whose own past pain transformed into a dutiful son. When their paths converge, hero either can flee for his life or take a stand against the villain’s scheme of things.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-12\n⭐ Rating: 6.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/5CVSHJZBlTG5xF7UqrWTHquBLtX.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/naNEpMPkUaFoA87Qbj7waH2eZCc.jpg",
-      "genres": [
-        "Action",
-        "Crime",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1543249": {
       "_status": "retry",
@@ -7995,17 +6299,8 @@
       ]
     },
     "ta_896453": {
-      "id": "tt13528830",
-      "type": "movie",
-      "name": "Flashback",
-      "releaseInfo": "2025-09-05",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-05\n⭐ Rating: 3.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/rH3Svoode1JouAuns60wZqFn6gO.jpg",
-      "genres": [
-        "Romance",
-        "Comedy",
-        "Action"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1297181": {
       "id": "tt28252563",
@@ -8022,17 +6317,8 @@
       ]
     },
     "ta_1553052": {
-      "id": "tt38332204",
-      "type": "movie",
-      "name": "The Savage",
-      "releaseInfo": "2025-09-01",
-      "description": "Desires play a key role in misplaced lives of two men and two women and the violent consequences following it makes them emotionally unstable-leading them to betrayal, revenge and collision of fates that binds their lives forever\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-09-01",
-      "poster": "https://image.tmdb.org/t/p/w500/t9DmXlbS7h8Wwel74DHGWPARW3L.jpg",
-      "genres": [
-        "Action",
-        "Horror",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1538920": {
       "_status": "retry",
@@ -8043,43 +6329,16 @@
       "_at": 1789767205444
     },
     "ta_1534185": {
-      "id": "tt37846158",
-      "type": "movie",
-      "name": "Sotta Sotta Nanaiyuthu",
-      "releaseInfo": "2025-08-29",
-      "description": "Sotta Sotta Ninayuthu is a romantic drama about Raja, a wealthy young man whose baldness fuels deep insecurity and heartbreak. Though he finds love with the kind-hearted Priya, a moment of doubt drives him away, and his family soon pushes him toward Shruti—a modern, arrogant woman who clashes with their values. Caught between duty and desire, Raja must choose whether to follow his heart or surrender to expectations.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-29\n⭐ Rating: 6.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/8X43VSgQ1X7ZQUg5EwSVTL60tI.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/wP5Ux3vm05WZA94StxjZXzKXE4P.jpg",
-      "genres": [
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1530657": {
-      "id": "tt37846398",
-      "type": "movie",
-      "name": "Kuttram Pudhithu",
-      "releaseInfo": "2025-08-29",
-      "description": "When Kadhiresan, a disturbed soul masked as a food delivery man, kills and gets arrested for the horrific murder of ACP Sathya’s daughter Preethi, reality fractures and tensions intensify—until Preethi returns back from the dead unharmed five days later, challenging not just law and logic, but the very nature of truth and existence.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-29",
-      "poster": "https://image.tmdb.org/t/p/w500/cvGwWHmIlRb0qUoVD9AlU6UNc5V.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/wwDweylOl8xono4f2GHF2H6Woih.jpg",
-      "genres": [
-        "Action",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1478844": {
-      "id": "tt36575995",
-      "type": "movie",
-      "name": "Kadukka",
-      "releaseInfo": "2025-08-29",
-      "description": "In a peaceful village, Two Young best Friends fall for the same Beautiful Girl. What starts as friendship soon turns into a comedy-filled Love war. Each tries to win her heart with charm, tricks, and emotions, but the girl has a surprise of her own is shown in a Comedy Suspense with Fun filled power packed manner.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-29",
-      "poster": "https://image.tmdb.org/t/p/w500/k4p4QoWK4kdzyEWrD0XapdBS9Tx.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/p0YEx9BNSAJt7RH41OOH7fRtTMV.jpg",
-      "genres": [
-        "Romance",
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1569004": {
       "id": "tt37833085",
@@ -8095,37 +6354,16 @@
       ]
     },
     "ta_456281": {
-      "id": "tt7019936",
-      "type": "movie",
-      "name": "Adangathey",
-      "releaseInfo": "2025-08-27",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-27",
-      "poster": "https://image.tmdb.org/t/p/w500/nEBLsOU0T82JzdCNpUqmHL1dpAy.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/u6qzlAhNz3BsnEEtYOn3iwWjtFc.jpg",
-      "genres": [
-        "Thriller",
-        "Action",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1225968": {
-      "id": "tt28298511",
-      "type": "movie",
-      "name": "Indra",
-      "releaseInfo": "2025-08-22",
-      "description": "INDRA is a serial killer investigation film about an ex-cop who lost his eyesight and sets out to find the killer terrorizing the town. What follows is a gripping chase full of twists and turns — but what if the hunter ends up becoming the hunted?\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-22\n⭐ Rating: 6.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/ha0vIE3iVFAMm3M4i5DNCmwSiO8.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/4Tum5e4XJ6V5LZdsPT2hwmauaSg.jpg",
-      "genres": [
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1530918": {
-      "id": "tt37158979",
-      "type": "movie",
-      "name": "Good Day",
-      "releaseInfo": "2025-08-15",
-      "description": "A factory worker gets his delayed salary and celebrates by drinking, causing trouble with his landlord and pursuing a married ex-crush. Later, he assists police in solving a crime.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-15"
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1153399": {
       "id": "tt27441481",
@@ -8146,29 +6384,16 @@
       "_at": 1789767205780
     },
     "ta_1556782": {
-      "id": "tt37835654",
-      "type": "movie",
-      "name": "Naalai Namadhe",
-      "releaseInfo": "2025-08-08",
-      "description": "Naalai Namadhe, a village ruled by the wealthy where no elections have been held for years, a young woman dares to contest, challenging power and awakening change. Inspired by Lenin`s words, the film is a bold take on reclaiming political voice and justice.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-08",
-      "poster": "https://image.tmdb.org/t/p/w500/c1DAu6hecYyF8YME4zubvBIwx52.jpg"
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1528217": {
       "_status": "retry",
       "_at": 1789767205862
     },
     "ta_1463344": {
-      "id": "tt35742406",
-      "type": "movie",
-      "name": "Red Flower",
-      "releaseInfo": "2025-08-08",
-      "description": "Military legacy drives twin brothers in 2047 India. Their paths divide when one receives a classified assignment, while rejection leads his brother to join opposing forces\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-08",
-      "poster": "https://image.tmdb.org/t/p/w500/qzzYeTPZLQqVsszo5dCBFll2QXR.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/5AWzonTvYTN5soMGsM7gm5kasNb.jpg",
-      "genres": [
-        "Action",
-        "Science Fiction"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1500030": {
       "_status": "retry",
@@ -8187,56 +6412,20 @@
       "_at": 1789767206057
     },
     "ta_1542905": {
-      "id": "tt28335329",
-      "type": "movie",
-      "name": "Mr. Zoo Keeper",
-      "releaseInfo": "2025-08-01",
-      "description": "A zookeeper dedicated to taking care of wild animals finds himself in a difficult situation with law enforcement officials.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-01",
-      "poster": "https://image.tmdb.org/t/p/w500/igRQ2c2XMxyvsD6vL2BjrESVMG.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/m6oKZJSf8bYl1gRvOV5e85lOXOF.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1517511": {
-      "id": "tt36092523",
-      "type": "movie",
-      "name": "Accused",
-      "releaseInfo": "2025-08-01",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-01",
-      "poster": "https://image.tmdb.org/t/p/w500/rueMH9RZH8G8SUbEDt59Ill5Ce2.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/ilKCrrwHqSxL4lAaCQs4oNrvr6w.jpg",
-      "genres": [
-        "Drama",
-        "Comedy"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1515780": {
-      "id": "tt37605189",
-      "type": "movie",
-      "name": "Bhoghee",
-      "releaseInfo": "2025-08-01",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-01",
-      "poster": "https://image.tmdb.org/t/p/w500/ocopY7ViBiq1Kf34iKOsPq9mitt.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/t0E9QkFboPW4S3E0q8gOBjsla2T.jpg",
-      "genres": [
-        "Thriller",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1514325": {
-      "id": "tt37444510",
-      "type": "movie",
-      "name": "Muthal Pakkam",
-      "releaseInfo": "2025-08-01",
-      "description": "📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-01",
-      "poster": "https://image.tmdb.org/t/p/w500/rpwPPO0M1WO3AydqkBzyFFqbu2L.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/qaTkVjPZiN8KZ4YDnJ3eDiR6cQO.jpg",
-      "genres": [
-        "Crime",
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1509804": {
       "_status": "retry",
@@ -8256,18 +6445,8 @@
       ]
     },
     "ta_1505291": {
-      "id": "tt36435352",
-      "type": "movie",
-      "name": "Blackmail",
-      "releaseInfo": "2025-08-01",
-      "description": "Trapped in escalating blackmail, Mani faces mounting danger as crime, passion, and greed intertwine, exposing hidden truths and changing allegiances throughout his ordeal.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-08-01\n⭐ Rating: 10.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/ppZRUMG5JnQo2JDvgDYRRWHDkje.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/pZDB6mPwaeImc4NqGmcIJHaoGBS.jpg",
-      "genres": [
-        "Thriller",
-        "Romance",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1433545": {
       "id": "tt32278054",
@@ -8349,16 +6528,8 @@
       ]
     },
     "ta_1509350": {
-      "id": "tt37265441",
-      "type": "movie",
-      "name": "Yaadhum Ariyaan",
-      "releaseInfo": "2025-07-18",
-      "description": "Two close friends, along with their girlfriends, venture deep into a dense forest for a getaway. They spend the night in an isolated forest bungalow. As the night unfolds, one of the girlfriends dies under mysterious circumstances while alone with her boyfriend. Panic and confusion grip the group no one knows how or why she died. with the body still with them and no one to turn to, fear begins to take over. One by one, they make decisions to cover up the incident choices that spiral into something far more terrifying than they ever imagined.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-07-18\n⭐ Rating: 3.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/cqnTAE5uDQs8Sff2bVOy0gsjJMU.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/uVUcpYpcxfx3wfqLvm5jssYOCMq.jpg",
-      "genres": [
-        "Thriller"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1495790": {
       "id": "tt31066062",
@@ -8413,32 +6584,12 @@
       "_at": 1789767220631
     },
     "ta_1510433": {
-      "id": "tt32765932",
-      "type": "movie",
-      "name": "Desingu Raja 2",
-      "releaseInfo": "2025-07-11",
-      "description": "📺 Streaming on: Mewatch\n📅 OTT Release: 2025-07-11",
-      "poster": "https://image.tmdb.org/t/p/w500/AaDAWOa1xHYszJmf3YDR3arSjI.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/rdFX7FDMPMrdZJnn1BH3YC6ioX9.jpg",
-      "genres": [
-        "Comedy",
-        "Romance",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     },
     "ta_1509983": {
-      "id": "tt37274188",
-      "type": "movie",
-      "name": "Mrs & Mr",
-      "releaseInfo": "2025-07-11",
-      "description": "Mrs & Mr is a Tamil movie starring Vanitha Vijayakumar, Robert, Arthi Ganesh, Sriman and Shakeela in prominent roles. it is written and directed by Vanitha Vijayakumar.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-07-11",
-      "poster": "https://image.tmdb.org/t/p/w500/dZVeeyeIl8vfzPSUqZOyV0ConEA.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/lljv6LWXEywyDIluBewvQFH7WlI.jpg",
-      "genres": [
-        "Romance",
-        "Comedy",
-        "Drama"
-      ]
+      "_status": "skip",
+      "_at": 1789768398187
     }
   },
   "_seen": {
