@@ -1,13 +1,15 @@
 // server.js — South Streams
-// Serves the landing page, manifest, and catalog/meta endpoints from data/cache.json
+// Serves the landing page, manifest, and catalog/meta endpoints from in-memory cache synced with GitHub Raw
 
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
+const http  = require('http');
+const https = require('https');
+const fs    = require('fs');
+const path  = require('path');
 
 const PORT = process.env.PORT || 3000;
+const RAW_CACHE_URL = 'https://raw.githubusercontent.com/freshdewsteam/South-Streams/main/data/cache.json';
 
-// Helper to read JSON file
+// Helper to read local JSON file
 function readJsonFile(filePath) {
   try {
     if (fs.existsSync(filePath)) {
@@ -16,26 +18,70 @@ function readJsonFile(filePath) {
     }
     return null;
   } catch (e) {
-    console.error('Error reading JSON:', e.message);
+    console.error('Error reading local JSON:', e.message);
     return null;
   }
 }
+
+// ── IN-MEMORY CACHE & GITHUB RAW SYNC ──
+let memoryCache = readJsonFile(path.join(__dirname, 'data', 'cache.json')) || {
+  'malayalam-movies': [],
+  'malayalam-series': [],
+  'tamil-movies': [],
+  'tamil-series': []
+};
+
+function fetchRemoteJson(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, { headers: { 'User-Agent': 'SouthStreamsServer/2.0' } }, (res) => {
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        return fetchRemoteJson(res.headers.location).then(resolve).catch(reject);
+      }
+      if (res.statusCode !== 200) return reject(new Error('HTTP ' + res.statusCode));
+      const chunks = [];
+      res.on('data', d => chunks.push(d));
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));
+        } catch (e) {
+          reject(e);
+        }
+      });
+      res.on('error', reject);
+    }).on('error', reject);
+  });
+}
+
+async function syncCacheFromGitHub() {
+  try {
+    const freshData = await fetchRemoteJson(RAW_CACHE_URL + '?t=' + Date.now());
+    if (freshData && freshData['malayalam-movies']) {
+      memoryCache = freshData;
+      console.log('[Cache Sync] ✅ In-memory cache updated from GitHub Raw (' + (freshData.builtAt || 'latest') + ')');
+    }
+  } catch (e) {
+    console.warn('[Cache Sync] ⚠️ GitHub Raw sync failed (' + e.message + ') — serving current memory cache');
+  }
+}
+
+// Initial sync on boot, then repeat every 30 minutes
+syncCacheFromGitHub();
+setInterval(syncCacheFromGitHub, 30 * 60 * 1000);
 
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Handle OPTIONS preflight
   if (req.method === 'OPTIONS') {
     res.writeHead(200);
     res.end();
     return;
   }
 
-  const url = req.url.split('?')[0]; // Remove query params
+  const url = req.url.split('?')[0];
 
-  // ── Serve HTML landing page for root ──
+  // ── Root Landing Page ──
   if (url === '/') {
     const manifestPath = path.join(__dirname, 'manifest.json');
     if (!fs.existsSync(manifestPath)) {
@@ -45,23 +91,14 @@ const server = http.createServer((req, res) => {
     }
 
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-
-    // Live stats from cache — shows visitors the addon is alive
-    const cache = readJsonFile(path.join(__dirname, 'data', 'cache.json'));
-    const counts = cache ? {
-      mm: (cache['malayalam-movies'] || []).length,
-      ms: (cache['malayalam-series'] || []).length,
-      tm: (cache['tamil-movies'] || []).length,
-      ts: (cache['tamil-series'] || []).length,
-    } : { mm: 0, ms: 0, tm: 0, ts: 0 };
+    const counts = {
+      mm: (memoryCache['malayalam-movies'] || []).length,
+      ms: (memoryCache['malayalam-series'] || []).length,
+      tm: (memoryCache['tamil-movies'] || []).length,
+      ts: (memoryCache['tamil-series'] || []).length,
+    };
     const total = counts.mm + counts.ms + counts.tm + counts.ts;
     const host = req.headers.host || 'localhost:' + PORT;
-
-    // Optional screenshot (only rendered if the file exists in /public)
-    const screenshotPath = path.join(__dirname, 'public', 'screenshot-catalog.jpg');
-    const screenshotHtml = fs.existsSync(screenshotPath)
-      ? '<img src="/public/screenshot-catalog.jpg" alt="South Streams in Stremio" style="max-width:100%; border-radius:12px; border:1px solid #1e2c3d; margin-top:36px; box-shadow:0 10px 40px rgba(0,0,0,.5);">'
-      : '';
 
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(`<!DOCTYPE html>
@@ -71,57 +108,37 @@ const server = http.createServer((req, res) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${manifest.name} — New Malayalam & Tamil OTT releases, daily</title>
   <meta name="description" content="${manifest.description}">
-  <meta property="og:title" content="${manifest.name} — Mollywood & Kollywood on OTT, day-0">
-  <meta property="og:description" content="New Malayalam & Tamil movies and series on OTT — detected the day they drop. Free Stremio addon, updated 5x daily.">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; background:#0a0e14; color:#e6edf3; line-height:1.6; }
+    body { font-family: system-ui, -apple-system, sans-serif; background:#0a0e14; color:#e6edf3; line-height:1.6; }
     .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; }
     a { color:#4fd1c5; }
-    .hero { text-align:center; padding: 80px 0 50px; background: radial-gradient(ellipse at top, #0f2733 0%, #0a0e14 70%); }
-    .badge { display:inline-block; background:#132a33; color:#4fd1c5; border:1px solid #1e4a52; padding:5px 14px; border-radius:20px; font-size:.8rem; font-weight:600; letter-spacing:.5px; margin-bottom:22px; }
-    h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); background: linear-gradient(90deg,#4fd1c5,#63b3ed); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .tagline { font-size:1.15rem; color:#9fb3c8; max-width:560px; margin:14px auto 8px; }
-    .tagline b { color:#e6edf3; }
-    .cta-row { margin-top:30px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
-    .btn { display:inline-block; padding:14px 32px; border-radius:10px; font-size:1.05rem; font-weight:700; text-decoration:none; transition: transform .15s, box-shadow .15s; }
-    .btn:hover { transform: translateY(-2px); }
-    .btn-primary { background: linear-gradient(90deg,#14b8a6,#3b82f6); color:#fff; box-shadow: 0 4px 24px rgba(20,184,166,.35); }
+    .hero { text-align:center; padding: 70px 0 40px; background: radial-gradient(ellipse at top, #0f2733 0%, #0a0e14 70%); }
+    .badge { display:inline-block; background:#132a33; color:#4fd1c5; border:1px solid #1e4a52; padding:5px 14px; border-radius:20px; font-size:.8rem; font-weight:600; margin-bottom:18px; }
+    h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); background: linear-gradient(90deg,#4fd1c5,#63b3ed); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .tagline { font-size:1.1rem; color:#9fb3c8; max-width:540px; margin:12px auto 6px; }
+    .cta-row { margin-top:28px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+    .btn { display:inline-block; padding:12px 28px; border-radius:10px; font-size:1rem; font-weight:700; text-decoration:none; }
+    .btn-primary { background: linear-gradient(90deg,#14b8a6,#3b82f6); color:#fff; }
     .btn-ghost { background:#16202b; color:#c9d6e2; border:1px solid #263444; }
-    .stats { display:flex; gap:30px; justify-content:center; margin-top:36px; flex-wrap:wrap; }
-    .stat b { display:block; font-size:1.5rem; color:#4fd1c5; }
-    .stat span { font-size:.8rem; color:#7a8ea3; text-transform:uppercase; letter-spacing:1px; }
-    section { padding: 44px 0; }
-    h2 { font-size:1.5rem; margin-bottom:20px; text-align:center; }
-    h2 span { color:#4fd1c5; }
-    .callout { background:#1a2332; border:1px solid #2b6a5e; border-left:4px solid #14b8a6; border-radius:10px; padding:18px 22px; font-size:.95rem; }
-    .callout b { color:#4fd1c5; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
-    .card { background:#111926; border:1px solid #1e2c3d; border-radius:12px; padding:20px; transition: border-color .2s; }
-    .card:hover { border-color:#2b6a5e; }
-    .card .ico { font-size:1.6rem; }
-    .card h3 { font-size:1rem; margin:8px 0 4px; }
-    .card p { font-size:.85rem; color:#8ba0b5; }
-    .card .num { font-size:1.3rem; font-weight:800; color:#4fd1c5; }
-    .step { display:flex; gap:16px; padding:14px 0; align-items:flex-start; }
-    .step b { display:block; color:#e6edf3; }
-    .step div { color:#9fb3c8; font-size:.95rem; }
-    .stepnum { flex-shrink:0; width:32px; height:32px; border-radius:50%; background:#132a33; color:#4fd1c5; font-weight:700; display:flex; align-items:center; justify-content:center; border:1px solid #1e4a52; }
-    details { background:#111926; border:1px solid #1e2c3d; border-radius:10px; padding:14px 18px; margin-bottom:10px; }
-    summary { cursor:pointer; font-weight:600; }
-    details p { color:#9fb3c8; font-size:.92rem; margin-top:10px; }
-    footer { border-top:1px solid #1a2433; margin-top:40px; padding:34px 0 50px; text-align:center; color:#7a8ea3; font-size:.85rem; }
-    footer .heart { color:#e2556e; }
-    @media (max-width:600px){ .hero{padding:56px 0 36px;} .stats{gap:18px;} }
+    .stats { display:flex; gap:24px; justify-content:center; margin-top:32px; flex-wrap:wrap; }
+    .stat b { display:block; font-size:1.4rem; color:#4fd1c5; }
+    .stat span { font-size:.75rem; color:#7a8ea3; text-transform:uppercase; letter-spacing:1px; }
+    section { padding: 36px 0; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+    .card { background:#111926; border:1px solid #1e2c3d; border-radius:12px; padding:18px; }
+    .card .ico { font-size:1.5rem; }
+    .card h3 { font-size:1rem; margin:6px 0 2px; }
+    .card .num { font-size:1.2rem; font-weight:800; color:#4fd1c5; }
+    footer { border-top:1px solid #1a2433; margin-top:40px; padding:28px 0; text-align:center; color:#7a8ea3; font-size:.85rem; }
   </style>
 </head>
 <body>
-
   <div class="hero">
     <div class="wrap">
-      <span class="badge">⚡ UPDATED 5× A DAY — AUTOMATICALLY</span>
+      <span class="badge">⚡ AUTO-SYNCED STREAMING CATALOG</span>
       <h1>🌊 ${manifest.name}</h1>
-      <p class="tagline">New <b>Malayalam</b> & <b>Tamil</b> movies and series on OTT — detected <b>the day they drop</b>. Never miss an OTT release again.</p>
+      <p class="tagline">New Malayalam & Tamil OTT films and series detected the day they drop.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="stremio://${host}/manifest.json">📦 Install in Stremio</a>
         <a class="btn btn-ghost" href="https://${host}/manifest.json">🔧 Manual / Nuvio install</a>
@@ -130,80 +147,28 @@ const server = http.createServer((req, res) => {
         <div class="stat"><b>${total}</b><span>Titles tracked</span></div>
         <div class="stat"><b>${counts.mm + counts.tm}</b><span>Movies</span></div>
         <div class="stat"><b>${counts.ms + counts.ts}</b><span>Series</span></div>
-        <div class="stat"><b>4</b><span>Catalogs</span></div>
       </div>
-      ${screenshotHtml}
     </div>
   </div>
-
   <section>
     <div class="wrap">
-      <div class="callout">
-        🎯 <b>This is a discovery addon.</b> It tells you <i>what's new on OTT</i> — pair it with a stream addon like <b>Torrentio</b> or <b>TorBox</b> to actually watch. Install both, and new releases appear in your home row the day they premiere.
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <div class="wrap">
-      <h2>📚 <span>Catalogs</span></h2>
       <div class="grid">
-        <div class="card"><div class="ico">🎬</div><h3>Malayalam Movies</h3><p class="num">${counts.mm} tracking</p><p>Latest Mollywood OTT premieres</p></div>
-        <div class="card"><div class="ico">📺</div><h3>Malayalam Series</h3><p class="num">${counts.ms} tracking</p><p>New web series & returning seasons</p></div>
-        <div class="card"><div class="ico">🎬</div><h3>Tamil Movies</h3><p class="num">${counts.tm} tracking</p><p>Latest Kollywood OTT premieres</p></div>
-        <div class="card"><div class="ico">📺</div><h3>Tamil Series</h3><p class="num">${counts.ts} tracking</p><p>New web series & returning seasons</p></div>
+        <div class="card"><div class="ico">🎬</div><h3>Malayalam Movies</h3><p class="num">${counts.mm}</p></div>
+        <div class="card"><div class="ico">📺</div><h3>Malayalam Series</h3><p class="num">${counts.ms}</p></div>
+        <div class="card"><div class="ico">🎬</div><h3>Tamil Movies</h3><p class="num">${counts.tm}</p></div>
+        <div class="card"><div class="ico">📺</div><h3>Tamil Series</h3><p class="num">${counts.ts}</p></div>
       </div>
     </div>
   </section>
-
-  <section>
-    <div class="wrap">
-      <h2>⚙️ <span>How it works</span></h2>
-      <div class="step"><div class="stepnum">1</div><div><b>Day-0 detection</b>Official streaming-catalog APIs watch every Indian OTT platform — JioHotstar, Prime, SonyLIV, Zee5, SunNXT, Aha, ManoramaMAX & more — for new arrivals.</div></div>
-      <div class="step"><div class="stepnum">2</div><div><b>Smart enrichment</b>TMDB & OMDb attach posters, descriptions, ratings and IMDb IDs. Wrong-language titles are filtered out automatically.</div></div>
-      <div class="step"><div class="stepnum">3</div><div><b>Human verification</b>A manually maintained release-date sheet patches and corrects anything the machines get wrong.</div></div>
-      <div class="step"><div class="stepnum">4</div><div><b>Straight to your home screen</b>The catalog refreshes 5 times a day. New premieres appear at the top — on release day, not a week later.</div></div>
-    </div>
-  </section>
-
-  <section>
-    <div class="wrap">
-      <h2>✨ <span>Why South Streams</span></h2>
-      <div class="grid">
-        <div class="card"><div class="ico">⚡</div><h3>Same-day detection</h3><p>Premieres appear within hours of hitting OTT — not days.</p></div>
-        <div class="card"><div class="ico">🛡️</div><h3>Renewal-proof</h3><p>Re-licenses and renewals are labeled — only real premieres top the list.</p></div>
-        <div class="card"><div class="ico">🇮🇳</div><h3>Curated, not flooded</h3><p>Strict Malayalam & Tamil language guards. No random Hollywood dumps.</p></div>
-        <div class="card"><div class="ico">🆓</div><h3>Free forever</h3><p>No accounts, no keys, no tracking. Just install and browse.</p></div>
-        <div class="card"><div class="ico">📱</div><h3>Works everywhere</h3><p>Stremio on Android, iOS, Windows, Mac, TV — and Nuvio.</p></div>
-        <div class="card"><div class="ico">🤝</div><h3>Plays nice</h3><p>Uses standard IMDb IDs — pairs perfectly with Torrentio, TorBox & debrid addons.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <div class="wrap">
-      <h2>❓ <span>FAQ</span></h2>
-      <details open><summary>How do I watch the movies?</summary><p>South Streams is a catalog addon — it shows you what's new. Install a stream addon like <b>Torrentio</b> (free, torrent-based) or <b>TorBox</b> alongside it, and play buttons appear automatically on every title.</p></details>
-      <details><summary>Does it cost anything?</summary><p>No. The addon is completely free and open source. Your Stremio account and any stream addons you choose are separate.</p></details>
-      <details><summary>How often does it update?</summary><p>Five times daily — new OTT premieres usually appear within hours of release, with a deep sweep just after midnight IST.</p></details>
-      <details><summary>A movie I expected is missing?</summary><p>Only titles that genuinely premiered on Indian OTT appear at the top. Catalog re-licenses appear lower, labeled "Re-release". Rare edge cases can be reported on GitHub.</p></details>
-    </div>
-  </section>
-
   <footer>
-    <div class="wrap">
-      <p><a href="https://github.com/freshdewsteam/South-Streams">GitHub — open source</a> · Report issues · Contribute</p>
-      <p style="margin-top:10px;">South Streams provides metadata only and hosts no content. All titles link to their official streaming platforms.</p>
-      <p style="margin-top:10px;">Built with <span class="heart">❤️</span> for the South Indian OTT community</p>
-    </div>
+    <div class="wrap"><p>South Streams • Metadata discovery addon for Stremio</p></div>
   </footer>
-
 </body>
 </html>`);
     return;
   }
 
-  // ── Serve static files from /public (screenshots, og-image) ──
+  // ── Static Files from /public ──
   if (url.startsWith('/public/')) {
     const filePath = path.join(__dirname, url);
     if (filePath.startsWith(path.join(__dirname, 'public')) && fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
@@ -230,26 +195,18 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // ── SERVE META ENDPOINT ──
-  // Stremio/Nuvio calls this when user clicks a title from our catalogue
+  // ── Meta Endpoint (/meta/{type}/{id}.json) ──
   if (url.startsWith('/meta/')) {
-    const parts = url.split('/');
-    const id = parts[3] ? parts[3].replace('.json', '') : '';
+    const match = url.match(/^\/meta\/[^/]+\/([^/.]+)(?:\.json)?$/);
+    const id = match ? match[1] : url.split('/').pop().replace('.json', '');
 
-    console.log('[Meta] Request: ' + id);
-
-    const cache = readJsonFile(path.join(__dirname, 'data', 'cache.json'));
-    let found = null;
-
-    if (cache) {
-      const allItems = [
-        ...(cache['malayalam-movies'] || []),
-        ...(cache['malayalam-series'] || []),
-        ...(cache['tamil-movies'] || []),
-        ...(cache['tamil-series'] || []),
-      ];
-      found = allItems.find(item => item.id === id) || null;
-    }
+    const allItems = [
+      ...(memoryCache['malayalam-movies'] || []),
+      ...(memoryCache['malayalam-series'] || []),
+      ...(memoryCache['tamil-movies'] || []),
+      ...(memoryCache['tamil-series'] || []),
+    ];
+    const found = allItems.find(item => item.id === id) || null;
 
     if (!found) {
       res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -267,25 +224,43 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // ── SERVE CATALOG ENDPOINTS ──
-  // Stremio expects: /catalog/{type}/{catalogId}.json
+  // ── Catalog Endpoint with Genre Filtering & Pagination ──
+  // Stremio patterns:
+  // - /catalog/{type}/{catalogId}.json
+  // - /catalog/{type}/{catalogId}/genre={genreName}.json
+  // - /catalog/{type}/{catalogId}/skip={skipCount}.json
+  // - /catalog/{type}/{catalogId}/genre={genreName}&skip={skipCount}.json
   if (url.startsWith('/catalog/')) {
     const parts = url.split('/');
     const catalogId = parts[3] ? parts[3].replace('.json', '') : '';
 
-    console.log('[Catalog] Request: ' + catalogId);
-
-    const cache = readJsonFile(path.join(__dirname, 'data', 'cache.json'));
-    if (!cache || !cache[catalogId]) {
+    if (!memoryCache[catalogId]) {
       res.writeHead(404, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ metas: [] }));
       return;
     }
 
-    // Pagination: Stremio/Nuvio fetch pages via ?skip=N (100 per page)
-    const query = new URLSearchParams(req.url.split('?')[1] || '');
-    const skip  = Math.max(0, parseInt(query.get('skip') || '0', 10) || 0);
-    const catalogData = cache[catalogId].slice(skip, skip + 100);
+    let items = memoryCache[catalogId];
+
+    // Check for genre parameter either in path or query string
+    let requestedGenre = null;
+    const genreMatch = req.url.match(/genre=([^&/.]+)/);
+    if (genreMatch) {
+      requestedGenre = decodeURIComponent(genreMatch[1]).trim();
+    }
+
+    if (requestedGenre) {
+      items = items.filter(item => Array.isArray(item.genres) && item.genres.includes(requestedGenre));
+    }
+
+    // Pagination check
+    let skip = 0;
+    const skipMatch = req.url.match(/skip=([0-9]+)/);
+    if (skipMatch) {
+      skip = parseInt(skipMatch[1], 10) || 0;
+    }
+
+    const catalogData = items.slice(skip, skip + 100);
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
@@ -297,20 +272,13 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // ── Serve raw cache.json (for debugging) ──
+  // ── Serve raw in-memory cache for debugging ──
   if (url === '/data/cache.json') {
-    const cache = readJsonFile(path.join(__dirname, 'data', 'cache.json'));
-    if (cache) {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(cache));
-    } else {
-      res.writeHead(404);
-      res.end('Cache not found');
-    }
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(memoryCache));
     return;
   }
 
-  // ── Default: return 404 ──
   res.writeHead(404);
   res.end('Not found');
 });
