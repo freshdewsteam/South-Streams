@@ -40,6 +40,43 @@ const RETRY_TTL           =  3 * 24 * 60 * 60 * 1000;
 
 const RERELEASE_MAX_AGE_DAYS = 90;
 
+// ── PLATFORM NORMALIZATION HELPER ──
+function cleanPlatformNames(platformStr) {
+  if (!platformStr) return '';
+  const map = {
+    'amazon prime video': 'Prime Video',
+    'amazon prime video with ads': 'Prime Video',
+    'prime video': 'Prime Video',
+    'manoramamax amazon channel': 'ManoramaMAX',
+    'manoramamax': 'ManoramaMAX',
+    'lionsgate play amazon channel': 'Lionsgate Play',
+    'lionsgate play apple tv channel': 'Lionsgate Play',
+    'lionsgate play': 'Lionsgate Play',
+    'ap international south cinema amazon channel': 'AP International',
+    'ultraplaybox amazon channel': 'Ultraplaybox',
+    'chaupal amazon channel': 'Chaupal',
+    'sun nxt': 'SunNXT',
+    'sunnxt': 'SunNXT',
+    'sony liv': 'Sony LIV',
+    'sony liv ': 'Sony LIV',
+    'sonyliv': 'Sony LIV',
+    'jiohotstar': 'JioHotstar',
+    'hotstar': 'JioHotstar',
+    'zee5': 'Zee5',
+    'netflix': 'Netflix',
+    'aha': 'Aha'
+  };
+
+  const platforms = String(platformStr).split(',').map(p => p.trim()).filter(Boolean);
+  const normalized = new Set();
+
+  for (const p of platforms) {
+    const key = p.toLowerCase();
+    normalized.add(map[key] || p);
+  }
+  return Array.from(normalized).join(', ');
+}
+
 // ── CACHE ─────────────────────────────────────────────────────────────────────
 let movieCache  = {};
 let seriesCache = {};
@@ -248,7 +285,6 @@ function isReleased(dateStr) {
 function daysAgo(n) { const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
 function today()    { return new Date().toISOString().slice(0,10); }
 
-// Deep-sweep window: 00:01–01:30 IST (18:00–20:00 UTC)[cite: 1]
 function isDeepSweepHour() {
   const h = new Date().getUTCHours();
   return h >= 18 && h < 20;
@@ -271,7 +307,7 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
                      rating, posterPath, backdropPath, genres, posterUrl, backdropUrl }) {
   let desc = '';
   if (overview)    desc += overview + '\n\n';
-  if (platform)    desc += '📺 Streaming on: ' + platform;
+  if (platform)    desc += '📺 Streaming on: ' + cleanPlatformNames(platform);
   if (releaseDate) desc += '\n📅 Release: ' + releaseDate;
   if (rating)      desc += '\n⭐ Rating: ' + Number(rating).toFixed(1) + '/10';
 
@@ -578,7 +614,7 @@ async function fetchJustWatch(lang, kind) {
   return resolved;
 }
 
-// ── 91MOBILES (REVERTED TO 7 DAYS) ────────────────────────────────────────────
+// ── 91MOBILES (7-DAY REGULAR SWEEP) ───────────────────────────────────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_LANG_ID  = { ml: 28, ta: 63 };
 const M91_LOOKBACK_DAYS = 7;
@@ -734,7 +770,7 @@ async function fetch91Mobiles(lang, kind) {
           imdbId: null,
           year: item.year,
           isNewSeason: item.isNewSeason,
-          trustedPlatform: item.platform || undefined,
+          trustedPlatform: cleanPlatformNames(item.platform) || undefined,
         });
       }
       await new Promise(res => setTimeout(res, 80));
@@ -851,11 +887,12 @@ async function processMovie(item, lang, expectedLang, strictLang) {
     let platform;
     if (all.length) {
       const seenP = new Set();
-      platform = all
-        .filter(p => { if (seenP.has(p.provider_id)) return false; seenP.add(p.provider_id); return true; })
-        .map(p => p.provider_name).join(', ');
+      platform = cleanPlatformNames(
+        all.filter(p => { if (seenP.has(p.provider_id)) return false; seenP.add(p.provider_id); return true; })
+           .map(p => p.provider_name).join(', ')
+      );
     } else if (item.trustedPlatform) {
-      platform = item.trustedPlatform;
+      platform = cleanPlatformNames(item.trustedPlatform);
     } else {
       setRetry(movieCache, cacheKey);
       return null;
@@ -939,11 +976,13 @@ async function processSeriesJW(item, lang) {
 
     const IN  = detail['watch/providers'] && detail['watch/providers'].results && detail['watch/providers'].results.IN;
     const all = IN ? [...(IN.flatrate||[]), ...(IN.free||[]), ...(IN.ads||[])] : [];
-    const platform = all.length
-      ? all.filter((p, i, arr) => arr.findIndex(x => x.provider_id === p.provider_id) === i).map(p => p.provider_name).join(', ')
-      : (item.trustedPlatform || '');
+    const platform = cleanPlatformNames(
+      all.length
+        ? all.filter((p, i, arr) => arr.findIndex(x => x.provider_id === p.provider_id) === i).map(p => p.provider_name).join(', ')
+        : (item.trustedPlatform || '')
+    );
 
-    // Prefer last_air_date so returning shows with new seasons (e.g. Bigg Boss) bubble up to their newest episode
+    // Prefer last_air_date so newly airing seasons/episodes sort to the current year
     const latestAirDate = detail.last_air_date || detail.first_air_date || item.arrivalDate || today();
 
     const meta = buildMeta({
