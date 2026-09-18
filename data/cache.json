@@ -1,6 +1,71 @@
 {
   "malayalam-movies": [
     {
+      "id": "tt43665767",
+      "type": "movie",
+      "name": "Maharaja Hostel",
+      "releaseInfo": "2026-09-18",
+      "description": "A group of college students settle into what seems like an ordinary hostel, but things soon take a strange turn when a series of unexplained incidents begin to unfold. As their fun-filled hostel life descends into chaos, the students and their warden are forced to face the mysterious presence lurking within Maharaja Hostel.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-18\n⭐ Rating: 3.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/b7k2NhmlnMMRup94QbbCfBuct05.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/joF415KFrGFa7sFZXoBExVP1BwD.jpg",
+      "genres": [
+        "Horror",
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tt34623207",
+      "type": "movie",
+      "name": "Vyasanasametham Bandhumithradhikal",
+      "releaseInfo": "2026-09-18",
+      "description": "A small-town shopkeeper deals with his daughter's engagement, his mother-in-law's sudden death, and family issues, while his daughter starts to question her marriage and speaks up for herself.\n\n📺 Streaming on: ManoramaMAX\n📅 OTT Release: 2026-09-18\n⭐ Rating: 7.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/8yOQPzxV2vqzC9p0bh6fGxtQUtx.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/9Q7NaGY4xg45IZAnQsYchWvo07v.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt36580813",
+      "type": "movie",
+      "name": "Pluto",
+      "releaseInfo": "2026-09-17",
+      "description": "Follows the unexpected arrival of an extraterrestrial visitor in a quiet Kerala village, which turns everyday life completely upside down.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-08-24\n⭐ Rating: 2.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/pPxsw4KnZbsklyHUCTKSCHKaC8F.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cSiQqEN2IbNxWXNZ2YLd32DSVrK.jpg",
+      "genres": [
+        "Science Fiction",
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tt27541778",
+      "type": "movie",
+      "name": "Anomie",
+      "releaseInfo": "2026-09-17",
+      "description": "Zaara, a relentless sister seeking answers in her brother's unresolved case, confronts a police officer after days of failed investigation. As faith in the system erodes, she pursues the truth on parallel paths, leading to a haunting revelation.\n\n📺 Streaming on: Prime Video, Lionsgate Play\n📅 OTT Release: 2026-09-17\n⭐ Rating: 5.3/10",
+      "poster": "https://image.tmdb.org/t/p/w500/j0ZLUMdBimCAkblfcaBlrGzzYoq.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/pztQG3jKVQEgf8JZAVKLt885EyG.jpg",
+      "genres": [
+        "Crime",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt22015520",
+      "type": "movie",
+      "name": "Charles Enterprises",
+      "releaseInfo": "2026-09-12",
+      "description": "A man unleashes more trouble than he bargained for when he steals a valuable Ganesh statue from his deeply religious mother.\n\n📺 Streaming on: Prime Video, AP International\n📅 OTT Release: 2026-09-12\n⭐ Rating: 5.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/bnVRLe76H5Fpg135i0HEV7gvn2K.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1MFIgFQZYN8i8ngNpeCYEpKkiVD.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
       "id": "tt26445387",
       "type": "movie",
       "name": "I, Nobody",
@@ -13,19 +78,6 @@
         "Crime",
         "Action",
         "Drama"
-      ]
-    },
-    {
-      "id": "tt36580813",
-      "type": "movie",
-      "name": "Pluto",
-      "releaseInfo": "2026-08-24",
-      "description": "Follows the unexpected arrival of an extraterrestrial visitor in a quiet Kerala village, which turns everyday life completely upside down.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-08-24\n⭐ Rating: 2.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/pPxsw4KnZbsklyHUCTKSCHKaC8F.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/cSiQqEN2IbNxWXNZ2YLd32DSVrK.jpg",
-      "genres": [
-        "Science Fiction",
-        "Comedy"
       ]
     },
     {
@@ -312,6 +364,61 @@
     }
   ],
   "tamil-movies": [
+    {
+      "id": "tt22036406",
+      "type": "movie",
+      "name": "Kanguva",
+      "releaseInfo": "2026-09-18",
+      "description": "A bounty hunter in present day, learns about his previous life as a legendary warrior, when fate unites him with a mutant kid.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-18\n⭐ Rating: 3.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/lycbTFBXqFN1kMdPEsnAFutKEEy.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cpK4ZqGZVJAIIKo8EgpSHif8yNL.jpg",
+      "genres": [
+        "Action",
+        "Thriller",
+        "Fantasy"
+      ]
+    },
+    {
+      "id": "tt35836025",
+      "type": "movie",
+      "name": "Vishwanath & Sons",
+      "releaseInfo": "2026-09-12",
+      "description": "A celebrated Olympian shooter travels to America looking for a donor to help his sick child — but unexpected romance complicates his search.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-09-12\n⭐ Rating: 7.2/10",
+      "poster": "https://image.tmdb.org/t/p/w500/adDZVEQZnMJ380zPOmVj6vBWHgk.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/nfNaAiiILjYRc2CKkId1ZfPTtlh.jpg",
+      "genres": [
+        "Drama",
+        "Romance",
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tt15097344",
+      "type": "movie",
+      "name": "D Block",
+      "releaseInfo": "2026-09-12",
+      "description": "A young engineering student along with his friends unravels the mystery around his college where several girls go missing and dead.\n\n📺 Streaming on: Prime Video, Zee5, AP International, JioHotstar\n📅 OTT Release: 2026-09-12\n⭐ Rating: 5.4/10",
+      "poster": "https://image.tmdb.org/t/p/w500/2fcZVCOHTahmeXABOEaG0lWeMZd.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/sLOiKApCD4kTPnVkSUdMgjM21o6.jpg",
+      "genres": [
+        "Thriller",
+        "Mystery"
+      ]
+    },
+    {
+      "id": "tt3563156",
+      "type": "movie",
+      "name": "Anjaan",
+      "releaseInfo": "2026-09-12",
+      "description": "A man travels to Mumbai in search of his estranged brother, a feared figure in the criminal underworld. As he follows the trail through gang rivalries and shifting alliances, he uncovers a complex web of loyalty, deception, and violence that blurs the line between justice and revenge.\n\n📺 Streaming on: SunNXT, VI movies and tv, Goldmines Play Amazon Channel, Zee5\n📅 OTT Release: 2026-09-12\n⭐ Rating: 5.6/10",
+      "poster": "https://image.tmdb.org/t/p/w500/b3PM4bEQ1txDR30D2K79gGwvRIJ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/m998XZmTYyZJf3AmBWqyblvJTQk.jpg",
+      "genres": [
+        "Action",
+        "Thriller",
+        "Crime"
+      ]
+    },
     {
       "id": "tt35712605",
       "type": "movie",
@@ -1380,5 +1487,5 @@
       ]
     }
   ],
-  "builtAt": "2026-09-18T20:45:56.234Z"
+  "builtAt": "2026-09-18T20:57:02.329Z"
 }
