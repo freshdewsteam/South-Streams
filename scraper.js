@@ -1,13 +1,11 @@
 /**
  * scraper.js — South Streams
  *
- * Movies  → Movie of the Night changes API (official day-0, primary)
- *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 7 days)
- *           → 91mobiles editorial AJAX (7-day sweep, deep sweep only)
+ * Movies  → 91mobiles editorial AJAX (60-day lookback, authoritative OTT dates)
+ *           → Movie of the Night changes API (day-0 live updates)
+ *           → JustWatch GraphQL newTitles (safety net)
  *           → TMDB Auto-Discover (/discover/movie, foundation)
- * Series  → Movie of the Night changes API → JustWatch safety net
- *           → 91mobiles editorial AJAX (7-day sweep, deep sweep only)
- *           → TMDB Auto-Discover (/discover/tv, foundation)
+ * Series  → 91mobiles editorial AJAX → MoN → JustWatch → TMDB Discover (/discover/tv)
  * Enrichment → TMDB / OMDb API (posters, descriptions, IMDb IDs)
  */
 
@@ -308,7 +306,7 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
   let desc = '';
   if (overview)    desc += overview + '\n\n';
   if (platform)    desc += '📺 Streaming on: ' + cleanPlatformNames(platform);
-  if (releaseDate) desc += '\n📅 Release: ' + releaseDate;
+  if (releaseDate) desc += '\n📅 OTT Release: ' + releaseDate;
   if (rating)      desc += '\n⭐ Rating: ' + Number(rating).toFixed(1) + '/10';
 
   let poster   = posterUrl || (posterPath   ? IMG + 'w500'  + posterPath   : undefined);
@@ -614,10 +612,10 @@ async function fetchJustWatch(lang, kind) {
   return resolved;
 }
 
-// ── 91MOBILES (7-DAY REGULAR SWEEP) ───────────────────────────────────────────
+// ── 91MOBILES (60-DAY MULTI-PAGE SWEEP FOR ACCURATE OTT DATES) ────────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_LANG_ID  = { ml: 28, ta: 63 };
-const M91_LOOKBACK_DAYS = 7;
+const M91_LOOKBACK_DAYS = 60; // Wide window to ensure all cached releases get accurate OTT dates
 const M91_PAGES = {
   ml: { movie: 'new-malayalam-movies', series: 'new-malayalam-web-series' },
   ta: { movie: 'new-tamil-movies',     series: 'new-tamil-web-series' },
@@ -660,33 +658,44 @@ function m91UnwrapBody(raw) {
 
 async function m91FetchItems(slug, kind, lang) {
   const isShow = kind === 'SHOW';
-  const params = new URLSearchParams({
-    qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
-    sortOrder: 'desc',
-    sortBy: 'ottReleaseDate',
-    start: '1',
-    seoSlug: '/' + slug,
-    pType: slug,
-    dubbedVal: 'notDubbed',
-    type: 'loadmore'
-  });
-  const target = M91_AJAX_URL + '?' + params.toString();
+  let combinedHtml = '';
 
-  if (SCRAPERAPI_KEY) {
-    try {
-      const wrapped = 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
-                      '&country_code=in&url=' + encodeURIComponent(target);
-      const body = m91UnwrapBody(await fetchUrl(wrapped, m91FetchHeaders()));
-      if (/<div\s+class="?pro_item/.test(body)) return body;
-    } catch (e) {}
+  // Fetch 4 pages (offsets 1, 11, 21, 31) to capture the past 60 days
+  for (const pageStart of [1, 11, 21, 31]) {
+    const params = new URLSearchParams({
+      qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
+      sortOrder: 'desc',
+      sortBy: 'ottReleaseDate',
+      start: String(pageStart),
+      seoSlug: '/' + slug,
+      pType: slug,
+      dubbedVal: 'notDubbed',
+      type: 'loadmore'
+    });
+    const target = M91_AJAX_URL + '?' + params.toString();
+
+    let body = '';
+    if (SCRAPERAPI_KEY) {
+      try {
+        const wrapped = 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
+                        '&country_code=in&url=' + encodeURIComponent(target);
+        body = m91UnwrapBody(await fetchUrl(wrapped, m91FetchHeaders()));
+      } catch (e) {}
+    }
+
+    if (!body || !/<div\s+class="?pro_item/.test(body)) {
+      try {
+        body = m91UnwrapBody(await fetchUrl(target, m91FetchHeaders()));
+      } catch (e) {}
+    }
+
+    if (body && /<div\s+class="?pro_item/.test(body)) {
+      combinedHtml += '\n' + body;
+    }
+    await new Promise(r => setTimeout(r, 200));
   }
 
-  try {
-    const body = m91UnwrapBody(await fetchUrl(target, m91FetchHeaders()));
-    if (/<div\s+class="?pro_item/.test(body)) return body;
-  } catch (e) {}
-
-  return '';
+  return combinedHtml;
 }
 
 function m91ParsePage(html, langLabel, requireOttMarker) {
@@ -782,6 +791,7 @@ async function fetch91Mobiles(lang, kind) {
   }
 }
 
+// 91mobiles always runs on every workflow execution to keep dates accurate
 async function fetchDay0Items(lang, kind) {
   const byId = new Map();
 
@@ -798,13 +808,11 @@ async function fetchDay0Items(lang, kind) {
     }
   } catch (e) {}
 
-  if (RUN_IS_DEEP) {
-    try {
-      for (const it of await fetch91Mobiles(lang, kind)) {
-        if (!byId.has(it.id)) byId.set(it.id, it);
-      }
-    } catch (e) {}
-  }
+  try {
+    for (const it of await fetch91Mobiles(lang, kind)) {
+      if (!byId.has(it.id)) byId.set(it.id, it);
+    }
+  } catch (e) {}
 
   return Array.from(byId.values());
 }
@@ -898,7 +906,6 @@ async function processMovie(item, lang, expectedLang, strictLang) {
       return null;
     }
 
-    // Prefer OTT arrival date (from 91mobiles / Day-0) over TMDB theatrical release date[cite: 1]
     const ottDate = item.arrivalDate || detail.release_date || '';
 
     const meta = buildMeta({
@@ -985,7 +992,6 @@ async function processSeriesJW(item, lang) {
         : (item.trustedPlatform || '')
     );
 
-    // Prefer last_air_date so newly airing seasons/episodes sort to the current year
     const latestAirDate = detail.last_air_date || detail.first_air_date || item.arrivalDate || today();
 
     const meta = buildMeta({
@@ -1026,14 +1032,21 @@ async function scrapeMovies(lang) {
     }
   }
 
-  // STEP 1: Day-0 & 91mobiles Arrivals with In-Place Cache Update[cite: 1]
+  // STEP 1: Authoritative OTT dates via 91mobiles & Day-0[cite: 1]
   const day0Items = await fetchDay0Items(lang, 'MOVIE');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_' + day0Item.id;
     const arrivalDate = day0Item.arrivalDate || today();
 
-    // CASE 1: Movie was already cached from a previous run — update its date and platform![cite: 1]
-    const existingIndex = metas.findIndex(m => m.id === day0Item.imdbId || (movieCache[cacheKey] && movieCache[cacheKey].id === m.id));
+    // Match existing movie by TMDB ID or title variations
+    const existingIndex = metas.findIndex(m => {
+      if (movieCache[cacheKey] && movieCache[cacheKey].id === m.id) return true;
+      if (day0Item.imdbId && m.id === day0Item.imdbId) return true;
+      if (m.name && day0Item.title && m.name.toLowerCase() === day0Item.title.toLowerCase()) return true;
+      return false;
+    });
+
+    // In-place date overwrite: update movie to 91mobiles OTT date[cite: 1]
     if (existingIndex !== -1) {
       const existingMeta = metas[existingIndex];
       if (arrivalDate && (!existingMeta.releaseInfo || existingMeta.releaseInfo < arrivalDate)) {
@@ -1043,12 +1056,12 @@ async function scrapeMovies(lang) {
         }
         movieCache[cacheKey] = existingMeta;
         cacheDirty = true;
-        console.log('[Date Update] 🔄 Updated ' + existingMeta.name + ' OTT date to ' + arrivalDate);
+        console.log('[91m Date Update] 🔄 ' + existingMeta.name + ' OTT date set to ' + arrivalDate);
       }
       continue;
     }
 
-    // CASE 2: Brand new discovery
+    // New discovery
     const cachedEntry    = readCacheEntry(movieCache[cacheKey]);
     const isNewDiscovery = cachedEntry === undefined || cachedEntry === 'retry';
 
@@ -1083,7 +1096,7 @@ async function scrapeMovies(lang) {
     }
   }
 
-  // Final Sort by release date (newest OTT arrivals at the top)[cite: 1]
+  // Sort by OTT date (newest premieres at the top)[cite: 1]
   metas.sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''));
   const finalResult = metas.slice(0, 120);
   console.log('[Movies] ' + lang + ': ' + finalResult.length + ' in catalogue');
@@ -1094,7 +1107,6 @@ async function scrapeSeries(lang) {
   const metas = [];
   const processedImdbIds = new Set();
 
-  // STEP 0: Seed existing cache[cite: 1]
   for (const [cacheKey, val] of Object.entries(seriesCache)) {
     if (!cacheKey.startsWith(lang + '_series_')) continue;
     const entry = readCacheEntry(val);
@@ -1105,26 +1117,29 @@ async function scrapeSeries(lang) {
     }
   }
 
-  // STEP 1: Day-0 & 91mobiles Arrivals with In-Place Cache Update[cite: 1]
   const day0Items = await fetchDay0Items(lang, 'SHOW');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_series_' + day0Item.id;
     const arrivalDate = day0Item.arrivalDate || today();
 
-    // CASE 1: Series was already cached — update its date if newer air date arrived[cite: 1]
-    const existingIndex = metas.findIndex(m => m.id === day0Item.imdbId || (seriesCache[cacheKey] && seriesCache[cacheKey].id === m.id));
+    const existingIndex = metas.findIndex(m => {
+      if (seriesCache[cacheKey] && seriesCache[cacheKey].id === m.id) return true;
+      if (day0Item.imdbId && m.id === day0Item.imdbId) return true;
+      if (m.name && day0Item.title && m.name.toLowerCase() === day0Item.title.toLowerCase()) return true;
+      return false;
+    });
+
     if (existingIndex !== -1) {
       const existingMeta = metas[existingIndex];
       if (arrivalDate && (!existingMeta.releaseInfo || existingMeta.releaseInfo < arrivalDate)) {
         existingMeta.releaseInfo = arrivalDate;
         seriesCache[cacheKey] = existingMeta;
         cacheDirty = true;
-        console.log('[Date Update] 🔄 Updated series ' + existingMeta.name + ' date to ' + arrivalDate);
+        console.log('[91m Date Update] 🔄 Updated series ' + existingMeta.name + ' date to ' + arrivalDate);
       }
       continue;
     }
 
-    // CASE 2: Brand new discovery
     const cachedEntry    = readCacheEntry(seriesCache[cacheKey]);
     const isNewDiscovery = cachedEntry === undefined || cachedEntry === 'retry';
 
@@ -1148,7 +1163,6 @@ async function scrapeSeries(lang) {
     }
   }
 
-  // STEP 2: TMDB Auto-Discover for Series Foundation
   const tmdbSeries = await discoverSeries(lang, 5);
   for (const item of tmdbSeries) {
     const meta = await processSeriesJW(item, lang);
