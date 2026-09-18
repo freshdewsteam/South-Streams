@@ -3241,8 +3241,17 @@
       ]
     },
     "ta_series_205505": {
-      "_status": "retry",
-      "_at": 1789755618595
+      "id": "tt21211254",
+      "type": "series",
+      "name": "TamilRockerz",
+      "releaseInfo": "2022-08-19",
+      "description": "Tamil Rockerz, an anonymous cyber pirates are threatening to release a highly anticipated film featuring a massively popular star. It's up to the cop Rudra to find the lawbreakers and bring them to justice.\n\n📺 Streaming on: Sony Liv, VI movies and tv\n📅 Release: 2022-08-19\n⭐ Rating: 6.1/10\n\n♻️ Re-release: back on OTT on 2026-09-15",
+      "poster": "https://image.tmdb.org/t/p/w500/hV2qjOlqVOS0gcnU2trrF6hatgu.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/wlQTky8pIAUqDJs9QQ74WkLZERa.jpg",
+      "genres": [
+        "Crime",
+        "Drama"
+      ]
     },
     "ta_series_1622": {
       "_status": "skip",

@@ -1,6 +1,19 @@
 {
   "malayalam-movies": [
     {
+      "id": "tt36580813",
+      "type": "movie",
+      "name": "Pluto",
+      "releaseInfo": "2026-09-17",
+      "description": "Follows the unexpected arrival of an extraterrestrial visitor in a quiet Kerala village, which turns everyday life completely upside down.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-07-30\n⭐ Rating: 2.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/pPxsw4KnZbsklyHUCTKSCHKaC8F.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cSiQqEN2IbNxWXNZ2YLd32DSVrK.jpg",
+      "genres": [
+        "Science Fiction",
+        "Comedy"
+      ]
+    },
+    {
       "id": "tt26445387",
       "type": "movie",
       "name": "I, Nobody",
@@ -1531,18 +1544,6 @@
         "Drama",
         "Thriller"
       ]
-    },
-    {
-      "id": "tt36594361",
-      "type": "movie",
-      "name": "Hathane Udaya",
-      "releaseInfo": "2025-04-18",
-      "description": "Hathane Udaya traces the deep-rooted connection between the mystical Theyyams and the people of North Malabar, unfolding amidst the sacred forests where tradition and belief walk hand in hand.\n\n📺 Streaming on: ManoramaMax, ManoramaMAX Amazon Channel\n📅 Release: 2025-04-18",
-      "poster": "https://image.tmdb.org/t/p/w500/9hvwy7gUXZGxsAOIhrisSoo0RFB.jpg",
-      "genres": [
-        "History",
-        "Action"
-      ]
     }
   ],
   "malayalam-series": [
@@ -1569,6 +1570,19 @@
       "poster": "https://image.tmdb.org/t/p/w500/aAbvbKbNU6YyYDZ5ntSQcOygliw.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/hR0QpzOO2Gx1Lt7KxqKFWZvj5Vl.jpg",
       "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt39300072",
+      "type": "movie",
+      "name": "Anbe Diana",
+      "releaseInfo": "2026-08-28",
+      "description": "Set in Perambur, a local Telugu youth falls for an Anglo-Indian girl, sparking a chaotic and humorous clash of cultures between their families.\n\n📺 Streaming on: Sony Liv\n📅 Release: 2026-07-17\n⭐ Rating: 5.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/201CEvG6ayNj71iSLxxEk7pUv0N.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/l4xqxKS7nlOni6bnTHWi3USyp4o.jpg",
+      "genres": [
+        "Comedy",
         "Drama"
       ]
     },
@@ -3136,19 +3150,6 @@
       "description": "Vallamai is a Tamil movie starring Premgi Amaren, Divya Darshini and Deepa Shankar in prominent roles. It is written and directed by Karuppaiyaa Murugan.\n\n📺 Streaming on: Ultraplaybox Amazon Channel\n📅 Release: 2025-04-25\n⭐ Rating: 5.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/sOJRmkgFi1KOwrT7FOGOLL77twg.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/eiUiLie2i4zBPs09Ekf9MTaTu4g.jpg"
-    },
-    {
-      "id": "tt11433936",
-      "type": "movie",
-      "name": "Sumo",
-      "releaseInfo": "2025-04-25",
-      "description": "When Shiva finds an unconscious stranger on the beach, he unknowingly begins a journey that leads to Japan's sumo rings. With truth and loyalty, he helps his friend reclaim his identity and honor, showing that bonds of the heart can rise above borders and power.\n\n📺 Streaming on: Amazon Prime Video, Sun Nxt, Amazon Prime Video with Ads\n📅 Release: 2025-04-25",
-      "poster": "https://image.tmdb.org/t/p/w500/tKrQb0LEZVCKMGoj3mVVL9mZkd8.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/p7JHiMPdHUE6gw442BcTpXbL9Tn.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
     }
   ],
   "tamil-series": [
@@ -3206,6 +3207,19 @@
       ]
     },
     {
+      "id": "tt21211254",
+      "type": "series",
+      "name": "TamilRockerz",
+      "releaseInfo": "2022-08-19",
+      "description": "Tamil Rockerz, an anonymous cyber pirates are threatening to release a highly anticipated film featuring a massively popular star. It's up to the cop Rudra to find the lawbreakers and bring them to justice.\n\n📺 Streaming on: Sony Liv, VI movies and tv\n📅 Release: 2022-08-19\n⭐ Rating: 6.1/10\n\n♻️ Re-release: back on OTT on 2026-09-15",
+      "poster": "https://image.tmdb.org/t/p/w500/hV2qjOlqVOS0gcnU2trrF6hatgu.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/wlQTky8pIAUqDJs9QQ74WkLZERa.jpg",
+      "genres": [
+        "Crime",
+        "Drama"
+      ]
+    },
+    {
       "id": "tt21223050",
       "type": "series",
       "name": "Meme Boys",
@@ -3219,5 +3233,5 @@
       ]
     }
   ],
-  "builtAt": "2026-09-18T18:17:10.795Z"
+  "builtAt": "2026-09-18T18:37:03.070Z"
 }

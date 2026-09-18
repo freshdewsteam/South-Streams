@@ -108,7 +108,7 @@
     },
     "ml_1720240": {
       "_status": "retry",
-      "_at": 1789755490765
+      "_at": 1789756646952
     },
     "ml_1677340": {
       "id": "tt41944664",
@@ -5031,8 +5031,17 @@
       "_at": 1789673942476
     },
     "ml_1444088": {
-      "_status": "retry",
-      "_at": 1789755494995
+      "id": "tt36580813",
+      "type": "movie",
+      "name": "Pluto",
+      "releaseInfo": "2026-09-17",
+      "description": "Follows the unexpected arrival of an extraterrestrial visitor in a quiet Kerala village, which turns everyday life completely upside down.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Release: 2026-07-30\n⭐ Rating: 2.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/pPxsw4KnZbsklyHUCTKSCHKaC8F.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cSiQqEN2IbNxWXNZ2YLd32DSVrK.jpg",
+      "genres": [
+        "Science Fiction",
+        "Comedy"
+      ]
     },
     "ml_1598": {
       "_status": "skip",
@@ -5116,7 +5125,7 @@
     },
     "ml_661918": {
       "_status": "retry",
-      "_at": 1789755474566
+      "_at": 1789756646148
     },
     "ml_769701": {
       "_status": "skip",
@@ -5256,7 +5265,7 @@
     },
     "ml_1627761": {
       "_status": "retry",
-      "_at": 1789755478220
+      "_at": 1789756646240
     },
     "ml_1336283": {
       "_status": "skip",
@@ -5380,7 +5389,7 @@
     },
     "ml_1422822": {
       "_status": "retry",
-      "_at": 1789755480940
+      "_at": 1789756646328
     },
     "ml_917372": {
       "_status": "skip",
@@ -5572,7 +5581,7 @@
     },
     "ml_1643810": {
       "_status": "retry",
-      "_at": 1789755485659
+      "_at": 1789756646441
     },
     "ml_576696": {
       "_status": "skip",
@@ -5632,7 +5641,7 @@
     },
     "ml_938186": {
       "_status": "retry",
-      "_at": 1789755487382
+      "_at": 1789756646544
     },
     "ml_1225787": {
       "_status": "skip",
@@ -5640,7 +5649,7 @@
     },
     "ml_1589714": {
       "_status": "retry",
-      "_at": 1789755487621
+      "_at": 1789756646629
     },
     "ml_502538": {
       "_status": "skip",
@@ -5660,7 +5669,7 @@
     },
     "ml_1742434": {
       "_status": "retry",
-      "_at": 1789755487927
+      "_at": 1789756646759
     },
     "ml_1032666": {
       "_status": "skip",
@@ -5716,7 +5725,7 @@
     },
     "ml_496172": {
       "_status": "retry",
-      "_at": 1789755489547
+      "_at": 1789756646848
     },
     "ml_7978": {
       "_status": "skip",
@@ -5897,7 +5906,7 @@
     },
     "ml_1736719": {
       "_status": "retry",
-      "_at": 1789755493990
+      "_at": 1789756647130
     },
     "ml_1204889": {
       "_status": "skip",
@@ -5909,7 +5918,7 @@
     },
     "ml_1249468": {
       "_status": "retry",
-      "_at": 1789755494518
+      "_at": 1789756647226
     },
     "ml_1214770": {
       "_status": "skip",
@@ -5917,7 +5926,7 @@
     },
     "ml_1260252": {
       "_status": "retry",
-      "_at": 1789755494739
+      "_at": 1789756647310
     },
     "ml_543905": {
       "_status": "skip",
@@ -6883,7 +6892,7 @@
     },
     "ta_661918": {
       "_status": "retry",
-      "_at": 1789755578930
+      "_at": 1789756689892
     },
     "ta_769701": {
       "_status": "skip",
@@ -6938,8 +6947,16 @@
       "_at": 1789674344024
     },
     "ta_588280": {
-      "_status": "retry",
-      "_at": 1789755580339
+      "id": "tt9905796",
+      "type": "movie",
+      "name": "July Kaatril",
+      "releaseInfo": "2019-03-15",
+      "description": "A happy-go-lucky youngster’s approach towards romance changes after he becomes close with three women in different phases of his life.\n\n📺 Streaming on:  AP International South Cinema Amazon Channel\n📅 Release: 2019-03-15\n\n♻️ Re-release: back on OTT on 2026-09-17",
+      "poster": "https://image.tmdb.org/t/p/w500/ixXzDWYp1PBAR5xTHOHgzjYdnWt.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/6tp5e6xkcKFa9VouAOyb0HX4HG2.jpg",
+      "genres": [
+        "Romance"
+      ]
     },
     "ta_1006780": {
       "_status": "skip",
@@ -6991,7 +7008,7 @@
     },
     "ta_263685": {
       "_status": "retry",
-      "_at": 1789755581758
+      "_at": 1789756690122
     },
     "ta_228064": {
       "_status": "skip",
@@ -7023,7 +7040,7 @@
     },
     "ta_1627761": {
       "_status": "retry",
-      "_at": 1789755582564
+      "_at": 1789756690145
     },
     "ta_1336283": {
       "_status": "skip",
@@ -7043,7 +7060,7 @@
     },
     "ta_1590380": {
       "_status": "retry",
-      "_at": 1789755578323
+      "_at": 1789756689830
     },
     "ta_460458": {
       "_status": "skip",
@@ -7139,11 +7156,11 @@
     },
     "ta_1686999": {
       "_status": "retry",
-      "_at": 1789755585183
+      "_at": 1789756690234
     },
     "ta_1766087": {
       "_status": "retry",
-      "_at": 1789755585389
+      "_at": 1789756690324
     },
     "ta_1422822": {
       "_status": "skip",
@@ -7179,7 +7196,7 @@
     },
     "ta_1627516": {
       "_status": "retry",
-      "_at": 1789755586199
+      "_at": 1789756690416
     },
     "ta_1706764": {
       "_status": "skip",
@@ -7339,7 +7356,7 @@
     },
     "ta_1643810": {
       "_status": "retry",
-      "_at": 1789755590012
+      "_at": 1789756696303
     },
     "ta_576696": {
       "_status": "skip",
@@ -7399,7 +7416,7 @@
     },
     "ta_938186": {
       "_status": "retry",
-      "_at": 1789755591721
+      "_at": 1789756696366
     },
     "ta_1225787": {
       "_status": "skip",
@@ -7407,7 +7424,7 @@
     },
     "ta_1589714": {
       "_status": "retry",
-      "_at": 1789755591926
+      "_at": 1789756696390
     },
     "ta_502538": {
       "_status": "skip",
@@ -7427,7 +7444,7 @@
     },
     "ta_1742434": {
       "_status": "retry",
-      "_at": 1789755592232
+      "_at": 1789756696412
     },
     "ta_1032666": {
       "_status": "skip",
@@ -7483,7 +7500,7 @@
     },
     "ta_496172": {
       "_status": "retry",
-      "_at": 1789755593854
+      "_at": 1789756696502
     },
     "ta_7978": {
       "_status": "skip",
@@ -7531,7 +7548,7 @@
     },
     "ta_1720240": {
       "_status": "retry",
-      "_at": 1789755595076
+      "_at": 1789756696509
     },
     "ta_1233244": {
       "_status": "skip",
@@ -7674,7 +7691,7 @@
     },
     "ta_1736719": {
       "_status": "retry",
-      "_at": 1789755598297
+      "_at": 1789756696645
     },
     "ta_1204889": {
       "_status": "skip",
@@ -7686,7 +7703,7 @@
     },
     "ta_1249468": {
       "_status": "retry",
-      "_at": 1789755598613
+      "_at": 1789756696675
     },
     "ta_1214770": {
       "_status": "skip",
@@ -7694,7 +7711,7 @@
     },
     "ta_1260252": {
       "_status": "retry",
-      "_at": 1789755598821
+      "_at": 1789756696699
     },
     "ta_543905": {
       "_status": "skip",
@@ -8415,11 +8432,11 @@
     },
     "ml_1770237": {
       "_status": "retry",
-      "_at": 1789755470511
+      "_at": 1789756645877
     },
     "ml_1770234": {
       "_status": "retry",
-      "_at": 1789755470629
+      "_at": 1789756645965
     },
     "ta_559401": {
       "_status": "skip",
@@ -8443,7 +8460,7 @@
     },
     "ta_1685882": {
       "_status": "retry",
-      "_at": 1789755571809
+      "_at": 1789756689298
     },
     "ta_1441228": {
       "_status": "skip",
@@ -8475,11 +8492,11 @@
     },
     "ta_1770237": {
       "_status": "retry",
-      "_at": 1789755574888
+      "_at": 1789756689719
     },
     "ta_1770234": {
       "_status": "retry",
-      "_at": 1789755574993
+      "_at": 1789756689744
     },
     "ml_9398": {
       "_status": "skip",
@@ -8503,7 +8520,7 @@
     },
     "ml_672751": {
       "_status": "retry",
-      "_at": 1789755469861
+      "_at": 1789756645680
     },
     "ml_1106591": {
       "_status": "skip",
@@ -8547,7 +8564,7 @@
     },
     "ta_672751": {
       "_status": "retry",
-      "_at": 1789755574245
+      "_at": 1789756689578
     },
     "ta_1106591": {
       "_status": "skip",
@@ -8595,7 +8612,7 @@
     },
     "ml_730301": {
       "_status": "retry",
-      "_at": 1789755470284
+      "_at": 1789756645782
     },
     "ml_1339654": {
       "_status": "skip",
@@ -8607,17 +8624,42 @@
     },
     "ta_730301": {
       "_status": "retry",
-      "_at": 1789755574667
+      "_at": 1789756689684
     },
     "ta_1339654": {
       "_status": "skip",
       "_at": 1789755574782
+    },
+    "ta_1081003": {
+      "_status": "skip",
+      "_at": 1789756689399
+    },
+    "ta_239563": {
+      "_status": "skip",
+      "_at": 1789756689484
+    },
+    "ta_1762080": {
+      "_status": "retry",
+      "_at": 1789756696788
+    },
+    "ta_1607634": {
+      "id": "tt39300072",
+      "type": "movie",
+      "name": "Anbe Diana",
+      "releaseInfo": "2026-08-28",
+      "description": "Set in Perambur, a local Telugu youth falls for an Anglo-Indian girl, sparking a chaotic and humorous clash of cultures between their families.\n\n📺 Streaming on: Sony Liv\n📅 Release: 2026-07-17\n⭐ Rating: 5.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/201CEvG6ayNj71iSLxxEk7pUv0N.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/l4xqxKS7nlOni6bnTHWi3USyp4o.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
     }
   },
   "_seen": {
     "ml_movie": true,
-    "mon_SHOW": 1789755495688,
+    "mon_SHOW": 1789756647829,
     "ta_movie": true,
-    "mon_MOVIE": 1789755431265
+    "mon_MOVIE": 1789756623932
   }
 }
