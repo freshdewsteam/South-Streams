@@ -140,7 +140,7 @@
     },
     "ml_672751": {
       "_status": "retry",
-      "_at": 1789766601307
+      "_at": 1789767890293
     },
     "ml_11460": {
       "_status": "skip",
@@ -168,7 +168,7 @@
     },
     "ml_730301": {
       "_status": "retry",
-      "_at": 1789766601581
+      "_at": 1789767890397
     },
     "ml_82283": {
       "_status": "skip",
@@ -184,11 +184,11 @@
     },
     "ml_1770237": {
       "_status": "retry",
-      "_at": 1789766601719
+      "_at": 1789767890480
     },
     "ml_1770234": {
       "_status": "retry",
-      "_at": 1789766602240
+      "_at": 1789767890523
     },
     "ml_1772176": {
       "_status": "skip",
@@ -362,15 +362,24 @@
     },
     "ml_661918": {
       "_status": "retry",
-      "_at": 1789766617472
+      "_at": 1789767890573
     },
     "ml_769701": {
       "_status": "skip",
       "_at": 1789766617507
     },
     "ml_83242": {
-      "_status": "skip",
-      "_at": 1789766617542
+      "id": "tt34614859",
+      "type": "movie",
+      "name": "Innocent",
+      "releaseInfo": "2026-09-17",
+      "description": "Vinod, 29, is a man of routine. Living in Karunagappally and working at the Planning Office in Thiruvananthapuram, he spends his days in a carefully controlled cycle of train commutes, meticulous work, and an almost obsessive adherence to order.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-07\n⭐ Rating: 5.3/10",
+      "poster": "https://image.tmdb.org/t/p/w500/A1z6Uhk63p6kh43mkuTfECIkcRQ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/rl4Ke2Cq3VH4j9rQNE1uP2iffys.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
     },
     "ml_6072": {
       "_status": "skip",
@@ -498,7 +507,7 @@
     },
     "ml_1627761": {
       "_status": "retry",
-      "_at": 1789766632408
+      "_at": 1789767890619
     },
     "ml_569494": {
       "_status": "skip",
@@ -806,7 +815,7 @@
     },
     "ml_1643810": {
       "_status": "retry",
-      "_at": 1789766662486
+      "_at": 1789767890690
     },
     "ml_576696": {
       "_status": "skip",
@@ -874,7 +883,7 @@
     },
     "ml_938186": {
       "_status": "retry",
-      "_at": 1789766676972
+      "_at": 1789767890738
     },
     "ml_1225787": {
       "_status": "skip",
@@ -882,7 +891,7 @@
     },
     "ml_1589714": {
       "_status": "retry",
-      "_at": 1789766677068
+      "_at": 1789767890786
     },
     "ml_1756890": {
       "_status": "skip",
@@ -894,7 +903,7 @@
     },
     "ml_1742434": {
       "_status": "retry",
-      "_at": 1789766677211
+      "_at": 1789767890851
     },
     "ml_1510235": {
       "_status": "skip",
@@ -958,7 +967,7 @@
     },
     "ml_496172": {
       "_status": "retry",
-      "_at": 1789766677778
+      "_at": 1789767890962
     },
     "ml_7978": {
       "_status": "skip",
@@ -1006,7 +1015,7 @@
     },
     "ml_1720240": {
       "_status": "retry",
-      "_at": 1789766723311
+      "_at": 1789767891048
     },
     "ml_1233244": {
       "_status": "skip",
@@ -1143,7 +1152,7 @@
     },
     "ml_1736719": {
       "_status": "retry",
-      "_at": 1789766707082
+      "_at": 1789767891112
     },
     "ml_1204889": {
       "_status": "skip",
@@ -1155,7 +1164,7 @@
     },
     "ml_1249468": {
       "_status": "retry",
-      "_at": 1789766707195
+      "_at": 1789767891198
     },
     "ml_1214770": {
       "_status": "skip",
@@ -1163,7 +1172,7 @@
     },
     "ml_1260252": {
       "_status": "retry",
-      "_at": 1789766707291
+      "_at": 1789767891242
     },
     "ml_543905": {
       "_status": "skip",
@@ -1458,7 +1467,7 @@
       "id": "tt26445387",
       "type": "movie",
       "name": "I, Nobody",
-      "releaseInfo": "2026-07-09",
+      "releaseInfo": "2026-08-25",
       "description": "Rajeevan, an ordinary government employee, witnesses something he was never meant to see and is thrust into the centre of a serious crime. Branded a troublemaker and hunted by the system, he must protect his family while fighting to survive against forces far beyond his control.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-07-09\n⭐ Rating: 6.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/qFJl3w9KpVXpfZ3rpmv7p0UYZkP.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/zNvSWIvca6aA0eq63JqzVvagqLI.jpg",
@@ -2934,7 +2943,7 @@
       "id": "tt34614859",
       "type": "movie",
       "name": "Innocent",
-      "releaseInfo": "2025-11-07",
+      "releaseInfo": "2026-09-17",
       "description": "Vinod, 29, is a man of routine. Living in Karunagappally and working at the Planning Office in Thiruvananthapuram, he spends his days in a carefully controlled cycle of train commutes, meticulous work, and an almost obsessive adherence to order.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-07\n⭐ Rating: 5.3/10",
       "poster": "https://image.tmdb.org/t/p/w500/A1z6Uhk63p6kh43mkuTfECIkcRQ.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/rl4Ke2Cq3VH4j9rQNE1uP2iffys.jpg",
@@ -4187,7 +4196,7 @@
     },
     "ta_672751": {
       "_status": "retry",
-      "_at": 1789766978848
+      "_at": 1789767966386
     },
     "ta_11460": {
       "_status": "skip",
@@ -4215,7 +4224,7 @@
     },
     "ta_730301": {
       "_status": "retry",
-      "_at": 1789766978992
+      "_at": 1789767966488
     },
     "ta_82283": {
       "_status": "skip",
@@ -4231,11 +4240,11 @@
     },
     "ta_1770237": {
       "_status": "retry",
-      "_at": 1789766979057
+      "_at": 1789767966545
     },
     "ta_1770234": {
       "_status": "retry",
-      "_at": 1789766979092
+      "_at": 1789767966564
     },
     "ta_1772176": {
       "_status": "skip",
@@ -4400,7 +4409,7 @@
     },
     "ta_661918": {
       "_status": "retry",
-      "_at": 1789766994208
+      "_at": 1789767966588
     },
     "ta_769701": {
       "_status": "skip",
@@ -4552,7 +4561,7 @@
     },
     "ta_1627761": {
       "_status": "retry",
-      "_at": 1789767009296
+      "_at": 1789767966608
     },
     "ta_569494": {
       "_status": "skip",
@@ -4876,7 +4885,7 @@
     },
     "ta_1643810": {
       "_status": "retry",
-      "_at": 1789767039614
+      "_at": 1789767966634
     },
     "ta_576696": {
       "_status": "skip",
@@ -4944,7 +4953,7 @@
     },
     "ta_938186": {
       "_status": "retry",
-      "_at": 1789767054373
+      "_at": 1789767966653
     },
     "ta_1225787": {
       "_status": "skip",
@@ -4952,7 +4961,7 @@
     },
     "ta_1589714": {
       "_status": "retry",
-      "_at": 1789767054402
+      "_at": 1789767966676
     },
     "ta_1756890": {
       "_status": "skip",
@@ -4964,7 +4973,7 @@
     },
     "ta_1742434": {
       "_status": "retry",
-      "_at": 1789767054472
+      "_at": 1789767966730
     },
     "ta_1510235": {
       "_status": "skip",
@@ -5028,7 +5037,7 @@
     },
     "ta_496172": {
       "_status": "retry",
-      "_at": 1789767069244
+      "_at": 1789767966801
     },
     "ta_7978": {
       "_status": "skip",
@@ -5076,7 +5085,7 @@
     },
     "ta_1720240": {
       "_status": "retry",
-      "_at": 1789767069463
+      "_at": 1789767966860
     },
     "ta_1233244": {
       "_status": "skip",
@@ -5233,7 +5242,7 @@
     },
     "ta_1736719": {
       "_status": "retry",
-      "_at": 1789767084697
+      "_at": 1789767966924
     },
     "ta_1204889": {
       "_status": "skip",
@@ -5245,7 +5254,7 @@
     },
     "ta_1249468": {
       "_status": "retry",
-      "_at": 1789767084748
+      "_at": 1789767966987
     },
     "ta_1214770": {
       "_status": "skip",
@@ -5253,7 +5262,7 @@
     },
     "ta_1260252": {
       "_status": "retry",
-      "_at": 1789767084774
+      "_at": 1789767967007
     },
     "ta_543905": {
       "_status": "skip",
@@ -5354,7 +5363,7 @@
     },
     "ta_1762080": {
       "_status": "retry",
-      "_at": 1789767099670
+      "_at": 1789767967054
     },
     "ta_1728047": {
       "id": "tt35434009",
@@ -5505,7 +5514,7 @@
       "id": "tt35712605",
       "type": "movie",
       "name": "G.D.N",
-      "releaseInfo": "2026-08-07",
+      "releaseInfo": "2026-09-04",
       "description": "G.D. Naidu overcomes challenges and defies a repressive colonial regime to become one of India's greatest innovators.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-07\n⭐ Rating: 7.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/aAbvbKbNU6YyYDZ5ntSQcOygliw.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/hR0QpzOO2Gx1Lt7KxqKFWZvj5Vl.jpg",
@@ -5517,7 +5526,7 @@
       "id": "tt37501035",
       "type": "movie",
       "name": "DC",
-      "releaseInfo": "2026-08-07",
+      "releaseInfo": "2026-09-04",
       "description": "Rebel Devadas  joins forces with Chandra in a dangerous world where passion and peril collide. Their turbulent alliance demands bloodshed and tests loyalties as survival becomes the ultimate stake in their fight.\n\n📺 Streaming on: SunNXT\n📅 OTT Release: 2026-08-07\n⭐ Rating: 8.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/grRYMAxmfk9VHXY30gm6vfiwyoN.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/9GmAODqkVdRvSgg5C4Vfeomi5Nj.jpg",
@@ -5566,7 +5575,7 @@
       "id": "tt40706424",
       "type": "movie",
       "name": "Arulvaan",
-      "releaseInfo": "2026-07-17",
+      "releaseInfo": "2026-09-04",
       "description": "Follows Muthuvel, a resolute collector who overcomes all obstacles to educate a tribal girl and provide school access for the entire forest community.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-07-17",
       "poster": "https://image.tmdb.org/t/p/w500/m9KJuxjN0n9VnHDACqLEfltZv8z.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/x1GPEffctNTnoqmUXQeP3iTcslW.jpg",
@@ -5578,7 +5587,7 @@
       "id": "tt39300072",
       "type": "movie",
       "name": "Anbe Diana",
-      "releaseInfo": "2026-07-17",
+      "releaseInfo": "2026-08-28",
       "description": "Set in Perambur, a local Telugu youth falls for an Anglo-Indian girl, sparking a chaotic and humorous clash of cultures between their families.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-17\n⭐ Rating: 5.8/10",
       "poster": "https://image.tmdb.org/t/p/w500/201CEvG6ayNj71iSLxxEk7pUv0N.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/l4xqxKS7nlOni6bnTHWi3USyp4o.jpg",

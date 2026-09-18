@@ -93,6 +93,19 @@
       ]
     },
     {
+      "id": "tt34614859",
+      "type": "movie",
+      "name": "Innocent",
+      "releaseInfo": "2026-09-17",
+      "description": "Vinod, 29, is a man of routine. Living in Karunagappally and working at the Planning Office in Thiruvananthapuram, he spends his days in a carefully controlled cycle of train commutes, meticulous work, and an almost obsessive adherence to order.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2025-11-07\n⭐ Rating: 5.3/10",
+      "poster": "https://image.tmdb.org/t/p/w500/A1z6Uhk63p6kh43mkuTfECIkcRQ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/rl4Ke2Cq3VH4j9rQNE1uP2iffys.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
       "id": "tt35963439",
       "type": "movie",
       "name": "It's a Medical Miracle",
@@ -166,6 +179,21 @@
       "background": "https://image.tmdb.org/t/p/w1280/qAf5mjeXbPEtB8c1fEs0yhlZ4Ox.jpg",
       "genres": [
         "Documentary"
+      ]
+    },
+    {
+      "id": "tt26445387",
+      "type": "movie",
+      "name": "I, Nobody",
+      "releaseInfo": "2026-08-25",
+      "description": "Rajeevan, an ordinary government employee, witnesses something he was never meant to see and is thrust into the centre of a serious crime. Branded a troublemaker and hunted by the system, he must protect his family while fighting to survive against forces far beyond his control.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-07-09\n⭐ Rating: 6.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/qFJl3w9KpVXpfZ3rpmv7p0UYZkP.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/zNvSWIvca6aA0eq63JqzVvagqLI.jpg",
+      "genres": [
+        "Thriller",
+        "Crime",
+        "Action",
+        "Drama"
       ]
     },
     {
@@ -331,21 +359,6 @@
       "genres": [
         "Mystery",
         "Thriller",
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt26445387",
-      "type": "movie",
-      "name": "I, Nobody",
-      "releaseInfo": "2026-07-09",
-      "description": "Rajeevan, an ordinary government employee, witnesses something he was never meant to see and is thrust into the centre of a serious crime. Branded a troublemaker and hunted by the system, he must protect his family while fighting to survive against forces far beyond his control.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-07-09\n⭐ Rating: 6.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/qFJl3w9KpVXpfZ3rpmv7p0UYZkP.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/zNvSWIvca6aA0eq63JqzVvagqLI.jpg",
-      "genres": [
-        "Thriller",
-        "Crime",
-        "Action",
         "Drama"
       ]
     },
@@ -1487,19 +1500,6 @@
       "genres": [
         "Drama"
       ]
-    },
-    {
-      "id": "tt36616410",
-      "type": "movie",
-      "name": "Eko",
-      "releaseInfo": "2025-11-21",
-      "description": "In the misty hills of Kaattukunnu, an aging woman and her servant boy struggle to survive the ghosts of the past, as the hunt for Kuriachan — a legendary dog breeder and outlaw — blurs the line between myth, memory, and vengeance, revealing that even in absence, he still rules the hills.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2025-11-21\n⭐ Rating: 7.3/10",
-      "poster": "https://image.tmdb.org/t/p/w500/tXdFEmtqLm8tewIErDJgnbTS9qs.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/1NegG8bZRn3Fc1wluAbMeR19rym.jpg",
-      "genres": [
-        "Drama",
-        "Mystery"
-      ]
     }
   ],
   "malayalam-series": [
@@ -2523,6 +2523,44 @@
       ]
     },
     {
+      "id": "tt35712605",
+      "type": "movie",
+      "name": "G.D.N",
+      "releaseInfo": "2026-09-04",
+      "description": "G.D. Naidu overcomes challenges and defies a repressive colonial regime to become one of India's greatest innovators.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-07\n⭐ Rating: 7.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/aAbvbKbNU6YyYDZ5ntSQcOygliw.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/hR0QpzOO2Gx1Lt7KxqKFWZvj5Vl.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt37501035",
+      "type": "movie",
+      "name": "DC",
+      "releaseInfo": "2026-09-04",
+      "description": "Rebel Devadas  joins forces with Chandra in a dangerous world where passion and peril collide. Their turbulent alliance demands bloodshed and tests loyalties as survival becomes the ultimate stake in their fight.\n\n📺 Streaming on: SunNXT\n📅 OTT Release: 2026-08-07\n⭐ Rating: 8.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/grRYMAxmfk9VHXY30gm6vfiwyoN.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/9GmAODqkVdRvSgg5C4Vfeomi5Nj.jpg",
+      "genres": [
+        "Romance",
+        "Action",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt40706424",
+      "type": "movie",
+      "name": "Arulvaan",
+      "releaseInfo": "2026-09-04",
+      "description": "Follows Muthuvel, a resolute collector who overcomes all obstacles to educate a tribal girl and provide school access for the entire forest community.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-07-17",
+      "poster": "https://image.tmdb.org/t/p/w500/m9KJuxjN0n9VnHDACqLEfltZv8z.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/x1GPEffctNTnoqmUXQeP3iTcslW.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
       "id": "tt38786666",
       "type": "movie",
       "name": "IRUL VAAN MUGIL",
@@ -2557,6 +2595,19 @@
       "background": "https://image.tmdb.org/t/p/w1280/rGj0Td5ncKiTRCAw5OSDGV3kz1D.jpg",
       "genres": [
         "Romance",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt39300072",
+      "type": "movie",
+      "name": "Anbe Diana",
+      "releaseInfo": "2026-08-28",
+      "description": "Set in Perambur, a local Telugu youth falls for an Anglo-Indian girl, sparking a chaotic and humorous clash of cultures between their families.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-17\n⭐ Rating: 5.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/201CEvG6ayNj71iSLxxEk7pUv0N.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/l4xqxKS7nlOni6bnTHWi3USyp4o.jpg",
+      "genres": [
+        "Comedy",
         "Drama"
       ]
     },
@@ -2615,32 +2666,6 @@
       ]
     },
     {
-      "id": "tt35712605",
-      "type": "movie",
-      "name": "G.D.N",
-      "releaseInfo": "2026-08-07",
-      "description": "G.D. Naidu overcomes challenges and defies a repressive colonial regime to become one of India's greatest innovators.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-07\n⭐ Rating: 7.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/aAbvbKbNU6YyYDZ5ntSQcOygliw.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/hR0QpzOO2Gx1Lt7KxqKFWZvj5Vl.jpg",
-      "genres": [
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt37501035",
-      "type": "movie",
-      "name": "DC",
-      "releaseInfo": "2026-08-07",
-      "description": "Rebel Devadas  joins forces with Chandra in a dangerous world where passion and peril collide. Their turbulent alliance demands bloodshed and tests loyalties as survival becomes the ultimate stake in their fight.\n\n📺 Streaming on: SunNXT\n📅 OTT Release: 2026-08-07\n⭐ Rating: 8.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/grRYMAxmfk9VHXY30gm6vfiwyoN.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/9GmAODqkVdRvSgg5C4Vfeomi5Nj.jpg",
-      "genres": [
-        "Romance",
-        "Action",
-        "Drama"
-      ]
-    },
-    {
       "id": "tt33379543",
       "type": "movie",
       "name": "Jana Nayagan",
@@ -2665,31 +2690,6 @@
         "Crime",
         "Comedy",
         "Mystery"
-      ]
-    },
-    {
-      "id": "tt40706424",
-      "type": "movie",
-      "name": "Arulvaan",
-      "releaseInfo": "2026-07-17",
-      "description": "Follows Muthuvel, a resolute collector who overcomes all obstacles to educate a tribal girl and provide school access for the entire forest community.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-07-17",
-      "poster": "https://image.tmdb.org/t/p/w500/m9KJuxjN0n9VnHDACqLEfltZv8z.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/x1GPEffctNTnoqmUXQeP3iTcslW.jpg",
-      "genres": [
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt39300072",
-      "type": "movie",
-      "name": "Anbe Diana",
-      "releaseInfo": "2026-07-17",
-      "description": "Set in Perambur, a local Telugu youth falls for an Anglo-Indian girl, sparking a chaotic and humorous clash of cultures between their families.\n\n📺 Streaming on: OTT / Streaming\n📅 OTT Release: 2026-07-17\n⭐ Rating: 5.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/201CEvG6ayNj71iSLxxEk7pUv0N.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/l4xqxKS7nlOni6bnTHWi3USyp4o.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
       ]
     },
     {
@@ -4816,5 +4816,5 @@
       ]
     }
   ],
-  "builtAt": "2026-09-18T21:22:50.658Z"
+  "builtAt": "2026-09-18T21:44:34.959Z"
 }
