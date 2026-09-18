@@ -898,12 +898,15 @@ async function processMovie(item, lang, expectedLang, strictLang) {
       return null;
     }
 
+    // Prefer OTT arrival date (from 91mobiles / Day-0) over TMDB theatrical release date
+    const ottDate = item.arrivalDate || detail.release_date || '';
+
     const meta = buildMeta({
       imdbId:      detail.imdb_id,
       type:        'movie',
       title:       detail.title || '',
       platform,
-      releaseDate: detail.release_date || '',
+      releaseDate: ottDate,
       overview:    detail.overview || '',
       rating:      detail.vote_average,
       posterPath:  detail.poster_path,
@@ -1030,10 +1033,11 @@ async function scrapeMovies(lang) {
 
     const meta = await processMovie(day0Item, lang, lang, true);
     if (meta && meta.id && !processedImdbIds.has(meta.id)) {
+      const arrivalDate = day0Item.arrivalDate || today();
+
       if (isNewDiscovery) {
-        const arrivalDate = day0Item.arrivalDate || today();
-        const tmdbDate    = meta.releaseInfo || arrivalDate;
-        const ageMs       = Date.now() - new Date(tmdbDate).getTime();
+        const tmdbTheatrical = meta.releaseInfo || arrivalDate;
+        const ageMs = Date.now() - new Date(tmdbTheatrical).getTime();
         const isRerelease = !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
 
         if (isRerelease) {
@@ -1044,6 +1048,13 @@ async function scrapeMovies(lang) {
 
         movieCache[cacheKey] = meta;
         cacheDirty = true;
+      } else {
+        // Update cached item if a newer verified OTT arrival date was discovered
+        if (day0Item.arrivalDate && (!meta.releaseInfo || meta.releaseInfo < day0Item.arrivalDate)) {
+          meta.releaseInfo = day0Item.arrivalDate;
+          movieCache[cacheKey] = meta;
+          cacheDirty = true;
+        }
       }
       metas.push(meta);
       processedImdbIds.add(meta.id);
