@@ -1,4 +1,292 @@
 {
-  "_data": {},
-  "_seen": {}
+  "_data": {
+    "ml_1514863": {
+      "_status": "skip",
+      "_at": 1789764365534
+    },
+    "ml_1451944": {
+      "_status": "skip",
+      "_at": 1789764365564
+    },
+    "ml_559401": {
+      "_status": "skip",
+      "_at": 1789764365598
+    },
+    "ml_72615": {
+      "_status": "skip",
+      "_at": 1789764365633
+    },
+    "ml_134172": {
+      "_status": "skip",
+      "_at": 1789764365676
+    },
+    "ml_93142": {
+      "_status": "skip",
+      "_at": 1789764365724
+    },
+    "ml_1233413": {
+      "_status": "skip",
+      "_at": 1789764365756
+    },
+    "ml_1685882": {
+      "_status": "skip",
+      "_at": 1789764365786
+    },
+    "ml_1441228": {
+      "_status": "skip",
+      "_at": 1789764371376
+    },
+    "ml_433128": {
+      "_status": "skip",
+      "_at": 1789764371414
+    },
+    "ml_517093": {
+      "_status": "skip",
+      "_at": 1789764371448
+    },
+    "ml_913673": {
+      "_status": "skip",
+      "_at": 1789764371484
+    },
+    "ml_1012837": {
+      "_status": "skip",
+      "_at": 1789764371519
+    },
+    "ml_400706": {
+      "_status": "skip",
+      "_at": 1789764371551
+    },
+    "ml_9378": {
+      "_status": "skip",
+      "_at": 1789764371582
+    },
+    "ml_455207": {
+      "_status": "skip",
+      "_at": 1789764371616
+    },
+    "ml_1339676": {
+      "id": "tt26445387",
+      "type": "movie",
+      "name": "I, Nobody",
+      "releaseInfo": "2026-08-25",
+      "description": "Rajeevan, an ordinary government employee, witnesses something he was never meant to see and is thrust into the centre of a serious crime. Branded a troublemaker and hunted by the system, he must protect his family while fighting to survive against forces far beyond his control.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-08-25\n⭐ Rating: 6.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/qFJl3w9KpVXpfZ3rpmv7p0UYZkP.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/zNvSWIvca6aA0eq63JqzVvagqLI.jpg",
+      "genres": [
+        "Thriller",
+        "Crime",
+        "Action",
+        "Drama"
+      ]
+    },
+    "ml_1444088": {
+      "id": "tt36580813",
+      "type": "movie",
+      "name": "Pluto",
+      "releaseInfo": "2026-08-24",
+      "description": "Follows the unexpected arrival of an extraterrestrial visitor in a quiet Kerala village, which turns everyday life completely upside down.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-08-24\n⭐ Rating: 2.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/pPxsw4KnZbsklyHUCTKSCHKaC8F.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cSiQqEN2IbNxWXNZ2YLd32DSVrK.jpg",
+      "genres": [
+        "Science Fiction",
+        "Comedy"
+      ]
+    },
+    "ml_1616268": {
+      "id": "tt43612978",
+      "type": "movie",
+      "name": "Aroopi",
+      "releaseInfo": "2026-08-14",
+      "description": "A vengeful Yakshini, once sealed inside a doll at the Aryanattu estate, is accidentally unleashed by two thieves. When a brutal murder draws Niranjan, the last surviving heir of the lineage, back to his ancestral home, he must confront an ancient curse and the dark secrets surrounding his family's past.\n\n📺 Streaming on: Lionsgate Play\n📅 OTT Release: 2026-08-14\n⭐ Rating: 1.3/10",
+      "poster": "https://image.tmdb.org/t/p/w500/yLDuHm2QgsNHuENoBvOlDKRwMyF.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/nMQMfDBmjDn9jsXVXagGwUBWUSs.jpg",
+      "genres": [
+        "Horror",
+        "Thriller"
+      ]
+    },
+    "ml_1720240": {
+      "_status": "retry",
+      "_at": 1789764371745
+    },
+    "ml_730177": {
+      "_status": "retry",
+      "_at": 1789764371776
+    },
+    "ml_1451486": {
+      "id": "tt37079110",
+      "type": "movie",
+      "name": "Uyir",
+      "releaseInfo": "2026-08-04",
+      "description": "SI Ajeeb, a probationary officer posted in a Kerala town, investigates the mysterious death of an unidentified woman whose decomposed body is found in a well. Despite a lack of evidence and official support, he relentlessly pursues the truth with the help of ASI Joy while battling his own psychological struggles. Inspired by true events, the film follows his quest for justice in a case that changes his life forever.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-08-04\n⭐ Rating: 5.3/10",
+      "poster": "https://image.tmdb.org/t/p/w500/r512xdTd9aXjpIxjY2JlhvJYvIb.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/sxs1ME8rwQIccp7SL37fRgt0sFH.jpg",
+      "genres": [
+        "Crime",
+        "Thriller"
+      ]
+    },
+    "ml_1410937": {
+      "id": "tt35254624",
+      "type": "movie",
+      "name": "Balan - The Boy",
+      "releaseInfo": "2026-07-31",
+      "description": "A teenage boy searches for his missing mother following a turbulent childhood and her subsequent disappearance, exploring his search for closure and the truth about his past.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2026-07-31\n⭐ Rating: 7.6/10",
+      "poster": "https://image.tmdb.org/t/p/w500/boKxdR9tgXfkazf6yWgiDdleBy0.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cb4b4K3E2jBGaSjkuIkZHJHmoWG.jpg",
+      "genres": [
+        "Drama",
+        "Thriller"
+      ]
+    },
+    "ml_1404521": {
+      "id": "tt35076988",
+      "type": "movie",
+      "name": "Chinna Chinna Aasai",
+      "releaseInfo": "2026-07-28",
+      "description": "On the enchanting shores of Varanasi, two souls meet by chance. Somewhere within this unfolding chaos, an unspoken bond begins to form, slowly slipping beyond friendship.\n\n📺 Streaming on: JioHotstar, SunNXT\n📅 OTT Release: 2026-07-28\n⭐ Rating: 8.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/bPP7IWH0GeQDZ5VC9QsE6lRlijI.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1KXnH4NcCQTAxV0pZwvIIGCepIx.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    "ta_1514863": {
+      "_status": "skip",
+      "_at": 1789764439320
+    },
+    "ta_1451944": {
+      "_status": "skip",
+      "_at": 1789764446911
+    },
+    "ta_559401": {
+      "_status": "skip",
+      "_at": 1789764446926
+    },
+    "ta_72615": {
+      "_status": "skip",
+      "_at": 1789764446939
+    },
+    "ta_134172": {
+      "_status": "skip",
+      "_at": 1789764446954
+    },
+    "ta_93142": {
+      "_status": "skip",
+      "_at": 1789764446968
+    },
+    "ta_1233413": {
+      "_status": "skip",
+      "_at": 1789764446983
+    },
+    "ta_1685882": {
+      "_status": "retry",
+      "_at": 1789764446987
+    },
+    "ta_1441228": {
+      "_status": "skip",
+      "_at": 1789764447003
+    },
+    "ta_433128": {
+      "_status": "skip",
+      "_at": 1789764447017
+    },
+    "ta_517093": {
+      "_status": "skip",
+      "_at": 1789764447031
+    },
+    "ta_913673": {
+      "_status": "skip",
+      "_at": 1789764447044
+    },
+    "ta_1012837": {
+      "_status": "skip",
+      "_at": 1789764447059
+    },
+    "ta_400706": {
+      "_status": "skip",
+      "_at": 1789764447073
+    },
+    "ta_9378": {
+      "_status": "skip",
+      "_at": 1789764447088
+    },
+    "ta_455207": {
+      "_status": "skip",
+      "_at": 1789764447104
+    },
+    "ta_1489543": {
+      "id": "tt35712605",
+      "type": "movie",
+      "name": "G.D.N",
+      "releaseInfo": "2026-09-04",
+      "description": "G.D. Naidu overcomes challenges and defies a repressive colonial regime to become one of India's greatest innovators.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-09-04\n⭐ Rating: 7.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/aAbvbKbNU6YyYDZ5ntSQcOygliw.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/hR0QpzOO2Gx1Lt7KxqKFWZvj5Vl.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    "ta_1479832": {
+      "id": "tt37501035",
+      "type": "movie",
+      "name": "DC",
+      "releaseInfo": "2026-09-04",
+      "description": "Rebel Devadas  joins forces with Chandra in a dangerous world where passion and peril collide. Their turbulent alliance demands bloodshed and tests loyalties as survival becomes the ultimate stake in their fight.\n\n📺 Streaming on: SunNXT\n📅 OTT Release: 2026-09-04\n⭐ Rating: 8.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/grRYMAxmfk9VHXY30gm6vfiwyoN.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/9GmAODqkVdRvSgg5C4Vfeomi5Nj.jpg",
+      "genres": [
+        "Romance",
+        "Action",
+        "Drama"
+      ]
+    },
+    "ta_1762080": {
+      "_status": "retry",
+      "_at": 1789764447210
+    },
+    "ta_1616237": {
+      "id": "tt40706424",
+      "type": "movie",
+      "name": "Arulvaan",
+      "releaseInfo": "2026-09-04",
+      "description": "Follows Muthuvel, a resolute collector who overcomes all obstacles to educate a tribal girl and provide school access for the entire forest community.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-04",
+      "poster": "https://image.tmdb.org/t/p/w500/m9KJuxjN0n9VnHDACqLEfltZv8z.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/x1GPEffctNTnoqmUXQeP3iTcslW.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    "ta_1607634": {
+      "id": "tt39300072",
+      "type": "movie",
+      "name": "Anbe Diana",
+      "releaseInfo": "2026-08-28",
+      "description": "Set in Perambur, a local Telugu youth falls for an Anglo-Indian girl, sparking a chaotic and humorous clash of cultures between their families.\n\n📺 Streaming on: Sony LIV\n📅 OTT Release: 2026-08-28\n⭐ Rating: 5.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/201CEvG6ayNj71iSLxxEk7pUv0N.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/l4xqxKS7nlOni6bnTHWi3USyp4o.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    "ta_1538273": {
+      "id": "tt39260895",
+      "type": "movie",
+      "name": "Pyaar Prema Kalyanam",
+      "releaseInfo": "2026-08-21",
+      "description": "When a bride refuses to leave her family home after marriage, her husband must find out if he can adjust to life under his in-laws' roof.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-21\n⭐ Rating: 6.9/10",
+      "poster": "https://image.tmdb.org/t/p/w500/AjaNAeMXOrK9n0YqGqX0Lz5qxYu.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/jgsptBYJbuO7omWLOj1HNsqvgLM.jpg",
+      "genres": [
+        "Romance",
+        "Comedy",
+        "Drama"
+      ]
+    }
+  },
+  "_seen": {
+    "mon_MOVIE": 1789764356737,
+    "mon_SHOW": 1789764372151
+  }
 }
