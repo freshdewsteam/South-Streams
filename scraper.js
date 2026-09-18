@@ -3,11 +3,10 @@
  *
  * Movies  → Movie of the Night changes API (official day-0, primary)
  *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 7 days)
- *           → 91mobiles editorial AJAX (7-day sweep, deep sweep only)
- *           → TMDB Auto-Discover (/discover/movie, foundation with robust fallback)
+ *           → 91mobiles editorial AJAX (OTT only — BookMyShow/cinema excluded)
+ *           → TMDB Auto-Discover (/discover/movie with watch_region=IN)
  * Series  → Movie of the Night changes API → JustWatch safety net
- *           → 91mobiles editorial AJAX (7-day sweep, deep sweep only)
- *           → TMDB Auto-Discover (/discover/tv, foundation)
+ *           → 91mobiles editorial AJAX → TMDB Auto-Discover (/discover/tv)
  * Enrichment → TMDB / OMDb API (posters, descriptions, IMDb IDs)
  */
 
@@ -40,6 +39,19 @@ const RETRY_TTL           =  3 * 24 * 60 * 60 * 1000;
 
 const RERELEASE_MAX_AGE_DAYS = 90;
 
+// ── THEATRICAL / TICKETING PLATFORM BLACKLIST ──
+const THEATRICAL_PROVIDERS = new Set([
+  'bookmyshow', 'book my show', 'paytm', 'ticketnew',
+  'pvr', 'inox', 'cinepolis', 'theatre', 'theatrical', 'cinema'
+]);
+
+function isTheatricalOnly(platformStr) {
+  if (!platformStr) return true;
+  const parts = platformStr.split(',').map(p => p.trim().toLowerCase());
+  const validStreaming = parts.filter(p => !THEATRICAL_PROVIDERS.has(p) && !p.includes('bookmyshow') && !p.includes('paytm'));
+  return validStreaming.length === 0;
+}
+
 // ── PLATFORM NORMALIZATION HELPER ──
 function cleanPlatformNames(platformStr) {
   if (!platformStr) return '';
@@ -64,7 +76,9 @@ function cleanPlatformNames(platformStr) {
     'hotstar': 'JioHotstar',
     'zee5': 'Zee5',
     'netflix': 'Netflix',
-    'aha': 'Aha'
+    'aha': 'Aha',
+    'saina play': 'Saina Play',
+    'simply south': 'Simply South'
   };
 
   const platforms = String(platformStr).split(',').map(p => p.trim()).filter(Boolean);
@@ -72,6 +86,10 @@ function cleanPlatformNames(platformStr) {
 
   for (const p of platforms) {
     const key = p.toLowerCase();
+    // Exclude theatrical booking platforms from appearing on metadata cards
+    if (THEATRICAL_PROVIDERS.has(key) || key.includes('bookmyshow') || key.includes('paytm')) {
+      continue;
+    }
     normalized.add(map[key] || p);
   }
   return Array.from(normalized).join(', ');
@@ -305,11 +323,12 @@ function getTitleVariations(title) {
 
 function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
                      rating, posterPath, backdropPath, genres, posterUrl, backdropUrl }) {
+  const cleanedPlatform = cleanPlatformNames(platform);
   let desc = '';
-  if (overview)    desc += overview + '\n\n';
-  if (platform)    desc += '📺 Streaming on: ' + cleanPlatformNames(platform);
-  if (releaseDate) desc += '\n📅 OTT Release: ' + releaseDate;
-  if (rating)      desc += '\n⭐ Rating: ' + Number(rating).toFixed(1) + '/10';
+  if (overview)        desc += overview + '\n\n';
+  if (cleanedPlatform) desc += '📺 Streaming on: ' + cleanedPlatform;
+  if (releaseDate)     desc += '\n📅 OTT Release: ' + releaseDate;
+  if (rating)          desc += '\n⭐ Rating: ' + Number(rating).toFixed(1) + '/10';
 
   let poster   = posterUrl || (posterPath   ? IMG + 'w500'  + posterPath   : undefined);
   let backdrop = backdropUrl || (backdropPath ? IMG + 'w1280' + backdropPath : undefined);
@@ -614,10 +633,10 @@ async function fetchJustWatch(lang, kind) {
   return resolved;
 }
 
-// ── 91MOBILES (7-DAY REGULAR SWEEP) ───────────────────────────────────────────
+// ── 91MOBILES (STRICT OTT ONLY — BOOKMYSHOW / CINEMA TICKETS FILTERED OUT) ────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_LANG_ID  = { ml: 28, ta: 63 };
-const M91_LOOKBACK_DAYS = 7;
+const M91_LOOKBACK_DAYS = 30;
 const M91_PAGES = {
   ml: { movie: 'new-malayalam-movies', series: 'new-malayalam-web-series' },
   ta: { movie: 'new-tamil-movies',     series: 'new-tamil-web-series' },
@@ -715,6 +734,7 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
 
     if (requireOttMarker && !/\(OTT\)/i.test(meta)) continue;
 
+    // ── STRICT STREAMING PLATFORM EXTRACTION ──
     const platforms = [];
     const wtsIdx = block.indexOf('Where To Stream');
     if (wtsIdx !== -1) {
@@ -722,9 +742,19 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
       const pRe = /<div[^>]*class="[^"]*target_link_ext[^"]*"[^>]*>([^<]+)</g;
       let pm;
       while ((pm = pRe.exec(tail)) !== null) {
-        const name = pm[1].trim();
-        if (name && !platforms.includes(name)) platforms.push(name);
+        const rawName = pm[1].trim();
+        const low = rawName.toLowerCase();
+        // Ignore theatrical booking platforms completely
+        if (THEATRICAL_PROVIDERS.has(low) || low.includes('bookmyshow') || low.includes('paytm')) {
+          continue;
+        }
+        if (rawName && !platforms.includes(rawName)) platforms.push(rawName);
       }
+    }
+
+    // Reject items with no genuine streaming providers listed
+    if (!platforms.length) {
+      continue;
     }
 
     const bodyText = m91StripTags(block);
@@ -798,18 +828,16 @@ async function fetchDay0Items(lang, kind) {
     }
   } catch (e) {}
 
-  if (RUN_IS_DEEP) {
-    try {
-      for (const it of await fetch91Mobiles(lang, kind)) {
-        if (!byId.has(it.id)) byId.set(it.id, it);
-      }
-    } catch (e) {}
-  }
+  try {
+    for (const it of await fetch91Mobiles(lang, kind)) {
+      if (!byId.has(it.id)) byId.set(it.id, it);
+    }
+  } catch (e) {}
 
   return Array.from(byId.values());
 }
 
-// ── TMDB DISCOVER ─────────────────────────────────────────────────────────────
+// ── TMDB DISCOVER (STREAMING OTT ONLY VIA WATCH_REGION=IN) ─────────────────────
 async function discoverMovies(lang, lookbackDays, maxPages) {
   maxPages = maxPages || 5;
   const dateFrom = daysAgo(lookbackDays);
@@ -817,9 +845,9 @@ async function discoverMovies(lang, lookbackDays, maxPages) {
 
   for (let page = 1; page <= maxPages; page++) {
     try {
-      // Robust discovery: doesn't over-constrain monetization types so regional releases are included
       const data = await tmdb(
         '/discover/movie?with_original_language=' + lang +
+        '&watch_region=IN&with_watch_monetization_types=flatrate|free|ads' +
         '&sort_by=primary_release_date.desc' +
         '&primary_release_date.gte=' + dateFrom +
         '&primary_release_date.lte=' + today() +
@@ -848,6 +876,7 @@ async function discoverSeries(lang, maxPages) {
     try {
       const data = await tmdb(
         '/discover/tv?with_original_language=' + lang +
+        '&watch_region=IN&with_watch_monetization_types=flatrate|free|ads' +
         '&sort_by=first_air_date.desc' +
         '&page=' + page
       );
@@ -867,7 +896,14 @@ async function processMovie(item, lang, expectedLang, strictLang) {
   const cached   = readCacheEntry(movieCache[cacheKey]);
 
   if (cached === 'skip') return null;
-  if (cached && cached !== 'retry') return cached;
+  if (cached && cached !== 'retry') {
+    // Purge cached theatrical entries that slipped through previously
+    if (isTheatricalOnly(cached.description)) {
+      setSkip(movieCache, cacheKey);
+      return null;
+    }
+    return cached;
+  }
 
   try {
     const detail = await tmdb('/movie/' + item.id + '?language=en-US&append_to_response=watch/providers,external_ids');
@@ -900,16 +936,17 @@ async function processMovie(item, lang, expectedLang, strictLang) {
         all.filter(p => { if (seenP.has(p.provider_id)) return false; seenP.add(p.provider_id); return true; })
            .map(p => p.provider_name).join(', ')
       );
-    } else if (item.trustedPlatform) {
+    } else if (item.trustedPlatform && !isTheatricalOnly(item.trustedPlatform)) {
       platform = cleanPlatformNames(item.trustedPlatform);
     } else {
-      const anyRegion = wp.US || wp.GB || wp.AE || Object.values(wp)[0];
-      const anyProviders = anyRegion ? [...(anyRegion.flatrate||[]), ...(anyRegion.free||[])] : [];
-      if (anyProviders.length) {
-        platform = cleanPlatformNames(anyProviders.map(p => p.provider_name).slice(0, 2).join(', '));
-      } else {
-        platform = 'OTT / Streaming';
-      }
+      // Must be confirmed on an actual streaming provider
+      setSkip(movieCache, cacheKey);
+      return null;
+    }
+
+    if (!platform || isTheatricalOnly(platform)) {
+      setSkip(movieCache, cacheKey);
+      return null;
     }
 
     const ottDate = item.arrivalDate || detail.release_date || '';
@@ -1036,18 +1073,19 @@ async function scrapeMovies(lang) {
   const metas = [];
   const processedImdbIds = new Set();
 
-  // STEP 0: Seed existing valid cache
   for (const [cacheKey, val] of Object.entries(movieCache)) {
     if (!cacheKey.startsWith(lang + '_')) continue;
     const entry = readCacheEntry(val);
     if (entry && typeof entry === 'object' && entry.id && entry.id.startsWith('tt') &&
         entry.type === 'movie' && !processedImdbIds.has(entry.id)) {
-      metas.push(entry);
-      processedImdbIds.add(entry.id);
+      // Purge any cached theatrical titles that slipped in
+      if (!isTheatricalOnly(entry.description)) {
+        metas.push(entry);
+        processedImdbIds.add(entry.id);
+      }
     }
   }
 
-  // STEP 1: Live Day-0 & 91mobiles Arrivals with In-Place Cache Update
   const day0Items = await fetchDay0Items(lang, 'MOVIE');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_' + day0Item.id;
@@ -1096,12 +1134,10 @@ async function scrapeMovies(lang) {
     }
   }
 
-  // STEP 2: TMDB Discover Foundation (Auto-Bootstrap if cache has fewer than 100 entries)
   const isLeanCache = metas.length < 100;
   const lookback = isLeanCache ? MOVIE_FIRST_RUN : (RUN_IS_DEEP ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK);
-  const discoverPages = isLeanCache ? 15 : (RUN_IS_DEEP ? 8 : 4);
+  const discoverPages = isLeanCache ? 25 : (RUN_IS_DEEP ? 12 : 5);
 
-  console.log(`[Discover] ${lang} movies: lean=${isLeanCache}, lookback=${lookback}d, pages=${discoverPages}`);
   const tmdbItems = await discoverMovies(lang, lookback, discoverPages);
   for (const item of tmdbItems) {
     const meta = await processMovie(item, lang);
@@ -1111,7 +1147,6 @@ async function scrapeMovies(lang) {
     }
   }
 
-  // Final Sort by release date (newest premieres at top)
   metas.sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''));
   const finalResult = metas.slice(0, 120);
   console.log('[Movies] ' + lang + ': ' + finalResult.length + ' in catalogue');
