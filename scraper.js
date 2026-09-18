@@ -3,7 +3,7 @@
  *
  * Movies  → Movie of the Night changes API (official day-0, primary)
  *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 7 days)
- *           → 91mobiles editorial AJAX (OTT only — BookMyShow/cinema excluded)
+ *           → 91mobiles editorial AJAX (STRICT OTT WHITELIST ONLY)
  *           → TMDB Auto-Discover (/discover/movie with watch_region=IN)
  * Series  → Movie of the Night changes API → JustWatch safety net
  *           → 91mobiles editorial AJAX → TMDB Auto-Discover (/discover/tv)
@@ -39,60 +39,45 @@ const RETRY_TTL           =  3 * 24 * 60 * 60 * 1000;
 
 const RERELEASE_MAX_AGE_DAYS = 90;
 
-// ── THEATRICAL / TICKETING PLATFORM BLACKLIST ──
-const THEATRICAL_PROVIDERS = new Set([
-  'bookmyshow', 'book my show', 'paytm', 'ticketnew',
-  'pvr', 'inox', 'cinepolis', 'theatre', 'theatrical', 'cinema'
-]);
+// ── THEATRICAL DETECTION REGEX ──
+const THEATRICAL_REGEX = /\b(bookmyshow|paytm|ticket|pvr|inox|cinepolis|theatre|theater|cinema)\b/i;
 
-function isTheatricalOnly(platformStr) {
-  if (!platformStr) return true;
-  const parts = platformStr.split(',').map(p => p.trim().toLowerCase());
-  const validStreaming = parts.filter(p => !THEATRICAL_PROVIDERS.has(p) && !p.includes('bookmyshow') && !p.includes('paytm'));
-  return validStreaming.length === 0;
+// ── STRICT OTT PLATFORM WHITELIST & NORMALIZER ──
+const VALID_OTT_PLATFORMS = [
+  { match: /prime video|amazon/i,              name: 'Prime Video' },
+  { match: /netflix/i,                         name: 'Netflix' },
+  { match: /hotstar|jiohotstar/i,              name: 'JioHotstar' },
+  { match: /sony\s*liv/i,                      name: 'Sony LIV' },
+  { match: /zee5/i,                            name: 'Zee5' },
+  { match: /sun\s*nxt/i,                       name: 'SunNXT' },
+  { match: /manorama/i,                        name: 'ManoramaMAX' },
+  { match: /aha/i,                             name: 'Aha' },
+  { match: /saina\s*play/i,                    name: 'Saina Play' },
+  { match: /simply\s*south/i,                  name: 'Simply South' },
+  { match: /lionsgate/i,                       name: 'Lionsgate Play' },
+  { match: /jiocinema/i,                       name: 'JioCinema' },
+  { match: /chaupal/i,                         name: 'Chaupal' }
+];
+
+function extractValidOttPlatforms(rawStr) {
+  if (!rawStr) return '';
+  const str = String(rawStr);
+  const found = new Set();
+
+  for (const p of VALID_OTT_PLATFORMS) {
+    if (p.match.test(str)) {
+      found.add(p.name);
+    }
+  }
+  return Array.from(found).join(', ');
 }
 
-// ── PLATFORM NORMALIZATION HELPER ──
-function cleanPlatformNames(platformStr) {
-  if (!platformStr) return '';
-  const map = {
-    'amazon prime video': 'Prime Video',
-    'amazon prime video with ads': 'Prime Video',
-    'prime video': 'Prime Video',
-    'manoramamax amazon channel': 'ManoramaMAX',
-    'manoramamax': 'ManoramaMAX',
-    'lionsgate play amazon channel': 'Lionsgate Play',
-    'lionsgate play apple tv channel': 'Lionsgate Play',
-    'lionsgate play': 'Lionsgate Play',
-    'ap international south cinema amazon channel': 'AP International',
-    'ultraplaybox amazon channel': 'Ultraplaybox',
-    'chaupal amazon channel': 'Chaupal',
-    'sun nxt': 'SunNXT',
-    'sunnxt': 'SunNXT',
-    'sony liv': 'Sony LIV',
-    'sony liv ': 'Sony LIV',
-    'sonyliv': 'Sony LIV',
-    'jiohotstar': 'JioHotstar',
-    'hotstar': 'JioHotstar',
-    'zee5': 'Zee5',
-    'netflix': 'Netflix',
-    'aha': 'Aha',
-    'saina play': 'Saina Play',
-    'simply south': 'Simply South'
-  };
-
-  const platforms = String(platformStr).split(',').map(p => p.trim()).filter(Boolean);
-  const normalized = new Set();
-
-  for (const p of platforms) {
-    const key = p.toLowerCase();
-    // Exclude theatrical booking platforms from appearing on metadata cards
-    if (THEATRICAL_PROVIDERS.has(key) || key.includes('bookmyshow') || key.includes('paytm')) {
-      continue;
-    }
-    normalized.add(map[key] || p);
-  }
-  return Array.from(normalized).join(', ');
+function isPureTheatrical(str) {
+  if (!str) return false;
+  // If it contains cinema booking terms and NO valid OTT provider
+  const hasTheatrical = THEATRICAL_REGEX.test(str);
+  const hasValidOtt   = extractValidOttPlatforms(str).length > 0;
+  return hasTheatrical && !hasValidOtt;
 }
 
 // ── CACHE ─────────────────────────────────────────────────────────────────────
@@ -323,7 +308,7 @@ function getTitleVariations(title) {
 
 function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
                      rating, posterPath, backdropPath, genres, posterUrl, backdropUrl }) {
-  const cleanedPlatform = cleanPlatformNames(platform);
+  const cleanedPlatform = extractValidOttPlatforms(platform);
   let desc = '';
   if (overview)        desc += overview + '\n\n';
   if (cleanedPlatform) desc += '📺 Streaming on: ' + cleanedPlatform;
@@ -633,7 +618,7 @@ async function fetchJustWatch(lang, kind) {
   return resolved;
 }
 
-// ── 91MOBILES (STRICT OTT ONLY — BOOKMYSHOW / CINEMA TICKETS FILTERED OUT) ────
+// ── 91MOBILES (STRICT OTT ONLY — THEATRICAL EXCLUDED) ─────────────────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_LANG_ID  = { ml: 28, ta: 63 };
 const M91_LOOKBACK_DAYS = 30;
@@ -732,9 +717,14 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
     const ageDays = (Date.now() - date.getTime()) / 86400000;
     if (ageDays > M91_LOOKBACK_DAYS) continue;
 
+    // Strict: Check if it's explicitly an OTT item, not in-cinemas
     if (requireOttMarker && !/\(OTT\)/i.test(meta)) continue;
 
-    // ── STRICT STREAMING PLATFORM EXTRACTION ──
+    // Reject block if it mentions booking tickets or cinemas
+    if (THEATRICAL_REGEX.test(block) && !VALID_OTT_PLATFORMS.some(p => p.match.test(block))) {
+      continue;
+    }
+
     const platforms = [];
     const wtsIdx = block.indexOf('Where To Stream');
     if (wtsIdx !== -1) {
@@ -743,24 +733,21 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
       let pm;
       while ((pm = pRe.exec(tail)) !== null) {
         const rawName = pm[1].trim();
-        const low = rawName.toLowerCase();
-        // Ignore theatrical booking platforms completely
-        if (THEATRICAL_PROVIDERS.has(low) || low.includes('bookmyshow') || low.includes('paytm')) {
-          continue;
+        const validOtt = extractValidOttPlatforms(rawName);
+        if (validOtt && !platforms.includes(validOtt)) {
+          platforms.push(validOtt);
         }
-        if (rawName && !platforms.includes(rawName)) platforms.push(rawName);
       }
     }
 
-    // Reject items with no genuine streaming providers listed
-    if (!platforms.length) {
-      continue;
-    }
+    // Must have a confirmed OTT platform from our whitelist
+    const finalPlatform = extractValidOttPlatforms(platforms.join(', '));
+    if (!finalPlatform) continue;
 
     const bodyText = m91StripTags(block);
     const isNewSeason = /\bnew season\b|\bnew episode\b/i.test(bodyText);
 
-    items.push({ title, date, year: dateMatch[3], platform: platforms.join(', '), isNewSeason });
+    items.push({ title, date, year: dateMatch[3], platform: finalPlatform, isNewSeason });
   }
 
   return items;
@@ -800,7 +787,7 @@ async function fetch91Mobiles(lang, kind) {
           imdbId: null,
           year: item.year,
           isNewSeason: item.isNewSeason,
-          trustedPlatform: cleanPlatformNames(item.platform) || undefined,
+          trustedPlatform: item.platform,
         });
       }
       await new Promise(res => setTimeout(res, 80));
@@ -837,7 +824,7 @@ async function fetchDay0Items(lang, kind) {
   return Array.from(byId.values());
 }
 
-// ── TMDB DISCOVER (STREAMING OTT ONLY VIA WATCH_REGION=IN) ─────────────────────
+// ── TMDB DISCOVER ─────────────────────────────────────────────────────────────
 async function discoverMovies(lang, lookbackDays, maxPages) {
   maxPages = maxPages || 5;
   const dateFrom = daysAgo(lookbackDays);
@@ -897,8 +884,8 @@ async function processMovie(item, lang, expectedLang, strictLang) {
 
   if (cached === 'skip') return null;
   if (cached && cached !== 'retry') {
-    // Purge cached theatrical entries that slipped through previously
-    if (isTheatricalOnly(cached.description)) {
+    // Purge cached theatrical releases on load
+    if (isPureTheatrical(cached.description) || !extractValidOttPlatforms(cached.description)) {
       setSkip(movieCache, cacheKey);
       return null;
     }
@@ -931,20 +918,13 @@ async function processMovie(item, lang, expectedLang, strictLang) {
 
     let platform = '';
     if (all.length) {
-      const seenP = new Set();
-      platform = cleanPlatformNames(
-        all.filter(p => { if (seenP.has(p.provider_id)) return false; seenP.add(p.provider_id); return true; })
-           .map(p => p.provider_name).join(', ')
-      );
-    } else if (item.trustedPlatform && !isTheatricalOnly(item.trustedPlatform)) {
-      platform = cleanPlatformNames(item.trustedPlatform);
-    } else {
-      // Must be confirmed on an actual streaming provider
-      setSkip(movieCache, cacheKey);
-      return null;
+      platform = extractValidOttPlatforms(all.map(p => p.provider_name).join(', '));
+    } else if (item.trustedPlatform) {
+      platform = extractValidOttPlatforms(item.trustedPlatform);
     }
 
-    if (!platform || isTheatricalOnly(platform)) {
+    // STRICT GUARD: If no confirmed OTT platform, this is a cinema release. Drop it!
+    if (!platform || isPureTheatrical(platform)) {
       setSkip(movieCache, cacheKey);
       return null;
     }
@@ -1037,9 +1017,9 @@ async function processSeriesJW(item, lang) {
     const all = IN ? [...(IN.flatrate||[]), ...(IN.free||[]), ...(IN.ads||[])] : [];
     let platform = '';
     if (all.length) {
-      platform = cleanPlatformNames(all.filter((p, i, arr) => arr.findIndex(x => x.provider_id === p.provider_id) === i).map(p => p.provider_name).join(', '));
+      platform = extractValidOttPlatforms(all.map(p => p.provider_name).join(', '));
     } else if (item.trustedPlatform) {
-      platform = cleanPlatformNames(item.trustedPlatform);
+      platform = extractValidOttPlatforms(item.trustedPlatform);
     } else {
       platform = 'OTT / Streaming';
     }
@@ -1073,19 +1053,25 @@ async function scrapeMovies(lang) {
   const metas = [];
   const processedImdbIds = new Set();
 
+  // STEP 0: Seed existing cache & PURGE ANY THEATRICAL TICKETING MOVIES
   for (const [cacheKey, val] of Object.entries(movieCache)) {
     if (!cacheKey.startsWith(lang + '_')) continue;
     const entry = readCacheEntry(val);
     if (entry && typeof entry === 'object' && entry.id && entry.id.startsWith('tt') &&
         entry.type === 'movie' && !processedImdbIds.has(entry.id)) {
-      // Purge any cached theatrical titles that slipped in
-      if (!isTheatricalOnly(entry.description)) {
-        metas.push(entry);
-        processedImdbIds.add(entry.id);
+
+      // Check if this cached entry has BookMyShow or lacks a real OTT platform
+      if (isPureTheatrical(entry.description) || !extractValidOttPlatforms(entry.description)) {
+        setSkip(movieCache, cacheKey);
+        continue;
       }
+
+      metas.push(entry);
+      processedImdbIds.add(entry.id);
     }
   }
 
+  // STEP 1: Live Day-0 & 91mobiles Arrivals with In-Place Cache Update
   const day0Items = await fetchDay0Items(lang, 'MOVIE');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_' + day0Item.id;
@@ -1102,8 +1088,9 @@ async function scrapeMovies(lang) {
       const existingMeta = metas[existingIndex];
       if (arrivalDate && (!existingMeta.releaseInfo || existingMeta.releaseInfo < arrivalDate)) {
         existingMeta.releaseInfo = arrivalDate;
-        if (day0Item.trustedPlatform && (!existingMeta.description || !existingMeta.description.includes('📺 Streaming on:'))) {
-          existingMeta.description = ((existingMeta.description || '') + '\n\n📺 Streaming on: ' + cleanPlatformNames(day0Item.trustedPlatform)).trim();
+        const validOtt = extractValidOttPlatforms(day0Item.trustedPlatform);
+        if (validOtt && (!existingMeta.description || !existingMeta.description.includes('📺 Streaming on:'))) {
+          existingMeta.description = ((existingMeta.description || '') + '\n\n📺 Streaming on: ' + validOtt).trim();
         }
         movieCache[cacheKey] = existingMeta;
         cacheDirty = true;
@@ -1134,6 +1121,7 @@ async function scrapeMovies(lang) {
     }
   }
 
+  // STEP 2: TMDB Discover Foundation
   const isLeanCache = metas.length < 100;
   const lookback = isLeanCache ? MOVIE_FIRST_RUN : (RUN_IS_DEEP ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK);
   const discoverPages = isLeanCache ? 25 : (RUN_IS_DEEP ? 12 : 5);
