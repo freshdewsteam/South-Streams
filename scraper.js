@@ -1,11 +1,13 @@
 /**
  * scraper.js — South Streams
  *
- * Movies  → 91mobiles editorial AJAX (60-day lookback, authoritative OTT dates)
- *           → Movie of the Night changes API (day-0 live updates)
- *           → JustWatch GraphQL newTitles (safety net)
+ * Movies  → Movie of the Night changes API (official day-0, primary)
+ *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 7 days)
+ *           → 91mobiles editorial AJAX (7-day sweep, deep sweep only)
  *           → TMDB Auto-Discover (/discover/movie, foundation)
- * Series  → 91mobiles editorial AJAX → MoN → JustWatch → TMDB Discover (/discover/tv)
+ * Series  → Movie of the Night changes API → JustWatch safety net
+ *           → 91mobiles editorial AJAX (7-day sweep, deep sweep only)
+ *           → TMDB Auto-Discover (/discover/tv, foundation)
  * Enrichment → TMDB / OMDb API (posters, descriptions, IMDb IDs)
  */
 
@@ -283,6 +285,7 @@ function isReleased(dateStr) {
 function daysAgo(n) { const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
 function today()    { return new Date().toISOString().slice(0,10); }
 
+// Deep-sweep window: 00:01–01:30 IST (18:00–20:00 UTC)
 function isDeepSweepHour() {
   const h = new Date().getUTCHours();
   return h >= 18 && h < 20;
@@ -612,10 +615,10 @@ async function fetchJustWatch(lang, kind) {
   return resolved;
 }
 
-// ── 91MOBILES (60-DAY MULTI-PAGE SWEEP FOR ACCURATE OTT DATES) ────────────────
+// ── 91MOBILES (LEAN 7-DAY WINDOW — CONSERVES SCRAPERAPI CREDITS) ───────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_LANG_ID  = { ml: 28, ta: 63 };
-const M91_LOOKBACK_DAYS = 60; // Wide window to ensure all cached releases get accurate OTT dates
+const M91_LOOKBACK_DAYS = 7; // Clean 7-day lookback for daily updates
 const M91_PAGES = {
   ml: { movie: 'new-malayalam-movies', series: 'new-malayalam-web-series' },
   ta: { movie: 'new-tamil-movies',     series: 'new-tamil-web-series' },
@@ -658,44 +661,34 @@ function m91UnwrapBody(raw) {
 
 async function m91FetchItems(slug, kind, lang) {
   const isShow = kind === 'SHOW';
-  let combinedHtml = '';
+  // Single-page fetch for fast, quota-safe day-to-day runs
+  const params = new URLSearchParams({
+    qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
+    sortOrder: 'desc',
+    sortBy: 'ottReleaseDate',
+    start: '1',
+    seoSlug: '/' + slug,
+    pType: slug,
+    dubbedVal: 'notDubbed',
+    type: 'loadmore'
+  });
+  const target = M91_AJAX_URL + '?' + params.toString();
 
-  // Fetch 4 pages (offsets 1, 11, 21, 31) to capture the past 60 days
-  for (const pageStart of [1, 11, 21, 31]) {
-    const params = new URLSearchParams({
-      qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
-      sortOrder: 'desc',
-      sortBy: 'ottReleaseDate',
-      start: String(pageStart),
-      seoSlug: '/' + slug,
-      pType: slug,
-      dubbedVal: 'notDubbed',
-      type: 'loadmore'
-    });
-    const target = M91_AJAX_URL + '?' + params.toString();
-
-    let body = '';
-    if (SCRAPERAPI_KEY) {
-      try {
-        const wrapped = 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
-                        '&country_code=in&url=' + encodeURIComponent(target);
-        body = m91UnwrapBody(await fetchUrl(wrapped, m91FetchHeaders()));
-      } catch (e) {}
-    }
-
-    if (!body || !/<div\s+class="?pro_item/.test(body)) {
-      try {
-        body = m91UnwrapBody(await fetchUrl(target, m91FetchHeaders()));
-      } catch (e) {}
-    }
-
-    if (body && /<div\s+class="?pro_item/.test(body)) {
-      combinedHtml += '\n' + body;
-    }
-    await new Promise(r => setTimeout(r, 200));
+  if (SCRAPERAPI_KEY) {
+    try {
+      const wrapped = 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
+                      '&country_code=in&url=' + encodeURIComponent(target);
+      const body = m91UnwrapBody(await fetchUrl(wrapped, m91FetchHeaders()));
+      if (/<div\s+class="?pro_item/.test(body)) return body;
+    } catch (e) {}
   }
 
-  return combinedHtml;
+  try {
+    const body = m91UnwrapBody(await fetchUrl(target, m91FetchHeaders()));
+    if (/<div\s+class="?pro_item/.test(body)) return body;
+  } catch (e) {}
+
+  return '';
 }
 
 function m91ParsePage(html, langLabel, requireOttMarker) {
@@ -791,7 +784,6 @@ async function fetch91Mobiles(lang, kind) {
   }
 }
 
-// 91mobiles always runs on every workflow execution to keep dates accurate
 async function fetchDay0Items(lang, kind) {
   const byId = new Map();
 
@@ -808,11 +800,14 @@ async function fetchDay0Items(lang, kind) {
     }
   } catch (e) {}
 
-  try {
-    for (const it of await fetch91Mobiles(lang, kind)) {
-      if (!byId.has(it.id)) byId.set(it.id, it);
-    }
-  } catch (e) {}
+  // 91mobiles fires during deep sweeps (IST midnight window) to catch regional drops
+  if (RUN_IS_DEEP) {
+    try {
+      for (const it of await fetch91Mobiles(lang, kind)) {
+        if (!byId.has(it.id)) byId.set(it.id, it);
+      }
+    } catch (e) {}
+  }
 
   return Array.from(byId.values());
 }
@@ -906,6 +901,7 @@ async function processMovie(item, lang, expectedLang, strictLang) {
       return null;
     }
 
+    // Prefer OTT arrival date (from 91mobiles / Day-0) over TMDB theatrical release date
     const ottDate = item.arrivalDate || detail.release_date || '';
 
     const meta = buildMeta({
@@ -992,6 +988,7 @@ async function processSeriesJW(item, lang) {
         : (item.trustedPlatform || '')
     );
 
+    // Prefer last_air_date so newly airing seasons/episodes sort to the current year[cite: 1]
     const latestAirDate = detail.last_air_date || detail.first_air_date || item.arrivalDate || today();
 
     const meta = buildMeta({
@@ -1032,13 +1029,13 @@ async function scrapeMovies(lang) {
     }
   }
 
-  // STEP 1: Authoritative OTT dates via 91mobiles & Day-0[cite: 1]
+  // STEP 1: Live Day-0 & 91mobiles Arrivals with In-Place Cache Update[cite: 1]
   const day0Items = await fetchDay0Items(lang, 'MOVIE');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_' + day0Item.id;
     const arrivalDate = day0Item.arrivalDate || today();
 
-    // Match existing movie by TMDB ID or title variations
+    // Match existing movie by TMDB ID, IMDb ID, or verified title[cite: 1]
     const existingIndex = metas.findIndex(m => {
       if (movieCache[cacheKey] && movieCache[cacheKey].id === m.id) return true;
       if (day0Item.imdbId && m.id === day0Item.imdbId) return true;
@@ -1046,7 +1043,7 @@ async function scrapeMovies(lang) {
       return false;
     });
 
-    // In-place date overwrite: update movie to 91mobiles OTT date[cite: 1]
+    // In-place date overwrite: update movie to authoritative OTT date[cite: 1]
     if (existingIndex !== -1) {
       const existingMeta = metas[existingIndex];
       if (arrivalDate && (!existingMeta.releaseInfo || existingMeta.releaseInfo < arrivalDate)) {
@@ -1056,7 +1053,7 @@ async function scrapeMovies(lang) {
         }
         movieCache[cacheKey] = existingMeta;
         cacheDirty = true;
-        console.log('[91m Date Update] 🔄 ' + existingMeta.name + ' OTT date set to ' + arrivalDate);
+        console.log('[Date Update] 🔄 ' + existingMeta.name + ' OTT date set to ' + arrivalDate);
       }
       continue;
     }
@@ -1135,7 +1132,7 @@ async function scrapeSeries(lang) {
         existingMeta.releaseInfo = arrivalDate;
         seriesCache[cacheKey] = existingMeta;
         cacheDirty = true;
-        console.log('[91m Date Update] 🔄 Updated series ' + existingMeta.name + ' date to ' + arrivalDate);
+        console.log('[Date Update] 🔄 Updated series ' + existingMeta.name + ' date to ' + arrivalDate);
       }
       continue;
     }
