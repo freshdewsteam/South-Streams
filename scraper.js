@@ -538,7 +538,7 @@ function extractJwIdentifiers(node, kind) {
   return {
     title: (c.title || '').trim(),
     tmdbId: c.externalIds && c.externalIds.tmdbId ? parseInt(c.externalIds.tmdbId, 10) : NaN,
-    imdbId: c.externalIds && c.externalIds.imdbId ? c.externalIds.imdbId : null,
+    imdbId: c.externalIds && c.externalIds.imdbId ? sc.externalIds.imdbId : null,
     year: c.originalReleaseYear || null,
     isReleased: c.isReleased !== false,
   };
@@ -898,7 +898,7 @@ async function processMovie(item, lang, expectedLang, strictLang) {
       return null;
     }
 
-    // Prefer OTT arrival date (from 91mobiles / Day-0) over TMDB theatrical release date
+    // Prefer OTT arrival date (from 91mobiles / Day-0) over TMDB theatrical release date[cite: 1]
     const ottDate = item.arrivalDate || detail.release_date || '';
 
     const meta = buildMeta({
@@ -1015,6 +1015,7 @@ async function scrapeMovies(lang) {
   const metas = [];
   const processedImdbIds = new Set();
 
+  // STEP 0: Seed existing cache[cite: 1]
   for (const [cacheKey, val] of Object.entries(movieCache)) {
     if (!cacheKey.startsWith(lang + '_')) continue;
     const entry = readCacheEntry(val);
@@ -1025,42 +1026,52 @@ async function scrapeMovies(lang) {
     }
   }
 
+  // STEP 1: Day-0 & 91mobiles Arrivals with In-Place Cache Update[cite: 1]
   const day0Items = await fetchDay0Items(lang, 'MOVIE');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_' + day0Item.id;
+    const arrivalDate = day0Item.arrivalDate || today();
+
+    // CASE 1: Movie was already cached from a previous run — update its date and platform![cite: 1]
+    const existingIndex = metas.findIndex(m => m.id === day0Item.imdbId || (movieCache[cacheKey] && movieCache[cacheKey].id === m.id));
+    if (existingIndex !== -1) {
+      const existingMeta = metas[existingIndex];
+      if (arrivalDate && (!existingMeta.releaseInfo || existingMeta.releaseInfo < arrivalDate)) {
+        existingMeta.releaseInfo = arrivalDate;
+        if (day0Item.trustedPlatform && (!existingMeta.description || !existingMeta.description.includes('📺 Streaming on:'))) {
+          existingMeta.description = ((existingMeta.description || '') + '\n\n📺 Streaming on: ' + cleanPlatformNames(day0Item.trustedPlatform)).trim();
+        }
+        movieCache[cacheKey] = existingMeta;
+        cacheDirty = true;
+        console.log('[Date Update] 🔄 Updated ' + existingMeta.name + ' OTT date to ' + arrivalDate);
+      }
+      continue;
+    }
+
+    // CASE 2: Brand new discovery
     const cachedEntry    = readCacheEntry(movieCache[cacheKey]);
     const isNewDiscovery = cachedEntry === undefined || cachedEntry === 'retry';
 
     const meta = await processMovie(day0Item, lang, lang, true);
     if (meta && meta.id && !processedImdbIds.has(meta.id)) {
-      const arrivalDate = day0Item.arrivalDate || today();
+      const tmdbTheatrical = meta.releaseInfo || arrivalDate;
+      const ageMs = Date.now() - new Date(tmdbTheatrical).getTime();
+      const isRerelease = !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
 
-      if (isNewDiscovery) {
-        const tmdbTheatrical = meta.releaseInfo || arrivalDate;
-        const ageMs = Date.now() - new Date(tmdbTheatrical).getTime();
-        const isRerelease = !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
-
-        if (isRerelease) {
-          meta.description = ((meta.description || '') + '\n\n♻️ Re-release: back on OTT on ' + arrivalDate).trim();
-        } else {
-          meta.releaseInfo = arrivalDate;
-        }
-
-        movieCache[cacheKey] = meta;
-        cacheDirty = true;
+      if (isRerelease) {
+        meta.description = ((meta.description || '') + '\n\n♻️ Re-release: back on OTT on ' + arrivalDate).trim();
       } else {
-        // Update cached item if a newer verified OTT arrival date was discovered
-        if (day0Item.arrivalDate && (!meta.releaseInfo || meta.releaseInfo < day0Item.arrivalDate)) {
-          meta.releaseInfo = day0Item.arrivalDate;
-          movieCache[cacheKey] = meta;
-          cacheDirty = true;
-        }
+        meta.releaseInfo = arrivalDate;
       }
+
+      movieCache[cacheKey] = meta;
+      cacheDirty = true;
       metas.push(meta);
       processedImdbIds.add(meta.id);
     }
   }
 
+  // STEP 2: TMDB Discover Foundation
   const lookback = RUN_IS_DEEP ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK;
   const discoverPages = RUN_IS_DEEP ? 12 : 5;
   const tmdbItems = await discoverMovies(lang, lookback, discoverPages);
@@ -1072,6 +1083,7 @@ async function scrapeMovies(lang) {
     }
   }
 
+  // Final Sort by release date (newest OTT arrivals at the top)[cite: 1]
   metas.sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''));
   const finalResult = metas.slice(0, 120);
   console.log('[Movies] ' + lang + ': ' + finalResult.length + ' in catalogue');
@@ -1082,6 +1094,7 @@ async function scrapeSeries(lang) {
   const metas = [];
   const processedImdbIds = new Set();
 
+  // STEP 0: Seed existing cache[cite: 1]
   for (const [cacheKey, val] of Object.entries(seriesCache)) {
     if (!cacheKey.startsWith(lang + '_series_')) continue;
     const entry = readCacheEntry(val);
@@ -1092,35 +1105,50 @@ async function scrapeSeries(lang) {
     }
   }
 
+  // STEP 1: Day-0 & 91mobiles Arrivals with In-Place Cache Update[cite: 1]
   const day0Items = await fetchDay0Items(lang, 'SHOW');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_series_' + day0Item.id;
+    const arrivalDate = day0Item.arrivalDate || today();
+
+    // CASE 1: Series was already cached — update its date if newer air date arrived[cite: 1]
+    const existingIndex = metas.findIndex(m => m.id === day0Item.imdbId || (seriesCache[cacheKey] && seriesCache[cacheKey].id === m.id));
+    if (existingIndex !== -1) {
+      const existingMeta = metas[existingIndex];
+      if (arrivalDate && (!existingMeta.releaseInfo || existingMeta.releaseInfo < arrivalDate)) {
+        existingMeta.releaseInfo = arrivalDate;
+        seriesCache[cacheKey] = existingMeta;
+        cacheDirty = true;
+        console.log('[Date Update] 🔄 Updated series ' + existingMeta.name + ' date to ' + arrivalDate);
+      }
+      continue;
+    }
+
+    // CASE 2: Brand new discovery
     const cachedEntry    = readCacheEntry(seriesCache[cacheKey]);
     const isNewDiscovery = cachedEntry === undefined || cachedEntry === 'retry';
 
     const meta = await processSeriesJW(day0Item, lang);
     if (meta && meta.id && !processedImdbIds.has(meta.id)) {
-      if (isNewDiscovery) {
-        const arrivalDate = day0Item.arrivalDate || today();
-        const firstAir    = meta.releaseInfo || arrivalDate;
-        const ageMs       = Date.now() - new Date(firstAir).getTime();
-        const isNewSeason = day0Item.isNewSeason === true;
-        const isRerelease = !isNewSeason && !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
+      const firstAir = meta.releaseInfo || arrivalDate;
+      const ageMs = Date.now() - new Date(firstAir).getTime();
+      const isNewSeason = day0Item.isNewSeason === true;
+      const isRerelease = !isNewSeason && !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
 
-        if (isRerelease) {
-          meta.description = ((meta.description || '') + '\n\n♻️ Re-release: back on OTT on ' + arrivalDate).trim();
-        } else {
-          meta.releaseInfo = arrivalDate;
-        }
-
-        seriesCache[cacheKey] = meta;
-        cacheDirty = true;
+      if (isRerelease) {
+        meta.description = ((meta.description || '') + '\n\n♻️ Re-release: back on OTT on ' + arrivalDate).trim();
+      } else {
+        meta.releaseInfo = arrivalDate;
       }
+
+      seriesCache[cacheKey] = meta;
+      cacheDirty = true;
       metas.push(meta);
       processedImdbIds.add(meta.id);
     }
   }
 
+  // STEP 2: TMDB Auto-Discover for Series Foundation
   const tmdbSeries = await discoverSeries(lang, 5);
   for (const item of tmdbSeries) {
     const meta = await processSeriesJW(item, lang);
