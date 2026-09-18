@@ -1548,6 +1548,18 @@
   ],
   "malayalam-series": [
     {
+      "id": "tt8537520",
+      "type": "series",
+      "name": "Bigg Boss",
+      "releaseInfo": "2026-09-12",
+      "description": "The Malayalam version of the reality show where a number of contestants (known as \"housemates\") live in a purpose-built house and are isolated from the rest of the world. Each week, housemates nominate two of their fellow housemates for eviction, and the housemates who receive the most nominations faces a public vote out.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2018-06-24\n⭐ Rating: 4.4/10\n\n♻️ Re-release: back on OTT on 2026-09-12",
+      "poster": "https://image.tmdb.org/t/p/w500/o75RAzbauCTLnchulrlLGK3mTgo.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/cogvLaZrWRZYjSgRHTvVhkORbPj.jpg",
+      "genres": [
+        "Reality"
+      ]
+    },
+    {
       "id": "tt44568661",
       "type": "series",
       "name": "Bigg Boss: Agnipareeksha",
@@ -1749,18 +1761,6 @@
       "genres": [
         "Crime",
         "Mystery"
-      ]
-    },
-    {
-      "id": "tt8537520",
-      "type": "series",
-      "name": "Bigg Boss",
-      "releaseInfo": "2018-06-24",
-      "description": "The Malayalam version of the reality show where a number of contestants (known as \"housemates\") live in a purpose-built house and are isolated from the rest of the world. Each week, housemates nominate two of their fellow housemates for eviction, and the housemates who receive the most nominations faces a public vote out.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2018-06-24\n⭐ Rating: 4.4/10\n\n♻️ Re-release: back on OTT on 2026-09-12",
-      "poster": "https://image.tmdb.org/t/p/w500/o75RAzbauCTLnchulrlLGK3mTgo.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/cogvLaZrWRZYjSgRHTvVhkORbPj.jpg",
-      "genres": [
-        "Reality"
       ]
     },
     {
@@ -3371,6 +3371,72 @@
   ],
   "tamil-series": [
     {
+      "id": "tt41962673",
+      "type": "series",
+      "name": "Brothers and Sisters",
+      "releaseInfo": "2026-09-15",
+      "description": "Bound by love and unspoken truths, Shanmuga Sundaram and his devoted family's lives revolve around shared rituals... till hidden cracks begin to surface.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-05-27\n⭐ Rating: 9.0/10\n\n♻️ Re-release: back on OTT on 2026-09-15\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-05-27\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-05-27\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-05-27\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-05-27\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-05-27",
+      "poster": "https://image.tmdb.org/t/p/w500/dUmJyNe5UT301KwVWrxctpP2sqU.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/vOXCP8gDeChnUyDVro0jUaT7Acr.jpg",
+      "genres": [
+        "Family",
+        "Drama",
+        "Comedy"
+      ]
+    },
+    {
+      "id": "tt21211254",
+      "type": "series",
+      "name": "TamilRockerz",
+      "releaseInfo": "2026-09-15",
+      "description": "Tamil Rockerz, an anonymous cyber pirates are threatening to release a highly anticipated film featuring a massively popular star. It's up to the cop Rudra to find the lawbreakers and bring them to justice.\n\n📺 Streaming on: Sony Liv, VI movies and tv\n📅 Release: 2022-08-19\n⭐ Rating: 6.1/10\n\n♻️ Re-release: back on OTT on 2026-09-15",
+      "poster": "https://image.tmdb.org/t/p/w500/hV2qjOlqVOS0gcnU2trrF6hatgu.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/wlQTky8pIAUqDJs9QQ74WkLZERa.jpg",
+      "genres": [
+        "Crime",
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt25151592",
+      "type": "series",
+      "name": "Story of Things",
+      "releaseInfo": "2026-09-15",
+      "description": "An anthology of five stories that follow characters who experience supernatural occurrences through material objects around them.\n\n📺 Streaming on: Sony Liv, VI movies and tv\n📅 Release: 2023-01-06\n⭐ Rating: 7.0/10\n\n♻️ Re-release: back on OTT on 2026-09-15",
+      "poster": "https://image.tmdb.org/t/p/w500/rSaj5DGkflhz0HjT0kHbzMC0Zz9.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/9jPKgzHurt81OWN7LXdzRDrwLgK.jpg",
+      "genres": [
+        "Mystery"
+      ]
+    },
+    {
+      "id": "tt23312808",
+      "type": "series",
+      "name": "Kaiyum Kalavum",
+      "releaseInfo": "2026-09-15",
+      "description": "Serendipity plays matchmaker when it brings together a compulsive thief and an unlucky pickpocket who find themselves being drawn closer to each other with every theft they pull off.\n\n📺 Streaming on: Sony Liv, VI movies and tv\n📅 Release: 2022-11-04\n\n♻️ Re-release: back on OTT on 2026-09-15",
+      "poster": "https://image.tmdb.org/t/p/w500/a9SY5yoQck5e7KIP4VJD66HEr0c.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/AeRjTvsgyKxX0keR3tlpAZAU05Z.jpg",
+      "genres": [
+        "Crime",
+        "Comedy",
+        "Mystery"
+      ]
+    },
+    {
+      "id": "tt21223050",
+      "type": "series",
+      "name": "Meme Boys",
+      "releaseInfo": "2026-09-15",
+      "description": "Four unassuming friends, launch an anonymous social media page \"Meme Boys\" shedding light on their oppressive college administration with a punch of humor. What starts as an innocent fun exercise, soon revolutionizes the entire college, birthing a movement of sorts in no time. With memes taking the college by storm, a cat-and-mouse game kicks off between the Meme Boys’ gang and the Dean.\n\n📺 Streaming on: Sony Liv, VI movies and tv\n📅 Release: 2022-07-22\n⭐ Rating: 5.0/10\n\n♻️ Re-release: back on OTT on 2026-09-15",
+      "poster": "https://image.tmdb.org/t/p/w500/1aktD253QoJOl9nAQ3lddg1FARJ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/zE8RCQViITKXbxNwsnniMkagd6U.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
       "id": "tt44914967",
       "type": "series",
       "name": "The Court",
@@ -3405,20 +3471,6 @@
       "background": "https://image.tmdb.org/t/p/w1280/4hU24wP2A1Vq72aHhXaRBRB247B.jpg",
       "genres": [
         "Crime"
-      ]
-    },
-    {
-      "id": "tt41962673",
-      "type": "series",
-      "name": "Brothers and Sisters",
-      "releaseInfo": "2026-05-27",
-      "description": "Bound by love and unspoken truths, Shanmuga Sundaram and his devoted family's lives revolve around shared rituals... till hidden cracks begin to surface.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2026-05-27\n⭐ Rating: 9.0/10\n\n♻️ Re-release: back on OTT on 2026-09-15\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-05-27\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-05-27\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-05-27\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-05-27\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-05-27",
-      "poster": "https://image.tmdb.org/t/p/w500/dUmJyNe5UT301KwVWrxctpP2sqU.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/vOXCP8gDeChnUyDVro0jUaT7Acr.jpg",
-      "genres": [
-        "Family",
-        "Drama",
-        "Comedy"
       ]
     },
     {
@@ -3890,18 +3942,6 @@
       ]
     },
     {
-      "id": "tt25151592",
-      "type": "series",
-      "name": "Story of Things",
-      "releaseInfo": "2023-01-06",
-      "description": "An anthology of five stories that follow characters who experience supernatural occurrences through material objects around them.\n\n📺 Streaming on: Sony Liv, VI movies and tv\n📅 Release: 2023-01-06\n⭐ Rating: 7.0/10\n\n♻️ Re-release: back on OTT on 2026-09-15",
-      "poster": "https://image.tmdb.org/t/p/w500/rSaj5DGkflhz0HjT0kHbzMC0Zz9.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/9jPKgzHurt81OWN7LXdzRDrwLgK.jpg",
-      "genres": [
-        "Mystery"
-      ]
-    },
-    {
       "id": "tt23642102",
       "type": "series",
       "name": "Fall",
@@ -3941,33 +3981,6 @@
       ]
     },
     {
-      "id": "tt23312808",
-      "type": "series",
-      "name": "Kaiyum Kalavum",
-      "releaseInfo": "2022-11-04",
-      "description": "Serendipity plays matchmaker when it brings together a compulsive thief and an unlucky pickpocket who find themselves being drawn closer to each other with every theft they pull off.\n\n📺 Streaming on: Sony Liv, VI movies and tv\n📅 Release: 2022-11-04\n\n♻️ Re-release: back on OTT on 2026-09-15",
-      "poster": "https://image.tmdb.org/t/p/w500/a9SY5yoQck5e7KIP4VJD66HEr0c.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/AeRjTvsgyKxX0keR3tlpAZAU05Z.jpg",
-      "genres": [
-        "Crime",
-        "Comedy",
-        "Mystery"
-      ]
-    },
-    {
-      "id": "tt21211254",
-      "type": "series",
-      "name": "TamilRockerz",
-      "releaseInfo": "2022-08-19",
-      "description": "Tamil Rockerz, an anonymous cyber pirates are threatening to release a highly anticipated film featuring a massively popular star. It's up to the cop Rudra to find the lawbreakers and bring them to justice.\n\n📺 Streaming on: Sony Liv, VI movies and tv\n📅 Release: 2022-08-19\n⭐ Rating: 6.1/10\n\n♻️ Re-release: back on OTT on 2026-09-15",
-      "poster": "https://image.tmdb.org/t/p/w500/hV2qjOlqVOS0gcnU2trrF6hatgu.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/wlQTky8pIAUqDJs9QQ74WkLZERa.jpg",
-      "genres": [
-        "Crime",
-        "Drama"
-      ]
-    },
-    {
       "id": "tt21340072",
       "type": "series",
       "name": "Emoji",
@@ -4003,19 +4016,6 @@
       "poster": "https://image.tmdb.org/t/p/w500/i8rqPbdkmM4dHC0lLAjU91z86Uo.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/1tgEIy6WR4vX8mco8cJnO0M9xLd.jpg",
       "genres": [
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt21223050",
-      "type": "series",
-      "name": "Meme Boys",
-      "releaseInfo": "2022-07-22",
-      "description": "Four unassuming friends, launch an anonymous social media page \"Meme Boys\" shedding light on their oppressive college administration with a punch of humor. What starts as an innocent fun exercise, soon revolutionizes the entire college, birthing a movement of sorts in no time. With memes taking the college by storm, a cat-and-mouse game kicks off between the Meme Boys’ gang and the Dean.\n\n📺 Streaming on: Sony Liv, VI movies and tv\n📅 Release: 2022-07-22\n⭐ Rating: 5.0/10\n\n♻️ Re-release: back on OTT on 2026-09-15",
-      "poster": "https://image.tmdb.org/t/p/w500/1aktD253QoJOl9nAQ3lddg1FARJ.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/zE8RCQViITKXbxNwsnniMkagd6U.jpg",
-      "genres": [
-        "Comedy",
         "Drama"
       ]
     },
@@ -4371,5 +4371,5 @@
       ]
     }
   ],
-  "builtAt": "2026-09-18T19:33:16.414Z"
+  "builtAt": "2026-09-18T19:44:12.719Z"
 }
