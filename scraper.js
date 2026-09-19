@@ -231,14 +231,20 @@ function isDeepSweepHour() {
 const RUN_IS_DEEP = isDeepSweepHour();
 
 function getTitleVariations(title) {
-  const v = new Set([title]);
+  const v = new Set();
+  v.add(title); // Exact match first
+
+  // Common transliteration and punctuation cleanups
   v.add(title.replace(/\band\b/gi, '&'));
   v.add(title.replace(/&/g, ' and '));
+  v.add(title.replace(/\band\b/gi, 'in')); // Handles variations like "Ram and Leela" -> "Ram In Leela"
+  v.add(title.replace(/\bin\b/gi, 'and'));
   v.add(title.replace(/[^a-zA-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim());
   v.add(title.replace(/\s*\(\d{4}\)\s*$/, '').trim());
   v.add(title.replace(/\s*[-–]\s*season\s*\d+/i, '').trim());
   v.add(title.replace(/^(the|a|an)\s+/i, '').trim());
   v.add(title.replace(/\s+(series|show|tv|web series)$/i, '').trim());
+
   return Array.from(v).filter(x => x.length >= 2);
 }
 
@@ -369,6 +375,7 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
 
     if (requireOttMarker && !/\(OTT\)/i.test(meta)) continue;
 
+    // Drop block if it is purely a cinema ticket listing
     if (THEATRICAL_REGEX.test(block) && !VALID_OTT_PLATFORMS.some(p => p.match.test(block))) {
       continue;
     }
@@ -415,13 +422,22 @@ async function fetch91Mobiles(lang, kind) {
     for (const item of items) {
       const endpoint = isShow ? '/search/tv?query=' : '/search/movie?query=';
       let r = null;
+
       for (const v of getTitleVariations(item.title)) {
         try {
-          const data = await tmdb(endpoint + encodeURIComponent(v) + '&language=en-US&page=1');
-          const candidates = (data.results || []).filter(x =>
-            x.original_language === lang || (Array.isArray(x.origin_country) && x.origin_country.includes('IN'))
-          );
-          if (candidates.length) { r = candidates[0]; break; }
+          // 1. First attempt: Search with reported year to exclude similarly named older movies
+          if (item.year) {
+            const yearKey = isShow ? 'first_air_date_year' : 'primary_release_year';
+            const data = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=1&${yearKey}=${item.year}`);
+            const candidates = (data.results || []).filter(x => x.original_language === lang);
+            if (candidates.length) { r = candidates[0]; break; }
+          }
+
+          // 2. Fallback: Search without year (handles Dec-to-Jan release boundary mismatches)
+          const fallbackData = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=1`);
+          const langCandidates = (fallbackData.results || []).filter(x => x.original_language === lang);
+          if (langCandidates.length) { r = langCandidates[0]; break; }
+
         } catch (e) {}
       }
 
@@ -446,7 +462,6 @@ async function fetch91Mobiles(lang, kind) {
   }
 }
 
-// Day-0 is now strictly powered by 91mobiles
 async function fetchDay0Items(lang, kind) {
   try {
     return await fetch91Mobiles(lang, kind);
@@ -682,6 +697,7 @@ async function scrapeMovies(lang) {
   const metas = [];
   const processedImdbIds = new Set();
 
+  // STEP 0: Seed existing cache & PURGE ANY THEATRICAL TICKETING MOVIES
   for (const [cacheKey, val] of Object.entries(movieCache)) {
     if (!cacheKey.startsWith(lang + '_')) continue;
     const entry = readCacheEntry(val);
@@ -698,6 +714,7 @@ async function scrapeMovies(lang) {
     }
   }
 
+  // STEP 1: Live Day-0 91mobiles Arrivals with In-Place Cache Update
   const day0Items = await fetchDay0Items(lang, 'MOVIE');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_' + day0Item.id;
@@ -712,7 +729,12 @@ async function scrapeMovies(lang) {
 
     if (existingIndex !== -1) {
       const existingMeta = metas[existingIndex];
-      if (arrivalDate && (!existingMeta.releaseInfo || existingMeta.releaseInfo < arrivalDate)) {
+      const origDate = existingMeta.releaseInfo || '';
+      const ageMs = origDate ? (Date.now() - new Date(origDate).getTime()) : 0;
+      const isOldMovie = !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
+
+      // Only bump releaseInfo if it's NOT an old catalog movie re-licensing
+      if (arrivalDate && !isOldMovie && (!existingMeta.releaseInfo || existingMeta.releaseInfo < arrivalDate)) {
         existingMeta.releaseInfo = arrivalDate;
         const validOtt = extractValidOttPlatforms(day0Item.trustedPlatform);
         if (validOtt && (!existingMeta.description || !existingMeta.description.includes('📺 Streaming on:'))) {
@@ -721,12 +743,16 @@ async function scrapeMovies(lang) {
         movieCache[cacheKey] = existingMeta;
         cacheDirty = true;
         console.log('[Date Update] 🔄 ' + existingMeta.name + ' OTT date set to ' + arrivalDate);
+      } else if (isOldMovie && arrivalDate > origDate) {
+        // Tag as re-release in description, but retain original release year so it doesn't jump to the top
+        if (!existingMeta.description.includes('♻️ Re-release')) {
+          existingMeta.description = (existingMeta.description + '\n\n♻️ Re-release: Available on OTT').trim();
+          movieCache[cacheKey] = existingMeta;
+          cacheDirty = true;
+        }
       }
       continue;
     }
-
-    const cachedEntry    = readCacheEntry(movieCache[cacheKey]);
-    const isNewDiscovery = cachedEntry === undefined || cachedEntry === 'retry';
 
     const meta = await processMovie(day0Item, lang, lang, true);
     if (meta && meta.id && !processedImdbIds.has(meta.id)) {
@@ -747,6 +773,7 @@ async function scrapeMovies(lang) {
     }
   }
 
+  // STEP 2: TMDB Discover Foundation
   const isLeanCache = metas.length < 100;
   const lookback = isLeanCache ? MOVIE_FIRST_RUN : (RUN_IS_DEEP ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK);
   const discoverPages = isLeanCache ? 25 : (RUN_IS_DEEP ? 12 : 5);
@@ -802,9 +829,6 @@ async function scrapeSeries(lang) {
       }
       continue;
     }
-
-    const cachedEntry    = readCacheEntry(seriesCache[cacheKey]);
-    const isNewDiscovery = cachedEntry === undefined || cachedEntry === 'retry';
 
     const meta = await processSeriesJW(day0Item, lang);
     if (meta && meta.id && !processedImdbIds.has(meta.id)) {
