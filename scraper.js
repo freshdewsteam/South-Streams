@@ -1,13 +1,11 @@
 /**
  * scraper.js — South Streams
  *
- * Movies  → Movie of the Night changes API (official day-0, primary)
- *           → JustWatch GraphQL newTitles (ALWAYS-ON safety net, 7 days)
- *           → 91mobiles editorial AJAX (STRICT OTT WHITELIST ONLY, 7-day lean sweep)
+ * Movies  → 91mobiles editorial AJAX (Sole Day-0 OTT authority, strict whitelist)
  *           → TMDB Auto-Discover (/discover/movie with watch_region=IN)
- * Series  → Movie of the Night changes API → JustWatch safety net
- *           → 91mobiles editorial AJAX → TMDB Auto-Discover (/discover/tv)
- * Enrichment → TMDB / OMDb API (posters, descriptions, IMDb IDs)
+ * Series  → 91mobiles editorial AJAX (Sole Day-0 OTT authority)
+ *           → TMDB Auto-Discover (/discover/tv)
+ * Enrichment → TMDB API (posters, descriptions, IMDb IDs)
  */
 
 const https = require('https');
@@ -18,15 +16,9 @@ const path  = require('path');
 const TMDB_KEY       = process.env.TMDB_API_KEY       || '';
 const OMDB_KEY       = process.env.OMDB_API_KEY       || '';
 const WEBHOOK_URL    = process.env.WEBHOOK_URL         || '';
-const MON_API_KEY    = process.env.MON_API_KEY         || '';
 const SCRAPERAPI_KEY = process.env.SCRAPERAPI_KEY    || '';
 const BASE           = 'https://api.themoviedb.org/3';
 const IMG            = 'https://image.tmdb.org/t/p/';
-
-const JW_GRAPHQL_URL = 'https://apis.justwatch.com/graphql';
-const JW_DAYS_TO_SCAN = 7;
-
-const MON_CHANGES_URL = 'https://api.movieofthenight.com/v4/changes';
 
 const MOVIE_CACHE_FILE  = path.join(__dirname, 'data', 'movies-cache.json');
 const SERIES_CACHE_FILE = path.join(__dirname, 'data', 'series-cache.json');
@@ -142,24 +134,6 @@ function getHealthStatus() {
   return { movies: mc, series: sc, total: mc + sc };
 }
 
-async function sendAlert(message) {
-  console.log('[Alert] ' + message);
-  if (!WEBHOOK_URL) return;
-  try {
-    const body = JSON.stringify({ content: '🎬 South Streams: ' + message, username: 'South Streams' });
-    await new Promise((resolve, reject) => {
-      const u   = new URL(WEBHOOK_URL);
-      const req = https.request({
-        hostname: u.hostname, path: u.pathname + u.search,
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
-      }, res => { res.resume(); resolve(); });
-      req.on('error', reject);
-      req.write(body); req.end();
-    });
-  } catch (e) { console.warn('[Alert] Failed: ' + e.message); }
-}
-
 // ── HTTP ──────────────────────────────────────────────────────────────────────
 function fetchUrl(url, extraHeaders) {
   return new Promise((resolve, reject) => {
@@ -184,43 +158,6 @@ function fetchUrl(url, extraHeaders) {
     });
     req.on('error', reject);
     req.setTimeout(20000, function() { this.destroy(); reject(new Error('Timeout')); });
-  });
-}
-
-function postJson(url, payload) {
-  return new Promise((resolve, reject) => {
-    const body = (typeof payload === 'string') ? payload : JSON.stringify(payload);
-    const u    = new URL(url);
-    const req  = https.request({
-      hostname: u.hostname,
-      path:     u.pathname + u.search,
-      method:   'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Content-Length': Buffer.byteLength(body),
-        'User-Agent': 'Mozilla/5.0 (compatible; SouthStreamsAddon/2.0)',
-        'App-Version': '3.8.0-web-web'
-      }
-    }, (res) => {
-      let s = res;
-      const enc = res.headers['content-encoding'];
-      if (enc === 'gzip') s = res.pipe(zlib.createGunzip());
-      if (enc === 'br')   s = res.pipe(zlib.createBrotliDecompress());
-      const c = [];
-      s.on('data', d => c.push(d));
-      s.on('end', () => {
-        const text = Buffer.concat(c).toString('utf8');
-        if (res.statusCode !== 200) {
-          return reject(new Error('HTTP ' + res.statusCode + ': ' + text.slice(0, 300)));
-        }
-        resolve(text);
-      });
-      s.on('error', reject);
-    });
-    req.on('error', reject);
-    req.setTimeout(20000, function() { this.destroy(); reject(new Error('Timeout')); });
-    req.write(body); req.end();
   });
 }
 
@@ -331,296 +268,10 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
   return meta;
 }
 
-// ── MOVIE OF THE NIGHT ────────────────────────────────────────────────────────
-const monRawCache = { MOVIE: null, SHOW: null };
-
-function monWindowStart(kind) {
-  const now = Date.now();
-  if (RUN_IS_DEEP) return now - 3 * 86400 * 1000;
-  const last = seen['mon_' + kind];
-  if (!last || isNaN(last)) return now - 3 * 86400 * 1000;
-  return Math.max(last - 3600 * 1000, now - 12 * 3600 * 1000);
-}
-
-async function fetchMonRaw(kind) {
-  if (!MON_API_KEY) return null;
-  if (monRawCache[kind]) return monRawCache[kind];
-
-  const showType = kind === 'SHOW' ? 'series' : 'movie';
-  const fromUnix = Math.floor(monWindowStart(kind) / 1000);
-  const maxPages = RUN_IS_DEEP ? 8 : 2;
-  const changes   = [];
-  const showsById = {};
-  let cursor  = null;
-
-  for (let page = 0; page < maxPages; page++) {
-    const params = new URLSearchParams({
-      country: 'in',
-      change_type: 'new',
-      item_type: 'show',
-      show_type: showType,
-      from: String(fromUnix),
-      order_direction: 'desc'
-    });
-    if (cursor) params.set('cursor', cursor);
-
-    try {
-      const text = await fetchUrl(MON_CHANGES_URL + '?' + params.toString(), { 'X-API-Key': MON_API_KEY });
-      const data = JSON.parse(text);
-
-      let showsList = [];
-      if (Array.isArray(data.shows)) {
-        showsList = data.shows;
-      } else if (data.shows && typeof data.shows === 'object') {
-        showsList = Object.entries(data.shows).map(([key, val]) => {
-          if (val && typeof val === 'object') {
-            if (val.id === undefined || val.id === null) val.id = key;
-            return val;
-          }
-          return { id: key };
-        });
-      }
-
-      for (const ch of (Array.isArray(data.changes) ? data.changes : [])) changes.push(ch);
-      for (const sh of showsList) if (sh && sh.id !== undefined) showsById[String(sh.id)] = sh;
-
-      if (!data.hasMore || !data.nextCursor) break;
-      cursor = data.nextCursor;
-    } catch (e) { break; }
-  }
-
-  if (!changes.length || !Object.keys(showsById).length) return null;
-
-  seen['mon_' + kind] = Date.now();
-  cacheDirty = true;
-  monRawCache[kind] = { changes, showsById };
-  return monRawCache[kind];
-}
-
-async function resolveMonForLang(raw, lang, kind) {
-  const items     = [];
-  const seenIds   = new Set();
-  const latestByShow = new Map();
-
-  for (const ch of raw.changes) {
-    if (!ch || ch.showId === undefined) continue;
-    const opt = ch.streamingOptionType;
-    if (opt && opt !== 'subscription' && opt !== 'free' && opt !== 'ads' && opt !== 'addon') continue;
-    const sid = String(ch.showId);
-    if (!latestByShow.has(sid)) latestByShow.set(sid, ch);
-  }
-
-  for (const [sid, ch] of latestByShow) {
-    const sh = raw.showsById[sid];
-    if (!sh) continue;
-
-    const title = (sh.originalTitle || sh.title || '').trim();
-    if (!title) continue;
-    if (sh.originalLanguage && String(sh.originalLanguage).toLowerCase() !== lang) continue;
-
-    const arrivalDate = ch.timestamp
-      ? new Date(ch.timestamp * 1000).toISOString().slice(0, 10)
-      : today();
-
-    const isNewSeason = ch.itemType === 'season' && (ch.season || 0) >= 2;
-    const tmdbId = (sh.tmdbId !== undefined && sh.tmdbId !== null) ? parseInt(sh.tmdbId, 10) : NaN;
-    const imdbId = sh.imdbId || null;
-    const year   = sh.releaseYear || null;
-
-    if (!isNaN(tmdbId) && tmdbId > 0) {
-      if (!seenIds.has(tmdbId)) { seenIds.add(tmdbId); items.push({ id: tmdbId, arrivalDate, title, imdbId, year, isNewSeason }); }
-      continue;
-    }
-
-    if (imdbId) {
-      try {
-        const data = await tmdb('/find/' + imdbId + '?external_source=imdb_id');
-        const hit  = kind === 'SHOW' ? (data.tv_results || [])[0] : (data.movie_results || [])[0];
-        if (hit && !seenIds.has(hit.id)) { seenIds.add(hit.id); items.push({ id: hit.id, arrivalDate, title, imdbId, year, isNewSeason }); }
-        continue;
-      } catch (e) {}
-    }
-
-    const retryStore = kind === 'SHOW' ? seriesCache : movieCache;
-    const retryKey = 'mon_' + kind.toLowerCase() + '_' + title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50);
-    if (readCacheEntry(retryStore[retryKey]) === 'retry') continue;
-
-    try {
-      let r = null;
-      if (kind === 'SHOW') {
-        const yearParam = year ? '&first_air_date_year=' + year : '';
-        const data = await tmdb('/search/tv?query=' + encodeURIComponent(title) + '&language=en-US&page=1' + yearParam);
-        r = (data.results || [])[0];
-      } else {
-        const yearParam = year ? '&primary_release_year=' + year : '';
-        const data = await tmdb('/search/movie?query=' + encodeURIComponent(title) + '&language=en-US&page=1' + yearParam);
-        r = (data.results || [])[0];
-      }
-      if (r && !seenIds.has(r.id)) { seenIds.add(r.id); items.push({ id: r.id, arrivalDate, title, imdbId, year, isNewSeason }); }
-      else { setRetry(retryStore, retryKey); }
-    } catch (e) {}
-  }
-
-  return items;
-}
-
-// ── JUSTWATCH SAFETY NET ──────────────────────────────────────────────────────
-const JW_NEW_QUERY_MOVIE_RICH = `
-query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: TitleFilter, $first: Int!, $after: String) {
-  newTitles(country: $country, date: $date, filter: $filter, after: $after, first: $first, priceDrops: false, pageType: NEW) {
-    totalCount
-    pageInfo { endCursor hasNextPage }
-    edges {
-      node {
-        __typename
-        ... on MovieOrSeason {
-          objectType
-          content(country: $country, language: $language) {
-            title
-            shortDescription
-            fullPath
-            originalReleaseYear
-            externalIds { imdbId tmdbId }
-            isReleased
-          }
-        }
-      }
-    }
-  }
-}`;
-
-const JW_NEW_QUERY_SHOW_RICH = `
-query JwNew($country: Country!, $date: Date!, $language: Language!, $filter: TitleFilter, $first: Int!, $after: String) {
-  newTitles(country: $country, date: $date, filter: $filter, after: $after, first: $first, priceDrops: false, pageType: NEW) {
-    totalCount
-    pageInfo { endCursor hasNextPage }
-    edges {
-      node {
-        __typename
-        ... on MovieOrSeason {
-          objectType
-          content(country: $country, language: $language) {
-            title
-            shortDescription
-            fullPath
-            originalReleaseYear
-            externalIds { imdbId tmdbId }
-            isReleased
-          }
-          ... on Season {
-            show {
-              objectId
-              content(country: $country, language: $language) {
-                title
-                fullPath
-                originalReleaseYear
-                externalIds { imdbId tmdbId }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}`;
-
-function extractJwIdentifiers(node, kind) {
-  if (!node) return null;
-  if (kind === 'SHOW' && node.show && node.show.content) {
-    const sc = node.show.content;
-    return {
-      title: (sc.title || '').trim(),
-      tmdbId: sc.externalIds && sc.externalIds.tmdbId ? parseInt(sc.externalIds.tmdbId, 10) : NaN,
-      imdbId: sc.externalIds && sc.externalIds.imdbId ? sc.externalIds.imdbId : null,
-      year: sc.originalReleaseYear || null,
-      isReleased: node.content ? node.content.isReleased !== false : true,
-    };
-  }
-  const c = node.content;
-  if (!c) return null;
-  return {
-    title: (c.title || '').trim(),
-    tmdbId: c.externalIds && c.externalIds.tmdbId ? parseInt(c.externalIds.tmdbId, 10) : NaN,
-    imdbId: c.externalIds && c.externalIds.imdbId ? c.externalIds.imdbId : null,
-    year: c.originalReleaseYear || null,
-    isReleased: c.isReleased !== false,
-  };
-}
-
-async function jwNewTitlesForDate(dateStr, filter, kind) {
-  const collected = [];
-  let after = null;
-
-  for (let page = 0; page < 3; page++) {
-    const query = (kind === 'SHOW' ? JW_NEW_QUERY_SHOW_RICH : JW_NEW_QUERY_MOVIE_RICH);
-    const payload = JSON.stringify({
-      operationName: 'JwNew',
-      query: query,
-      variables: { country: 'IN', date: dateStr, language: 'en', first: 50, after: after, filter }
-    });
-    const text = await postJson(JW_GRAPHQL_URL, payload);
-    const data = JSON.parse(text);
-    const conn = data.data && data.data.newTitles;
-    if (!conn) break;
-    for (const e of (conn.edges || [])) {
-      if (e && e.node) collected.push(e.node);
-    }
-    if (!conn.pageInfo || !conn.pageInfo.hasNextPage || !conn.pageInfo.endCursor) break;
-    after = conn.pageInfo.endCursor;
-  }
-  return collected;
-}
-
-async function fetchJustWatch(lang, kind) {
-  const contents = [];
-  const seenKeys = new Set();
-
-  for (let d = 0; d < JW_DAYS_TO_SCAN; d++) {
-    const dateStr = daysAgo(d);
-    try {
-      const nodes = await jwNewTitlesForDate(dateStr, { objectTypes: [kind] }, kind);
-      for (const node of nodes) {
-        if (kind === 'SHOW' && node.objectType === 'MOVIE') continue;
-        if (kind === 'MOVIE' && node.objectType && node.objectType !== 'MOVIE') continue;
-
-        const ids = extractJwIdentifiers(node, kind);
-        if (!ids || !ids.title || !ids.isReleased) continue;
-
-        const key = (node.content && node.content.fullPath) || (ids.title + '|' + (isNaN(ids.tmdbId) ? '' : ids.tmdbId));
-        if (seenKeys.has(key)) continue;
-        seenKeys.add(key);
-        ids._arrivalDate = dateStr;
-        contents.push(ids);
-      }
-    } catch (e) {}
-    await new Promise(r => setTimeout(r, 150));
-  }
-
-  const resolved = [];
-  const seenIds  = new Set();
-
-  for (const c of contents) {
-    if (!isNaN(c.tmdbId) && c.tmdbId > 0) {
-      if (!seenIds.has(c.tmdbId)) { seenIds.add(c.tmdbId); resolved.push({ id: c.tmdbId, arrivalDate: c._arrivalDate, title: c.title, imdbId: c.imdbId, year: c.year }); }
-      continue;
-    }
-    if (c.imdbId) {
-      try {
-        const data = await tmdb('/find/' + c.imdbId + '?external_source=imdb_id');
-        const hit  = kind === 'SHOW' ? (data.tv_results || [])[0] : (data.movie_results || [])[0];
-        if (hit && !seenIds.has(hit.id)) { seenIds.add(hit.id); resolved.push({ id: hit.id, arrivalDate: c._arrivalDate, title: c.title, imdbId: c.imdbId, year: c.year }); }
-        continue;
-      } catch (e) {}
-    }
-  }
-
-  return resolved;
-}
-
-// ── 91MOBILES (LEAN 7-DAY WINDOW — STRICT OTT ONLY) ───────────────────────────
+// ── 91MOBILES (SOLE DAY-0 OTT DISCOVERY AUTHORITY) ────────────────────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_LANG_ID  = { ml: 28, ta: 63 };
-const M91_LOOKBACK_DAYS = 7;
+const M91_LOOKBACK_DAYS = 14; // Clean 2-week rolling window
 const M91_PAGES = {
   ml: { movie: 'new-malayalam-movies', series: 'new-malayalam-web-series' },
   ta: { movie: 'new-tamil-movies',     series: 'new-tamil-web-series' },
@@ -795,29 +446,13 @@ async function fetch91Mobiles(lang, kind) {
   }
 }
 
+// Day-0 is now strictly powered by 91mobiles
 async function fetchDay0Items(lang, kind) {
-  const byId = new Map();
-
-  const monRaw = await fetchMonRaw(kind);
-  if (monRaw) {
-    for (const it of await resolveMonForLang(monRaw, lang, kind)) {
-      if (!byId.has(it.id)) byId.set(it.id, it);
-    }
+  try {
+    return await fetch91Mobiles(lang, kind);
+  } catch (e) {
+    return [];
   }
-
-  try {
-    for (const it of await fetchJustWatch(lang, kind)) {
-      if (!byId.has(it.id)) byId.set(it.id, it);
-    }
-  } catch (e) {}
-
-  try {
-    for (const it of await fetch91Mobiles(lang, kind)) {
-      if (!byId.has(it.id)) byId.set(it.id, it);
-    }
-  } catch (e) {}
-
-  return Array.from(byId.values());
 }
 
 // ── TMDB DISCOVER ─────────────────────────────────────────────────────────────
