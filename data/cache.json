@@ -14,6 +14,19 @@
       ]
     },
     {
+      "id": "tt0357946",
+      "type": "movie",
+      "name": "Nandanam",
+      "releaseInfo": "2026-09-19",
+      "description": "Balamani, a housemaid and a devotee of Lord Guruvayurappan, falls in love with the householder's grandson, Manu. When the whole family is against their union, Balamani seeks the Lord's help to make her forget Manu.\n\n📺 Streaming on: Prime Video, ManoramaMAX\n📅 OTT Release: 2026-09-19\n⭐ Rating: 6.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/mNbs3TY1XYo6fEtMJs2wN0Ubl4i.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/kb03rmD45PRJ5te0f8HJhclVQ0J.jpg",
+      "genres": [
+        "Romance",
+        "Family"
+      ]
+    },
+    {
       "id": "tt43665767",
       "type": "movie",
       "name": "Maharaja Hostel",
@@ -1531,19 +1544,6 @@
         "Family",
         "Drama",
         "Comedy"
-      ]
-    },
-    {
-      "id": "tt32919734",
-      "type": "movie",
-      "name": "Padakkalam",
-      "releaseInfo": "2025-05-08",
-      "description": "Four nerdy comic book enthusiasts find themselves in an unexpected adventure when their school's charming new professor turns their academic world upside down with supernatural events.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2025-05-08\n⭐ Rating: 7.3/10",
-      "poster": "https://image.tmdb.org/t/p/w500/9m4lvnqvwppA4BIoxqcWsWna5is.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/c8hXBIgdTwPtF3PhiJayD6YHqAk.jpg",
-      "genres": [
-        "Comedy",
-        "Fantasy"
       ]
     }
   ],
@@ -4934,5 +4934,5 @@
       ]
     }
   ],
-  "builtAt": "2026-09-19T17:55:37.500Z"
+  "builtAt": "2026-09-19T20:29:51.361Z"
 }
