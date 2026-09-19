@@ -140,7 +140,7 @@
     },
     "ml_672751": {
       "_status": "retry",
-      "_at": 1789768802787
+      "_at": 1789791920679
     },
     "ml_11460": {
       "_status": "skip",
@@ -184,11 +184,11 @@
     },
     "ml_1770237": {
       "_status": "retry",
-      "_at": 1789768803422
+      "_at": 1789791979015
     },
     "ml_1770234": {
       "_status": "retry",
-      "_at": 1789768803485
+      "_at": 1789791979055
     },
     "ml_1772176": {
       "_status": "skip",
@@ -362,7 +362,7 @@
     },
     "ml_661918": {
       "_status": "retry",
-      "_at": 1789768818378
+      "_at": 1789791965530
     },
     "ml_769701": {
       "_status": "skip",
@@ -498,7 +498,7 @@
     },
     "ml_1627761": {
       "_status": "retry",
-      "_at": 1789768833087
+      "_at": 1789791978978
     },
     "ml_569494": {
       "_status": "skip",
@@ -798,7 +798,7 @@
     },
     "ml_1643810": {
       "_status": "retry",
-      "_at": 1789768863762
+      "_at": 1789791979097
     },
     "ml_576696": {
       "_status": "skip",
@@ -866,7 +866,7 @@
     },
     "ml_938186": {
       "_status": "retry",
-      "_at": 1789768877638
+      "_at": 1789791979148
     },
     "ml_1225787": {
       "_status": "skip",
@@ -874,7 +874,7 @@
     },
     "ml_1589714": {
       "_status": "retry",
-      "_at": 1789768877662
+      "_at": 1789791979183
     },
     "ml_1756890": {
       "_status": "skip",
@@ -886,7 +886,7 @@
     },
     "ml_1742434": {
       "_status": "retry",
-      "_at": 1789768878001
+      "_at": 1789791979217
     },
     "ml_1510235": {
       "_status": "skip",
@@ -950,7 +950,7 @@
     },
     "ml_496172": {
       "_status": "retry",
-      "_at": 1789768892563
+      "_at": 1789791979249
     },
     "ml_7978": {
       "_status": "skip",
@@ -998,7 +998,7 @@
     },
     "ml_1720240": {
       "_status": "retry",
-      "_at": 1789768908418
+      "_at": 1789791979292
     },
     "ml_1233244": {
       "_status": "skip",
@@ -3484,7 +3484,7 @@
     },
     "ta_672751": {
       "_status": "retry",
-      "_at": 1789769088972
+      "_at": 1789792084802
     },
     "ta_11460": {
       "_status": "skip",
@@ -3528,11 +3528,11 @@
     },
     "ta_1770237": {
       "_status": "retry",
-      "_at": 1789769089126
+      "_at": 1789792130373
     },
     "ta_1770234": {
       "_status": "retry",
-      "_at": 1789769089132
+      "_at": 1789792130375
     },
     "ta_1772176": {
       "_status": "skip",
@@ -3688,7 +3688,7 @@
     },
     "ta_661918": {
       "_status": "retry",
-      "_at": 1789769104228
+      "_at": 1789792130347
     },
     "ta_769701": {
       "_status": "skip",
@@ -3832,7 +3832,7 @@
     },
     "ta_1627761": {
       "_status": "retry",
-      "_at": 1789769119267
+      "_at": 1789792130370
     },
     "ta_569494": {
       "_status": "skip",
@@ -4132,7 +4132,7 @@
     },
     "ta_1643810": {
       "_status": "retry",
-      "_at": 1789769149557
+      "_at": 1789792130381
     },
     "ta_576696": {
       "_status": "skip",
@@ -4200,7 +4200,7 @@
     },
     "ta_938186": {
       "_status": "retry",
-      "_at": 1789769164561
+      "_at": 1789792130385
     },
     "ta_1225787": {
       "_status": "skip",
@@ -4208,7 +4208,7 @@
     },
     "ta_1589714": {
       "_status": "retry",
-      "_at": 1789769164584
+      "_at": 1789792130388
     },
     "ta_1756890": {
       "_status": "skip",
@@ -4220,7 +4220,7 @@
     },
     "ta_1742434": {
       "_status": "retry",
-      "_at": 1789769164603
+      "_at": 1789792130402
     },
     "ta_1510235": {
       "_status": "skip",
@@ -4284,7 +4284,7 @@
     },
     "ta_496172": {
       "_status": "retry",
-      "_at": 1789769164724
+      "_at": 1789792130444
     },
     "ta_7978": {
       "_status": "skip",
@@ -4332,7 +4332,7 @@
     },
     "ta_1720240": {
       "_status": "retry",
-      "_at": 1789769179598
+      "_at": 1789792130455
     },
     "ta_1233244": {
       "_status": "skip",
@@ -6911,6 +6911,1335 @@
       "genres": [
         "Drama"
       ]
+    },
+    "ml_9480": {
+      "_status": "skip",
+      "_at": 1789791919917
+    },
+    "ml_188161": {
+      "_status": "skip",
+      "_at": 1789791919954
+    },
+    "ml_179": {
+      "_status": "skip",
+      "_at": 1789791919987
+    },
+    "ml_9339": {
+      "_status": "skip",
+      "_at": 1789791920032
+    },
+    "ml_79707": {
+      "_status": "skip",
+      "_at": 1789791920064
+    },
+    "ml_198375": {
+      "_status": "skip",
+      "_at": 1789791920105
+    },
+    "ml_137116": {
+      "_status": "skip",
+      "_at": 1789791920178
+    },
+    "ml_1760576": {
+      "_status": "skip",
+      "_at": 1789791920221
+    },
+    "ml_1771928": {
+      "_status": "skip",
+      "_at": 1789791920253
+    },
+    "ml_1029827": {
+      "_status": "skip",
+      "_at": 1789791920297
+    },
+    "ml_690957": {
+      "_status": "skip",
+      "_at": 1789791920331
+    },
+    "ml_36204": {
+      "_status": "skip",
+      "_at": 1789791920388
+    },
+    "ml_20413": {
+      "_status": "skip",
+      "_at": 1789791920422
+    },
+    "ml_541487": {
+      "_status": "skip",
+      "_at": 1789791920465
+    },
+    "ml_325389": {
+      "_status": "skip",
+      "_at": 1789791920504
+    },
+    "ml_23169": {
+      "_status": "skip",
+      "_at": 1789791920565
+    },
+    "ml_610482": {
+      "_status": "skip",
+      "_at": 1789791920613
+    },
+    "ml_595228": {
+      "_status": "skip",
+      "_at": 1789791920647
+    },
+    "ml_800623": {
+      "_status": "skip",
+      "_at": 1789791920717
+    },
+    "ml_784963": {
+      "_status": "skip",
+      "_at": 1789791920751
+    },
+    "ml_598826": {
+      "_status": "skip",
+      "_at": 1789791920828
+    },
+    "ml_894803": {
+      "_status": "skip",
+      "_at": 1789791920861
+    },
+    "ml_396535": {
+      "_status": "skip",
+      "_at": 1789791920901
+    },
+    "ml_855400": {
+      "_status": "skip",
+      "_at": 1789791920937
+    },
+    "ml_706872": {
+      "id": "tt12361178",
+      "type": "movie",
+      "name": "Drishyam 2",
+      "releaseInfo": "2026-09-18",
+      "description": "Seven years after the events of the first film, the family lives with the trauma from that fateful night. A gripping tale of an investigation and a family threatened by it. Will Georgekutty be able to protect his family this time?\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-18\n⭐ Rating: 7.6/10",
+      "poster": "https://image.tmdb.org/t/p/w500/8RJBCUGE27LX06tAES4jTELN0KA.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/2C6yyoCStz7jcwjINdJTF5zAbi4.jpg",
+      "genres": [
+        "Thriller",
+        "Crime",
+        "Drama"
+      ]
+    },
+    "ml_619697": {
+      "_status": "skip",
+      "_at": 1789791921356
+    },
+    "ml_7364": {
+      "_status": "skip",
+      "_at": 1789791921400
+    },
+    "ml_1032293": {
+      "_status": "skip",
+      "_at": 1789791921435
+    },
+    "ml_117133": {
+      "_status": "skip",
+      "_at": 1789791921470
+    },
+    "ml_296524": {
+      "_status": "skip",
+      "_at": 1789791921506
+    },
+    "ml_673392": {
+      "_status": "skip",
+      "_at": 1789791921546
+    },
+    "ml_1110390": {
+      "_status": "skip",
+      "_at": 1789791921624
+    },
+    "ml_59008": {
+      "_status": "skip",
+      "_at": 1789791933613
+    },
+    "ml_937020": {
+      "_status": "skip",
+      "_at": 1789791933675
+    },
+    "ml_41381": {
+      "_status": "skip",
+      "_at": 1789791933734
+    },
+    "ml_1020951": {
+      "_status": "skip",
+      "_at": 1789791933768
+    },
+    "ml_900222": {
+      "_status": "skip",
+      "_at": 1789791933806
+    },
+    "ml_457335": {
+      "_status": "skip",
+      "_at": 1789791933840
+    },
+    "ml_25519": {
+      "_status": "skip",
+      "_at": 1789791933876
+    },
+    "ml_835017": {
+      "_status": "skip",
+      "_at": 1789791933913
+    },
+    "ml_893653": {
+      "_status": "skip",
+      "_at": 1789791933945
+    },
+    "ml_796368": {
+      "_status": "skip",
+      "_at": 1789791933976
+    },
+    "ml_644712": {
+      "_status": "skip",
+      "_at": 1789791934321
+    },
+    "ml_48244": {
+      "_status": "skip",
+      "_at": 1789791934361
+    },
+    "ml_35100": {
+      "_status": "skip",
+      "_at": 1789791934395
+    },
+    "ml_41188": {
+      "_status": "skip",
+      "_at": 1789791934437
+    },
+    "ml_987895": {
+      "_status": "skip",
+      "_at": 1789791934475
+    },
+    "ml_618907": {
+      "_status": "skip",
+      "_at": 1789791934508
+    },
+    "ml_678391": {
+      "_status": "skip",
+      "_at": 1789791934546
+    },
+    "ml_806327": {
+      "_status": "skip",
+      "_at": 1789791934599
+    },
+    "ml_396389": {
+      "_status": "skip",
+      "_at": 1789791934632
+    },
+    "ml_31364": {
+      "_status": "skip",
+      "_at": 1789791934694
+    },
+    "ml_667585": {
+      "_status": "skip",
+      "_at": 1789791934727
+    },
+    "ml_115124": {
+      "_status": "skip",
+      "_at": 1789791934760
+    },
+    "ml_660046": {
+      "_status": "skip",
+      "_at": 1789791934798
+    },
+    "ml_587471": {
+      "_status": "skip",
+      "_at": 1789791934833
+    },
+    "ml_488445": {
+      "_status": "skip",
+      "_at": 1789791934867
+    },
+    "ml_46383": {
+      "_status": "skip",
+      "_at": 1789791934923
+    },
+    "ml_85708": {
+      "_status": "skip",
+      "_at": 1789791934968
+    },
+    "ml_542143": {
+      "_status": "skip",
+      "_at": 1789791935018
+    },
+    "ml_510404": {
+      "_status": "skip",
+      "_at": 1789791935056
+    },
+    "ml_848116": {
+      "_status": "skip",
+      "_at": 1789791935097
+    },
+    "ml_590350": {
+      "_status": "skip",
+      "_at": 1789791935136
+    },
+    "ml_18673": {
+      "_status": "skip",
+      "_at": 1789791935184
+    },
+    "ml_159487": {
+      "_status": "skip",
+      "_at": 1789791935214
+    },
+    "ml_403862": {
+      "_status": "skip",
+      "_at": 1789791935245
+    },
+    "ml_589165": {
+      "_status": "skip",
+      "_at": 1789791935295
+    },
+    "ml_804337": {
+      "_status": "skip",
+      "_at": 1789791948731
+    },
+    "ml_587030": {
+      "_status": "skip",
+      "_at": 1789791948764
+    },
+    "ml_460555": {
+      "_status": "skip",
+      "_at": 1789791948806
+    },
+    "ml_262543": {
+      "_status": "skip",
+      "_at": 1789791948841
+    },
+    "ml_811945": {
+      "_status": "skip",
+      "_at": 1789791948879
+    },
+    "ml_534686": {
+      "_status": "skip",
+      "_at": 1789791948915
+    },
+    "ml_582352": {
+      "_status": "skip",
+      "_at": 1789791948952
+    },
+    "ml_181462": {
+      "_status": "skip",
+      "_at": 1789791948982
+    },
+    "ml_911645": {
+      "_status": "skip",
+      "_at": 1789791949019
+    },
+    "ml_594139": {
+      "_status": "skip",
+      "_at": 1789791949076
+    },
+    "ml_44565": {
+      "_status": "skip",
+      "_at": 1789791949113
+    },
+    "ml_21460": {
+      "_status": "skip",
+      "_at": 1789791949153
+    },
+    "ml_53122": {
+      "_status": "skip",
+      "_at": 1789791949189
+    },
+    "ml_751858": {
+      "_status": "skip",
+      "_at": 1789791949221
+    },
+    "ml_734253": {
+      "_status": "skip",
+      "_at": 1789791949263
+    },
+    "ml_922087": {
+      "_status": "skip",
+      "_at": 1789791949297
+    },
+    "ml_1034158": {
+      "_status": "skip",
+      "_at": 1789791949336
+    },
+    "ml_691704": {
+      "_status": "skip",
+      "_at": 1789791949367
+    },
+    "ml_858344": {
+      "_status": "skip",
+      "_at": 1789791949402
+    },
+    "ml_21555": {
+      "_status": "skip",
+      "_at": 1789791949440
+    },
+    "ml_20145": {
+      "_status": "skip",
+      "_at": 1789791949499
+    },
+    "ml_480810": {
+      "_status": "skip",
+      "_at": 1789791949534
+    },
+    "ml_412865": {
+      "_status": "skip",
+      "_at": 1789791949567
+    },
+    "ml_21567": {
+      "_status": "skip",
+      "_at": 1789791949598
+    },
+    "ml_189": {
+      "_status": "skip",
+      "_at": 1789791949630
+    },
+    "ml_101419": {
+      "_status": "skip",
+      "_at": 1789791950147
+    },
+    "ml_47327": {
+      "_status": "skip",
+      "_at": 1789791950201
+    },
+    "ml_1757697": {
+      "_status": "skip",
+      "_at": 1789791950232
+    },
+    "ml_215322": {
+      "_status": "skip",
+      "_at": 1789791950286
+    },
+    "ml_874791": {
+      "_status": "skip",
+      "_at": 1789791950328
+    },
+    "ml_858067": {
+      "_status": "skip",
+      "_at": 1789791950364
+    },
+    "ml_683342": {
+      "_status": "skip",
+      "_at": 1789791950411
+    },
+    "ml_166233": {
+      "_status": "skip",
+      "_at": 1789791950447
+    },
+    "ml_743212": {
+      "_status": "skip",
+      "_at": 1789791950487
+    },
+    "ml_192712": {
+      "_status": "skip",
+      "_at": 1789791950536
+    },
+    "ml_161212": {
+      "_status": "skip",
+      "_at": 1789791963837
+    },
+    "ml_74481": {
+      "_status": "skip",
+      "_at": 1789791963869
+    },
+    "ml_46404": {
+      "_status": "skip",
+      "_at": 1789791963906
+    },
+    "ml_1064247": {
+      "_status": "skip",
+      "_at": 1789791963941
+    },
+    "ml_15986": {
+      "_status": "skip",
+      "_at": 1789791963981
+    },
+    "ml_290595": {
+      "_status": "skip",
+      "_at": 1789791964029
+    },
+    "ml_14705": {
+      "_status": "skip",
+      "_at": 1789791964068
+    },
+    "ml_273886": {
+      "_status": "skip",
+      "_at": 1789791964105
+    },
+    "ml_882392": {
+      "_status": "skip",
+      "_at": 1789791964156
+    },
+    "ml_16576": {
+      "_status": "skip",
+      "_at": 1789791964190
+    },
+    "ml_807606": {
+      "_status": "skip",
+      "_at": 1789791964226
+    },
+    "ml_248698": {
+      "_status": "skip",
+      "_at": 1789791964263
+    },
+    "ml_796011": {
+      "_status": "skip",
+      "_at": 1789791964295
+    },
+    "ml_214066": {
+      "_status": "skip",
+      "_at": 1789791964331
+    },
+    "ml_539009": {
+      "_status": "skip",
+      "_at": 1789791964365
+    },
+    "ml_590575": {
+      "_status": "skip",
+      "_at": 1789791964403
+    },
+    "ml_161392": {
+      "_status": "skip",
+      "_at": 1789791964433
+    },
+    "ml_33457": {
+      "_status": "skip",
+      "_at": 1789791964469
+    },
+    "ml_166871": {
+      "_status": "skip",
+      "_at": 1789791964512
+    },
+    "ml_191805": {
+      "_status": "skip",
+      "_at": 1789791964542
+    },
+    "ml_410481": {
+      "_status": "skip",
+      "_at": 1789791964592
+    },
+    "ml_965203": {
+      "_status": "skip",
+      "_at": 1789791964655
+    },
+    "ml_20390": {
+      "_status": "skip",
+      "_at": 1789791964691
+    },
+    "ml_695951": {
+      "_status": "skip",
+      "_at": 1789791964743
+    },
+    "ml_317781": {
+      "_status": "skip",
+      "_at": 1789791964789
+    },
+    "ml_4157": {
+      "_status": "skip",
+      "_at": 1789791964824
+    },
+    "ml_532869": {
+      "_status": "skip",
+      "_at": 1789791965211
+    },
+    "ml_348152": {
+      "_status": "skip",
+      "_at": 1789791965254
+    },
+    "ml_515189": {
+      "_status": "skip",
+      "_at": 1789791965289
+    },
+    "ml_302156": {
+      "_status": "skip",
+      "_at": 1789791965317
+    },
+    "ml_85052": {
+      "_status": "skip",
+      "_at": 1789791965356
+    },
+    "ml_21570": {
+      "_status": "skip",
+      "_at": 1789791965388
+    },
+    "ml_23047": {
+      "_status": "skip",
+      "_at": 1789791965441
+    },
+    "ml_407887": {
+      "_status": "skip",
+      "_at": 1789791965477
+    },
+    "ml_1375087": {
+      "_status": "skip",
+      "_at": 1789791978938
+    },
+    "ta_9480": {
+      "_status": "skip",
+      "_at": 1789792070950
+    },
+    "ta_188161": {
+      "_status": "skip",
+      "_at": 1789792070964
+    },
+    "ta_179": {
+      "_status": "skip",
+      "_at": 1789792070980
+    },
+    "ta_9339": {
+      "_status": "skip",
+      "_at": 1789792070997
+    },
+    "ta_79707": {
+      "_status": "skip",
+      "_at": 1789792071012
+    },
+    "ta_198375": {
+      "_status": "skip",
+      "_at": 1789792071027
+    },
+    "ta_137116": {
+      "_status": "skip",
+      "_at": 1789792071042
+    },
+    "ta_1760576": {
+      "_status": "skip",
+      "_at": 1789792071055
+    },
+    "ta_1771928": {
+      "_status": "skip",
+      "_at": 1789792071068
+    },
+    "ta_1029827": {
+      "_status": "skip",
+      "_at": 1789792071084
+    },
+    "ta_690957": {
+      "_status": "skip",
+      "_at": 1789792084661
+    },
+    "ta_36204": {
+      "_status": "skip",
+      "_at": 1789792084675
+    },
+    "ta_20413": {
+      "_status": "skip",
+      "_at": 1789792084691
+    },
+    "ta_541487": {
+      "_status": "skip",
+      "_at": 1789792084707
+    },
+    "ta_325389": {
+      "_status": "skip",
+      "_at": 1789792084722
+    },
+    "ta_23169": {
+      "_status": "skip",
+      "_at": 1789792084738
+    },
+    "ta_610482": {
+      "_status": "skip",
+      "_at": 1789792084755
+    },
+    "ta_595228": {
+      "id": "tt10189514",
+      "type": "movie",
+      "name": "Soorarai Pottru",
+      "releaseInfo": "2026-09-18",
+      "description": "Nedumaaran Rajangam \"Maara\" sets out to make the common man fly and in the process takes on the world's most capital intensive industry and several enemies who stand in his way.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-18\n⭐ Rating: 7.7/10",
+      "poster": "https://image.tmdb.org/t/p/w500/5uimlxPCgAei8JfQUDFEUQLoyyh.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/tZDdwUFL9OLhx2AhSMjKsg4abNb.jpg",
+      "genres": [
+        "Drama",
+        "Action"
+      ]
+    },
+    "ta_800623": {
+      "id": "tt14182646",
+      "type": "movie",
+      "name": "Vendhu Thanindhathu Kaadu",
+      "releaseInfo": "2026-09-18",
+      "description": "A youngster from Tamil Nadu goes to Bombay in search of a better life and gets sucked into the underworld. Will he be able to find a way out of the violence and bloodshed?\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-18\n⭐ Rating: 6.4/10",
+      "poster": "https://image.tmdb.org/t/p/w500/7z2D25a4h4hs8PHrTia8pPkHijE.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1L0BG4iYnVEpBvG5RjiiMkld2r5.jpg",
+      "genres": [
+        "Drama",
+        "Thriller",
+        "Crime"
+      ]
+    },
+    "ta_784963": {
+      "_status": "skip",
+      "_at": 1789792084877
+    },
+    "ta_598826": {
+      "_status": "skip",
+      "_at": 1789792084910
+    },
+    "ta_894803": {
+      "_status": "skip",
+      "_at": 1789792084925
+    },
+    "ta_396535": {
+      "_status": "skip",
+      "_at": 1789792084939
+    },
+    "ta_855400": {
+      "id": "tt15097216",
+      "type": "movie",
+      "name": "Jai Bhim",
+      "releaseInfo": "2026-09-18",
+      "description": "A pregnant woman from a primitive tribal community, searches desperately for her husband, who is missing from police custody. So as to find her husband and seek justice for them, as their voice, a High Court advocate rises in support. Will their battle for justice succeed?\n\n📺 Streaming on: Prime Video, ManoramaMAX\n📅 OTT Release: 2026-09-18\n⭐ Rating: 7.4/10",
+      "poster": "https://image.tmdb.org/t/p/w500/ehybiOtBUtrMkmtB39zQEtq1Jie.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/40lmQ5vzKJhj5k7i0hvZuglneyj.jpg",
+      "genres": [
+        "Crime",
+        "Drama",
+        "Mystery",
+        "History"
+      ]
+    },
+    "ta_706872": {
+      "_status": "skip",
+      "_at": 1789792084971
+    },
+    "ta_619697": {
+      "_status": "skip",
+      "_at": 1789792084987
+    },
+    "ta_7364": {
+      "_status": "skip",
+      "_at": 1789792085001
+    },
+    "ta_1032293": {
+      "_status": "skip",
+      "_at": 1789792085017
+    },
+    "ta_117133": {
+      "_status": "skip",
+      "_at": 1789792085030
+    },
+    "ta_296524": {
+      "_status": "skip",
+      "_at": 1789792085045
+    },
+    "ta_673392": {
+      "_status": "skip",
+      "_at": 1789792085062
+    },
+    "ta_1110390": {
+      "_status": "skip",
+      "_at": 1789792085076
+    },
+    "ta_59008": {
+      "_status": "skip",
+      "_at": 1789792085112
+    },
+    "ta_937020": {
+      "id": "tt11663228",
+      "type": "movie",
+      "name": "Jailer",
+      "releaseInfo": "2026-09-18",
+      "description": "Muthuvel Pandian, a retired, stern yet compassionate jailer lives a peaceful life with his family, but trouble knocks his door when his cop son’s tryst with an antique mafia gang goes awry and forces Muthu to step back into a dark world he had voluntarily took a break from.\n\n📺 Streaming on: Prime Video, SunNXT\n📅 OTT Release: 2026-09-18\n⭐ Rating: 6.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/pTmMxAHqX4vsIDE6HPPxOR0Q6TN.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/ownDZBS9ecoPbWjW5V5L8jknGF.jpg",
+      "genres": [
+        "Action",
+        "Crime",
+        "Thriller",
+        "Comedy",
+        "Adventure"
+      ]
+    },
+    "ta_41381": {
+      "_status": "skip",
+      "_at": 1789792085159
+    },
+    "ta_1020951": {
+      "_status": "skip",
+      "_at": 1789792085173
+    },
+    "ta_900222": {
+      "_status": "skip",
+      "_at": 1789792085188
+    },
+    "ta_457335": {
+      "_status": "skip",
+      "_at": 1789792085202
+    },
+    "ta_25519": {
+      "_status": "skip",
+      "_at": 1789792085218
+    },
+    "ta_835017": {
+      "id": "tt11998558",
+      "type": "movie",
+      "name": "Varisu",
+      "releaseInfo": "2026-09-18",
+      "description": "Vijay, The prodigal son of business tycoon Rajendran agrees to take over the reins of the business, much to the chagrin of his brothers. But can Vijay prove himself to be a worthy varisu and also reunite his now-broken family?\n\n📺 Streaming on: Prime Video, SunNXT\n📅 OTT Release: 2026-09-18\n⭐ Rating: 5.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/iMUIsV6u0pPqfv1j8tGxbJw40sw.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/fjd6RKx4Zh8UKQfjpSSkM53eJw6.jpg",
+      "genres": [
+        "Action",
+        "Adventure"
+      ]
+    },
+    "ta_893653": {
+      "_status": "skip",
+      "_at": 1789792085249
+    },
+    "ta_796368": {
+      "_status": "skip",
+      "_at": 1789792085264
+    },
+    "ta_644712": {
+      "_status": "skip",
+      "_at": 1789792085280
+    },
+    "ta_48244": {
+      "_status": "skip",
+      "_at": 1789792085294
+    },
+    "ta_35100": {
+      "_status": "skip",
+      "_at": 1789792099795
+    },
+    "ta_41188": {
+      "_status": "skip",
+      "_at": 1789792099809
+    },
+    "ta_987895": {
+      "id": "tt22543326",
+      "type": "movie",
+      "name": "Maaveeran",
+      "releaseInfo": "2026-09-18",
+      "description": "After a head injury, cowardly newspaper cartoonist Sathya hears a voice in his mind, foretells events and puts him in precarious situations and forces him to take on a corrupt politician.\n\n📺 Streaming on: Prime Video, SunNXT\n📅 OTT Release: 2026-09-18\n⭐ Rating: 7.1/10",
+      "poster": "https://image.tmdb.org/t/p/w500/gl3AeCuuFDsjhN4rKKFQ9O8mzrC.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/g9tiB40IJFsuiNsBMBybsbmPqDt.jpg",
+      "genres": [
+        "Drama",
+        "Action",
+        "Comedy",
+        "Fantasy"
+      ]
+    },
+    "ta_618907": {
+      "id": "tt10805970",
+      "type": "movie",
+      "name": "Raangi",
+      "releaseInfo": "2026-09-18",
+      "description": "Thaiyal Nayagi, a journalist from Chennai, happens to connect with a terrorist in Tunisia through a fake account in the name of her 16-year-old cousin, Sushmitha. Little she knew that this would put herself and her cousin in danger.\n\n📺 Streaming on: Prime Video, Netflix, JioHotstar, Zee5, SunNXT\n📅 OTT Release: 2026-09-18\n⭐ Rating: 3.1/10",
+      "poster": "https://image.tmdb.org/t/p/w500/zld0TGM1hOzRrbzzzQWWXqqT8v5.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/lYXoJWYLKyimbVVqzx54I7DN9Iy.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    "ta_678391": {
+      "_status": "skip",
+      "_at": 1789792099854
+    },
+    "ta_806327": {
+      "_status": "skip",
+      "_at": 1789792099867
+    },
+    "ta_396389": {
+      "_status": "skip",
+      "_at": 1789792099881
+    },
+    "ta_31364": {
+      "_status": "skip",
+      "_at": 1789792099894
+    },
+    "ta_667585": {
+      "_status": "skip",
+      "_at": 1789792099909
+    },
+    "ta_115124": {
+      "_status": "skip",
+      "_at": 1789792099924
+    },
+    "ta_660046": {
+      "id": "tt10701074",
+      "type": "movie",
+      "name": "Ponniyin Selvan: Part I",
+      "releaseInfo": "2026-09-18",
+      "description": "The Chola kingdom is under threat from forces both internal and external, and with crown prince Aaditha Karikalan, his younger brother Arunmozhi Varman and the emperor, Sundara Cholar separated by situations, it is up to a messenger to ensure the safety of the kingdom. Can he succeed in his mission, especially with Karikalan's former girlfriend, Nandhini, plotting to bring down the entire Chola empire?\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-18\n⭐ Rating: 7.1/10",
+      "poster": "https://image.tmdb.org/t/p/w500/zSNyZUeqDdii0doQ9970E90kCkb.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/nrVpYaBw0kqm2ySiwbxo33LnRkr.jpg",
+      "genres": [
+        "Action",
+        "Adventure",
+        "History"
+      ]
+    },
+    "ta_587471": {
+      "id": "tt11531710",
+      "type": "movie",
+      "name": "Tamilarasan",
+      "releaseInfo": "2026-09-18",
+      "description": "Frustrated with a greedy hospital, an honest cop takes its heart surgeon hostage to save his son. Can he succeed, especially with his corrupt superior Rana Pratap Singh already has a bone to pick with him, trying to put him down?\n\n📺 Streaming on: Prime Video, JioHotstar, Zee5\n📅 OTT Release: 2026-09-18\n⭐ Rating: 3.1/10",
+      "poster": "https://image.tmdb.org/t/p/w500/yxRUqbgkcoNGE21hj060wbP5snZ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/4LTq2aDgfK9dZBaxxDXxtpOkVpN.jpg",
+      "genres": [
+        "Action",
+        "Drama"
+      ]
+    },
+    "ta_488445": {
+      "_status": "skip",
+      "_at": 1789792099967
+    },
+    "ta_46383": {
+      "_status": "skip",
+      "_at": 1789792099982
+    },
+    "ta_85708": {
+      "_status": "skip",
+      "_at": 1789792099995
+    },
+    "ta_542143": {
+      "_status": "skip",
+      "_at": 1789792100010
+    },
+    "ta_510404": {
+      "_status": "skip",
+      "_at": 1789792100022
+    },
+    "ta_848116": {
+      "_status": "skip",
+      "_at": 1789792100036
+    },
+    "ta_590350": {
+      "_status": "skip",
+      "_at": 1789792100064
+    },
+    "ta_18673": {
+      "_status": "skip",
+      "_at": 1789792100079
+    },
+    "ta_159487": {
+      "_status": "skip",
+      "_at": 1789792100093
+    },
+    "ta_403862": {
+      "_status": "skip",
+      "_at": 1789792100106
+    },
+    "ta_589165": {
+      "_status": "skip",
+      "_at": 1789792100120
+    },
+    "ta_804337": {
+      "id": "tt12472554",
+      "type": "movie",
+      "name": "Mahaan",
+      "releaseInfo": "2026-09-18",
+      "description": "A man's family leaves him when he strays from the path of ideological living in his search for personal freedom. However, as he realizes his ambitions, he also misses the presence of his son in his life. Having fulfilled his dream of becoming a billionaire, does life give him a second chance to be a father?\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-18\n⭐ Rating: 6.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/rHcwUUy3gRVUEUepYOd7xkesiNf.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/oSyVAH0o7nv6sMHhZUgDqxhpFHX.jpg",
+      "genres": [
+        "Crime",
+        "Action",
+        "Drama"
+      ]
+    },
+    "ta_587030": {
+      "id": "tt9900782",
+      "type": "movie",
+      "name": "Kaithi",
+      "releaseInfo": "2026-09-18",
+      "description": "Dilli, a convicted criminal, is out on parole to meet his daughter. However, a drug bust sets him off on a mission to save the life of police officers.\n\n📺 Streaming on: Prime Video, JioHotstar, Aha\n📅 OTT Release: 2026-09-18\n⭐ Rating: 7.6/10",
+      "poster": "https://image.tmdb.org/t/p/w500/nKGt7HVC7rb8TvF10OZQ0nTymcI.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/seTFDq1iKyJ6YHr7HePbC20DMsy.jpg",
+      "genres": [
+        "Action",
+        "Thriller",
+        "Crime"
+      ]
+    },
+    "ta_460555": {
+      "_status": "skip",
+      "_at": 1789792100163
+    },
+    "ta_262543": {
+      "_status": "skip",
+      "_at": 1789792100177
+    },
+    "ta_811945": {
+      "_status": "skip",
+      "_at": 1789792100192
+    },
+    "ta_534686": {
+      "_status": "skip",
+      "_at": 1789792100206
+    },
+    "ta_582352": {
+      "_status": "skip",
+      "_at": 1789792100218
+    },
+    "ta_181462": {
+      "_status": "skip",
+      "_at": 1789792100232
+    },
+    "ta_911645": {
+      "_status": "skip",
+      "_at": 1789792100246
+    },
+    "ta_594139": {
+      "id": "tt9635540",
+      "type": "movie",
+      "name": "Darbar",
+      "releaseInfo": "2026-09-18",
+      "description": "Aaditya, the commissioner of Mumbai Police, sets out to catch Ajay, a drug peddler. However, he uncovers a deeper controversy linked to an international drug lord and must mete out justice.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-18\n⭐ Rating: 6.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/39kVh9CWrY8cE6rIzRqwo6Dn1cZ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/8WtaU1fpr9pqQV544PDoldP97lp.jpg",
+      "genres": [
+        "Action",
+        "Drama",
+        "Thriller"
+      ]
+    },
+    "ta_44565": {
+      "_status": "skip",
+      "_at": 1789792100293
+    },
+    "ta_21460": {
+      "_status": "skip",
+      "_at": 1789792100309
+    },
+    "ta_53122": {
+      "id": "tt0449869",
+      "type": "movie",
+      "name": "Chandramukhi",
+      "releaseInfo": "2026-09-18",
+      "description": "Creepy happenings in an abandoned mansion are attributed to the ghost of an ancient courtesan, back for revenge.\n\n📺 Streaming on: Prime Video, JioHotstar, SunNXT\n📅 OTT Release: 2026-09-18\n⭐ Rating: 6.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/k5VwUvsvY0ft1vccTWBbbSTCVkY.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/zmn7qWSs4JqLAUzxNojS1Lq7ThB.jpg",
+      "genres": [
+        "Comedy",
+        "Horror",
+        "Drama"
+      ]
+    },
+    "ta_751858": {
+      "id": "tt9319874",
+      "type": "movie",
+      "name": "Maara",
+      "releaseInfo": "2026-09-18",
+      "description": "When Paaru sees a fairy tale she heard from from a stranger as a child painted across the walls of a costal town, she goes in search of the man who painted it - Maara.\n\n📺 Streaming on: Prime Video, ManoramaMAX\n📅 OTT Release: 2026-09-18\n⭐ Rating: 6.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/iRseVdrHk4dhmwrYwbtDtxJYwA8.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/opPHZ5zxFG0NSsoIDpEiF79BW8b.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    "ta_734253": {
+      "_status": "skip",
+      "_at": 1789792114964
+    },
+    "ta_922087": {
+      "id": "tt23052532",
+      "type": "movie",
+      "name": "Mark Antony",
+      "releaseInfo": "2026-09-18",
+      "description": "Set in 1995, Mark, a skilled mechanic and the son of a former gangster, stumbles upon a phone that has the ability to connect with the past, tries to save his estranged mother from a grim fate. While facing his own family's legacy, Mark must navigate through dangerous consequences of altering the past, as it causes unforeseen repercussions in the present.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-18\n⭐ Rating: 6.1/10",
+      "poster": "https://image.tmdb.org/t/p/w500/3xz1lfMrFlNtZ4H8DQKvYog8ilR.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/q8cXWpngGo5rYz2lkGJc5GiKcmL.jpg",
+      "genres": [
+        "Science Fiction",
+        "Action",
+        "Comedy"
+      ]
+    },
+    "ta_1034158": {
+      "_status": "skip",
+      "_at": 1789792114993
+    },
+    "ta_691704": {
+      "_status": "skip",
+      "_at": 1789792115008
+    },
+    "ta_858344": {
+      "_status": "skip",
+      "_at": 1789792115025
+    },
+    "ta_21555": {
+      "_status": "skip",
+      "_at": 1789792115056
+    },
+    "ta_20145": {
+      "_status": "skip",
+      "_at": 1789792115071
+    },
+    "ta_480810": {
+      "_status": "skip",
+      "_at": 1789792115103
+    },
+    "ta_412865": {
+      "id": "tt7738784",
+      "type": "movie",
+      "name": "Peranbu",
+      "releaseInfo": "2026-09-18",
+      "description": "A single father tries to raise his daughter, who has cerebral palsy, even as she is beginning to wake up to her sexuality.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-18\n⭐ Rating: 7.3/10",
+      "poster": "https://image.tmdb.org/t/p/w500/uogOObqRReG91niJ2X7WNMpRkH8.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/colSf7p8fj9OfyNDibFsJHeLFMh.jpg",
+      "genres": [
+        "Drama",
+        "Family"
+      ]
+    },
+    "ta_21567": {
+      "_status": "skip",
+      "_at": 1789792115131
+    },
+    "ta_189": {
+      "_status": "skip",
+      "_at": 1789792115147
+    },
+    "ta_101419": {
+      "_status": "skip",
+      "_at": 1789792115164
+    },
+    "ta_47327": {
+      "_status": "skip",
+      "_at": 1789792115178
+    },
+    "ta_1757697": {
+      "_status": "skip",
+      "_at": 1789792115193
+    },
+    "ta_215322": {
+      "_status": "skip",
+      "_at": 1789792115207
+    },
+    "ta_874791": {
+      "_status": "skip",
+      "_at": 1789792115223
+    },
+    "ta_858067": {
+      "id": "tt11772746",
+      "type": "movie",
+      "name": "Thiruchitrambalam",
+      "releaseInfo": "2026-09-18",
+      "description": "A guy-next-door tries to find romance in his life while also dealing with his personal problems. How long will it be before he realises what he is looking for is right next to him?\n\n📺 Streaming on: Prime Video, SunNXT\n📅 OTT Release: 2026-09-18\n⭐ Rating: 7.4/10",
+      "poster": "https://image.tmdb.org/t/p/w500/pBRkO5GHJqDB9D0fbumL5235JfJ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/vQ9jxQh6UdgqaNmh6FVi4qNPLe7.jpg",
+      "genres": [
+        "Comedy",
+        "Drama",
+        "Romance"
+      ]
+    },
+    "ta_683342": {
+      "_status": "skip",
+      "_at": 1789792115269
+    },
+    "ta_166233": {
+      "_status": "skip",
+      "_at": 1789792115283
+    },
+    "ta_743212": {
+      "_status": "skip",
+      "_at": 1789792115296
+    },
+    "ta_192712": {
+      "_status": "skip",
+      "_at": 1789792115312
+    },
+    "ta_161212": {
+      "_status": "skip",
+      "_at": 1789792115325
+    },
+    "ta_74481": {
+      "_status": "skip",
+      "_at": 1789792115358
+    },
+    "ta_46404": {
+      "_status": "skip",
+      "_at": 1789792115375
+    },
+    "ta_1064247": {
+      "_status": "skip",
+      "_at": 1789792115394
+    },
+    "ta_15986": {
+      "_status": "skip",
+      "_at": 1789792115408
+    },
+    "ta_290595": {
+      "_status": "skip",
+      "_at": 1789792115423
+    },
+    "ta_14705": {
+      "_status": "skip",
+      "_at": 1789792115438
+    },
+    "ta_273886": {
+      "_status": "skip",
+      "_at": 1789792115468
+    },
+    "ta_882392": {
+      "id": "tt11732164",
+      "type": "movie",
+      "name": "Pathu Thala",
+      "releaseInfo": "2026-09-18",
+      "description": "An undercover cop goes into the big bad world, a place taken over by a don, where his safety may be compromised.\n\n📺 Streaming on: Prime Video, JioHotstar\n📅 OTT Release: 2026-09-18\n⭐ Rating: 6.1/10",
+      "poster": "https://image.tmdb.org/t/p/w500/rNI3Y4mfsOUpQidwBtZj9EjwImb.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/suNieOOgWZ4lhFk6K94HtKIuptj.jpg",
+      "genres": [
+        "Action",
+        "Thriller",
+        "Drama"
+      ]
+    },
+    "ta_16576": {
+      "_status": "skip",
+      "_at": 1789792115499
+    },
+    "ta_807606": {
+      "id": "tt13773770",
+      "type": "movie",
+      "name": "Pizza 3: The Mummy",
+      "releaseInfo": "2026-09-18",
+      "description": "A restaurant owner experiences mysterious activities in his kitchen, only to discover a connection with the ghost haunting his place.\n\n📺 Streaming on: Prime Video, JioHotstar\n📅 OTT Release: 2026-09-18\n⭐ Rating: 4.4/10",
+      "poster": "https://image.tmdb.org/t/p/w500/AozhsNFfa5Qn2ETztnhpALmlWIy.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/aKoTbSQBpR52pndadiGg97gj2aq.jpg",
+      "genres": [
+        "Horror",
+        "Thriller"
+      ]
+    },
+    "ta_248698": {
+      "_status": "skip",
+      "_at": 1789792115528
+    },
+    "ta_796011": {
+      "id": "tt11580854",
+      "type": "movie",
+      "name": "Sarpatta Parambarai",
+      "releaseInfo": "2026-09-18",
+      "description": "When Sarpatta Parambarai is challenged to a do-or-die match, Kabilan, a young labourer, must choose whether to put on the gloves himself and lead his clan to victory, or be dissuaded by his disapproving mother and dangerous politics.\n\n📺 Streaming on: Prime Video, ManoramaMAX\n📅 OTT Release: 2026-09-18\n⭐ Rating: 7.7/10",
+      "poster": "https://image.tmdb.org/t/p/w500/3f2KrEoOTmQxfDWgeqqLQ1rCYWP.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/j9fWBx3rAjXmCHK7M0hltRYvn3r.jpg",
+      "genres": [
+        "History",
+        "Action",
+        "Drama"
+      ]
+    },
+    "ta_214066": {
+      "_status": "skip",
+      "_at": 1789792130001
+    },
+    "ta_539009": {
+      "_status": "skip",
+      "_at": 1789792130015
+    },
+    "ta_590575": {
+      "_status": "skip",
+      "_at": 1789792130030
+    },
+    "ta_161392": {
+      "_status": "skip",
+      "_at": 1789792130043
+    },
+    "ta_33457": {
+      "_status": "skip",
+      "_at": 1789792130057
+    },
+    "ta_166871": {
+      "_status": "skip",
+      "_at": 1789792130073
+    },
+    "ta_191805": {
+      "id": "tt2793930",
+      "type": "movie",
+      "name": "Maryan",
+      "releaseInfo": "2026-09-18",
+      "description": "The film is an emotional journey of a common man to an unknown place with the hope to come home and lead a better life. The film revolves around a story of human survival adapted from a newspaper article of a real-life crisis event, when three oil workers from India were kidnapped and taken hostage in Sudan.\n\n📺 Streaming on: Prime Video, Aha\n📅 OTT Release: 2026-09-18\n⭐ Rating: 6.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/f7bIwoSW7B55n2UJqg0z9pYK9aT.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/loPDNyjCZItCEDYFHjg9Vn8dhFk.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    "ta_410481": {
+      "id": "tt7190460",
+      "type": "movie",
+      "name": "Thupparivaalan",
+      "releaseInfo": "2026-09-18",
+      "description": "Detective Kaniyan Poonkundran is hungry for a challenging case to investigate and the mystery of a murdered dog leads to a rival who could be the match for him.\n\n📺 Streaming on: Prime Video, JioHotstar, ManoramaMAX\n📅 OTT Release: 2026-09-18\n⭐ Rating: 7.2/10",
+      "poster": "https://image.tmdb.org/t/p/w500/jG10W7dT4tHb4dqJ9sB2miClGP7.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/w33ulTx4eXUsgHX83XjoaHukCac.jpg",
+      "genres": [
+        "Action",
+        "Crime",
+        "Thriller"
+      ]
+    },
+    "ta_965203": {
+      "_status": "skip",
+      "_at": 1789792130139
+    },
+    "ta_20390": {
+      "_status": "skip",
+      "_at": 1789792130176
+    },
+    "ta_695951": {
+      "_status": "skip",
+      "_at": 1789792130190
+    },
+    "ta_317781": {
+      "_status": "skip",
+      "_at": 1789792130203
+    },
+    "ta_4157": {
+      "_status": "skip",
+      "_at": 1789792130218
+    },
+    "ta_532869": {
+      "id": "tt8094252",
+      "type": "movie",
+      "name": "NGK",
+      "releaseInfo": "2026-09-18",
+      "description": "An educated do-gooder is forced to enter politics in order to serve the society. But, will the old guard make way and allow him to do that?\n\n📺 Streaming on: Prime Video, Aha\n📅 OTT Release: 2026-09-18\n⭐ Rating: 4.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/1gp5SMTcs8KSF2fnv0RBZBRcydL.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/yAP4Cjg6kUEaGF2JWBMImEy1jSE.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    "ta_348152": {
+      "_status": "skip",
+      "_at": 1789792130249
+    },
+    "ta_515189": {
+      "_status": "skip",
+      "_at": 1789792130265
+    },
+    "ta_302156": {
+      "_status": "skip",
+      "_at": 1789792130279
+    },
+    "ta_85052": {
+      "_status": "skip",
+      "_at": 1789792130299
+    },
+    "ta_21570": {
+      "_status": "skip",
+      "_at": 1789792130313
+    },
+    "ta_23047": {
+      "_status": "skip",
+      "_at": 1789792130328
+    },
+    "ta_407887": {
+      "_status": "skip",
+      "_at": 1789792130343
+    },
+    "ta_1375087": {
+      "_status": "skip",
+      "_at": 1789792130366
     }
   },
   "_seen": {
