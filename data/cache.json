@@ -1,6 +1,19 @@
 {
   "malayalam-movies": [
     {
+      "id": "tt35668756",
+      "type": "movie",
+      "name": "Kattalan",
+      "releaseInfo": "2026-09-19",
+      "description": "Power-hungry forces clash in the Ivory cartel war-a fierce story of control, vengeance, and survival where compassion vanishes and only the ruthless endure.\n\n📺 Streaming on: Prime Video, ManoramaMAX\n📅 OTT Release: 2026-05-14\n⭐ Rating: 5.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/53FATyQirV8BuBcrsQMGPvGKgCu.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/5RkZOvu9FC0A8NypE2BL7oKNOTU.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    {
       "id": "tt43665767",
       "type": "movie",
       "name": "Maharaja Hostel",
@@ -262,19 +275,6 @@
       "genres": [
         "Comedy",
         "Drama"
-      ]
-    },
-    {
-      "id": "tt35668756",
-      "type": "movie",
-      "name": "Kattalan",
-      "releaseInfo": "2026-05-14",
-      "description": "Power-hungry forces clash in the Ivory cartel war-a fierce story of control, vengeance, and survival where compassion vanishes and only the ruthless endure.\n\n📺 Streaming on: Prime Video, ManoramaMAX\n📅 OTT Release: 2026-05-14\n⭐ Rating: 5.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/53FATyQirV8BuBcrsQMGPvGKgCu.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/5RkZOvu9FC0A8NypE2BL7oKNOTU.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
       ]
     },
     {
@@ -1552,7 +1552,7 @@
       "id": "tt8537520",
       "type": "series",
       "name": "Bigg Boss",
-      "releaseInfo": "2026-09-18",
+      "releaseInfo": "2026-09-19",
       "description": "The Malayalam version of the reality show where a number of contestants (known as \"housemates\") live in a purpose-built house and are isolated from the rest of the world. Each week, housemates nominate two of their fellow housemates for eviction, and the housemates who receive the most nominations faces a public vote out.\n\n📺 Streaming on: JioHotstar\n📅 Release: 2018-06-24\n⭐ Rating: 4.4/10\n\n♻️ Re-release: back on OTT on 2026-09-12",
       "poster": "https://image.tmdb.org/t/p/w500/o75RAzbauCTLnchulrlLGK3mTgo.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/cogvLaZrWRZYjSgRHTvVhkORbPj.jpg",
@@ -4934,5 +4934,5 @@
       ]
     }
   ],
-  "builtAt": "2026-09-19T13:51:13.251Z"
+  "builtAt": "2026-09-19T17:55:37.500Z"
 }
