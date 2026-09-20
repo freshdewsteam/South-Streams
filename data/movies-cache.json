@@ -4654,6 +4654,19 @@
       "genres": [
         "Drama"
       ]
+    },
+    "ta_1685882": {
+      "id": "tt42262473",
+      "type": "movie",
+      "name": "Modha Rathri",
+      "releaseInfo": "2026-08-21",
+      "description": "Two strangers are brought together at an unusual wedding where, in one night, too many surprises unfold and several lies are told, spiraling into chaos that changes everything.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-21\n⭐ Rating: 7.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/hRWSgz2YbukvpBMUDr9fQ7KxaZh.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/11TnS5t4jJrD6Rl0mv6Klckxv7U.jpg",
+      "genres": [
+        "Romance",
+        "Comedy"
+      ]
     }
   },
   "_seen": {}

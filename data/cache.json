@@ -1793,6 +1793,19 @@
       ]
     },
     {
+      "id": "tt42262473",
+      "type": "movie",
+      "name": "Modha Rathri",
+      "releaseInfo": "2026-08-21",
+      "description": "Two strangers are brought together at an unusual wedding where, in one night, too many surprises unfold and several lies are told, spiraling into chaos that changes everything.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-21\n⭐ Rating: 7.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/hRWSgz2YbukvpBMUDr9fQ7KxaZh.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/11TnS5t4jJrD6Rl0mv6Klckxv7U.jpg",
+      "genres": [
+        "Romance",
+        "Comedy"
+      ]
+    },
+    {
       "id": "tt37563829",
       "type": "movie",
       "name": "Magudam",
@@ -3355,19 +3368,6 @@
         "Comedy",
         "Drama"
       ]
-    },
-    {
-      "id": "tt36408254",
-      "type": "movie",
-      "name": "Gangers",
-      "releaseInfo": "2025-04-24",
-      "description": "An undercover cop teams up with a crooked PT Master to loot 100 crore from a corrupt politician.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2025-04-24\n⭐ Rating: 6.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/9VOKdmARTbZ8MuYM3quxlBivYkm.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/vm1qwSwhdt5lFhC0hqfPJ6exy46.jpg",
-      "genres": [
-        "Comedy",
-        "Crime"
-      ]
     }
   ],
   "tamil-series": [
@@ -4372,5 +4372,5 @@
       ]
     }
   ],
-  "builtAt": "2026-09-20T14:05:20.468Z"
+  "builtAt": "2026-09-20T18:10:04.533Z"
 }
