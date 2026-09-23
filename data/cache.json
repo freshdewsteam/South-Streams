@@ -1779,6 +1779,19 @@
   ],
   "tamil-movies": [
     {
+      "id": "tt37563829",
+      "type": "movie",
+      "name": "Magudam",
+      "releaseInfo": "2026-09-11",
+      "description": "Peaceful medical representative and shipping harbor worker Linga's life changes because of betrayal and conflict in a coastal community.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-08-14",
+      "poster": "https://image.tmdb.org/t/p/w500/oM0daQezJfdK8ADtwi1SMCy1BJA.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/p5LmNUM4T9xLqbeu7nBY47VUh3W.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    {
       "id": "tt39260895",
       "type": "movie",
       "name": "Pyaar Prema Kalyanam",
@@ -1803,19 +1816,6 @@
       "genres": [
         "Romance",
         "Comedy"
-      ]
-    },
-    {
-      "id": "tt37563829",
-      "type": "movie",
-      "name": "Magudam",
-      "releaseInfo": "2026-08-14",
-      "description": "Peaceful medical representative and shipping harbor worker Linga's life changes because of betrayal and conflict in a coastal community.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-08-14",
-      "poster": "https://image.tmdb.org/t/p/w500/oM0daQezJfdK8ADtwi1SMCy1BJA.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/p5LmNUM4T9xLqbeu7nBY47VUh3W.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
       ]
     },
     {
@@ -4372,5 +4372,5 @@
       ]
     }
   ],
-  "builtAt": "2026-09-23T09:51:57.353Z"
+  "builtAt": "2026-09-23T14:51:54.778Z"
 }
