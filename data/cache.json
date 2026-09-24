@@ -1779,6 +1779,19 @@
   ],
   "tamil-movies": [
     {
+      "id": "tt42262473",
+      "type": "movie",
+      "name": "Modha Rathri",
+      "releaseInfo": "2026-09-18",
+      "description": "Two strangers are brought together at an unusual wedding where, in one night, too many surprises unfold and several lies are told, spiraling into chaos that changes everything.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-21\n⭐ Rating: 7.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/hRWSgz2YbukvpBMUDr9fQ7KxaZh.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/11TnS5t4jJrD6Rl0mv6Klckxv7U.jpg",
+      "genres": [
+        "Romance",
+        "Comedy"
+      ]
+    },
+    {
       "id": "tt37563829",
       "type": "movie",
       "name": "Magudam",
@@ -1789,6 +1802,20 @@
       "genres": [
         "Action",
         "Thriller"
+      ]
+    },
+    {
+      "id": "tt35836025",
+      "type": "movie",
+      "name": "Vishwanath & Sons",
+      "releaseInfo": "2026-09-11",
+      "description": "A celebrated Olympian shooter travels to America looking for a donor to help his sick child — but unexpected romance complicates his search.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-14\n⭐ Rating: 7.2/10",
+      "poster": "https://image.tmdb.org/t/p/w500/adDZVEQZnMJ380zPOmVj6vBWHgk.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/nfNaAiiILjYRc2CKkId1ZfPTtlh.jpg",
+      "genres": [
+        "Drama",
+        "Romance",
+        "Comedy"
       ]
     },
     {
@@ -1815,33 +1842,6 @@
         "Romance",
         "Comedy",
         "Drama"
-      ]
-    },
-    {
-      "id": "tt42262473",
-      "type": "movie",
-      "name": "Modha Rathri",
-      "releaseInfo": "2026-08-21",
-      "description": "Two strangers are brought together at an unusual wedding where, in one night, too many surprises unfold and several lies are told, spiraling into chaos that changes everything.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-21\n⭐ Rating: 7.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/hRWSgz2YbukvpBMUDr9fQ7KxaZh.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/11TnS5t4jJrD6Rl0mv6Klckxv7U.jpg",
-      "genres": [
-        "Romance",
-        "Comedy"
-      ]
-    },
-    {
-      "id": "tt35836025",
-      "type": "movie",
-      "name": "Vishwanath & Sons",
-      "releaseInfo": "2026-08-14",
-      "description": "A celebrated Olympian shooter travels to America looking for a donor to help his sick child — but unexpected romance complicates his search.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-14\n⭐ Rating: 7.2/10",
-      "poster": "https://image.tmdb.org/t/p/w500/adDZVEQZnMJ380zPOmVj6vBWHgk.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/nfNaAiiILjYRc2CKkId1ZfPTtlh.jpg",
-      "genres": [
-        "Drama",
-        "Romance",
-        "Comedy"
       ]
     },
     {
@@ -4371,5 +4371,5 @@
       ]
     }
   ],
-  "builtAt": "2026-09-24T14:53:04.360Z"
+  "builtAt": "2026-09-24T18:59:49.859Z"
 }
