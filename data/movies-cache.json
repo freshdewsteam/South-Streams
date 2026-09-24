@@ -99,7 +99,7 @@
       "type": "movie",
       "name": "Ananthan Kaadu",
       "releaseInfo": "2026-06-25",
-      "description": "Set against the socio-political landscape of the 1980s and 1990s, this gripping drama weaves together themes of ambition, survival, violence, and retribution. As choices made in desperation set powerful forces in motion, the story unfolds into a compelling journey where karma relentlessly pursues those trying to outrun their past.\n\n📺 Streaming on: Prime Video, ManoramaMAX, Lionsgate Play\n📅 OTT Release: 2026-06-25\n⭐ Rating: 4.0/10",
+      "description": "Set against the socio-political landscape of the 1980s and 1990s, this gripping drama weaves together themes of ambition, survival, violence, and retribution. As choices made in desperation set powerful forces in motion, the story unfolds into a compelling journey where karma relentlessly pursues those trying to outrun their past.\n\n📺 Streaming on: Prime Video, ManoramaMAX, Lionsgate Play\n📅 OTT Release: 2026-06-25\n⭐ Rating: 4.0/10\n\n♻️ Re-release: Available on OTT",
       "poster": "https://image.tmdb.org/t/p/w500/a8Ut1fkbqvolWfEIl8Voa1oUsDG.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/AvMub4XZABMznZBn7W5fot7ghDS.jpg",
       "genres": [
@@ -2292,7 +2292,7 @@
       "id": "tt35712605",
       "type": "movie",
       "name": "G.D.N",
-      "releaseInfo": "2026-08-07",
+      "releaseInfo": "2026-09-04",
       "description": "G.D. Naidu overcomes challenges and defies a repressive colonial regime to become one of India's greatest innovators.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-07\n⭐ Rating: 7.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/aAbvbKbNU6YyYDZ5ntSQcOygliw.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/hR0QpzOO2Gx1Lt7KxqKFWZvj5Vl.jpg",
@@ -2304,7 +2304,7 @@
       "id": "tt37501035",
       "type": "movie",
       "name": "DC",
-      "releaseInfo": "2026-08-07",
+      "releaseInfo": "2026-09-04",
       "description": "Rebel Devadas  joins forces with Chandra in a dangerous world where passion and peril collide. Their turbulent alliance demands bloodshed and tests loyalties as survival becomes the ultimate stake in their fight.\n\n📺 Streaming on: SunNXT\n📅 OTT Release: 2026-08-07\n⭐ Rating: 7.9/10",
       "poster": "https://image.tmdb.org/t/p/w500/55CiHDQcyVERzIRHZFYRbZmbabv.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/9GmAODqkVdRvSgg5C4Vfeomi5Nj.jpg",
@@ -4678,6 +4678,19 @@
       "background": "https://image.tmdb.org/t/p/w1280/7QnZlrJBYm2xBWPuSIPV08Dj93M.jpg",
       "genres": [
         "Drama"
+      ]
+    },
+    "ml_1545486": {
+      "id": "tt38286171",
+      "type": "movie",
+      "name": "Unmadham",
+      "releaseInfo": "2026-09-04",
+      "description": "Haunted by his past, a police constable reopens an unsolved cold case. As hidden secrets surface, he must confront truths that challenge his beliefs forever.\n\n📺 Streaming on: Sony LIV\n📅 OTT Release: 2026-09-04\n⭐ Rating: 6.2/10",
+      "poster": "https://image.tmdb.org/t/p/w500/6AIMHBUY6PCHVYASWZ0GcTA9Kph.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/o0Ai0yCq1jyLE3K55Nk3bAl4D9h.jpg",
+      "genres": [
+        "Mystery",
+        "Thriller"
       ]
     }
   },
