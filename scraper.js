@@ -277,7 +277,7 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
 // ── 91MOBILES (SOLE DAY-0 OTT DISCOVERY AUTHORITY) ────────────────────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_LANG_ID  = { ml: 28, ta: 63 };
-const M91_LOOKBACK_DAYS = 14; // Clean 2-week rolling window
+const M91_LOOKBACK_DAYS = 30; // 30-day window to catch retroactive additions
 const M91_PAGES = {
   ml: { movie: 'new-malayalam-movies', series: 'new-malayalam-web-series' },
   ta: { movie: 'new-tamil-movies',     series: 'new-tamil-web-series' },
@@ -318,18 +318,19 @@ function m91UnwrapBody(raw) {
              .replace(/\\u003C/gi, '<').replace(/\\u003E/gi, '>').replace(/\\n/g, '\n');
 }
 
-async function m91FetchItems(slug, kind, lang) {
+async function m91FetchItems(slug, kind, lang, startOffset = '1') {
   const isShow = kind === 'SHOW';
   const params = new URLSearchParams({
     qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
     sortOrder: 'desc',
     sortBy: 'ottReleaseDate',
-    start: '1',
+    start: String(startOffset || '1'),
     seoSlug: '/' + slug,
     pType: slug,
     dubbedVal: 'notDubbed',
     type: 'loadmore'
   });
+
   const target = M91_AJAX_URL + '?' + params.toString();
 
   if (SCRAPERAPI_KEY) {
@@ -364,7 +365,7 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
 
     const parts = meta.split('|').map(p => p.trim());
     if ((parts[0] || '').toLowerCase() !== langLabel) continue;
-
+    
     const dateMatch = meta.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
     if (!dateMatch) continue;
     const date = parseAnyDate(dateMatch[0]);
@@ -413,8 +414,16 @@ async function fetch91Mobiles(lang, kind) {
   if (!slug) return [];
 
   try {
-    const body = await m91FetchItems(slug, kind, lang);
-    const items = m91ParsePage(body, M91_LANG_LABEL[lang], !isShow);
+    const body1 = await m91FetchItems(slug, kind, lang, '1');
+    let items = m91ParsePage(body1, M91_LANG_LABEL[lang], !isShow);
+
+    if (RUN_IS_DEEP) {
+      try {
+        const body2 = await m91FetchItems(slug, kind, lang, '21');
+        const page2Items = m91ParsePage(body2, M91_LANG_LABEL[lang], !isShow);
+        items = items.concat(page2Items);
+      } catch (e) {}
+    }
 
     const resolved = [];
     const seenIds = new Set();
