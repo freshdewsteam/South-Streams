@@ -1792,6 +1792,18 @@
       ]
     },
     {
+      "id": "tt39368916",
+      "type": "movie",
+      "name": "Vengeance",
+      "releaseInfo": "2026-09-11",
+      "description": "Vengeance follows a young woman with a mysterious past that slowly comes to light. Driven by an unrelenting purpose, she transforms into someone capable of crossing any boundary to fulfill her mission. Each obstacle she faces only sharpens her resolve, pulling her deeper into a ruthless path.\n\n📺 Streaming on: Aha\n📅 OTT Release: 2026-09-11",
+      "poster": "https://image.tmdb.org/t/p/w500/smBBimYvcIbVrDNwHY3aUD39dmD.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/7QnZlrJBYm2xBWPuSIPV08Dj93M.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
       "id": "tt39260895",
       "type": "movie",
       "name": "Pyaar Prema Kalyanam",
@@ -3355,19 +3367,6 @@
       "description": "Vallamai is a Tamil movie starring Premgi Amaren, Divya Darshini and Deepa Shankar in prominent roles. It is written and directed by Karuppaiyaa Murugan.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2025-04-25\n⭐ Rating: 5.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/sOJRmkgFi1KOwrT7FOGOLL77twg.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/eiUiLie2i4zBPs09Ekf9MTaTu4g.jpg"
-    },
-    {
-      "id": "tt11433936",
-      "type": "movie",
-      "name": "Sumo",
-      "releaseInfo": "2025-04-25",
-      "description": "When Shiva finds an unconscious stranger on the beach, he unknowingly begins a journey that leads to Japan's sumo rings. With truth and loyalty, he helps his friend reclaim his identity and honor, showing that bonds of the heart can rise above borders and power.\n\n📺 Streaming on: Prime Video, SunNXT\n📅 OTT Release: 2025-04-25",
-      "poster": "https://image.tmdb.org/t/p/w500/tKrQb0LEZVCKMGoj3mVVL9mZkd8.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/p7JHiMPdHUE6gw442BcTpXbL9Tn.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ]
     }
   ],
   "tamil-series": [
@@ -4372,5 +4371,5 @@
       ]
     }
   ],
-  "builtAt": "2026-09-23T18:57:34.578Z"
+  "builtAt": "2026-09-24T04:31:42.391Z"
 }
