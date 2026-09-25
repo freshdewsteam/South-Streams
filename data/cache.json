@@ -1872,6 +1872,20 @@
       ]
     },
     {
+      "id": "tt43727339",
+      "type": "movie",
+      "name": "Photographer",
+      "releaseInfo": "2026-08-07",
+      "description": "Photographer follows Veera, a troubled and obsessive photographer determined to prove his worth in a world that has long dismissed him. Driven by ambition and haunted by a painful past, he ventures deep into Mathikettan Solai, a mysterious reserve forest, to capture a rare and elusive natural phenomenon that could change his life forever.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-08-07",
+      "poster": "https://image.tmdb.org/t/p/w500/2viJLcdWykkcagEfHpGZupbZiq4.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/lvz5TgLlSLEvN0tQHJrOJisyBF8.jpg",
+      "genres": [
+        "Fantasy",
+        "Mystery",
+        "Thriller"
+      ]
+    },
+    {
       "id": "tt33379543",
       "type": "movie",
       "name": "Jana Nayagan",
@@ -3359,15 +3373,6 @@
         "Action",
         "Drama"
       ]
-    },
-    {
-      "id": "tt35653149",
-      "type": "movie",
-      "name": "Vallamai",
-      "releaseInfo": "2025-04-25",
-      "description": "Vallamai is a Tamil movie starring Premgi Amaren, Divya Darshini and Deepa Shankar in prominent roles. It is written and directed by Karuppaiyaa Murugan.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2025-04-25\n⭐ Rating: 5.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/sOJRmkgFi1KOwrT7FOGOLL77twg.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/eiUiLie2i4zBPs09Ekf9MTaTu4g.jpg"
     }
   ],
   "tamil-series": [
@@ -4372,5 +4377,5 @@
       ]
     }
   ],
-  "builtAt": "2026-09-25T10:07:39.288Z"
+  "builtAt": "2026-09-25T19:12:17.976Z"
 }

@@ -4692,6 +4692,20 @@
         "Mystery",
         "Thriller"
       ]
+    },
+    "ta_1740942": {
+      "id": "tt43727339",
+      "type": "movie",
+      "name": "Photographer",
+      "releaseInfo": "2026-08-07",
+      "description": "Photographer follows Veera, a troubled and obsessive photographer determined to prove his worth in a world that has long dismissed him. Driven by ambition and haunted by a painful past, he ventures deep into Mathikettan Solai, a mysterious reserve forest, to capture a rare and elusive natural phenomenon that could change his life forever.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-08-07",
+      "poster": "https://image.tmdb.org/t/p/w500/2viJLcdWykkcagEfHpGZupbZiq4.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/lvz5TgLlSLEvN0tQHJrOJisyBF8.jpg",
+      "genres": [
+        "Fantasy",
+        "Mystery",
+        "Thriller"
+      ]
     }
   },
   "_seen": {}
