@@ -1,5 +1,31 @@
 {
   "_data": {
+    "ml_1545486": {
+      "id": "tt38286171",
+      "type": "movie",
+      "name": "Unmadham",
+      "releaseInfo": "2026-09-04",
+      "description": "Haunted by his past, a police constable reopens an unsolved cold case. As hidden secrets surface, he must confront truths that challenge his beliefs forever.\n\n📺 Streaming on: Sony LIV\n📅 OTT Release: 2026-09-04\n⭐ Rating: 6.2/10",
+      "poster": "https://image.tmdb.org/t/p/w500/6AIMHBUY6PCHVYASWZ0GcTA9Kph.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/o0Ai0yCq1jyLE3K55Nk3bAl4D9h.jpg",
+      "genres": [
+        "Mystery",
+        "Thriller"
+      ]
+    },
+    "ml_1326891": {
+      "id": "tt33083436",
+      "type": "movie",
+      "name": "Ananthan Kaadu",
+      "releaseInfo": "2026-09-02",
+      "description": "In a turbulent era of intense political unrest, four musical mercenaries rule over dangerous slums, whereupon they navigate complex power dynamics to survive a transformative period in history.\n\n📺 Streaming on: Prime Video, ManoramaMAX, Lionsgate Play\n📅 OTT Release: 2026-09-02\n⭐ Rating: 3.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/a8Ut1fkbqvolWfEIl8Voa1oUsDG.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/AvMub4XZABMznZBn7W5fot7ghDS.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
     "ml_1506736": {
       "id": "tt37510017",
       "type": "movie",
@@ -18,7 +44,7 @@
       "type": "movie",
       "name": "Pluto",
       "releaseInfo": "2026-07-30",
-      "description": "Follows the unexpected arrival of an extraterrestrial visitor in a quiet Kerala village, which turns everyday life completely upside down.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-07-30\n⭐ Rating: 2.0/10",
+      "description": "Vicky, down on his luck after multiple failed businesses, accidentally befriends an alien named Pluto. Both considered losers, they navigate life together while a gang of thugs attempts to capture the alien.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-07-30\n⭐ Rating: 2.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/pPxsw4KnZbsklyHUCTKSCHKaC8F.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/cSiQqEN2IbNxWXNZ2YLd32DSVrK.jpg",
       "genres": [
@@ -31,7 +57,7 @@
       "type": "movie",
       "name": "Maharaja Hostel",
       "releaseInfo": "2026-07-24",
-      "description": "A group of college students settle into what seems like an ordinary hostel, but things soon take a strange turn when a series of unexplained incidents begin to unfold. As their fun-filled hostel life descends into chaos, the students and their warden are forced to face the mysterious presence lurking within Maharaja Hostel.\n\n📺 Streaming on: Prime Video, SunNXT\n📅 OTT Release: 2026-07-24\n⭐ Rating: 3.5/10",
+      "description": "A group of college students settle into what seems like an ordinary hostel, but things soon take a strange turn when a series of unexplained incidents begin to unfold. As their fun-filled hostel life descends into chaos, the students and their warden are forced to face the mysterious presence lurking within Maharaja Hostel.\n\n📺 Streaming on: Prime Video, SunNXT\n📅 OTT Release: 2026-07-24\n⭐ Rating: 3.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/b7k2NhmlnMMRup94QbbCfBuct05.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/joF415KFrGFa7sFZXoBExVP1BwD.jpg",
       "genres": [
@@ -71,14 +97,13 @@
       "type": "movie",
       "name": "I, Nobody",
       "releaseInfo": "2026-07-09",
-      "description": "Rajeevan, an ordinary government employee, witnesses something he was never meant to see and is thrust into the centre of a serious crime. Branded a troublemaker and hunted by the system, he must protect his family while fighting to survive against forces far beyond his control.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-07-09\n⭐ Rating: 6.0/10",
+      "description": "Rajeevan, an ordinary government employee, witnesses something he was never meant to see and is thrust into the centre of a serious crime. Branded a troublemaker and hunted by the system, he must protect his family while fighting to survive against forces far beyond his control.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-07-09\n⭐ Rating: 5.5/10",
       "poster": "https://image.tmdb.org/t/p/w500/qFJl3w9KpVXpfZ3rpmv7p0UYZkP.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/zNvSWIvca6aA0eq63JqzVvagqLI.jpg",
       "genres": [
-        "Thriller",
         "Crime",
         "Action",
-        "Drama"
+        "Thriller"
       ]
     },
     "ml_1451486": {
@@ -94,34 +119,22 @@
         "Thriller"
       ]
     },
-    "ml_1326891": {
-      "id": "tt33083436",
-      "type": "movie",
-      "name": "Ananthan Kaadu",
-      "releaseInfo": "2026-06-25",
-      "description": "Set against the socio-political landscape of the 1980s and 1990s, this gripping drama weaves together themes of ambition, survival, violence, and retribution. As choices made in desperation set powerful forces in motion, the story unfolds into a compelling journey where karma relentlessly pursues those trying to outrun their past.\n\n📺 Streaming on: Prime Video, ManoramaMAX, Lionsgate Play\n📅 OTT Release: 2026-06-25\n⭐ Rating: 4.0/10\n\n♻️ Re-release: Available on OTT",
-      "poster": "https://image.tmdb.org/t/p/w500/a8Ut1fkbqvolWfEIl8Voa1oUsDG.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/AvMub4XZABMznZBn7W5fot7ghDS.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
-      ]
-    },
     "ml_1404521": {
       "id": "tt35076988",
       "type": "movie",
       "name": "Chinna Chinna Aasai",
       "releaseInfo": "2026-06-19",
-      "description": "On the enchanting shores of Varanasi, two souls meet by chance. Somewhere within this unfolding chaos, an unspoken bond begins to form, slowly slipping beyond friendship.\n\n📺 Streaming on: JioHotstar, SunNXT\n📅 OTT Release: 2026-06-19\n⭐ Rating: 8.0/10",
+      "description": "On the enchanting shores of Varanasi, two souls meet by chance. Somewhere within this unfolding chaos, an unspoken bond begins to form, slowly slipping beyond friendship.\n\n📺 Streaming on: JioHotstar, SunNXT\n📅 OTT Release: 2026-06-19\n⭐ Rating: 6.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/bPP7IWH0GeQDZ5VC9QsE6lRlijI.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/1KXnH4NcCQTAxV0pZwvIIGCepIx.jpg",
       "genres": [
-        "Drama"
+        "Drama",
+        "Romance"
       ]
     },
     "ml_1720240": {
       "_status": "retry",
-      "_at": 1789858234590
+      "_at": 1790419419670
     },
     "ml_1677340": {
       "id": "tt41944664",
@@ -138,7 +151,7 @@
     },
     "ml_1719662": {
       "_status": "retry",
-      "_at": 1789858234717
+      "_at": 1790419419845
     },
     "ml_1248251": {
       "id": "tt29959401",
@@ -609,7 +622,7 @@
       "type": "movie",
       "name": "Magic Mushrooms",
       "releaseInfo": "2026-01-23",
-      "description": "Haunted by childhood loss, a quiet young man from rural Idukki finds love with an introverted woman he meets by chance. When prejudice and misunderstanding threaten to separate them, a heartfelt public confession turns resistance into acceptance and leads them toward a hopeful future.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-01-23",
+      "description": "Haunted by childhood loss, a quiet young man from rural Idukki finds love with an introverted woman he meets by chance. When prejudice and misunderstanding threaten to separate them, a heartfelt public confession turns resistance into acceptance and leads them toward a hopeful future.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-01-23\n⭐ Rating: 3.5/10",
       "poster": "https://image.tmdb.org/t/p/w500/pKszcXMCZxAut8lkRanpVEJfZLc.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/wDDA4NE8zmadua1hzUt33XHOtLd.jpg",
       "genres": [
@@ -697,7 +710,7 @@
       "type": "movie",
       "name": "Sarvam Maya",
       "releaseInfo": "2025-12-25",
-      "description": "A man who loses his belief in God meets the spirit of a young woman unable to remember what happened to her.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2025-12-25\n⭐ Rating: 7.9/10",
+      "description": "An atheist priest's life is upended after performing an exorcism, bonding with a charming spirit who helps him pursue music and heal his past.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2025-12-25\n⭐ Rating: 7.8/10",
       "poster": "https://image.tmdb.org/t/p/w500/mgLY1aQayVX6dQ2DiylLAhjEG8w.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/6Zn4PaLwLHFJ2bw7s6B10fHiuAD.jpg",
       "genres": [
@@ -1037,7 +1050,7 @@
     },
     "ml_1549889": {
       "_status": "retry",
-      "_at": 1789858263287
+      "_at": 1790419448268
     },
     "ml_1548607": {
       "id": "tt38361234",
@@ -1162,7 +1175,7 @@
     },
     "ml_1527524": {
       "_status": "retry",
-      "_at": 1789858263959
+      "_at": 1790419449166
     },
     "ml_1525824": {
       "id": "tt30322895",
@@ -1315,7 +1328,7 @@
     },
     "ml_1317418": {
       "_status": "retry",
-      "_at": 1789858277628
+      "_at": 1790419462368
     },
     "ml_1135447": {
       "id": "tt34180853",
@@ -1345,7 +1358,7 @@
     },
     "ml_1000508": {
       "_status": "skip",
-      "_at": 1789858277862
+      "_at": 1790419462620
     },
     "ml_1380900": {
       "id": "tt32166743",
@@ -1545,7 +1558,7 @@
     },
     "ml_1474660": {
       "_status": "retry",
-      "_at": 1789858278887
+      "_at": 1790419464080
     },
     "ml_1261125": {
       "id": "tt31969600",
@@ -1888,7 +1901,7 @@
     },
     "ml_1410893": {
       "_status": "retry",
-      "_at": 1789858293730
+      "_at": 1790419478328
     },
     "ml_1290954": {
       "id": "tt32284154",
@@ -2002,7 +2015,7 @@
     },
     "ml_1763697": {
       "_status": "retry",
-      "_at": 1789858294297
+      "_at": 1790419479177
     },
     "ml_970231": {
       "id": "tt23833570",
@@ -2020,7 +2033,7 @@
     },
     "ml_950075": {
       "_status": "skip",
-      "_at": 1789858294424
+      "_at": 1790419479345
     },
     "ml_1239991": {
       "id": "tt31702438",
@@ -2166,7 +2179,7 @@
     },
     "ml_1221981": {
       "_status": "skip",
-      "_at": 1789858307838
+      "_at": 1790419492649
     },
     "ml_1356796": {
       "id": "tt29608092",
@@ -2207,43 +2220,81 @@
         "Drama"
       ]
     },
-    "ml_927547": {
-      "id": "tt32086077",
+    "ta_1685882": {
+      "id": "tt42262473",
       "type": "movie",
-      "name": "All We Imagine as Light",
-      "releaseInfo": "2024-09-21",
-      "description": "In Mumbai, Nurse Prabha's routine is troubled when she receives an unexpected gift from her estranged husband. Her younger roommate, Anu, tries in vain to find a spot in the city to be intimate with her boyfriend. A trip to a beach town allows them to find a space for their desires to manifest.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2024-09-21\n⭐ Rating: 6.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/ruImrzB4POsrgwCMozmOBV67zs5.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/xrIicBg0Ac4oQ6cwUPKJxwtqhOQ.jpg",
+      "name": "Modha Rathri",
+      "releaseInfo": "2026-09-18",
+      "description": "Two strangers are brought together at an unusual wedding where, in one night, too many surprises unfold and several lies are told, spiraling into chaos that changes everything.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-09-18\n⭐ Rating: 7.6/10",
+      "poster": "https://image.tmdb.org/t/p/w500/lZiTSLDLIkW9YS6CWo8uaXZMcO6.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/8Lq3f68f4WZpQrihDooNink8xJ7.jpg",
       "genres": [
-        "Drama",
-        "Romance"
+        "Romance",
+        "Comedy"
       ]
     },
-    "ml_1151612": {
-      "id": "tt28372186",
+    "ta_1408162": {
+      "id": "tt35836025",
       "type": "movie",
-      "name": "Kadha Innuvare",
-      "releaseInfo": "2024-09-20",
-      "description": "An anthology of four unusual stories where each couple fights to be with the ones they love against all odds.\n\n📺 Streaming on: Prime Video, ManoramaMAX\n📅 OTT Release: 2024-09-20\n⭐ Rating: 5.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/rva44wdp5NsJwL6QY9U6U2nNSfr.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/ma5S4QKBzScvoJoUwnbCswmGkL3.jpg",
+      "name": "Vishwanath & Sons",
+      "releaseInfo": "2026-09-11",
+      "description": "A celebrated Olympian shooter travels to America looking for a donor to help his sick child — but unexpected romance complicates his search.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-09-11\n⭐ Rating: 7.3/10",
+      "poster": "https://image.tmdb.org/t/p/w500/mLsvCffzpxxDwC7yVLJSLLjgzoq.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/nfNaAiiILjYRc2CKkId1ZfPTtlh.jpg",
       "genres": [
-        "Family",
         "Drama",
-        "Romance"
+        "Romance",
+        "Comedy"
       ]
     },
-    "ml_864290": {
-      "id": "tt31261680",
+    "ta_1617089": {
+      "id": "tt39368916",
       "type": "movie",
-      "name": "Kuttante Shinigami",
-      "releaseInfo": "2024-09-20",
-      "description": "After an untimely death, Kuttan finds himself trapped as a wandering soul, unable to interact with the living. Just as he struggles to understand his fate, a mysterious figure called the Shinigami appears to guide him to the afterlife.\n\n📺 Streaming on: Prime Video, ManoramaMAX\n📅 OTT Release: 2024-09-20\n⭐ Rating: 5.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/fYqH879SqhpjVF31SArtoXHiuhG.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/p23bhfudxwY6WhMQKPIe7Q9C96g.jpg",
+      "name": "Vengeance",
+      "releaseInfo": "2026-09-11",
+      "description": "Vengeance follows a young woman with a mysterious past that slowly comes to light. Driven by an unrelenting purpose, she transforms into someone capable of crossing any boundary to fulfill her mission. Each obstacle she faces only sharpens her resolve, pulling her deeper into a ruthless path.\n\n📺 Streaming on: Aha\n📅 OTT Release: 2026-09-11",
+      "poster": "https://image.tmdb.org/t/p/w500/smBBimYvcIbVrDNwHY3aUD39dmD.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/7QnZlrJBYm2xBWPuSIPV08Dj93M.jpg",
       "genres": [
-        "Fantasy",
+        "Drama"
+      ]
+    },
+    "ta_1506833": {
+      "id": "tt37563829",
+      "type": "movie",
+      "name": "Magudam",
+      "releaseInfo": "2026-09-11",
+      "description": "Peaceful medical representative and shipping harbor worker Linga's life changes because of betrayal and conflict in a coastal community.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-11",
+      "poster": "https://image.tmdb.org/t/p/w500/oM0daQezJfdK8ADtwi1SMCy1BJA.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/p5LmNUM4T9xLqbeu7nBY47VUh3W.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    "ta_1489543": {
+      "id": "tt35712605",
+      "type": "movie",
+      "name": "G.D.N",
+      "releaseInfo": "2026-09-04",
+      "description": "G.D. Naidu overcomes challenges and defies a repressive colonial regime to become one of India's greatest innovators.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-09-04\n⭐ Rating: 7.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/aAbvbKbNU6YyYDZ5ntSQcOygliw.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/hR0QpzOO2Gx1Lt7KxqKFWZvj5Vl.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    "ta_1479832": {
+      "id": "tt37501035",
+      "type": "movie",
+      "name": "DC",
+      "releaseInfo": "2026-09-04",
+      "description": "Rebel Devadas  joins forces with Chandra in a dangerous world where passion and peril collide. Their turbulent alliance demands bloodshed and tests loyalties as survival becomes the ultimate stake in their fight.\n\n📺 Streaming on: SunNXT\n📅 OTT Release: 2026-09-04\n⭐ Rating: 7.9/10",
+      "poster": "https://image.tmdb.org/t/p/w500/8k71CD24GIAmEFgHYRhqFvwbXH8.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/9GmAODqkVdRvSgg5C4Vfeomi5Nj.jpg",
+      "genres": [
+        "Romance",
+        "Action",
         "Drama"
       ]
     },
@@ -2261,57 +2312,18 @@
         "Drama"
       ]
     },
-    "ta_1506833": {
-      "id": "tt37563829",
+    "ta_1740942": {
+      "id": "tt43727339",
       "type": "movie",
-      "name": "Magudam",
-      "releaseInfo": "2026-09-11",
-      "description": "Peaceful medical representative and shipping harbor worker Linga's life changes because of betrayal and conflict in a coastal community.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-08-14",
-      "poster": "https://image.tmdb.org/t/p/w500/oM0daQezJfdK8ADtwi1SMCy1BJA.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/p5LmNUM4T9xLqbeu7nBY47VUh3W.jpg",
+      "name": "Photographer",
+      "releaseInfo": "2026-08-07",
+      "description": "Photographer follows Veera, a troubled and obsessive photographer determined to prove his worth in a world that has long dismissed him. Driven by ambition and haunted by a painful past, he ventures deep into Mathikettan Solai, a mysterious reserve forest, to capture a rare and elusive natural phenomenon that could change his life forever.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-08-07",
+      "poster": "https://image.tmdb.org/t/p/w500/2viJLcdWykkcagEfHpGZupbZiq4.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/lvz5TgLlSLEvN0tQHJrOJisyBF8.jpg",
       "genres": [
-        "Action",
+        "Fantasy",
+        "Mystery",
         "Thriller"
-      ]
-    },
-    "ta_1408162": {
-      "id": "tt35836025",
-      "type": "movie",
-      "name": "Vishwanath & Sons",
-      "releaseInfo": "2026-09-11",
-      "description": "A celebrated Olympian shooter travels to America looking for a donor to help his sick child — but unexpected romance complicates his search.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-14\n⭐ Rating: 7.2/10",
-      "poster": "https://image.tmdb.org/t/p/w500/adDZVEQZnMJ380zPOmVj6vBWHgk.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/nfNaAiiILjYRc2CKkId1ZfPTtlh.jpg",
-      "genres": [
-        "Drama",
-        "Romance",
-        "Comedy"
-      ]
-    },
-    "ta_1489543": {
-      "id": "tt35712605",
-      "type": "movie",
-      "name": "G.D.N",
-      "releaseInfo": "2026-09-04",
-      "description": "G.D. Naidu overcomes challenges and defies a repressive colonial regime to become one of India's greatest innovators.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-07\n⭐ Rating: 7.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/aAbvbKbNU6YyYDZ5ntSQcOygliw.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/hR0QpzOO2Gx1Lt7KxqKFWZvj5Vl.jpg",
-      "genres": [
-        "Drama"
-      ]
-    },
-    "ta_1479832": {
-      "id": "tt37501035",
-      "type": "movie",
-      "name": "DC",
-      "releaseInfo": "2026-09-04",
-      "description": "Rebel Devadas  joins forces with Chandra in a dangerous world where passion and peril collide. Their turbulent alliance demands bloodshed and tests loyalties as survival becomes the ultimate stake in their fight.\n\n📺 Streaming on: SunNXT\n📅 OTT Release: 2026-08-07\n⭐ Rating: 7.9/10",
-      "poster": "https://image.tmdb.org/t/p/w500/55CiHDQcyVERzIRHZFYRbZmbabv.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/9GmAODqkVdRvSgg5C4Vfeomi5Nj.jpg",
-      "genres": [
-        "Romance",
-        "Action",
-        "Drama"
       ]
     },
     "ta_1235877": {
@@ -2811,7 +2823,7 @@
     },
     "ta_1560749": {
       "_status": "skip",
-      "_at": 1789858383066
+      "_at": 1790419569866
     },
     "ta_1427157": {
       "id": "tt32864368",
@@ -3022,7 +3034,7 @@
     },
     "ta_1597781": {
       "_status": "retry",
-      "_at": 1789858384366
+      "_at": 1790419583375
     },
     "ta_1592043": {
       "id": "tt39007848",
@@ -3121,7 +3133,7 @@
       "type": "movie",
       "name": "Theeyavar Kulaigal Nadunga",
       "releaseInfo": "2025-11-21",
-      "description": "An Investigative Police officer teams up with an autism school teacher to solve the mystery of a cruel murder happened in a school for autistic children.\n\n📺 Streaming on: SunNXT\n📅 OTT Release: 2025-11-21\n⭐ Rating: 8.0/10",
+      "description": "An Investigative Police officer teams up with an autism school teacher to solve the mystery of a cruel murder happened in a school for autistic children.\n\n📺 Streaming on: SunNXT\n📅 OTT Release: 2025-11-21\n⭐ Rating: 7.0/10",
       "poster": "https://image.tmdb.org/t/p/w500/aAQ0I4EZUmg7dEyTwxYZi1dYB8Y.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/uoxkOkRzPP9jcnl59CObzYLn2Mq.jpg",
       "genres": [
@@ -3131,7 +3143,7 @@
     },
     "ta_1581336": {
       "_status": "retry",
-      "_at": 1789858384922
+      "_at": 1790419584287
     },
     "ta_1541503": {
       "id": "tt38164364",
@@ -3190,7 +3202,7 @@
     },
     "ta_1607699": {
       "_status": "retry",
-      "_at": 1789858397868
+      "_at": 1790419584731
     },
     "ta_1318308": {
       "id": "tt28434143",
@@ -3329,7 +3341,7 @@
     },
     "ta_1542183": {
       "_status": "retry",
-      "_at": 1789858398627
+      "_at": 1790419597477
     },
     "ta_1499180": {
       "id": "tt28717622",
@@ -3399,7 +3411,7 @@
     },
     "ta_1509804": {
       "_status": "retry",
-      "_at": 1789858398990
+      "_at": 1790419597998
     },
     "ta_1508221": {
       "id": "tt37080020",
@@ -3501,7 +3513,7 @@
     },
     "ta_1480619": {
       "_status": "retry",
-      "_at": 1789858399496
+      "_at": 1790419598728
     },
     "ta_548437": {
       "id": "tt35279943",
@@ -3711,6 +3723,10 @@
         "Horror"
       ]
     },
+    "ta_1480633": {
+      "_status": "retry",
+      "_at": 1790419600275
+    },
     "ta_1132152": {
       "id": "tt27802912",
       "type": "movie",
@@ -3724,6 +3740,10 @@
         "Comedy",
         "Action"
       ]
+    },
+    "ta_1646073": {
+      "_status": "retry",
+      "_at": 1790419612418
     },
     "ta_1477870": {
       "id": "tt32474216",
@@ -3789,6 +3809,10 @@
       "genres": [
         "Comedy"
       ]
+    },
+    "ta_1459683": {
+      "_status": "retry",
+      "_at": 1790419612962
     },
     "ta_1062033": {
       "id": "tt36855758",
@@ -3894,7 +3918,7 @@
     },
     "ta_1464359": {
       "_status": "skip",
-      "_at": 1789858414344
+      "_at": 1790419613768
     },
     "ta_1259024": {
       "id": "tt27540217",
@@ -3990,7 +4014,7 @@
     },
     "ta_1431271": {
       "_status": "skip",
-      "_at": 1789858414839
+      "_at": 1790419614506
     },
     "ta_1431043": {
       "id": "tt35674559",
@@ -4220,7 +4244,7 @@
     },
     "ta_1199638": {
       "_status": "skip",
-      "_at": 1789858428847
+      "_at": 1790419628262
     },
     "ta_1008226": {
       "id": "tt26937091",
@@ -4472,7 +4496,7 @@
     },
     "ta_1375460": {
       "_status": "retry",
-      "_at": 1789858430687
+      "_at": 1790419630086
     },
     "ta_1375430": {
       "id": "tt34201628",
@@ -4488,7 +4512,7 @@
     },
     "ta_1375396": {
       "_status": "retry",
-      "_at": 1789858443153
+      "_at": 1790419630257
     },
     "ta_1372611": {
       "id": "tt26903465",
@@ -4589,109 +4613,7 @@
       "genres": [
         "Thriller"
       ]
-    },
-    "ta_1358920": {
-      "id": "tt33311717",
-      "type": "movie",
-      "name": "Dopamine @ 2.22",
-      "releaseInfo": "2024-09-20",
-      "description": "In this not so pragmatic society an unreasonable and unrealistic environment leads to a murder at time 2:22 in an apartment where seven different people with different lifestyle and addictions synchronously meet at a murder at 2:22.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2024-09-20",
-      "poster": "https://image.tmdb.org/t/p/w500/vF9MW9NyqwPaLr4dnXeZ8nmdJ1K.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/2gwNyNj6bmAS3wLAc2JzRMdZNm8.jpg",
-      "genres": [
-        "Thriller",
-        "Crime",
-        "Drama"
-      ]
-    },
-    "ta_1358582": {
-      "id": "tt30764809",
-      "type": "movie",
-      "name": "Poultry Farm Chelladurai",
-      "releaseInfo": "2024-09-20",
-      "description": "When fate deals tragic hands to a pair of siblings, Chelladurai tries his best to ensure his sister's wellbeing amid their capricious futures.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2024-09-20",
-      "poster": "https://image.tmdb.org/t/p/w500/lsTZduXemG87iGj3djhF7IGooQX.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/bwCHUwDB0iK5sd1xHDxoayekHQC.jpg",
-      "genres": [
-        "Drama"
-      ]
-    },
-    "ta_1357529": {
-      "id": "tt29376954",
-      "type": "movie",
-      "name": "Thozhar Cheguevara",
-      "releaseInfo": "2024-09-20",
-      "description": "An innocent boy hailing from a village is struck by an unfortunate incident, which webs him in conflicts that endanger his life and his community under threat. His idyllic life is shattered, deftly turning his world upside down. A bounty is announced on the boy's name to kill him on the same night. Whether he can recoup and overcome the labyrinth of conflicts forms the crux of the story\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2024-09-20",
-      "poster": "https://image.tmdb.org/t/p/w500/iviic5lFx0iXWSY79bog13enNUB.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/mCWdAVcI7UK3aXN5sIHVQaEvDv3.jpg",
-      "genres": [
-        "Action",
-        "Drama"
-      ]
-    },
-    "ta_1318349": {
-      "id": "tt32991468",
-      "type": "movie",
-      "name": "Kadaisi Ulaga Por",
-      "releaseInfo": "2024-09-20",
-      "description": "In a dystopian near-future, new world order arises, leading to world war 3. India tries to remain neutral leading to capturing of Tamil Nadu from the South.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2024-09-20\n⭐ Rating: 5.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/5QMqnVJk2whlN2OB6zxAKHxjxXO.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/nHyT1tCWgrpeNlQJhJyzBq2s9fO.jpg",
-      "genres": [
-        "Science Fiction",
-        "Action",
-        "Thriller"
-      ]
-    },
-    "ta_1060532": {
-      "id": "tt33298423",
-      "type": "movie",
-      "name": "Nandhan",
-      "releaseInfo": "2024-09-20",
-      "description": "An Underdog of a Rural village survives as much as obstacles that he can to overcome his societal status\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2024-09-20",
-      "poster": "https://image.tmdb.org/t/p/w500/wrf2idb4fIJUTFvyNs6OGXgS7lM.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/7F7gv9xNDG4V7bXvy1tqphk38tZ.jpg",
-      "genres": [
-        "Drama"
-      ]
-    },
-    "ta_1685882": {
-      "id": "tt42262473",
-      "type": "movie",
-      "name": "Modha Rathri",
-      "releaseInfo": "2026-09-18",
-      "description": "Two strangers are brought together at an unusual wedding where, in one night, too many surprises unfold and several lies are told, spiraling into chaos that changes everything.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-08-21\n⭐ Rating: 7.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/hRWSgz2YbukvpBMUDr9fQ7KxaZh.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/11TnS5t4jJrD6Rl0mv6Klckxv7U.jpg",
-      "genres": [
-        "Romance",
-        "Comedy"
-      ]
-    },
-    "ta_1617089": {
-      "id": "tt39368916",
-      "type": "movie",
-      "name": "Vengeance",
-      "releaseInfo": "2026-09-11",
-      "description": "Vengeance follows a young woman with a mysterious past that slowly comes to light. Driven by an unrelenting purpose, she transforms into someone capable of crossing any boundary to fulfill her mission. Each obstacle she faces only sharpens her resolve, pulling her deeper into a ruthless path.\n\n📺 Streaming on: Aha\n📅 OTT Release: 2026-09-11",
-      "poster": "https://image.tmdb.org/t/p/w500/smBBimYvcIbVrDNwHY3aUD39dmD.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/7QnZlrJBYm2xBWPuSIPV08Dj93M.jpg",
-      "genres": [
-        "Drama"
-      ]
-    },
-    "ml_1545486": {
-      "id": "tt38286171",
-      "type": "movie",
-      "name": "Unmadham",
-      "releaseInfo": "2026-09-04",
-      "description": "Haunted by his past, a police constable reopens an unsolved cold case. As hidden secrets surface, he must confront truths that challenge his beliefs forever.\n\n📺 Streaming on: Sony LIV\n📅 OTT Release: 2026-09-04\n⭐ Rating: 6.2/10",
-      "poster": "https://image.tmdb.org/t/p/w500/6AIMHBUY6PCHVYASWZ0GcTA9Kph.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/o0Ai0yCq1jyLE3K55Nk3bAl4D9h.jpg",
-      "genres": [
-        "Mystery",
-        "Thriller"
-      ]
-    },
+    }
+  },
   "_seen": {}
 }
