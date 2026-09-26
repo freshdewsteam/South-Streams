@@ -234,7 +234,7 @@ function getTitleVariations(title) {
   const v = new Set();
   v.add(title); // Exact title first
 
-  // Phonetic & transliteration variations
+  // Phonetic, transliteration & punctuation variations
   v.add(title.replace(/\band\b/gi, '&'));
   v.add(title.replace(/&/g, ' and '));
   v.add(title.replace(/\band\b/gi, 'in'));
@@ -254,7 +254,8 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
                      rating, posterPath, backdropPath, genres, posterUrl, backdropUrl }) {
   const cleanedPlatform = extractValidOttPlatforms(platform);
   let desc = '';
-  if (overview)        desc += overview + '\n\n';
+  // Safe quote normalization to completely prevent JSON parse breaks
+  if (overview)        desc += overview.replace(/"/g, "'").trim() + '\n\n';
   if (cleanedPlatform) desc += '📺 Streaming on: ' + cleanedPlatform;
   if (releaseDate)     desc += '\n📅 OTT Release: ' + releaseDate;
   if (rating)          desc += '\n⭐ Rating: ' + Number(rating).toFixed(1) + '/10';
@@ -563,8 +564,11 @@ async function processMovie(item, lang, expectedLang, strictLang) {
   const cacheKey = langPfx + item.id;
   const cached   = readCacheEntry(movieCache[cacheKey]);
 
-  if (cached === 'skip') return null;
-  if (cached && cached !== 'retry') {
+  // UNBLOCKING LOGIC: If item arrives via Day-0 with a confirmed OTT platform, do NOT honor cached "skip"
+  const hasTrustedPlatform = item.trustedPlatform && extractValidOttPlatforms(item.trustedPlatform).length > 0;
+
+  if (cached === 'skip' && !hasTrustedPlatform) return null;
+  if (cached && cached !== 'retry' && cached !== 'skip') {
     if (isPureTheatrical(cached.description) || !extractValidOttPlatforms(cached.description)) {
       setSkip(movieCache, cacheKey);
       return null;
@@ -636,8 +640,10 @@ async function processSeriesJW(item, lang) {
   const cacheKey = lang + '_series_' + item.id;
   const cached   = readCacheEntry(seriesCache[cacheKey]);
 
-  if (cached === 'skip') return null;
-  if (cached && cached !== 'retry') return cached;
+  const hasTrustedPlatform = item.trustedPlatform && extractValidOttPlatforms(item.trustedPlatform).length > 0;
+
+  if (cached === 'skip' && !hasTrustedPlatform) return null;
+  if (cached && cached !== 'retry' && cached !== 'skip') return cached;
 
   try {
     let tmdbId = item.id;
