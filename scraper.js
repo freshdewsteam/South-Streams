@@ -1,10 +1,10 @@
 /**
  * scraper.js — South Streams
  *
- * Movies  → 91mobiles editorial AJAX (Sole Day-0 OTT authority, strict whitelist)
- *           → TMDB Auto-Discover (/discover/movie with watch_region=IN)
- * Series  → 91mobiles editorial AJAX (Sole Day-0 OTT authority)
- *           → TMDB Auto-Discover (/discover/tv)
+ * Movies     → 91mobiles editorial AJAX (Sole Day-0 OTT authority, strict whitelist)
+ *              → TMDB Auto-Discover (/discover/movie with watch_region=IN)
+ * Series     → 91mobiles editorial AJAX (Sole Day-0 OTT authority)
+ *              → TMDB Auto-Discover (/discover/tv)
  * Enrichment → TMDB API (posters, descriptions, IMDb IDs)
  */
 
@@ -232,20 +232,22 @@ const RUN_IS_DEEP = isDeepSweepHour();
 
 function getTitleVariations(title) {
   const v = new Set();
-  v.add(title); // Exact match first
+  v.add(title); // Exact title first
 
-  // Common transliteration and punctuation cleanups
+  // Phonetic & transliteration variations
   v.add(title.replace(/\band\b/gi, '&'));
   v.add(title.replace(/&/g, ' and '));
-  v.add(title.replace(/\band\b/gi, 'in')); // Handles variations like "Ram and Leela" -> "Ram In Leela"
+  v.add(title.replace(/\band\b/gi, 'in'));
   v.add(title.replace(/\bin\b/gi, 'and'));
+  v.add(title.replace(/ee/gi, 'i'));   // Habeebi -> Habibi
+  v.add(title.replace(/i\b/gi, 'ee'));  // Habibi -> Habeebi
   v.add(title.replace(/[^a-zA-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim());
   v.add(title.replace(/\s*\(\d{4}\)\s*$/, '').trim());
   v.add(title.replace(/\s*[-–]\s*season\s*\d+/i, '').trim());
   v.add(title.replace(/^(the|a|an)\s+/i, '').trim());
   v.add(title.replace(/\s+(series|show|tv|web series)$/i, '').trim());
 
-  return Array.from(v).filter(x => x.length >= 2);
+  return Array.from(v).filter(x => x && x.length >= 1);
 }
 
 function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
@@ -277,7 +279,7 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
 // ── 91MOBILES (SOLE DAY-0 OTT DISCOVERY AUTHORITY) ────────────────────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_LANG_ID  = { ml: 28, ta: 63 };
-const M91_LOOKBACK_DAYS = 30; // 30-day window to catch retroactive additions
+const M91_LOOKBACK_DAYS = 30; // 30-day window to catch late additions
 const M91_PAGES = {
   ml: { movie: 'new-malayalam-movies', series: 'new-malayalam-web-series' },
   ta: { movie: 'new-tamil-movies',     series: 'new-tamil-web-series' },
@@ -330,7 +332,6 @@ async function m91FetchItems(slug, kind, lang, startOffset = '1') {
     dubbedVal: 'notDubbed',
     type: 'loadmore'
   });
-
   const target = M91_AJAX_URL + '?' + params.toString();
 
   if (SCRAPERAPI_KEY) {
@@ -365,7 +366,7 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
 
     const parts = meta.split('|').map(p => p.trim());
     if ((parts[0] || '').toLowerCase() !== langLabel) continue;
-    
+
     const dateMatch = meta.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
     if (!dateMatch) continue;
     const date = parseAnyDate(dateMatch[0]);
@@ -376,7 +377,6 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
 
     if (requireOttMarker && !/\(OTT\)/i.test(meta)) continue;
 
-    // Drop block if it is purely a cinema ticket listing
     if (THEATRICAL_REGEX.test(block) && !VALID_OTT_PLATFORMS.some(p => p.match.test(block))) {
       continue;
     }
@@ -434,19 +434,45 @@ async function fetch91Mobiles(lang, kind) {
 
       for (const v of getTitleVariations(item.title)) {
         try {
-          // 1. First attempt: Search with reported year to exclude similarly named older movies
+          // 1. Try with the reported year first
           if (item.year) {
             const yearKey = isShow ? 'first_air_date_year' : 'primary_release_year';
-            const data = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=1&${yearKey}=${item.year}`);
-            const candidates = (data.results || []).filter(x => x.original_language === lang);
-            if (candidates.length) { r = candidates[0]; break; }
+            let data = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=1&${yearKey}=${item.year}`);
+            let candidates = (data.results || []).filter(x => x.original_language === lang);
+
+            // Handle ultra-short titles (<= 3 chars, e.g. "Hi", "DC") that get pushed off page 1
+            if (!candidates.length && v.length <= 3 && (data.total_pages || 1) > 1) {
+              const dataP2 = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=2&${yearKey}=${item.year}`);
+              candidates = (dataP2.results || []).filter(x => x.original_language === lang);
+            }
+
+            if (candidates.length) {
+              const exact = candidates.find(c => {
+                const cTitle = (c.title || c.name || '').toLowerCase().trim();
+                return cTitle === item.title.toLowerCase().trim();
+              });
+              r = exact || candidates[0];
+              break;
+            }
           }
 
-          // 2. Fallback: Search without year (handles Dec-to-Jan release boundary mismatches)
+          // 2. Fallback: Search without year (Dec/Jan theatrical-to-OTT transitions)
           const fallbackData = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=1`);
-          const langCandidates = (fallbackData.results || []).filter(x => x.original_language === lang);
-          if (langCandidates.length) { r = langCandidates[0]; break; }
+          let langCandidates = (fallbackData.results || []).filter(x => x.original_language === lang);
 
+          if (!langCandidates.length && v.length <= 3 && (fallbackData.total_pages || 1) > 1) {
+            const fallbackP2 = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=2`);
+            langCandidates = (fallbackP2.results || []).filter(x => x.original_language === lang);
+          }
+
+          if (langCandidates.length) {
+            const exact = langCandidates.find(c => {
+              const cTitle = (c.title || c.name || '').toLowerCase().trim();
+              return cTitle === item.title.toLowerCase().trim();
+            });
+            r = exact || langCandidates[0];
+            break;
+          }
         } catch (e) {}
       }
 
@@ -729,10 +755,15 @@ async function scrapeMovies(lang) {
     const cacheKey = lang + '_' + day0Item.id;
     const arrivalDate = day0Item.arrivalDate || today();
 
+    // Normalized alphanumeric exact title match avoids substring collisions
     const existingIndex = metas.findIndex(m => {
       if (movieCache[cacheKey] && movieCache[cacheKey].id === m.id) return true;
       if (day0Item.imdbId && m.id === day0Item.imdbId) return true;
-      if (m.name && day0Item.title && m.name.toLowerCase() === day0Item.title.toLowerCase()) return true;
+      if (m.name && day0Item.title) {
+        const n1 = m.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const n2 = day0Item.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (n1 === n2) return true;
+      }
       return false;
     });
 
@@ -742,7 +773,7 @@ async function scrapeMovies(lang) {
       const ageMs = origDate ? (Date.now() - new Date(origDate).getTime()) : 0;
       const isOldMovie = !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
 
-      // Only bump releaseInfo if it's NOT an old catalog movie re-licensing
+      // Update releaseInfo if it's an upcoming/recent title moving from theatrical to OTT
       if (arrivalDate && !isOldMovie && (!existingMeta.releaseInfo || existingMeta.releaseInfo < arrivalDate)) {
         existingMeta.releaseInfo = arrivalDate;
         const validOtt = extractValidOttPlatforms(day0Item.trustedPlatform);
@@ -753,7 +784,6 @@ async function scrapeMovies(lang) {
         cacheDirty = true;
         console.log('[Date Update] 🔄 ' + existingMeta.name + ' OTT date set to ' + arrivalDate);
       } else if (isOldMovie && arrivalDate > origDate) {
-        // Tag as re-release in description, but retain original release year so it doesn't jump to the top
         if (!existingMeta.description.includes('♻️ Re-release')) {
           existingMeta.description = (existingMeta.description + '\n\n♻️ Re-release: Available on OTT').trim();
           movieCache[cacheKey] = existingMeta;
@@ -824,7 +854,11 @@ async function scrapeSeries(lang) {
     const existingIndex = metas.findIndex(m => {
       if (seriesCache[cacheKey] && seriesCache[cacheKey].id === m.id) return true;
       if (day0Item.imdbId && m.id === day0Item.imdbId) return true;
-      if (m.name && day0Item.title && m.name.toLowerCase() === day0Item.title.toLowerCase()) return true;
+      if (m.name && day0Item.title) {
+        const n1 = m.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const n2 = day0Item.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (n1 === n2) return true;
+      }
       return false;
     });
 
