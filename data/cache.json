@@ -1549,6 +1549,19 @@
   ],
   "malayalam-series": [
     {
+      "id": "tt44686897",
+      "type": "series",
+      "name": "Prince of Mollywood",
+      "releaseInfo": "2026-09-18",
+      "description": "Firoz has one dream: become a Pan-Indian superstar. But everyone around him has other plans. His friends are experts at ruining things. Vappa Mammali turns producer hoping one flop will send him straight back to the family business. Umma is busy finding him a bride on matrimony sites. And then there's his girlfriend.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-09-18\n⭐ Rating: 4.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/82TCOlAlhhuTkMclDTDR4bo6lQI.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/56uvaQfYILSBI9O37Vi9ad7mCHX.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
       "id": "tt8537520",
       "type": "series",
       "name": "Bigg Boss",
@@ -4376,5 +4389,5 @@
       "poster": "https://image.tmdb.org/t/p/w500/gzewadjHPkcemZBxxeGrvr1ySEI.jpg"
     }
   ],
-  "builtAt": "2026-09-27T05:07:54.561Z"
+  "builtAt": "2026-09-27T15:04:40.135Z"
 }
