@@ -5,7 +5,7 @@
  *              → TMDB Auto-Discover (/discover/movie with watch_region=IN)
  * Series     → 91mobiles editorial AJAX (Sole Day-0 OTT authority)
  *              → TMDB Auto-Discover (/discover/tv)
- * Enrichment → TMDB API (posters, descriptions, IMDb IDs)
+ * Enrichment → TMDB API & OMDb API fallback
  */
 
 const https = require('https');
@@ -254,7 +254,7 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
                      rating, posterPath, backdropPath, genres, posterUrl, backdropUrl }) {
   const cleanedPlatform = extractValidOttPlatforms(platform);
   let desc = '';
-  // Safe quote normalization to completely prevent JSON parse breaks
+  // Safe quote normalization completely prevents JSON parse breaks
   if (overview)        desc += overview.replace(/"/g, "'").trim() + '\n\n';
   if (cleanedPlatform) desc += '📺 Streaming on: ' + cleanedPlatform;
   if (releaseDate)     desc += '\n📅 OTT Release: ' + releaseDate;
@@ -429,6 +429,15 @@ async function fetch91Mobiles(lang, kind) {
     const resolved = [];
     const seenIds = new Set();
 
+    // Match helper: matches language directly OR handles TMDB regional titles misclassified as 'en' with India origin
+    const isLangMatch = x => {
+      if (x.original_language === lang) return true;
+      if (x.original_language === 'en' && Array.isArray(x.origin_country) && x.origin_country.includes('IN')) {
+        return true;
+      }
+      return false;
+    };
+
     for (const item of items) {
       const endpoint = isShow ? '/search/tv?query=' : '/search/movie?query=';
       let r = null;
@@ -439,12 +448,12 @@ async function fetch91Mobiles(lang, kind) {
           if (item.year) {
             const yearKey = isShow ? 'first_air_date_year' : 'primary_release_year';
             let data = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=1&${yearKey}=${item.year}`);
-            let candidates = (data.results || []).filter(x => x.original_language === lang);
+            let candidates = (data.results || []).filter(isLangMatch);
 
             // Handle ultra-short titles (<= 3 chars, e.g. "Hi", "DC") that get pushed off page 1
             if (!candidates.length && v.length <= 3 && (data.total_pages || 1) > 1) {
               const dataP2 = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=2&${yearKey}=${item.year}`);
-              candidates = (dataP2.results || []).filter(x => x.original_language === lang);
+              candidates = (dataP2.results || []).filter(isLangMatch);
             }
 
             if (candidates.length) {
@@ -459,11 +468,11 @@ async function fetch91Mobiles(lang, kind) {
 
           // 2. Fallback: Search without year (Dec/Jan theatrical-to-OTT transitions)
           const fallbackData = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=1`);
-          let langCandidates = (fallbackData.results || []).filter(x => x.original_language === lang);
+          let langCandidates = (fallbackData.results || []).filter(isLangMatch);
 
           if (!langCandidates.length && v.length <= 3 && (fallbackData.total_pages || 1) > 1) {
             const fallbackP2 = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=2`);
-            langCandidates = (fallbackP2.results || []).filter(x => x.original_language === lang);
+            langCandidates = (fallbackP2.results || []).filter(isLangMatch);
           }
 
           if (langCandidates.length) {
@@ -584,6 +593,18 @@ async function processMovie(item, lang, expectedLang, strictLang) {
       imdbId = detail.external_ids.imdb_id;
     }
 
+    // OMDb Fallback: If TMDB lacks an IMDb ID (e.g. indie release like Habeebi), look it up via OMDb
+    if (!imdbId && OMDB_KEY) {
+      try {
+        const movieTitle = detail.title || item.title || '';
+        const movieYear = item.year || (detail.release_date ? detail.release_date.slice(0, 4) : '');
+        const omdbRes = await fetchJson(`https://www.omdbapi.com/?t=${encodeURIComponent(movieTitle)}&y=${movieYear}&apikey=${OMDB_KEY}`);
+        if (omdbRes && omdbRes.imdbID && omdbRes.imdbID.startsWith('tt')) {
+          imdbId = omdbRes.imdbID;
+        }
+      } catch (e) {}
+    }
+
     if (!imdbId) {
       setRetry(movieCache, cacheKey);
       return null;
@@ -695,6 +716,16 @@ async function processSeriesJW(item, lang) {
         imdbId = ext.imdb_id || null;
       } catch(e) {}
     }
+
+    if (!imdbId && OMDB_KEY) {
+      try {
+        const omdbRes = await fetchJson(`https://www.omdbapi.com/?t=${encodeURIComponent(detail.name || item.title)}&y=${item.year || ''}&apikey=${OMDB_KEY}`);
+        if (omdbRes && omdbRes.imdbID && omdbRes.imdbID.startsWith('tt')) {
+          imdbId = omdbRes.imdbID;
+        }
+      } catch (e) {}
+    }
+
     if (!imdbId) { setRetry(seriesCache, cacheKey); return null; }
 
     const wp = (detail['watch/providers'] && detail['watch/providers'].results) || {};
