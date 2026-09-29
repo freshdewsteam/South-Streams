@@ -4613,6 +4613,19 @@
       "genres": [
         "Thriller"
       ]
+    },
+    "ta_1485325": {
+      "id": "tt37174734",
+      "type": "movie",
+      "name": "Angikaaram",
+      "releaseInfo": "2026-09-18",
+      "description": "Inspired by true events, this film follows the journey of a man who has had enough, fights for recognition against a system shaped strictly by politics and power.\n\n📺 Streaming on: SunNXT\n📅 OTT Release: 2026-09-18",
+      "poster": "https://image.tmdb.org/t/p/w500/rRyz56Fubfwmre6F5QiYyIzKmnT.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/w5EprlCldSQ5lPTHFmhvXAsb8VB.jpg",
+      "genres": [
+        "Drama",
+        "Action"
+      ]
     }
   },
   "_seen": {}

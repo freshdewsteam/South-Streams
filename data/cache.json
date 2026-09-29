@@ -1806,6 +1806,19 @@
       ]
     },
     {
+      "id": "tt37174734",
+      "type": "movie",
+      "name": "Angikaaram",
+      "releaseInfo": "2026-09-18",
+      "description": "Inspired by true events, this film follows the journey of a man who has had enough, fights for recognition against a system shaped strictly by politics and power.\n\n📺 Streaming on: SunNXT\n📅 OTT Release: 2026-09-18",
+      "poster": "https://image.tmdb.org/t/p/w500/rRyz56Fubfwmre6F5QiYyIzKmnT.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/w5EprlCldSQ5lPTHFmhvXAsb8VB.jpg",
+      "genres": [
+        "Drama",
+        "Action"
+      ]
+    },
+    {
       "id": "tt35836025",
       "type": "movie",
       "name": "Vishwanath & Sons",
@@ -3372,20 +3385,6 @@
         "Drama",
         "Family"
       ]
-    },
-    {
-      "id": "tt31945132",
-      "type": "movie",
-      "name": "Retro",
-      "releaseInfo": "2025-04-30",
-      "description": "A man with a violent past seeks a fresh start, but the life he left behind resurfaces, forcing him to face old conflicts and redefine his future.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2025-04-30\n⭐ Rating: 6.3/10",
-      "poster": "https://image.tmdb.org/t/p/w500/pJPK57REXsaLydpOPgHwWAQMdqz.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/rGcZhLzwOLz3OWWpYrelgP4HUIQ.jpg",
-      "genres": [
-        "Romance",
-        "Action",
-        "Drama"
-      ]
     }
   ],
   "tamil-series": [
@@ -4389,5 +4388,5 @@
       "poster": "https://image.tmdb.org/t/p/w500/gzewadjHPkcemZBxxeGrvr1ySEI.jpg"
     }
   ],
-  "builtAt": "2026-09-29T05:33:03.822Z"
+  "builtAt": "2026-09-29T16:27:34.471Z"
 }
