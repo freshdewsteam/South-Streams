@@ -27,7 +27,7 @@
     },
     "ml_series_320606": {
       "_status": "retry",
-      "_at": 1790719765861
+      "_at": 1790745680847
     },
     "ml_series_307900": {
       "id": "tt32105473",
@@ -131,7 +131,7 @@
     },
     "ml_series_275993": {
       "_status": "retry",
-      "_at": 1790719765946
+      "_at": 1790745680986
     },
     "ml_series_216636": {
       "id": "tt24364990",
@@ -160,8 +160,15 @@
       ]
     },
     "ml_series_275992": {
-      "_status": "retry",
-      "_at": 1790719766029
+      "id": "tt12833254",
+      "type": "series",
+      "name": "Subhadram",
+      "releaseInfo": "2023-12-18",
+      "description": "Subhadra helps her siblings flee her home with her newborn baby when she learns that her husband Meghanathan wants to kill them for their wealth. The plot unravels the challenges they face in life.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2023-12-18",
+      "poster": "https://image.tmdb.org/t/p/w500/ee7so1oY0aYqZ55vMs9WovXnOXu.jpg",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_236058": {
       "id": "tt28675376",
@@ -178,7 +185,7 @@
     },
     "ml_series_279335": {
       "_status": "retry",
-      "_at": 1790719766153
+      "_at": 1790745681379
     },
     "ml_series_228658": {
       "id": "tt27128638",
@@ -195,144 +202,291 @@
       ]
     },
     "ml_series_275988": {
-      "_status": "retry",
-      "_at": 1790719766257
+      "id": "tt33512998",
+      "type": "series",
+      "name": "Parvathy",
+      "releaseInfo": "2023-06-12",
+      "description": "Parvathy is gifted with a sense of foreseeing dangers and the future. She marries Vishal under unusual circumstances and battles to save his life after sensing he is in danger.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2023-06-12",
+      "poster": "https://image.tmdb.org/t/p/w500/52s8sVDDSItIb8S1730lc2AKx36.jpg",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_282063": {
-      "_status": "retry",
-      "_at": 1790719766369
+      "id": "tt8590896",
+      "type": "series",
+      "name": "Geetha Govindam",
+      "releaseInfo": "2023-02-13",
+      "description": "A middle-aged businessman Govind, falls in love with Geethanjali, a young girl. Their unusual love story takes a hit when his past overshadows his present.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2023-02-13",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_275991": {
-      "_status": "retry",
-      "_at": 1790719766481
+      "id": "tt27327486",
+      "type": "series",
+      "name": "Shyamambaram",
+      "releaseInfo": "2023-02-06",
+      "description": "Shyama, a talented singer, marries a rich man, Akhil, who helps her overcome her insecurities about her looks and gain success.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2023-02-06",
+      "poster": "https://image.tmdb.org/t/p/w500/3xnlfEKNRMd8V4wJsb8TgNK4RdZ.jpg",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_236891": {
-      "_status": "retry",
-      "_at": 1790719766565
+      "id": "tt31398701",
+      "type": "series",
+      "name": "Mizhirandilum",
+      "releaseInfo": "2023-01-02",
+      "description": "Lakshmi, an orphan, has endured bad treatment from her stepmother her whole life. She meets her potential groom, Sanjay, but she suffers another painful blow from fate.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2023-01-02",
+      "poster": "https://image.tmdb.org/t/p/w500/5EkjYDRCLe7sQLJ8gDsn9A4A5CD.jpg"
     },
     "ml_series_282066": {
-      "_status": "retry",
-      "_at": 1790719766657
+      "id": "tt0357945",
+      "type": "series",
+      "name": "Nammal",
+      "releaseInfo": "2022-12-05",
+      "description": "Chasing their dreams, celebrating success, and overcoming failures and heartbreaks, this story follows the colorful lives of six youngsters.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2022-12-05",
+      "genres": [
+        "Drama",
+        "Family"
+      ]
     },
     "ml_series_235168": {
-      "_status": "retry",
-      "_at": 1790719766762
+      "id": "tt1831016",
+      "type": "series",
+      "name": "Dancing Stars",
+      "releaseInfo": "2022-11-19",
+      "description": "Twelve celebrity couples compete against each other in a series of challenges to win the grand title. Are you ready for the ultimate dance battle?\n\n\n📅 OTT Release: 2022-11-19",
+      "genres": [
+        "Reality"
+      ]
     },
     "ml_series_278977": {
       "_status": "retry",
-      "_at": 1790719766864
+      "_at": 1790745682374
     },
     "ml_series_278976": {
-      "_status": "retry",
-      "_at": 1790719766949
+      "id": "tt0213862",
+      "type": "series",
+      "name": "Marumakal",
+      "releaseInfo": "2022-09-19",
+      "description": "Vagdhevi Vasundhara Devi is a highly educated teacher obsessed with being Number One. However, Saraswathy, an illiterate girl marries her son, giving rise to conflicts while living under one roof.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-09-19",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_275676": {
-      "_status": "retry",
-      "_at": 1790719767576
+      "id": "tt2476214",
+      "type": "series",
+      "name": "Ayalum Njanum Thammil",
+      "releaseInfo": "2024-05-17",
+      "description": "Life gives the duo a second chance when Abhiram, a widowed father of twin girls, and Vasundhara, a divorced mother with a son, marry each other. But their paths are strewn with obstacles.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2024-05-17",
+      "poster": "https://image.tmdb.org/t/p/w500/vKAM1zZSo8kf8SfP4c2NSicAAHf.jpg",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_277814": {
-      "_status": "retry",
-      "_at": 1790719767664
+      "id": "tt13509622",
+      "type": "series",
+      "name": "Yeshu",
+      "releaseInfo": "2022-09-13",
+      "description": "The show depicts the childhood of Lord Jesus and how he helped people in a world afflicted by sin and evil. It also portrays his special bond with his mother.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-09-13"
     },
     "ml_series_278979": {
-      "_status": "retry",
-      "_at": 1790719778729
+      "id": "tt38525287",
+      "type": "series",
+      "name": "Wife Is Beautiful",
+      "releaseInfo": "2022-09-12",
+      "description": "Balaraman and Seethalakshmi want their three unmarried sons to settle down. A comedy of errors occurs when the sons marry women of their choice, each from a different cultural background.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-09-12",
+      "genres": [
+        "Comedy"
+      ]
     },
     "ml_series_278978": {
       "_status": "retry",
-      "_at": 1790719778849
+      "_at": 1790745693629
     },
     "ml_series_236425": {
-      "_status": "retry",
-      "_at": 1790719778935
+      "id": "tt30632873",
+      "type": "series",
+      "name": "Kudumbashree Sharada",
+      "releaseInfo": "2022-04-11",
+      "description": "The series revolves around the life of a hardworking single mom, Sharada, and her three ambitious daughters. Sharada runs a hotel called 'Kudumbashree' to meet the needs of the family. Sharada had three daughters Sharika, Shalini, and Shyama.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-04-11",
+      "poster": "https://image.tmdb.org/t/p/w500/bnUzg8fM6HbCdCur7vjYCmEYsR7.jpg",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_277808": {
-      "_status": "retry",
-      "_at": 1790719779052
+      "id": "tt14452994",
+      "type": "series",
+      "name": "Bala Shiva",
+      "releaseInfo": "2022-01-24",
+      "description": "The show essays the eternal bond shared by the little Shiva with his mother, Mahasati Anusuya, exploring an unheard and untold chapter of Lord Shiva’s life.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-01-24"
     },
     "ml_series_155959": {
-      "_status": "retry",
-      "_at": 1790719779136
+      "id": "tt18306084",
+      "type": "series",
+      "name": "Erivum Puliyum",
+      "releaseInfo": "2022-03-18",
+      "description": "Unniyappan changes his name to Freddy to marry Juliet. They live a happy life with their five children but face greater challenges later.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-03-18\n⭐ Rating: 2.0/10",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
     },
     "ml_series_281584": {
       "_status": "retry",
-      "_at": 1790719779277
+      "_at": 1790745694313
     },
     "ml_series_235155": {
-      "_status": "retry",
-      "_at": 1790719779364
+      "id": "tt5137120",
+      "type": "series",
+      "name": "Christmas Feast",
+      "releaseInfo": "2021-12-16",
+      "description": "The table is being set with festive special sweets, snacks and savouries. Celebrate Christmas with Asha Aravind, as she brings some lip-smacking recipes.\n\n\n📅 OTT Release: 2021-12-16"
     },
     "ml_series_235332": {
-      "_status": "retry",
-      "_at": 1790719779492
+      "id": "tt0867396",
+      "type": "series",
+      "name": "Palunku",
+      "releaseInfo": "2021-11-22",
+      "description": "Worlds and values clash when headstrong and middle-class Nila meets aristocratic Deepak, a scientist. Adding fuel to this fiery combination is his joint family.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2021-11-22",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_235214": {
-      "_status": "retry",
-      "_at": 1790719779578
+      "id": "tt0235329",
+      "type": "series",
+      "name": "Daya",
+      "releaseInfo": "2021-11-01",
+      "description": "She is the epitome of mercy and bravery. She is a crusader for justice who always questions what is not right. She is like no other. She is Daya.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2021-11-01",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_277806": {
-      "_status": "retry",
-      "_at": 1790719779719
+      "id": "tt18313436",
+      "type": "series",
+      "name": "Amma Makal",
+      "releaseInfo": "2021-10-25",
+      "description": "Anu and her mother share the purest mother-daughter bond. But when Anu realises that her mother's priorities are shifting, her extremist behaviour creates ruffles in the mother-daughter relationship.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2021-10-25",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_281596": {
-      "_status": "retry",
-      "_at": 1790719779813
+      "id": "tt0358248",
+      "type": "series",
+      "name": "Valkannadi",
+      "releaseInfo": "2021-10-18",
+      "description": "Everyone's favourite Arya is back with a yet another reality show! Join her in this fun-filled game show, featuring a bevy of small-screen stars as guests.\n\n\n📅 OTT Release: 2021-10-18",
+      "genres": [
+        "Reality"
+      ]
     },
     "ml_series_277813": {
-      "_status": "retry",
-      "_at": 1790719779920
+      "id": "tt0273994",
+      "type": "series",
+      "name": "Pranayavarnangal",
+      "releaseInfo": "2021-10-18",
+      "description": "Aparna, a simple yet ambitious girl, follows her passion in her career and personal life. She falls in love with Siddharth, but her past creates conflict in their seemingly perfect love story.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2021-10-18",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_281582": {
       "_status": "retry",
-      "_at": 1790719779999
+      "_at": 1790745695391
     },
     "ml_series_282889": {
       "_status": "retry",
-      "_at": 1790719780102
+      "_at": 1790745695556
     },
     "ml_series_282686": {
       "_status": "retry",
-      "_at": 1790719780193
+      "_at": 1790745695702
     },
     "ml_series_281579": {
       "_status": "retry",
-      "_at": 1790719780287
+      "_at": 1790745695845
     },
     "ml_series_281333": {
-      "_status": "retry",
-      "_at": 1790719780376
+      "id": "tt15427782",
+      "type": "series",
+      "name": "Thoovalsparsham",
+      "releaseInfo": "2021-07-12",
+      "description": "A murder in the family forces two sisters to separate. Years later, one becomes a cop, the other an 'honourable thief'. What's in store for these opposites?\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2021-07-12",
+      "genres": [
+        "Drama",
+        "Family"
+      ]
     },
     "ml_series_281328": {
-      "_status": "retry",
-      "_at": 1790719793789
+      "id": "tt0275654",
+      "type": "series",
+      "name": "Sasneham",
+      "releaseInfo": "2021-06-08",
+      "description": "An old-age home reunites past lovers indira and Balachandran. Having lost faith in family, their life gets a new meaning when they meet Madhuri and Nandan\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2021-06-08",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_137810": {
-      "_status": "retry",
-      "_at": 1790719793901
+      "id": "tt38458555",
+      "type": "series",
+      "name": "Oru Chiri Iru Chiri Bumper Chiri",
+      "releaseInfo": "2021-05-04",
+      "description": "Oru Chiri Iru Chiri Bumper Chiri is our latest comedy reality show where contestants get to win BIG if they manage to make our esteemed panelists laugh. Watch and find out whether it is one laugh (Oru Chiri), two laughs (Iru Chiri) or a Bumper Laugh that their hilarious acts manage to elicit from our panelists!\n\n📺 Streaming on: ManoramaMAX\n📅 OTT Release: 2021-05-04\n⭐ Rating: 10.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/lyH5qND3bIBrWg3u18SjrCpCInj.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/4SpzS1LfjxMRbvOoSeUXtyOPYyN.jpg",
+      "genres": [
+        "Comedy",
+        "Drama",
+        "Family",
+        "Talk"
+      ]
     },
     "ml_series_277334": {
-      "_status": "retry",
-      "_at": 1790719793983
+      "id": "tt18313602",
+      "type": "series",
+      "name": "Mrs. Hitler",
+      "releaseInfo": "2021-04-19",
+      "description": "DK is a perfectionist, while Jyothirmayi is an impulsive girl. Hell breaks loose, when DK’s three daughters-in-law decide to get him married.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2021-04-19",
+      "poster": "https://image.tmdb.org/t/p/w500/vG3SFIUHiYb5H3nQpaMseP2xdFf.jpg"
     },
     "ml_series_235210": {
       "_status": "retry",
-      "_at": 1790719794115
+      "_at": 1790745708943
     },
     "ml_series_235288": {
       "_status": "retry",
-      "_at": 1790719794225
+      "_at": 1790745709064
     },
     "ml_series_281320": {
-      "_status": "retry",
-      "_at": 1790719794317
+      "id": "tt21057772",
+      "type": "series",
+      "name": "Koodevide",
+      "releaseInfo": "2021-01-04",
+      "description": "Sooryan, an ambitious woman, crosses paths with Rishikesh, an arrogant young man. Will opposites attract, repel or explode? arrogant young man . Will opposites attract, repel or explode?\n\n\n📅 OTT Release: 2021-01-04",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_277325": {
-      "_status": "retry",
-      "_at": 1790719794450
+      "id": "tt0356774",
+      "type": "series",
+      "name": "Kaiyethum Doorath",
+      "releaseInfo": "2020-11-30",
+      "description": "A woman sacrifices her baby boy and fosters her brothers girlchild to fulfil his wifes wish. When the children grow up, they end up fall in love with each other.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2020-11-30",
+      "poster": "https://image.tmdb.org/t/p/w500/2HodT5vmx818LTbx2njLAv1Um8o.jpg"
     },
     "ml_series_277331": {
       "_status": "retry",
-      "_at": 1790719794542
+      "_at": 1790745709495
     },
     "ml_series_224729": {
       "id": "tt14682792",
@@ -349,31 +503,58 @@
     },
     "ml_series_281327": {
       "_status": "retry",
-      "_at": 1790719794669
+      "_at": 1790745709661
     },
     "ml_series_277329": {
-      "_status": "retry",
-      "_at": 1790719794761
+      "id": "tt9216888",
+      "type": "series",
+      "name": "Karthika Deepam",
+      "releaseInfo": "2020-07-20",
+      "description": "The show revolves around Karthika, an orphan adopted by Kannan, a farmer, who struggles with various stereotypes and the challenges she faces while falling in love.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2020-07-20",
+      "poster": "https://image.tmdb.org/t/p/w500/n5C8WDKOFpOSYXeqCvouf1IWmKe.jpg"
     },
     "ml_series_281317": {
-      "_status": "retry",
-      "_at": 1790719794851
+      "id": "tt12612932",
+      "type": "series",
+      "name": "Amma Ariyathe",
+      "releaseInfo": "2020-06-22",
+      "description": "Separated by unfortunate circumstances, will Aleena reunite with her estranged mother, Neeraja, and avenger her mother's rapists?\n\n\n📅 OTT Release: 2020-06-22"
     },
     "ml_series_277340": {
-      "_status": "retry",
-      "_at": 1790719794941
+      "id": "tt1318928",
+      "type": "series",
+      "name": "Nagini",
+      "releaseInfo": "2020-06-01",
+      "description": "Shivani, the ‘Nagini that is a shape-shifting serpent, sets out to take revenge after losing Adishesh, the love of her life. Shivani reaches the human world and tries to find the Nagmani.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2020-06-01",
+      "poster": "https://image.tmdb.org/t/p/w500/wazL7dBgLiI1Jlh1WM9TwMdmHly.jpg"
     },
     "ml_series_277492": {
-      "_status": "retry",
-      "_at": 1790719795032
+      "id": "tt9332680",
+      "type": "series",
+      "name": "Neeyum Njanum",
+      "releaseInfo": "2020-02-10",
+      "description": "Ravi Varman, a man in his late 40s, falls for a young girl, Sreelakshmi. But Sreelakshmi has her own battles to fight. Soon, Sreelakshmi and Ravi Varman fall into the maze of love.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2020-02-10"
     },
     "ml_series_281324": {
-      "_status": "retry",
-      "_at": 1790719795115
+      "id": "tt0281951",
+      "type": "series",
+      "name": "Kudumbavilakku",
+      "releaseInfo": "2020-01-27",
+      "description": "Reeling from the tragedy, Sumithra  sets off to rebuild her life and reunite with her family, Will destiny play its part and aid her healing heart's pursuit?\n\n\n📅 OTT Release: 2020-01-27",
+      "genres": [
+        "Family"
+      ]
     },
     "ml_series_281325": {
-      "_status": "retry",
-      "_at": 1790719795225
+      "id": "tt12587892",
+      "type": "series",
+      "name": "Mounaragam",
+      "releaseInfo": "2019-12-16",
+      "description": "in the world of silence, an abandoned Kalyani finds solace in her guardian angle Kiran. Will this new found joy last long in their blissful married life?\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2019-12-16",
+      "genres": [
+        "Drama",
+        "Family"
+      ]
     },
     "ml_series_101181": {
       "id": "tt11252864",
@@ -389,16 +570,29 @@
       ]
     },
     "ml_series_277493": {
-      "_status": "retry",
-      "_at": 1790719795325
+      "id": "tt21935486",
+      "type": "series",
+      "name": "Sindhooram",
+      "releaseInfo": "2019-06-09",
+      "description": "After being forced into marriage, Abhi and Priya eventually find true love in each other. However, soon the couple gets separated. Will Abhi and Priya reunite?\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2019-06-09"
     },
     "ml_series_277322": {
-      "_status": "retry",
-      "_at": 1790719795426
+      "id": "tt9315194",
+      "type": "series",
+      "name": "Chembarathi",
+      "releaseInfo": "2018-11-26",
+      "description": "Akhilandeshwari, a matriarch, wants her son Anand to marry a girl of their stature, but he secretly marries Kalyani, the maid. Will Akhilandeshwari learn about Anand and Kalyanis marriage?\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2018-11-26",
+      "poster": "https://image.tmdb.org/t/p/w500/t2JKdV2a6gYJEIoXF0C9BShQu8i.jpg"
     },
     "ml_series_281329": {
-      "_status": "retry",
-      "_at": 1790719795547
+      "id": "tt1666177",
+      "type": "series",
+      "name": "Seetha Kalyanam",
+      "releaseInfo": "2018-09-10",
+      "description": "Circumstances force Seetha to don the role of a mother to her young sister, Swathi. Watch how Seetha sacrifices her happiness to give Swathi a happy life.\n\n📺 Streaming on: Zee5, SunNXT\n📅 OTT Release: 2018-09-10",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_80372": {
       "id": "tt8537520",
@@ -427,23 +621,43 @@
     },
     "ml_series_235324": {
       "_status": "retry",
-      "_at": 1790719808949
+      "_at": 1790745723687
     },
     "ml_series_275684": {
       "_status": "retry",
-      "_at": 1790719809041
+      "_at": 1790745723838
     },
     "ml_series_275683": {
-      "_status": "retry",
-      "_at": 1790719809142
+      "id": "tt38551319",
+      "type": "series",
+      "name": "Mayamayooram",
+      "releaseInfo": "2024-05-17",
+      "description": "Ganga attempts to bring happiness and hope back into the life of her childhood love, Maheshwar, after the death of his wife Gawri.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2024-05-17",
+      "poster": "https://image.tmdb.org/t/p/w500/vuuISULGjf3UBOGIhmyLzVCI8Uj.jpg",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_275681": {
-      "_status": "retry",
-      "_at": 1790719809247
+      "id": "tt21301304",
+      "type": "series",
+      "name": "Mangalyam",
+      "releaseInfo": "2024-05-17",
+      "description": "Unaware that he’s in love with another girl, Archana, a selfless middle-class girl, marries Sachidhanandh. Will time play cupid with the couple?\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2024-05-17",
+      "poster": "https://image.tmdb.org/t/p/w500/171Z7l3UvheIHlm1A3yBFB8Ii8s.jpg",
+      "genres": [
+        "Drama"
+      ]
     },
     "ml_series_235327": {
-      "_status": "retry",
-      "_at": 1790719809391
+      "id": "tt4501288",
+      "type": "series",
+      "name": "Mylanchi",
+      "releaseInfo": "2023-02-25",
+      "description": "Hosted by Radhika, the hunt for the new singing sensation is on! With an interesting mix of songs, the contestants get ready for an ultimate battle!\n\n\n📅 OTT Release: 2023-02-25",
+      "genres": [
+        "Drama"
+      ]
     },
     "ta_series_331750": {
       "id": "tt44914967",
@@ -558,7 +772,7 @@
     },
     "ta_series_310127": {
       "_status": "retry",
-      "_at": 1790719811730
+      "_at": 1790745726947
     },
     "ta_series_307959": {
       "id": "tt39182415",
@@ -718,7 +932,7 @@
     },
     "ta_series_261718": {
       "_status": "retry",
-      "_at": 1790719811845
+      "_at": 1790745727094
     },
     "ta_series_259242": {
       "id": "tt28434030",
@@ -734,8 +948,13 @@
       ]
     },
     "ta_series_263299": {
-      "_status": "retry",
-      "_at": 1790719811928
+      "id": "tt7280786",
+      "type": "series",
+      "name": "Tik Tik Tik",
+      "releaseInfo": "2024-11-24",
+      "description": "Bala and Kiki Vijay host a game show where commoners take on celebrities in a high-energy battle for big cash prizes. Fun and non-stop entertainment await!\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2024-11-24",
+      "poster": "https://image.tmdb.org/t/p/w500/uPCNMjOzxoSuXiYuUQrpUbY71Tk.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/6ySNI94aasyIXbvUVt0RUUDcW3q.jpg"
     },
     "ta_series_254896": {
       "id": "tt32176709",
@@ -752,8 +971,12 @@
       ]
     },
     "ta_series_276584": {
-      "_status": "retry",
-      "_at": 1790719812038
+      "id": "tt10569514",
+      "type": "series",
+      "name": "Naane Varuven",
+      "releaseInfo": "2024-05-27",
+      "description": "Mohan turns bitter towards life after his wife’s death. But Radha, who loved him since childhood, decides to restore his happiness. Will Radha succeed in her efforts\n\n📺 Streaming on: SunNXT\n📅 OTT Release: 2024-05-27",
+      "poster": "https://image.tmdb.org/t/p/w500/e4EvHUEBymYcOkOopem6AW5heTq.jpg"
     },
     "ta_series_254837": {
       "id": "tt32241474",
@@ -805,8 +1028,12 @@
       ]
     },
     "ta_series_278802": {
-      "_status": "retry",
-      "_at": 1790719812149
+      "id": "tt0140673",
+      "type": "series",
+      "name": "Veera",
+      "releaseInfo": "2024-02-26",
+      "description": "Veera and Kanmani lose their brother in a road accident caused by Maaran. What happens when a series of unfortunate events lead Veera to marry Maaran, and Kanmani decides to seek revenge?\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2024-02-26",
+      "poster": "https://image.tmdb.org/t/p/w500/bL7eXa4CVpoZHuqqrvN2wBsh9iW.jpg"
     },
     "ta_series_276612": {
       "id": "tt32335206",
@@ -860,8 +1087,16 @@
       ]
     },
     "ta_series_276607": {
-      "_status": "retry",
-      "_at": 1790719812258
+      "id": "tt0382866",
+      "type": "series",
+      "name": "Nala Damayanthi",
+      "releaseInfo": "2024-05-25",
+      "description": "Damayanthi runs a restaurant with the philosophy of serving food with love. But her competitor, Nalan, tries to sabotage her business by trying to woo her. Will she fall for his trap?\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2024-05-25",
+      "poster": "https://image.tmdb.org/t/p/w500/uOsyvP8wtLcDvGBn9haAhTBVS45.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/nJT8tbey2H63qGy4vwkpJ1MBLin.jpg",
+      "genres": [
+        "Drama"
+      ]
     },
     "ta_series_235372": {
       "id": "tt29548810",
@@ -904,8 +1139,12 @@
       ]
     },
     "ta_series_278795": {
-      "_status": "retry",
-      "_at": 1790719812350
+      "id": "tt7456310",
+      "type": "series",
+      "name": "Anna",
+      "releaseInfo": "2023-05-22",
+      "description": "Shanmugam, a loving but over-protective brother raises his four younger sisters and believes that marriage should be their final goal, little realising that the girls have their aspirations as well.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2023-05-22",
+      "poster": "https://image.tmdb.org/t/p/w500/yjADSfTqJJ7Zp10wddqZ2fEfav9.jpg"
     },
     "ta_series_200874": {
       "id": "tt21883062",
@@ -921,8 +1160,17 @@
       ]
     },
     "ta_series_276615": {
-      "_status": "retry",
-      "_at": 1790719824063
+      "id": "tt0497573",
+      "type": "series",
+      "name": "Sandakozhi",
+      "releaseInfo": "2024-08-17",
+      "description": "Mahalakshmi and Vikram resent each other, but when their siblings fall in love, they unite to bring the two together despite all odds.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2024-08-17",
+      "poster": "https://image.tmdb.org/t/p/w500/aWjibATrPA2WdZr2gKF0nPLbGcE.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/lz7Ap8e4gi8UO8zMx0Qa1KM6Et3.jpg",
+      "genres": [
+        "Drama",
+        "Soap"
+      ]
     },
     "ta_series_224816": {
       "id": "tt27510191",
@@ -1022,8 +1270,12 @@
       ]
     },
     "ta_series_278797": {
-      "_status": "retry",
-      "_at": 1790719824159
+      "id": "tt32589618",
+      "type": "series",
+      "name": "Karthigai Deepam",
+      "releaseInfo": "2022-12-05",
+      "description": "Deepa, a talented singer, faces discrimination as she's dusky. But meeting Karthikeyan, a successful businessman, changes her life drastically. Will Deepa be able to stand tall against societal norms?\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-12-05",
+      "poster": "https://image.tmdb.org/t/p/w500/qTGzerl8x66CklB7ioREPx9pgu8.jpg"
     },
     "ta_series_200881": {
       "id": "tt21908550",
@@ -1040,12 +1292,24 @@
       ]
     },
     "ta_series_236567": {
-      "_status": "retry",
-      "_at": 1790719824249
+      "id": "tt0121401",
+      "type": "series",
+      "name": "Indira",
+      "releaseInfo": "2022-11-22",
+      "description": "Coming from a small-town patriarchial family, Indira faces gender discrimination but resolves to fight it and become an IAS officer to earn respect.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-11-22",
+      "poster": "https://image.tmdb.org/t/p/w500/yP3bwMpQqZvOLVu0h0APW98wvp9.jpg"
     },
     "ta_series_278796": {
-      "_status": "retry",
-      "_at": 1790719824338
+      "id": "tt8458718",
+      "type": "series",
+      "name": "Kanaa",
+      "releaseInfo": "2024-11-02",
+      "description": "Anbarasi, an innocent village girl, dreams of making a name for herself in the field of sports but faces numerous obstacles. Will she manage to tackle the hurdles and fulfil her dream?\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2024-11-02",
+      "poster": "https://image.tmdb.org/t/p/w500/n5v6vyYH1tBTNkm6HIiUAx4iVTi.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/AbSAL24Yg80MrM1DGOMEe8VL4je.jpg",
+      "genres": [
+        "Drama"
+      ]
     },
     "ta_series_214666": {
       "id": "tt22805340",
@@ -1074,12 +1338,21 @@
       ]
     },
     "ta_series_287517": {
-      "_status": "retry",
-      "_at": 1790719824424
+      "id": "tt2326059",
+      "type": "series",
+      "name": "Ullathai Allitha",
+      "releaseInfo": "2022-10-10",
+      "description": "Their horoscopes clash, forcing an unlikely marriage. Can love bloom amidst animosity?\n\n📺 Streaming on: JioHotstar, SunNXT\n📅 OTT Release: 2022-10-10",
+      "genres": [
+        "Drama"
+      ]
     },
     "ta_series_287516": {
-      "_status": "retry",
-      "_at": 1790719824508
+      "id": "tt13448664",
+      "type": "series",
+      "name": "Pishachini",
+      "releaseInfo": "2022-09-12",
+      "description": "Mesmerizing with her beauty, what evil havoc will Pishachini unleash? Find out only on JioHotstar.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2022-09-12\n⭐ Rating: 6.0/10"
     },
     "ta_series_205505": {
       "id": "tt21211254",
@@ -1134,8 +1407,18 @@
       ]
     },
     "ta_series_206390": {
-      "_status": "retry",
-      "_at": 1790719824590
+      "id": "tt21325070",
+      "type": "series",
+      "name": "Paper Rocket",
+      "releaseInfo": "2022-07-29",
+      "description": "Six strangers who belong to diverse age groups and backgrounds embark on a road trip across Tamil Nadu. Each of them wants to fulfil a major wish on their bucket list during the trip.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-07-29\n⭐ Rating: 5.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/guPn6zkbJsPD4EK4LSy4GWCNURJ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/ocREVFQM9BhC3nk36Nhvu5aocfr.jpg",
+      "genres": [
+        "Comedy",
+        "Drama",
+        "Family"
+      ]
     },
     "ta_series_206395": {
       "id": "tt21223050",
@@ -1151,8 +1434,14 @@
       ]
     },
     "ta_series_285361": {
-      "_status": "retry",
-      "_at": 1790719824696
+      "id": "tt21041856",
+      "type": "series",
+      "name": "Pachakili",
+      "releaseInfo": "2022-07-04",
+      "description": "Pachakili's brother had promised her as a child that he would let her study until she completes her 12th standard, after which  she will have to get married.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2022-07-04",
+      "genres": [
+        "Drama"
+      ]
     },
     "ta_series_219101": {
       "id": "tt21231814",
@@ -1182,11 +1471,18 @@
     },
     "ta_series_285359": {
       "_status": "retry",
-      "_at": 1790719824795
+      "_at": 1790745740118
     },
     "ta_series_282257": {
-      "_status": "retry",
-      "_at": 1790719824891
+      "id": "tt19893566",
+      "type": "series",
+      "name": "Chellamma",
+      "releaseInfo": "2022-05-09",
+      "description": "Unfortunate events bring Chellamma and Malar to Lakshmi's doorstep, unaware of their past connection. As the truth unfolds, will it be a safe haven for them?\n\n\n📅 OTT Release: 2022-05-09",
+      "genres": [
+        "Drama",
+        "Family"
+      ]
     },
     "ta_series_198124": {
       "id": "tt19733404",
@@ -1201,36 +1497,65 @@
       ]
     },
     "ta_series_201375": {
-      "_status": "retry",
-      "_at": 1790719824980
+      "id": "tt19862876",
+      "type": "series",
+      "name": "Kana Kaanum Kaalangal",
+      "releaseInfo": "2025-02-14",
+      "description": "The story revolves around a group of high school students and the struggles the high school students from that group face during their secondary school life such as jealousy, rivalry, misunderstandings, arguments and personal grudges.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2025-02-14",
+      "poster": "https://image.tmdb.org/t/p/w500/o2XjENRikD2DhZfy2X56rHwPOCY.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/zyhAO9pFjimpEXF8nkhrHW30QIN.jpg",
+      "genres": [
+        "Drama"
+      ]
     },
     "ta_series_279177": {
-      "_status": "retry",
-      "_at": 1790719825075
+      "id": "tt19512360",
+      "type": "series",
+      "name": "Thavamai Thavamirundhu",
+      "releaseInfo": "2022-04-18",
+      "description": "Abandoned by their grown-up children, Markandeyan and Seetha leave the house to start life afresh.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-04-18",
+      "genres": [
+        "Drama"
+      ]
     },
     "ta_series_279170": {
-      "_status": "retry",
-      "_at": 1790719825184
+      "id": "tt0312859",
+      "type": "series",
+      "name": "Kannathil Muthamittal",
+      "releaseInfo": "2022-04-11",
+      "description": "Adhira, a teenager, learns to believe in the value of relationships when she develops a special bond with Subathra, her stepmother.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-04-11",
+      "genres": [
+        "Drama"
+      ]
     },
     "ta_series_278049": {
       "_status": "retry",
-      "_at": 1790719825272
+      "_at": 1790745740804
     },
     "ta_series_285358": {
       "_status": "retry",
-      "_at": 1790719825380
+      "_at": 1790745740946
     },
     "ta_series_277892": {
-      "_status": "retry",
-      "_at": 1790719825489
+      "id": "tt2357208",
+      "type": "series",
+      "name": "Run Baby Run",
+      "releaseInfo": "2022-02-27",
+      "description": "Popular TV artists participate in tough tasks to test their mental and physical endurance within a given time.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-02-27"
     },
     "ta_series_285360": {
-      "_status": "retry",
-      "_at": 1790719825587
+      "id": "tt17528060",
+      "type": "series",
+      "name": "Namma Madurai Sisters",
+      "releaseInfo": "2022-02-21",
+      "description": "Family business, sibling love, & bitter enemies collide.\n\n\n📅 OTT Release: 2022-02-21",
+      "genres": [
+        "Drama"
+      ]
     },
     "ta_series_287436": {
       "_status": "retry",
-      "_at": 1790719839150
+      "_at": 1790745754133
     },
     "ta_series_157164": {
       "id": "tt15716624",
