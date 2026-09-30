@@ -2196,6 +2196,19 @@
       ]
     },
     {
+      "id": "tt39073377",
+      "type": "movie",
+      "name": "Ram and Leela",
+      "releaseInfo": "2026-09-18",
+      "description": "A repeatedly unlucky man finally finds the woman of his dreams, only for an unexpected twist to challenge his understanding of love and commitment.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-18\n⭐ Rating: 5.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/j1X0t57PguWBcaa8LAOaAHGyjcK.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/w0hg42XRWiaWlGPvQI8Defwn5En.jpg",
+      "genres": [
+        "Romance",
+        "Comedy"
+      ]
+    },
+    {
       "id": "tt35836025",
       "type": "movie",
       "name": "Vishwanath & Sons",
@@ -3735,19 +3748,6 @@
       "genres": [
         "Comedy"
       ]
-    },
-    {
-      "id": "tt36855758",
-      "type": "movie",
-      "name": "Kaliyugam",
-      "releaseInfo": "2025-05-09",
-      "description": "Set in the dystopian future,  2064 AD, the apocalyptic world is stripped of food, water, and humanity. In a ruthless fight for survival, the few remaining must navigate chaos, danger, and the depths of human desperation.\n\n📺 Streaming on: Prime Video, SunNXT, Lionsgate Play\n📅 OTT Release: 2025-05-09\n⭐ Rating: 6.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/hRKMtcIFzJyi59PtULiKQT4vPoA.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/cL0c8lwZFmmkDB3Zar2oi7HnP3Z.jpg",
-      "genres": [
-        "Thriller",
-        "Science Fiction"
-      ]
     }
   ],
   "tamil-series": [
@@ -4716,5 +4716,5 @@
       ]
     }
   ],
-  "builtAt": "2026-09-30T16:21:56.401Z"
+  "builtAt": "2026-09-30T22:09:20.480Z"
 }

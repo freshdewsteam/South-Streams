@@ -4637,6 +4637,19 @@
         "Action",
         "Drama"
       ]
+    },
+    "ta_1590380": {
+      "id": "tt39073377",
+      "type": "movie",
+      "name": "Ram and Leela",
+      "releaseInfo": "2026-09-18",
+      "description": "A repeatedly unlucky man finally finds the woman of his dreams, only for an unexpected twist to challenge his understanding of love and commitment.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-18\n⭐ Rating: 5.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/j1X0t57PguWBcaa8LAOaAHGyjcK.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/w0hg42XRWiaWlGPvQI8Defwn5En.jpg",
+      "genres": [
+        "Romance",
+        "Comedy"
+      ]
     }
   },
   "_seen": {}
