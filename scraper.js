@@ -376,7 +376,6 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
 
     if (requireOttMarker && !/\(OTT\)/i.test(meta)) continue;
 
-    // Extract streaming platform targets
     const platforms = [];
     const wtsIdx = block.indexOf('Where To Stream');
     if (wtsIdx !== -1) {
@@ -393,7 +392,6 @@ function m91ParsePage(html, langLabel, requireOttMarker) {
     }
 
     const finalPlatform = extractValidOttPlatforms(platforms.join(', '));
-    // If no valid OTT platform found, drop it (avoids purely theatrical tickets)
     if (!finalPlatform) continue;
 
     const bodyText = m91StripTags(block);
@@ -427,57 +425,43 @@ async function fetch91Mobiles(lang, kind) {
     const resolved = [];
     const seenIds = new Set();
 
-    // Match helper: matches language directly OR handles TMDB Indian productions classified as 'en' (e.g. Andharan)
-    const isLangMatch = x => {
-      if (x.original_language === lang) return true;
-      if (x.original_language === 'en' && Array.isArray(x.origin_country) && x.origin_country.includes('IN')) {
-        return true;
-      }
-      return false;
-    };
-
     for (const item of items) {
       const endpoint = isShow ? '/search/tv?query=' : '/search/movie?query=';
       let r = null;
 
       for (const v of getTitleVariations(item.title)) {
         try {
-          if (item.year) {
-            const yearKey = isShow ? 'first_air_date_year' : 'primary_release_year';
-            let data = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=1&${yearKey}=${item.year}`);
-            let candidates = (data.results || []).filter(isLangMatch);
+          const yearKey = isShow ? 'first_air_date_year' : 'primary_release_year';
+          let data = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=1${item.year ? '&' + yearKey + '=' + item.year : ''}`);
+          let results = data.results || [];
 
-            // Check page 2 for short titles pushed down by generic word matches (e.g. "Hi")
-            if (!candidates.length && v.length <= 3 && (data.total_pages || 1) > 1) {
-              const dataP2 = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=2&${yearKey}=${item.year}`);
-              candidates = (dataP2.results || []).filter(isLangMatch);
-            }
+          // 1. First priority: Direct language match
+          let candidates = results.filter(x => x.original_language === lang);
 
-            if (candidates.length) {
-              const exact = candidates.find(c => {
-                const cTitle = (c.title || c.name || '').toLowerCase().trim();
-                return cTitle === item.title.toLowerCase().trim();
-              });
-              r = exact || candidates[0];
-              break;
+          // 2. Page 2 fallback for short titles
+          if (!candidates.length && v.length <= 3 && (data.total_pages || 1) > 1) {
+            const dataP2 = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=2${item.year ? '&' + yearKey + '=' + item.year : ''}`);
+            candidates = (dataP2.results || []).filter(x => x.original_language === lang);
+          }
+
+          // 3. Fallback for Indian films mislabeled as 'en' on TMDB (e.g. Andharan)
+          if (!candidates.length && results.length) {
+            const exactNormalized = results.find(x => {
+              const t1 = (x.title || x.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+              const t2 = item.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+              return t1 === t2;
+            });
+            if (exactNormalized) {
+              candidates = [exactNormalized];
             }
           }
 
-          // Fallback search without year
-          const fallbackData = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=1`);
-          let langCandidates = (fallbackData.results || []).filter(isLangMatch);
-
-          if (!langCandidates.length && v.length <= 3 && (fallbackData.total_pages || 1) > 1) {
-            const fallbackP2 = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=2`);
-            langCandidates = (fallbackP2.results || []).filter(isLangMatch);
-          }
-
-          if (langCandidates.length) {
-            const exact = langCandidates.find(c => {
+          if (candidates.length) {
+            const exact = candidates.find(c => {
               const cTitle = (c.title || c.name || '').toLowerCase().trim();
               return cTitle === item.title.toLowerCase().trim();
             });
-            r = exact || langCandidates[0];
+            r = exact || candidates[0];
             break;
           }
         } catch (e) {}
@@ -571,10 +555,10 @@ async function processMovie(item, lang, expectedLang, strictLang) {
   const cacheKey = langPfx + item.id;
   const cached   = readCacheEntry(movieCache[cacheKey]);
 
-  // If item comes from Day-0 with a confirmed streaming platform, bypass stale theatrical 'skip'
   const validDay0Platform = item.trustedPlatform ? extractValidOttPlatforms(item.trustedPlatform) : '';
   const isDay0Confirmed = validDay0Platform.length > 0;
 
+  // Day-0 confirmed releases bypass old cached skip/theatrical records
   if (cached === 'skip' && !isDay0Confirmed) return null;
   if (cached && cached !== 'retry' && cached !== 'skip' && !isDay0Confirmed) {
     if (isPureTheatrical(cached.description) || !extractValidOttPlatforms(cached.description)) {
@@ -587,11 +571,11 @@ async function processMovie(item, lang, expectedLang, strictLang) {
   try {
     const detail = await tmdb('/movie/' + item.id + '?language=en-US&append_to_response=watch/providers,external_ids');
 
-    // 1. Resolve IMDb ID (TMDB first, OMDb fallback for indie releases like Habeebi)
     let imdbId = detail.imdb_id;
     if (!imdbId && detail.external_ids && detail.external_ids.imdb_id) {
       imdbId = detail.external_ids.imdb_id;
     }
+    // OMDb Fallback for missing IMDb IDs on TMDB (e.g. Habeebi)
     if (!imdbId && OMDB_KEY) {
       try {
         const movieTitle = detail.title || item.title || '';
@@ -608,7 +592,7 @@ async function processMovie(item, lang, expectedLang, strictLang) {
       return null;
     }
 
-    // 2. Language Gate: Accept regional language or Indian productions cataloged as 'en' on TMDB (e.g. Andharan)
+    // Language Gate: Accept regional language or Indian productions cataloged as 'en' on TMDB (e.g. Andharan)
     const isIndianProduction = Array.isArray(detail.origin_country) && detail.origin_country.includes('IN');
     const isLangMatch = detail.original_language === expectedLang || (detail.original_language === 'en' && isIndianProduction);
 
@@ -617,7 +601,7 @@ async function processMovie(item, lang, expectedLang, strictLang) {
       return null;
     }
 
-    // 3. Platform Determination (Day-0 authority takes precedence over lagging TMDB providers)
+    // Platform Determination
     let platform = validDay0Platform;
     if (!platform) {
       const wp = (detail['watch/providers'] && detail['watch/providers'].results) || {};
@@ -796,7 +780,6 @@ async function scrapeMovies(lang) {
     const cacheKey = lang + '_' + day0Item.id;
     const arrivalDate = day0Item.arrivalDate || today();
 
-    // Check if movie already exists in the active metas catalog
     const existingIndex = metas.findIndex(m => {
       if (movieCache[cacheKey] && movieCache[cacheKey].id === m.id) return true;
       if (day0Item.imdbId && m.id === day0Item.imdbId) return true;
@@ -810,43 +793,25 @@ async function scrapeMovies(lang) {
 
     if (existingIndex !== -1) {
       const existingMeta = metas[existingIndex];
-      const origDate = existingMeta.releaseInfo || '';
-      const ageMs = origDate ? (Date.now() - new Date(origDate).getTime()) : 0;
-      const isOldMovie = !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
-
-      // Update releaseInfo if moving from theatrical to OTT
-      if (arrivalDate && !isOldMovie && (!existingMeta.releaseInfo || existingMeta.releaseInfo < arrivalDate)) {
+      const validOtt = extractValidOttPlatforms(day0Item.trustedPlatform);
+      
+      // Update release date and streaming platform for current/upcoming release
+      if (arrivalDate && arrivalDate >= (existingMeta.releaseInfo || '')) {
         existingMeta.releaseInfo = arrivalDate;
-        const validOtt = extractValidOttPlatforms(day0Item.trustedPlatform);
-        if (validOtt && (!existingMeta.description || !existingMeta.description.includes('📺 Streaming on:'))) {
+        if (validOtt && !existingMeta.description.includes('📺 Streaming on:')) {
           existingMeta.description = ((existingMeta.description || '') + '\n\n📺 Streaming on: ' + validOtt).trim();
         }
         movieCache[cacheKey] = existingMeta;
         cacheDirty = true;
         console.log('[Date Update] 🔄 ' + existingMeta.name + ' OTT date set to ' + arrivalDate);
-      } else if (isOldMovie && arrivalDate > origDate) {
-        if (!existingMeta.description.includes('♻️ Re-release')) {
-          existingMeta.description = (existingMeta.description + '\n\n♻️ Re-release: Available on OTT').trim();
-          movieCache[cacheKey] = existingMeta;
-          cacheDirty = true;
-        }
       }
       continue;
     }
 
-    // Process new or un-indexed Day-0 movie
+    // Process new or previously skipped Day-0 item
     const meta = await processMovie(day0Item, lang, lang, true);
     if (meta && meta.id && !processedImdbIds.has(meta.id)) {
-      const tmdbTheatrical = meta.releaseInfo || arrivalDate;
-      const ageMs = Date.now() - new Date(tmdbTheatrical).getTime();
-      const isRerelease = !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
-
-      if (isRerelease) {
-        meta.description = ((meta.description || '') + '\n\n♻️ Re-release: back on OTT on ' + arrivalDate).trim();
-      } else {
-        meta.releaseInfo = arrivalDate;
-      }
-
+      meta.releaseInfo = arrivalDate;
       movieCache[cacheKey] = meta;
       cacheDirty = true;
       metas.push(meta);
@@ -918,17 +883,7 @@ async function scrapeSeries(lang) {
 
     const meta = await processSeriesJW(day0Item, lang);
     if (meta && meta.id && !processedImdbIds.has(meta.id)) {
-      const firstAir = meta.releaseInfo || arrivalDate;
-      const ageMs = Date.now() - new Date(firstAir).getTime();
-      const isNewSeason = day0Item.isNewSeason === true;
-      const isRerelease = !isNewSeason && !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
-
-      if (isRerelease) {
-        meta.description = ((meta.description || '') + '\n\n♻️ Re-release: back on OTT on ' + arrivalDate).trim();
-      } else {
-        meta.releaseInfo = arrivalDate;
-      }
-
+      meta.releaseInfo = arrivalDate;
       seriesCache[cacheKey] = meta;
       cacheDirty = true;
       metas.push(meta);
