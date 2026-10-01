@@ -232,15 +232,14 @@ const RUN_IS_DEEP = isDeepSweepHour();
 
 function getTitleVariations(title) {
   const v = new Set();
-  v.add(title); // Exact title first
+  v.add(title);
 
-  // Phonetic, transliteration & punctuation variations
   v.add(title.replace(/\band\b/gi, '&'));
   v.add(title.replace(/&/g, ' and '));
   v.add(title.replace(/\band\b/gi, 'in'));
   v.add(title.replace(/\bin\b/gi, 'and'));
-  v.add(title.replace(/ee/gi, 'i'));   // Habeebi -> Habibi
-  v.add(title.replace(/i\b/gi, 'ee'));  // Habibi -> Habeebi
+  v.add(title.replace(/ee/gi, 'i'));
+  v.add(title.replace(/i\b/gi, 'ee'));
   v.add(title.replace(/[^a-zA-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim());
   v.add(title.replace(/\s*\(\d{4}\)\s*$/, '').trim());
   v.add(title.replace(/\s*[-–]\s*season\s*\d+/i, '').trim());
@@ -254,7 +253,6 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
                      rating, posterPath, backdropPath, genres, posterUrl, backdropUrl }) {
   const cleanedPlatform = extractValidOttPlatforms(platform);
   let desc = '';
-  // Safe quote normalization completely prevents JSON parse breaks
   if (overview)        desc += overview.replace(/"/g, "'").trim() + '\n\n';
   if (cleanedPlatform) desc += '📺 Streaming on: ' + cleanedPlatform;
   if (releaseDate)     desc += '\n📅 OTT Release: ' + releaseDate;
@@ -280,7 +278,7 @@ function buildMeta({ imdbId, type, title, platform, releaseDate, overview,
 // ── 91MOBILES (SOLE DAY-0 OTT DISCOVERY AUTHORITY) ────────────────────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_LANG_ID  = { ml: 28, ta: 63 };
-const M91_LOOKBACK_DAYS = 30; // 30-day window to catch late additions
+const M91_LOOKBACK_DAYS = 30;
 const M91_PAGES = {
   ml: { movie: 'new-malayalam-movies', series: 'new-malayalam-web-series' },
   ta: { movie: 'new-tamil-movies',     series: 'new-tamil-web-series' },
@@ -444,13 +442,11 @@ async function fetch91Mobiles(lang, kind) {
 
       for (const v of getTitleVariations(item.title)) {
         try {
-          // 1. Try with the reported year first
           if (item.year) {
             const yearKey = isShow ? 'first_air_date_year' : 'primary_release_year';
             let data = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=1&${yearKey}=${item.year}`);
             let candidates = (data.results || []).filter(isLangMatch);
 
-            // Handle ultra-short titles (<= 3 chars, e.g. "Hi", "DC") that get pushed off page 1
             if (!candidates.length && v.length <= 3 && (data.total_pages || 1) > 1) {
               const dataP2 = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=2&${yearKey}=${item.year}`);
               candidates = (dataP2.results || []).filter(isLangMatch);
@@ -466,7 +462,6 @@ async function fetch91Mobiles(lang, kind) {
             }
           }
 
-          // 2. Fallback: Search without year (Dec/Jan theatrical-to-OTT transitions)
           const fallbackData = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=1`);
           let langCandidates = (fallbackData.results || []).filter(isLangMatch);
 
@@ -573,11 +568,12 @@ async function processMovie(item, lang, expectedLang, strictLang) {
   const cacheKey = langPfx + item.id;
   const cached   = readCacheEntry(movieCache[cacheKey]);
 
-  // UNBLOCKING LOGIC: If item arrives via Day-0 with a confirmed OTT platform, do NOT honor cached "skip"
-  const hasTrustedPlatform = item.trustedPlatform && extractValidOttPlatforms(item.trustedPlatform).length > 0;
+  // ROOT CAUSE FIX: Confirmed Day-0 OTT drops must NEVER be blocked by stale cache 'skip'
+  const validDay0Platform = item.trustedPlatform ? extractValidOttPlatforms(item.trustedPlatform) : '';
+  const isDay0Confirmed = validDay0Platform.length > 0;
 
-  if (cached === 'skip' && !hasTrustedPlatform) return null;
-  if (cached && cached !== 'retry' && cached !== 'skip') {
+  if (cached === 'skip' && !isDay0Confirmed) return null;
+  if (cached && cached !== 'retry' && cached !== 'skip' && !isDay0Confirmed) {
     if (isPureTheatrical(cached.description) || !extractValidOttPlatforms(cached.description)) {
       setSkip(movieCache, cacheKey);
       return null;
@@ -588,12 +584,11 @@ async function processMovie(item, lang, expectedLang, strictLang) {
   try {
     const detail = await tmdb('/movie/' + item.id + '?language=en-US&append_to_response=watch/providers,external_ids');
 
+    // 1. Resolve IMDb ID (TMDB first, OMDb fallback for indie drops like Habeebi)
     let imdbId = detail.imdb_id;
     if (!imdbId && detail.external_ids && detail.external_ids.imdb_id) {
       imdbId = detail.external_ids.imdb_id;
     }
-
-    // OMDb Fallback: If TMDB lacks an IMDb ID (e.g. indie release like Habeebi), look it up via OMDb
     if (!imdbId && OMDB_KEY) {
       try {
         const movieTitle = detail.title || item.title || '';
@@ -610,22 +605,25 @@ async function processMovie(item, lang, expectedLang, strictLang) {
       return null;
     }
 
-    if (expectedLang && detail.original_language &&
-        detail.original_language !== expectedLang &&
-        (strictLang || detail.original_language !== 'en')) {
+    // 2. ROOT CAUSE FIX: Language Gate
+    // If TMDB marks it 'en' but it is an Indian production verified by 91mobiles (e.g. Andharan), preserve it.
+    const isIndianProduction = Array.isArray(detail.origin_country) && detail.origin_country.includes('IN');
+    const isLangMatch = detail.original_language === expectedLang || (detail.original_language === 'en' && isIndianProduction);
+
+    if (expectedLang && !isLangMatch) {
       setSkip(movieCache, cacheKey);
       return null;
     }
 
-    const wp = (detail['watch/providers'] && detail['watch/providers'].results) || {};
-    const IN = wp.IN;
-    const all = IN ? [...(IN.flatrate||[]), ...(IN.free||[]), ...(IN.ads||[])] : [];
-
-    let platform = '';
-    if (all.length) {
-      platform = extractValidOttPlatforms(all.map(p => p.provider_name).join(', '));
-    } else if (item.trustedPlatform && !isPureTheatrical(item.trustedPlatform)) {
-      platform = extractValidOttPlatforms(item.trustedPlatform);
+    // 3. Platform Determination (Day-0 takes precedence over lagging TMDB providers)
+    let platform = validDay0Platform;
+    if (!platform) {
+      const wp = (detail['watch/providers'] && detail['watch/providers'].results) || {};
+      const IN = wp.IN;
+      const all = IN ? [...(IN.flatrate||[]), ...(IN.free||[]), ...(IN.ads||[])] : [];
+      if (all.length) {
+        platform = extractValidOttPlatforms(all.map(p => p.provider_name).join(', '));
+      }
     }
 
     if (!platform || isPureTheatrical(platform)) {
@@ -661,10 +659,11 @@ async function processSeriesJW(item, lang) {
   const cacheKey = lang + '_series_' + item.id;
   const cached   = readCacheEntry(seriesCache[cacheKey]);
 
-  const hasTrustedPlatform = item.trustedPlatform && extractValidOttPlatforms(item.trustedPlatform).length > 0;
+  const validDay0Platform = item.trustedPlatform ? extractValidOttPlatforms(item.trustedPlatform) : '';
+  const isDay0Confirmed = validDay0Platform.length > 0;
 
-  if (cached === 'skip' && !hasTrustedPlatform) return null;
-  if (cached && cached !== 'retry' && cached !== 'skip') return cached;
+  if (cached === 'skip' && !isDay0Confirmed) return null;
+  if (cached && cached !== 'retry' && cached !== 'skip' && !isDay0Confirmed) return cached;
 
   try {
     let tmdbId = item.id;
@@ -701,7 +700,10 @@ async function processSeriesJW(item, lang) {
 
     if (!detail) { setRetry(seriesCache, cacheKey); return null; }
 
-    if (!detail.original_language || detail.original_language !== lang) {
+    const isIndianProduction = Array.isArray(detail.origin_country) && detail.origin_country.includes('IN');
+    const isLangMatch = detail.original_language === lang || (detail.original_language === 'en' && isIndianProduction);
+
+    if (!isLangMatch) {
       setSkip(seriesCache, cacheKey);
       return null;
     }
@@ -731,13 +733,13 @@ async function processSeriesJW(item, lang) {
     const wp = (detail['watch/providers'] && detail['watch/providers'].results) || {};
     const IN = wp.IN;
     const all = IN ? [...(IN.flatrate||[]), ...(IN.free||[]), ...(IN.ads||[])] : [];
-    let platform = '';
-    if (all.length) {
-      platform = extractValidOttPlatforms(all.map(p => p.provider_name).join(', '));
-    } else if (item.trustedPlatform) {
-      platform = extractValidOttPlatforms(item.trustedPlatform);
-    } else {
-      platform = 'OTT / Streaming';
+    let platform = validDay0Platform;
+    if (!platform) {
+      if (all.length) {
+        platform = extractValidOttPlatforms(all.map(p => p.provider_name).join(', '));
+      } else {
+        platform = 'OTT / Streaming';
+      }
     }
 
     const latestAirDate = detail.last_air_date || detail.first_air_date || item.arrivalDate || today();
@@ -792,7 +794,6 @@ async function scrapeMovies(lang) {
     const cacheKey = lang + '_' + day0Item.id;
     const arrivalDate = day0Item.arrivalDate || today();
 
-    // Normalized alphanumeric exact title match avoids substring collisions
     const existingIndex = metas.findIndex(m => {
       if (movieCache[cacheKey] && movieCache[cacheKey].id === m.id) return true;
       if (day0Item.imdbId && m.id === day0Item.imdbId) return true;
@@ -810,7 +811,6 @@ async function scrapeMovies(lang) {
       const ageMs = origDate ? (Date.now() - new Date(origDate).getTime()) : 0;
       const isOldMovie = !isNaN(ageMs) && ageMs > RERELEASE_MAX_AGE_DAYS * 24 * 3600 * 1000;
 
-      // Update releaseInfo if it's an upcoming/recent title moving from theatrical to OTT
       if (arrivalDate && !isOldMovie && (!existingMeta.releaseInfo || existingMeta.releaseInfo < arrivalDate)) {
         existingMeta.releaseInfo = arrivalDate;
         const validOtt = extractValidOttPlatforms(day0Item.trustedPlatform);
