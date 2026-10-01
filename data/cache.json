@@ -1,6 +1,19 @@
 {
   "malayalam-movies": [
     {
+      "id": "tt37250830",
+      "type": "movie",
+      "name": "Magic Mushrooms",
+      "releaseInfo": "2026-09-09",
+      "description": "Haunted by childhood loss, a quiet young man from rural Idukki finds love with an introverted woman he meets by chance. When prejudice and misunderstanding threaten to separate them, a heartfelt public confession turns resistance into acceptance and leads them toward a hopeful future.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-01-23\n⭐ Rating: 3.5/10\n\n♻️ Re-release: Available on OTT",
+      "poster": "https://image.tmdb.org/t/p/w500/pKszcXMCZxAut8lkRanpVEJfZLc.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/wDDA4NE8zmadua1hzUt33XHOtLd.jpg",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
       "id": "tt38286171",
       "type": "movie",
       "name": "Unmadham",
@@ -607,19 +620,6 @@
       "genres": [
         "Horror",
         "Comedy"
-      ]
-    },
-    {
-      "id": "tt37250830",
-      "type": "movie",
-      "name": "Magic Mushrooms",
-      "releaseInfo": "2026-01-23",
-      "description": "Haunted by childhood loss, a quiet young man from rural Idukki finds love with an introverted woman he meets by chance. When prejudice and misunderstanding threaten to separate them, a heartfelt public confession turns resistance into acceptance and leads them toward a hopeful future.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-01-23\n⭐ Rating: 3.5/10\n\n♻️ Re-release: Available on OTT",
-      "poster": "https://image.tmdb.org/t/p/w500/pKszcXMCZxAut8lkRanpVEJfZLc.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/wDDA4NE8zmadua1hzUt33XHOtLd.jpg",
-      "genres": [
-        "Comedy",
-        "Drama"
       ]
     },
     {
@@ -4716,5 +4716,5 @@
       ]
     }
   ],
-  "builtAt": "2026-10-01T19:13:30.320Z"
+  "builtAt": "2026-10-01T19:18:38.299Z"
 }
