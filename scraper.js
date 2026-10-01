@@ -224,23 +224,29 @@ function isReleased(dateStr) {
 function daysAgo(n) { const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
 function today()    { return new Date().toISOString().slice(0,10); }
 
+function isDeepSweepHour() {
+  const h = new Date().getUTCHours();
+  return h >= 18 && h < 20;
+}
+const RUN_IS_DEEP = isDeepSweepHour();
+
 function getTitleVariations(title) {
   const v = new Set();
   v.add(title);
 
-  // Numbers and Parts
+  // Roman Numerals and Parts
   v.add(title.replace(/\b2\b/g, 'II'));
   v.add(title.replace(/\b2\b/g, 'Part 2'));
   v.add(title.replace(/\bII\b/g, '2'));
   v.add(title.replace(/\bPart\s*2\b/gi, '2'));
 
-  // Phonetics
+  // Phonetic & transliterations
   v.add(title.replace(/\band\b/gi, '&'));
   v.add(title.replace(/&/g, ' and '));
   v.add(title.replace(/ee/gi, 'i'));
   v.add(title.replace(/i\b/gi, 'ee'));
 
-  // Clean strings
+  // Normalizations
   v.add(title.replace(/[^a-zA-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim());
   v.add(title.replace(/\s*\(\d{4}\)\s*$/, '').trim());
   v.add(title.replace(/\s*[-–]\s*season\s*\d+/i, '').trim());
@@ -409,7 +415,6 @@ async function fetch91Mobiles(lang, kind) {
   if (!slug) return [];
 
   try {
-    // ALWAYS fetch Page 1 AND Page 2 so older titles (last 30 days) aren't pushed off the list
     const body1 = await m91FetchItems(slug, kind, lang, '1');
     let items = m91ParsePage(body1, M91_LANG_LABEL[lang], !isShow);
 
@@ -443,7 +448,7 @@ async function fetch91Mobiles(lang, kind) {
             candidates = (dataP2.results || []).filter(x => x.original_language === lang);
           }
 
-          // 3. Normalized title match for regional drops mislabeled as 'en' on TMDB (e.g. Andharan)
+          // 3. Fallback for Indian films mislabeled as 'en' on TMDB (e.g. Andharan)
           if (!candidates.length && results.length) {
             const exactNormalized = results.find(x => {
               const t1 = (x.title || x.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -790,7 +795,6 @@ async function scrapeMovies(lang) {
       const existingMeta = metas[existingIndex];
       const validOtt = extractValidOttPlatforms(day0Item.trustedPlatform);
       
-      // Update release date and streaming platform for current/upcoming release
       if (arrivalDate && arrivalDate >= (existingMeta.releaseInfo || '')) {
         existingMeta.releaseInfo = arrivalDate;
         if (validOtt && !existingMeta.description.includes('📺 Streaming on:')) {
@@ -803,7 +807,6 @@ async function scrapeMovies(lang) {
       continue;
     }
 
-    // Process new or previously skipped Day-0 item
     const meta = await processMovie(day0Item, lang, lang, true);
     if (meta && meta.id && !processedImdbIds.has(meta.id)) {
       meta.releaseInfo = arrivalDate;
