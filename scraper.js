@@ -224,27 +224,27 @@ function isReleased(dateStr) {
 function daysAgo(n) { const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
 function today()    { return new Date().toISOString().slice(0,10); }
 
-function isDeepSweepHour() {
-  const h = new Date().getUTCHours();
-  return h >= 18 && h < 20;
-}
-const RUN_IS_DEEP = isDeepSweepHour();
-
 function getTitleVariations(title) {
   const v = new Set();
   v.add(title);
 
+  // Numbers and Parts
+  v.add(title.replace(/\b2\b/g, 'II'));
+  v.add(title.replace(/\b2\b/g, 'Part 2'));
+  v.add(title.replace(/\bII\b/g, '2'));
+  v.add(title.replace(/\bPart\s*2\b/gi, '2'));
+
+  // Phonetics
   v.add(title.replace(/\band\b/gi, '&'));
   v.add(title.replace(/&/g, ' and '));
-  v.add(title.replace(/\band\b/gi, 'in'));
-  v.add(title.replace(/\bin\b/gi, 'and'));
   v.add(title.replace(/ee/gi, 'i'));
   v.add(title.replace(/i\b/gi, 'ee'));
+
+  // Clean strings
   v.add(title.replace(/[^a-zA-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim());
   v.add(title.replace(/\s*\(\d{4}\)\s*$/, '').trim());
   v.add(title.replace(/\s*[-–]\s*season\s*\d+/i, '').trim());
   v.add(title.replace(/^(the|a|an)\s+/i, '').trim());
-  v.add(title.replace(/\s+(series|show|tv|web series)$/i, '').trim());
 
   return Array.from(v).filter(x => x && x.length >= 1);
 }
@@ -409,16 +409,15 @@ async function fetch91Mobiles(lang, kind) {
   if (!slug) return [];
 
   try {
+    // ALWAYS fetch Page 1 AND Page 2 so older titles (last 30 days) aren't pushed off the list
     const body1 = await m91FetchItems(slug, kind, lang, '1');
     let items = m91ParsePage(body1, M91_LANG_LABEL[lang], !isShow);
 
-    if (RUN_IS_DEEP) {
-      try {
-        const body2 = await m91FetchItems(slug, kind, lang, '21');
-        const page2Items = m91ParsePage(body2, M91_LANG_LABEL[lang], !isShow);
-        items = items.concat(page2Items);
-      } catch (e) {}
-    }
+    try {
+      const body2 = await m91FetchItems(slug, kind, lang, '21');
+      const page2Items = m91ParsePage(body2, M91_LANG_LABEL[lang], !isShow);
+      items = items.concat(page2Items);
+    } catch (e) {}
 
     console.log(`[91Mobiles] ${lang} ${kind}: parsed ${items.length} live OTT items`);
 
@@ -435,7 +434,7 @@ async function fetch91Mobiles(lang, kind) {
           let data = await tmdb(`${endpoint}${encodeURIComponent(v)}&language=en-US&page=1${item.year ? '&' + yearKey + '=' + item.year : ''}`);
           let results = data.results || [];
 
-          // 1. First priority: Direct language match
+          // 1. Direct language match
           let candidates = results.filter(x => x.original_language === lang);
 
           // 2. Page 2 fallback for short titles
@@ -444,7 +443,7 @@ async function fetch91Mobiles(lang, kind) {
             candidates = (dataP2.results || []).filter(x => x.original_language === lang);
           }
 
-          // 3. Fallback for Indian films mislabeled as 'en' on TMDB (e.g. Andharan)
+          // 3. Normalized title match for regional drops mislabeled as 'en' on TMDB (e.g. Andharan)
           if (!candidates.length && results.length) {
             const exactNormalized = results.find(x => {
               const t1 = (x.title || x.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -558,7 +557,6 @@ async function processMovie(item, lang, expectedLang, strictLang) {
   const validDay0Platform = item.trustedPlatform ? extractValidOttPlatforms(item.trustedPlatform) : '';
   const isDay0Confirmed = validDay0Platform.length > 0;
 
-  // Day-0 confirmed releases bypass old cached skip/theatrical records
   if (cached === 'skip' && !isDay0Confirmed) return null;
   if (cached && cached !== 'retry' && cached !== 'skip' && !isDay0Confirmed) {
     if (isPureTheatrical(cached.description) || !extractValidOttPlatforms(cached.description)) {
@@ -575,7 +573,6 @@ async function processMovie(item, lang, expectedLang, strictLang) {
     if (!imdbId && detail.external_ids && detail.external_ids.imdb_id) {
       imdbId = detail.external_ids.imdb_id;
     }
-    // OMDb Fallback for missing IMDb IDs on TMDB (e.g. Habeebi)
     if (!imdbId && OMDB_KEY) {
       try {
         const movieTitle = detail.title || item.title || '';
@@ -592,7 +589,6 @@ async function processMovie(item, lang, expectedLang, strictLang) {
       return null;
     }
 
-    // Language Gate: Accept regional language or Indian productions cataloged as 'en' on TMDB (e.g. Andharan)
     const isIndianProduction = Array.isArray(detail.origin_country) && detail.origin_country.includes('IN');
     const isLangMatch = detail.original_language === expectedLang || (detail.original_language === 'en' && isIndianProduction);
 
@@ -601,7 +597,6 @@ async function processMovie(item, lang, expectedLang, strictLang) {
       return null;
     }
 
-    // Platform Determination
     let platform = validDay0Platform;
     if (!platform) {
       const wp = (detail['watch/providers'] && detail['watch/providers'].results) || {};
