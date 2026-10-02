@@ -1091,4 +1091,31 @@ async function scrapeSeries(lang) {
   return finalResult;
 }
 
-// ── PUBLIC API (unchanged interface — build-cache
+// ── PUBLIC API (unchanged interface — build-cache.js needs no edits) ──────────
+async function scrapeMalayalam(type) {
+  loadCache();
+  try {
+    const result = type === 'series' ? await scrapeSeries('ml') : await scrapeMovies('ml');
+    saveCache();
+    return result;
+  } catch (e) {
+    console.error('[scrapeMalayalam] ' + e.message);
+    saveCache(); return [];
+  }
+}
+
+async function scrapeTamil(type) {
+  loadCache();
+  try {
+    const result = type === 'series' ? await scrapeSeries('ta') : await scrapeMovies('ta');
+    saveCache();
+    return result;
+  } catch (e) {
+    console.error('[scrapeTamil] ' + e.message);
+    saveCache(); return [];
+  }
+}
+
+module.exports = { scrapeMalayalam, scrapeTamil, getHealthStatus };
+
+// ── END OF FILE — South Streams scraper v11 ──
