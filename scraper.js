@@ -1,20 +1,18 @@
 /**
- * scraper.js — South Streams (v10)
+ * scraper.js — South Streams (v11)
  *
- * Day-0 authority : 91mobiles "filter" XHR (the endpoint the live webpage itself
- *                   uses — type=filter, available:Stream,Rent,Buy, start=0),
- *                   plus public pages and legacy loadmore AJAX as backups
- * Fallback        : TMDB Discover (recent releases for movies; premieres + airing for series)
+ * Day-0 authority : 91mobiles "filter" XHR (the endpoint the live webpage uses),
+ *                   ONE combined ml+ta request per kind; direct-first with a
+ *                   freshness gate — escalates to Indian-IP proxy (ZenRows →
+ *                   ScraperAPI) ONLY when the direct result is stale
+ * Backups         : public webpage + legacy loadmore AJAX (free, direct only)
+ * Fallback        : TMDB Discover (recent releases; premieres + airing for series)
  * Enrichment      : TMDB + OMDb
  *
- * v10: primary source switched to the page's own filter XHR (proven fresh via
- * user's DevTools capture); legacy loadmore AJAX demoted to backup; webpage
- * fetch tries direct → Googlebot UA → ScraperAPI(Indian IP) when available.
- * v9: certification suffixes stripped from titles; "(OTT)" card tag accepted
- * as platform signal; all-languages pages parsed.
- * v7: ambiguity rejection (exact title or year match only).
- * v6: noPlatform items pass to TMDB arbitration; series discovery without
- * provider requirement; all OTT platforms accepted.
+ * v11: ZenRows support (ZENROWS_API_KEY), combined-language filter request,
+ * freshness-gated escalation to proxy, backups demoted to free direct fetches.
+ * v10: filter XHR as primary source; v9: cert-suffix stripping, (OTT) tag as
+ * platform; v7: ambiguity rejection; v6: all OTT platforms accepted.
  */
 
 const https = require('https');
@@ -22,9 +20,10 @@ const zlib  = require('zlib');
 const fs    = require('fs');
 const path  = require('path');
 
-const TMDB_KEY       = process.env.TMDB_API_KEY  || '';
-const OMDB_KEY       = process.env.OMDB_API_KEY  || '';
-const SCRAPERAPI_KEY = process.env.SCRAPERAPI_KEY || '';
+const TMDB_KEY       = process.env.TMDB_API_KEY     || '';
+const OMDB_KEY       = process.env.OMDB_API_KEY     || '';
+const ZENROWS_KEY    = process.env.ZENROWS_API_KEY  || '';
+const SCRAPERAPI_KEY = process.env.SCRAPERAPI_KEY   || '';
 const BASE           = 'https://api.themoviedb.org/3';
 const IMG            = 'https://image.tmdb.org/t/p/';
 
@@ -39,6 +38,7 @@ const RETRY_TTL           =  3 * 24 * 60 * 60 * 1000;
 
 if (!TMDB_KEY) console.error('[Config] ❌ TMDB_API_KEY is NOT set — nothing will work');
 if (!OMDB_KEY) console.warn('[Config] ⚠️ OMDB_API_KEY not set — some IMDb IDs will be unresolvable');
+if (!ZENROWS_KEY && !SCRAPERAPI_KEY) console.warn('[Config] ⚠️ No proxy key set (ZENROWS_API_KEY / SCRAPERAPI_KEY) — if 91mobiles serves stale data to the runner, fresh titles cannot be fetched');
 
 // ── PLATFORMS: accept ALL OTT platforms; reject only ticketing sites ─────────
 const THEATRICAL_REGEX = /\b(bookmyshow|paytm|pvr|inox|cin[eé]polis|ticketnew|justickets)\b/i;
@@ -226,8 +226,6 @@ function isDeepSweepHour() {
 }
 const RUN_IS_DEEP = isDeepSweepHour();
 
-// Titles carry certification suffixes like "(UA-13+)" / "(U/A)" — strip before
-// TMDB matching or exact-match resolution fails
 function m91CleanTitle(t) {
   let s = String(t || '').trim();
   const before = s;
@@ -287,7 +285,6 @@ function buildMeta(opts) {
 // ── 91MOBILES (DAY-0 AUTHORITY) ───────────────────────────────────────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
 const M91_BASE     = 'https://www.91mobiles.com/entertainment/';
-const M91_LANG_ID  = { ml: 28, ta: 63 };
 const M91_MOVIE_LOOKBACK_DAYS = 30;
 const M91_SHOW_LOOKBACK_DAYS  = 60;
 const M91_PAGES = {
@@ -297,6 +294,8 @@ const M91_PAGES = {
 const M91_GENERIC_WEB_SLUGS = { movie: 'new-movies', series: 'new-web-series' };
 const M91_LANG_LABEL  = { ml: 'malayalam', ta: 'tamil' };
 const M91_LANG_NATIVE = { ml: 'മലയാളം', ta: 'தமிழ்' };
+// combined request covers both languages in ONE call (mirrors the site itself)
+const M91_LANG_IDS_COMBINED = '63,28';
 
 function m91StripTags(html) {
   return String(html)
@@ -345,31 +344,12 @@ function m91UnwrapBody(raw) {
              .replace(/\\u003C/gi, '<').replace(/\\u003E/gi, '>').replace(/\\n/g, '\n');
 }
 
-function m91BuildAjaxUrl(slug, kind, lang, startOffset, cacheBust) {
-  const isShow = kind === 'SHOW';
-  const params = new URLSearchParams({
-    qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
-    sortOrder: 'desc',
-    sortBy: 'ottReleaseDate',
-    start: String(startOffset || '1'),
-    seoSlug: '/' + slug,
-    pType: slug,
-    dubbedVal: 'notDubbed',
-    type: 'loadmore'
-  });
-  if (cacheBust) params.set('_', String(Date.now()));
-  return M91_AJAX_URL + '?' + params.toString();
-}
-
-// v10: the endpoint the LIVE webpage itself calls (captured from DevTools):
-// type=filter, available:Stream,Rent,Buy, start=0, seoSlug=/entertainment/<page>
-// This is the fresh path; the legacy "loadmore" path is a stale layer.
-function m91BuildFilterUrl(lang, kind, startOffset) {
+function m91BuildFilterUrl(kind, startOffset) {
   const isShow = kind === 'SHOW';
   const genericSlug = isShow ? M91_GENERIC_WEB_SLUGS.series : M91_GENERIC_WEB_SLUGS.movie;
   const available = isShow ? 'Stream,Rent' : 'Stream,Rent,Buy';
   const params = new URLSearchParams({
-    qp: 'available:' + available + '~contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
+    qp: 'available:' + available + '~contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_IDS_COMBINED,
     sortOrder: 'desc',
     sortBy: 'ottReleaseDate',
     start: String(startOffset),
@@ -382,11 +362,57 @@ function m91BuildFilterUrl(lang, kind, startOffset) {
   return M91_AJAX_URL + '?' + params.toString();
 }
 
+function m91BuildLegacyAjaxUrl(slug, kind, lang, startOffset) {
+  const isShow = kind === 'SHOW';
+  const params = new URLSearchParams({
+    qp: 'contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + { ml: 28, ta: 63 }[lang],
+    sortOrder: 'desc',
+    sortBy: 'ottReleaseDate',
+    start: String(startOffset || '1'),
+    seoSlug: '/' + slug,
+    pType: slug,
+    dubbedVal: 'notDubbed',
+    type: 'loadmore'
+  });
+  params.set('_', String(Date.now()));
+  return M91_AJAX_URL + '?' + params.toString();
+}
+
+// freshness signature: the US edge cache serves pages ~2 weeks old
+function m91NewestDateIn(body) {
+  let newest = null;
+  const re = /(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/g;
+  let m;
+  while ((m = re.exec(body)) !== null) {
+    const d = parseAnyDate(m[0]);
+    if (d && (!newest || d > newest)) newest = d;
+  }
+  return newest;
+}
+function m91Iso(d) { return d ? d.toISOString().slice(0, 10) : 'none'; }
+
+let zenRowsBroken = false;
 let scraperApiBroken = false;
 
-async function m91FetchFilter(lang, kind, startOffset) {
-  const target = m91BuildFilterUrl(lang, kind, startOffset);
-
+// Indian-IP escalation: ZenRows first, ScraperAPI second. Returns '' if both fail.
+async function m91FetchViaProxy(target) {
+  if (ZENROWS_KEY && !zenRowsBroken) {
+    try {
+      const wrapped = 'https://api.zenrows.com/v1/?apikey=' + ZENROWS_KEY +
+                      '&premium_proxy=true&proxy_country=in&url=' + encodeURIComponent(target);
+      const body = m91UnwrapBody(await fetchUrl(wrapped, {}));
+      if (/<div\s+class="?pro_item/.test(body)) return body;
+      console.warn('[91Mobiles] zenrows: no usable items (len=' + body.length + ')');
+    } catch (e) {
+      const msg = String(e.message);
+      if (msg.includes('403') || msg.includes('429')) {
+        zenRowsBroken = true;
+        console.warn('[91Mobiles] ❌ ZenRows rejected (' + msg + ') — out of credits or bad key. Falling back.');
+      } else {
+        console.warn('[91Mobiles] zenrows failed: ' + msg);
+      }
+    }
+  }
   if (SCRAPERAPI_KEY && !scraperApiBroken) {
     try {
       const wrapped = 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
@@ -396,53 +422,61 @@ async function m91FetchFilter(lang, kind, startOffset) {
     } catch (e) {
       if (String(e.message).includes('403')) {
         scraperApiBroken = true;
-        console.warn('[91Mobiles] ❌ ScraperAPI key REJECTED (HTTP 403) — continuing with direct fetch.');
+        console.warn('[91Mobiles] ❌ ScraperAPI rejected (HTTP 403) — out of credits.');
       }
     }
   }
-
-  try {
-    const body = m91UnwrapBody(await fetchUrl(target, m91FetchHeaders()));
-    if (/<div\s+class="?pro_item/.test(body)) return body;
-    console.warn('[91Mobiles] filter fetch: no items (lang=' + lang + ' kind=' + kind + ' start=' + startOffset + ', len=' + body.length + ')');
-    return body;
-  } catch (e) {
-    console.warn('[91Mobiles] filter fetch failed (lang=' + lang + ' start=' + startOffset + '): ' + e.message);
-    return '';
-  }
+  return '';
 }
 
-async function m91FetchAjax(slug, kind, lang, startOffset) {
-  if (SCRAPERAPI_KEY && !scraperApiBroken) {
-    try {
-      const wrapped = 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
-                      '&country_code=in&url=' + encodeURIComponent(m91BuildAjaxUrl(slug, kind, lang, startOffset, true));
-      const body = m91UnwrapBody(await fetchUrl(wrapped, m91FetchHeaders()));
-      if (/<div\s+class="?pro_item/.test(body)) return body;
-    } catch (e) {
-      if (String(e.message).includes('403')) {
-        scraperApiBroken = true;
+// Combined-language filter source — ONE request covers ml+ta for the kind.
+// Direct is FREE: accept it only if it looks fresh; otherwise spend proxy credits.
+const filterSourceCache = {};
+
+async function getFilterSource(kind) {
+  if (filterSourceCache[kind]) return filterSourceCache[kind];
+  const isShow = kind === 'SHOW';
+
+  let html = '';
+  try {
+    const direct = m91UnwrapBody(await fetchUrl(m91BuildFilterUrl(kind, 0), m91FetchHeaders()));
+    if (/<div\s+class="?pro_item/.test(direct)) {
+      const newest = m91NewestDateIn(direct);
+      const ageDays = newest ? (Date.now() - newest.getTime()) / 86400000 : 999;
+      console.log('[91Mobiles] filter direct: newest card date ' + m91Iso(newest) + ' (' + Math.round(ageDays) + 'd old)');
+      // Movies: escalate if stale (>3d = US-cache signature).
+      // Shows: accept any non-empty direct result (their data legitimately ages).
+      if (isShow || ageDays <= 3) {
+        html = direct;
+      } else {
+        console.warn('[91Mobiles] filter direct looks STALE — escalating to Indian-IP proxy');
       }
+    } else {
+      console.warn('[91Mobiles] filter direct: no usable items (len=' + direct.length + ')');
+    }
+  } catch (e) {
+    console.warn('[91Mobiles] filter direct failed: ' + e.message);
+  }
+
+  if (!html) {
+    const proxied = await m91FetchViaProxy(m91BuildFilterUrl(kind, 0));
+    if (proxied) {
+      html = proxied;
+      console.log('[91Mobiles] filter via Indian-IP proxy: OK ✓ (newest ' + m91Iso(m91NewestDateIn(proxied)) + ')');
     }
   }
 
-  try {
-    const body = m91UnwrapBody(await fetchUrl(m91BuildAjaxUrl(slug, kind, lang, startOffset, true), m91FetchHeaders()));
-    if (/<div\s+class="?pro_item/.test(body)) return body;
-  } catch (e) {}
-  try {
-    const body = m91UnwrapBody(await fetchUrl(m91BuildAjaxUrl(slug, kind, lang, startOffset, false), m91FetchHeaders()));
-    return body;
-  } catch (e) {
-    console.warn('[91Mobiles] ajax fetch failed (' + slug + ' start=' + startOffset + '): ' + e.message);
-    return '';
+  const out = {};
+  for (const lang of ['ml', 'ta']) {
+    out[lang] = m91ParsePage(html, M91_LANG_LABEL[lang], isShow, lang + ' ' + kind + ' filter');
   }
+  filterSourceCache[kind] = out;
+  return out;
 }
 
-// Public pages — try direct, then Googlebot UA, then ScraperAPI Indian IP
+// Free direct webpage fetch (backup only — never spends proxy credits)
 async function m91FetchWebpage(slug) {
   const url = M91_BASE + slug;
-
   const attempts = [
     { label: 'direct', target: url + '?_=' + Date.now(), hdr: m91PageHeaders() },
     { label: 'googlebot', target: url + '?gr=' + Math.floor(Math.random() * 1e9), hdr: {
@@ -452,30 +486,23 @@ async function m91FetchWebpage(slug) {
         'Cache-Control': 'no-cache',
     } },
   ];
-
-  if (SCRAPERAPI_KEY && !scraperApiBroken) {
-    attempts.push({
-      label: 'scraperapi-in',
-      target: 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
-              '&country_code=in&url=' + encodeURIComponent(url + '?_=' + Date.now()),
-      hdr: m91PageHeaders(),
-    });
-  }
-
   for (const a of attempts) {
     try {
       const body = await fetchUrl(a.target, a.hdr);
-      if (/<div\s+class="?pro_item/.test(body)) {
-        if (a.label !== 'direct') console.log('[91Mobiles] webpage via ' + a.label + ': OK (' + slug + ')');
-        return body;
-      }
-      console.warn('[91Mobiles] webpage ' + a.label + ': no items (' + slug + ', len=' + body.length + ')');
-    } catch (e) {
-      console.warn('[91Mobiles] webpage ' + a.label + ' failed (' + slug + '): ' + e.message);
-    }
+      if (/<div\s+class="?pro_item/.test(body)) return body;
+    } catch (e) {}
   }
-  console.warn('[91Mobiles] webpage: all fetch strategies failed (' + slug + ')');
   return '';
+}
+
+// Free direct legacy-AJAX fetch (backup only)
+async function m91FetchLegacyAjax(slug, kind, lang, startOffset) {
+  try {
+    const body = m91UnwrapBody(await fetchUrl(m91BuildLegacyAjaxUrl(slug, kind, lang, startOffset), m91FetchHeaders()));
+    return body;
+  } catch (e) {
+    return '';
+  }
 }
 
 function m91ParsePage(html, langLabel, isShow, label) {
@@ -486,7 +513,7 @@ function m91ParsePage(html, langLabel, isShow, label) {
   const lookback = isShow ? M91_SHOW_LOOKBACK_DAYS : M91_MOVIE_LOOKBACK_DAYS;
 
   if (!html || !html.trim()) {
-    console.log('[91Mobiles] ' + label + ': EMPTY response — fetch failed');
+    console.log('[91Mobiles] ' + label + ': EMPTY response');
     return items;
   }
 
@@ -505,8 +532,7 @@ function m91ParsePage(html, langLabel, isShow, label) {
     const meta = m91StripTags(metaMatch[1]);
     const metaLower = meta.toLowerCase();
 
-    // STRICT language check: pages mix languages, so the target language
-    // (English word or native script) MUST appear on the card.
+    // STRICT language check (pages/combined feeds mix languages)
     if (!metaLower.includes(langLabel) && !meta.includes(M91_LANG_NATIVE[langLabel])) {
       stats.lang++;
       if (samples.lang.length < 2) samples.lang.push(title + ' [' + meta.slice(0, 80) + ']');
@@ -529,8 +555,6 @@ function m91ParsePage(html, langLabel, isShow, label) {
       continue;
     }
 
-    // Platforms: Where-To-Stream logos are the primary signal; "(OTT)" tag
-    // accepted as OTT confirmation; empty → TMDB India providers arbitrate.
     const rawPlatforms = [];
     const wtsIdx = block.indexOf('Where To Stream');
     if (wtsIdx !== -1) {
@@ -579,24 +603,23 @@ async function fetch91Mobiles(lang, kind) {
   if (!slug) return [];
 
   try {
-    // v10 source priority: filter XHR (fresh, the page's own endpoint) →
-    // public webpages → legacy loadmore AJAX (stale layer, backup only)
-    const filterP1    = await m91FetchFilter(lang, kind, 0);
-    const filterP2    = await m91FetchFilter(lang, kind, 24);
-    const webLang     = await m91FetchWebpage(slug);
-    const webGeneric  = await m91FetchWebpage(M91_GENERIC_WEB_SLUGS[isShow ? 'series' : 'movie']);
-    const ajaxP1      = await m91FetchAjax(slug, kind, lang, '1');
+    const filterItems = (await getFilterSource(kind))[lang] || [];
+    const webLang = await m91FetchWebpage(slug);
+    const ajaxP1  = await m91FetchLegacyAjax(slug, kind, lang, '1');
 
     const sources = [
-      { label: lang + ' ' + kind + ' filter p1',  html: filterP1 },
-      { label: lang + ' ' + kind + ' filter p2',  html: filterP2 },
-      { label: lang + ' ' + kind + ' webpage',    html: webLang },
-      { label: lang + ' ' + kind + ' webpage-all', html: webGeneric },
-      { label: lang + ' ' + kind + ' ajax p1',    html: ajaxP1 },
+      { label: lang + ' ' + kind + ' webpage', html: webLang },
+      { label: lang + ' ' + kind + ' ajax p1', html: ajaxP1 },
     ];
 
     const items = [];
     const dedup = new Set();
+    for (const it of filterItems) {
+      const k = normTitle(it.title) + '|' + it.arrivalDate;
+      if (dedup.has(k)) continue;
+      dedup.add(k);
+      items.push(it);
+    }
     for (const src of sources) {
       const pageItems = m91ParsePage(src.html, M91_LANG_LABEL[lang], isShow, src.label);
       for (const it of pageItems) {
@@ -607,7 +630,7 @@ async function fetch91Mobiles(lang, kind) {
       }
     }
 
-    console.log('[91Mobiles] ' + lang + ' ' + kind + ': ' + items.length + ' live OTT items total (5 sources)');
+    console.log('[91Mobiles] ' + lang + ' ' + kind + ': ' + items.length + ' live OTT items total (filter+webpage+ajax)');
 
     const resolved = [];
     const seenIds = new Set();
@@ -1068,31 +1091,4 @@ async function scrapeSeries(lang) {
   return finalResult;
 }
 
-// ── PUBLIC API (unchanged interface — build-cache.js needs no edits) ──────────
-async function scrapeMalayalam(type) {
-  loadCache();
-  try {
-    const result = type === 'series' ? await scrapeSeries('ml') : await scrapeMovies('ml');
-    saveCache();
-    return result;
-  } catch (e) {
-    console.error('[scrapeMalayalam] ' + e.message);
-    saveCache(); return [];
-  }
-}
-
-async function scrapeTamil(type) {
-  loadCache();
-  try {
-    const result = type === 'series' ? await scrapeSeries('ta') : await scrapeMovies('ta');
-    saveCache();
-    return result;
-  } catch (e) {
-    console.error('[scrapeTamil] ' + e.message);
-    saveCache(); return [];
-  }
-}
-
-module.exports = { scrapeMalayalam, scrapeTamil, getHealthStatus };
-
-// ── END OF FILE — South Streams scraper v10 ──
+// ── PUBLIC API (unchanged interface — build-cache
