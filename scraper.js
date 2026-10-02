@@ -1,14 +1,17 @@
 /**
- * scraper.js — South Streams (v5)
+ * scraper.js — South Streams (v7)
  *
  * Day-0 authority : 91mobiles editorial AJAX (movies reliable; show pages known stale)
- * Fallback        : TMDB Discover (recent releases + recent episodes for series)
+ * Fallback        : TMDB Discover (recent releases for movies; premieres + airing for series)
  * Enrichment      : TMDB + OMDb
  *
- * v5: strict language check restored (91mobiles pages mix languages);
- * no year pinning in TMDB search; new-season items bypass the age rule;
- * all OTT platforms accepted (only ticketing sites rejected); fresh
- * 91mobiles data always wins; verbose drop diagnostics.
+ * v7: ambiguity rejection in title resolution — a TMDB candidate is accepted
+ * only on exact title match or year match (no more blind first-result guesses);
+ * same for the series title-search fallback.
+ * v6: 91mobiles items without provider logos pass through to TMDB arbitration;
+ * series discovery no longer requires TMDB provider data; all OTT platforms
+ * accepted (only ticketing sites rejected); strict language check; no year
+ * pinning; new-season date bypass; verbose drop diagnostics.
  */
 
 const https = require('https');
@@ -339,7 +342,7 @@ async function m91FetchItems(slug, kind, lang, startOffset) {
     } catch (e) {
       if (String(e.message).includes('403')) {
         scraperApiBroken = true;
-        console.warn('[91Mobiles] ❌ ScraperAPI key REJECTED (HTTP 403) — invalid or out of credits. Continuing with direct fetch. Check your ScraperAPI account.');
+        console.warn('[91Mobiles] ❌ ScraperAPI key REJECTED (HTTP 403) — invalid or out of credits. Continuing with direct fetch.');
       } else {
         console.warn('[91Mobiles] scraperapi failed (' + slug + '): ' + e.message);
       }
@@ -410,8 +413,9 @@ function m91ParsePage(html, langLabel, isShow, label) {
       continue;
     }
 
-    // Platforms: the Where-To-Stream logos are the real signal.
-    // Ticketing-only entries get stripped → dropped (correct: theatrical-only).
+    // Platforms: the Where-To-Stream logos are the primary signal.
+    // Items WITHOUT logos pass through with an empty platform — TMDB India
+    // watch-providers arbitrate in processMovie/processSeriesJW.
     const rawPlatforms = [];
     const wtsIdx = block.indexOf('Where To Stream');
     if (wtsIdx !== -1) {
@@ -423,13 +427,10 @@ function m91ParsePage(html, langLabel, isShow, label) {
       while ((pm = pRe2.exec(tail)) !== null) rawPlatforms.push(pm[1].trim());
     }
 
-    let finalPlatform = cleanPlatformNames(rawPlatforms.join(', '));
-    if (!finalPlatform && isShow && isNewSeason) finalPlatform = 'OTT / Streaming';
-
+    const finalPlatform = cleanPlatformNames(rawPlatforms.join(', '));
     if (!finalPlatform) {
       stats.noPlatform++;
       if (samples.noPlatform.length < 2) samples.noPlatform.push(title + ' [' + meta.slice(0, 80) + ']');
-      continue;
     }
 
     stats.kept++;
@@ -446,9 +447,10 @@ function m91ParsePage(html, langLabel, isShow, label) {
 
   console.log('[91Mobiles] ' + label + ' parse: blocks=' + stats.blocks + ' kept=' + stats.kept +
     ' (dropped — lang:' + stats.lang + ' noDate:' + stats.noDate + ' future:' + stats.future +
-    ' tooOld:' + stats.old + ' noPlatform:' + stats.noPlatform + ' noTitle:' + stats.noTitle + ' noMeta:' + stats.noMeta + ')');
+    ' tooOld:' + stats.old + ' | noPlatform:' + stats.noPlatform + '→TMDB-check' +
+    ' noTitle:' + stats.noTitle + ' noMeta:' + stats.noMeta + ')');
   for (const k of ['lang', 'old', 'noPlatform']) {
-    if (samples[k].length) console.log('[91Mobiles] ' + label + ' dropped(' + k + '): ' + samples[k].join('  ||  '));
+    if (samples[k].length) console.log('[91Mobiles] ' + label + ' ' + k + ': ' + samples[k].join('  ||  '));
   }
   if (keptSamples.length) console.log('[91Mobiles] ' + label + ' kept samples: ' + keptSamples.join('  ||  '));
   return items;
@@ -479,15 +481,17 @@ async function fetch91Mobiles(lang, kind) {
 
     const resolved = [];
     const seenIds = new Set();
-    let dropped = 0;
+    let dropped = 0;      // no TMDB result at all
+    let ambiguous = 0;    // TMDB results existed but none matched exactly/by year
 
     for (const item of items) {
       const endpoint = isShow ? '/search/tv?query=' : '/search/movie?query=';
       let r = null;
+      let hadCandidates = false;
 
       for (const v of getTitleVariations(item.title)) {
         try {
-          // No year filter — pinning to the OTT year rejected new seasons of old shows
+          // No year filter in the query — year is used only as a confirmation
           const data = await tmdb(endpoint + encodeURIComponent(v) + '&language=en-US&page=1');
           const results = data.results || [];
           if (!results.length) continue;
@@ -497,15 +501,19 @@ async function fetch91Mobiles(lang, kind) {
             const exact = results.find(x => normTitle(x.title || x.name) === normTitle(item.title));
             if (exact) candidates = [exact];
           }
+          if (!candidates.length) continue;
+          hadCandidates = true;
 
-          if (candidates.length) {
-            r = candidates.find(c => normTitle(c.title || c.name) === normTitle(item.title));
-            if (!r && item.year) {
-              r = candidates.find(c => String(c.release_date || c.first_air_date || '').slice(0, 4) === item.year);
-            }
-            if (!r) r = candidates[0];
-            break;
+          // v7 ambiguity protection: accept ONLY exact title or year match
+          const exactHit = candidates.find(c => normTitle(c.title || c.name) === normTitle(item.title));
+          if (exactHit) { r = exactHit; break; }
+
+          if (item.year) {
+            const yearHit = candidates.find(c => String(c.release_date || c.first_air_date || '').slice(0, 4) === item.year);
+            if (yearHit) { r = yearHit; break; }
           }
+          // Ambiguous: same-language candidates but neither exact title nor
+          // year matched — try the next variation; never guess blindly
         } catch (e) {}
       }
 
@@ -521,11 +529,14 @@ async function fetch91Mobiles(lang, kind) {
           trustedPlatform: item.platform,
         });
       }
-      if (!r) dropped++;
+      if (!r) { if (hadCandidates) ambiguous++; else dropped++; }
       await new Promise(res => setTimeout(res, 80));
     }
 
-    if (dropped) console.warn('[91Mobiles] ' + lang + ' ' + kind + ': ' + dropped + ' items dropped (no TMDB match)');
+    if (dropped || ambiguous) {
+      console.warn('[91Mobiles] ' + lang + ' ' + kind + ': ' + dropped + ' dropped (no TMDB result), ' +
+        ambiguous + ' skipped (ambiguous title — wrong-match protection)');
+    }
     return resolved;
   } catch (e) {
     console.warn('[91Mobiles] ' + lang + ' ' + kind + ' fetch failed: ' + e.message);
@@ -573,22 +584,24 @@ async function discoverMovies(lang, lookbackDays, maxPages) {
   return results;
 }
 
-async function discoverSeries(lang, maxPages) {
+async function discoverSeries(lang, maxPages, lookbackDays) {
   maxPages = maxPages || 5;
+  lookbackDays = lookbackDays || 30;
   const results = [];
   const seenIds = new Set();
-  const airLookback = RUN_IS_DEEP ? 60 : 30;
 
+  // NO streaming-provider requirement — TMDB's India provider data is spotty
+  // for regional shows and was hiding new releases entirely.
   const queries = [
-    // A: recent premieres
+    // A: brand-new premieres in the window
     '/discover/tv?with_original_language=' + lang +
-      '&watch_region=IN&with_watch_monetization_types=flatrate|free|ads' +
-      '&sort_by=first_air_date.desc',
-    // B: shows with episodes aired recently — catches NEW SEASONS of old shows
+      '&sort_by=first_air_date.desc' +
+      '&first_air_date.gte=' + daysAgo(lookbackDays) +
+      '&first_air_date.lte=' + today(),
+    // B: currently-airing shows — catches NEW SEASONS of older shows
     '/discover/tv?with_original_language=' + lang +
-      '&watch_region=IN&with_watch_monetization_types=flatrate|free|ads' +
       '&sort_by=popularity.desc' +
-      '&air_date.gte=' + daysAgo(airLookback) +
+      '&air_date.gte=' + daysAgo(lookbackDays) +
       '&air_date.lte=' + today()
   ];
 
@@ -709,12 +722,14 @@ async function processSeriesJW(item, lang) {
 
     if (!detail && item.title) {
       try {
-        // No year filter — new seasons of old shows must match
+        // No year filter — new seasons of old shows must match.
+        // v7: exact-title match only — never guess from loose search results
+        // (wrong-language duplicates are re-checked by the language gate below)
         const data = await tmdb('/search/tv?query=' + encodeURIComponent(item.title) + '&language=en-US&page=1');
         const results = data.results || [];
-        const tv = results.find(x => x.original_language === lang) ||
-                   results.find(x => normTitle(x.name) === normTitle(item.title)) ||
-                   results[0];
+        const normQ = normTitle(item.title);
+        const tv = results.find(x => normTitle(x.name) === normQ && x.original_language === lang) ||
+                   results.find(x => normTitle(x.name) === normQ);
         if (tv) {
           tmdbId = tv.id;
           detail = await tmdb('/tv/' + tmdbId + '?language=en-US&append_to_response=watch/providers,external_ids');
@@ -907,8 +922,9 @@ async function scrapeSeries(lang) {
 
   const isLeanSeries = metas.length < 20;
   const seriesPages = isLeanSeries ? 10 : 4;
-  const tmdbSeries = await discoverSeries(lang, seriesPages);
-  console.log('[Discover] ' + lang + ' series candidates: ' + tmdbSeries.length);
+  const seriesWindow = isLeanSeries ? 180 : (RUN_IS_DEEP ? 60 : 30);
+  const tmdbSeries = await discoverSeries(lang, seriesPages, seriesWindow);
+  console.log('[Discover] ' + lang + ' series candidates: ' + tmdbSeries.length + ' (window ' + seriesWindow + 'd)');
 
   let discoverAdds = 0;
   for (const item of tmdbSeries) {
@@ -917,7 +933,7 @@ async function scrapeSeries(lang) {
       metas.push(meta);
       processedImdbIds.add(meta.id);
       discoverAdds++;
-      if (item.detectedStreaming) console.log('[Discover Add] 📺 ' + meta.name + ' new episodes (' + meta.id + ')');
+      console.log('[Discover Add] 📺 ' + meta.name + ' (' + meta.releaseInfo + ')');
     }
   }
   if (discoverAdds) console.log('[Discover] ' + lang + ' series: ' + discoverAdds + ' new additions');
@@ -955,4 +971,4 @@ async function scrapeTamil(type) {
 
 module.exports = { scrapeMalayalam, scrapeTamil, getHealthStatus };
 
-// ── END OF FILE — South Streams scraper v5 ──
+// ── END OF FILE — South Streams scraper v7 ──
