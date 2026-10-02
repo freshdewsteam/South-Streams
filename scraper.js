@@ -403,4 +403,565 @@ function m91ParsePage(html, langLabel, isShow, label) {
     if (!isReleased(date)) { stats.future++; continue; }
 
     const ageDays = (Date.now() - date.getTime()) / 86400000;
-    // Shows often
+    // Shows often display the SEASON-1 premiere date — a "new season/episode"
+    // item bypasses the age rule (it is on the "new" page for a reason)
+    if (ageDays > lookback && !isNewSeason) {
+      stats.old++;
+      if (samples.old.length < 2) samples.old.push(title + ' [' + meta.slice(0, 80) + ']');
+      continue;
+    }
+
+    // Platforms FIRST — the Where-To-Stream logos are the real signal.
+    // Ticketing-only entries get stripped → dropped (correct: theatrical).
+    const rawPlatforms = [];
+    const wtsIdx = block.indexOf('Where To Stream');
+    if (wtsIdx !== -1) {
+      const tail = block.slice(wtsIdx, wtsIdx + 4000);
+      let pm;
+      const pRe1 = /<div[^>]*class="[^"]*target_link_ext[^"]*"[^>]*>([^<]+)</g;
+      while ((pm = pRe1.exec(tail)) !== null) rawPlatforms.push(pm[1].trim());
+      const pRe2 = /target_link_ext[^>]*>\s*<img[^>]+alt="([^"]+)"/g;
+      while ((pm = pRe2.exec(tail)) !== null) rawPlatforms.push(pm[1].trim());
+    }
+
+    let finalPlatform = cleanPlatformNames(rawPlatforms.join(', '));
+    if (!finalPlatform && isShow && isNewSeason) finalPlatform = 'OTT / Streaming';
+
+    if (!finalPlatform) {
+      stats.noPlatform++;
+      if (samples.noPlatform.length < 2) samples.noPlatform.push(title + ' [' + meta.slice(0, 80) + ']');
+      continue;
+    }
+
+    stats.kept++;
+    if (keptSamples.length < 2) keptSamples.push(title + ' [' + meta.slice(0, 80) + ']');
+    items.push({
+      title,
+      date,
+      arrivalDate: (isNewSeason && ageDays > lookback) ? today() : date.toISOString().slice(0, 10),
+      year: dateMatch[3],
+      platform: finalPlatform,
+      isNewSeason,
+    });
+  }
+
+  console.log('[91Mobiles] ' + label + ' parse: blocks=' + stats.blocks + ' kept=' + stats.kept +
+    ' (dropped — lang:' + stats.lang + ' noDate:' + stats.noDate + ' future:' + stats.future +
+    ' tooOld:' + stats.old + ' noPlatform:' + stats.noPlatform + ' noTitle:' + stats.noTitle + ' noMeta:' + stats.noMeta + ')');
+  for (const k of ['lang', 'old', 'noPlatform']) {
+    if (samples[k].length) console.log('[91Mobiles] ' + label + ' dropped(' + k + '): ' + samples[k].join('  ||  '));
+  }
+  if (keptSamples.length) console.log('[91Mobiles] ' + label + ' kept samples: ' + keptSamples.join('  ||  '));
+  return items;
+}
+
+async function fetch91Mobiles(lang, kind) {
+  const isShow = kind === 'SHOW';
+  const slug = M91_PAGES[lang] && M91_PAGES[lang][isShow ? 'series' : 'movie'];
+  if (!slug) return [];
+
+  try {
+    const offsets = isShow ? ['1', '21', '25'] : ['1', '21'];
+    const items = [];
+    const dedup = new Set();
+
+    for (const off of offsets) {
+      const body = await m91FetchItems(slug, kind, lang, off);
+      const pageItems = m91ParsePage(body, M91_LANG_LABEL[lang], isShow, lang + ' ' + kind + ' start=' + off);
+      for (const it of pageItems) {
+        const k = normTitle(it.title) + '|' + it.arrivalDate;
+        if (dedup.has(k)) continue;
+        dedup.add(k);
+        items.push(it);
+      }
+    }
+
+    console.log('[91Mobiles] ' + lang + ' ' + kind + ': ' + items.length + ' live OTT items total');
+
+    const resolved = [];
+    const seenIds = new Set();
+    let dropped = 0;
+
+    for (const item of items) {
+      const endpoint = isShow ? '/search/tv?query=' : '/search/movie?query=';
+      let r = null;
+
+      for (const v of getTitleVariations(item.title)) {
+        try {
+          // No year filter — pinning to the OTT year rejected new seasons of old shows
+          const data = await tmdb(endpoint + encodeURIComponent(v) + '&language=en-US&page=1');
+          const results = data.results || [];
+          if (!results.length) continue;
+
+          let candidates = results.filter(x => x.original_language === lang);
+          if (!candidates.length) {
+            const exact = results.find(x => normTitle(x.title || x.name) === normTitle(item.title));
+            if (exact) candidates = [exact];
+          }
+
+          if (candidates.length) {
+            r = candidates.find(c => normTitle(c.title || c.name) === normTitle(item.title));
+            if (!r && item.year) {
+              r = candidates.find(c => String(c.release_date || c.first_air_date || '').slice(0, 4) === item.year);
+            }
+            if (!r) r = candidates[0];
+            break;
+          }
+        } catch (e) {}
+      }
+
+      if (r && !seenIds.has(r.id)) {
+        seenIds.add(r.id);
+        resolved.push({
+          id: r.id,
+          arrivalDate: item.arrivalDate,
+          title: item.title,
+          imdbId: null,
+          year: item.year,
+          isNewSeason: item.isNewSeason,
+          trustedPlatform: item.platform,
+        });
+      }
+      if (!r) dropped++;
+      await new Promise(res => setTimeout(res, 80));
+    }
+
+    if (dropped) console.warn('[91Mobiles] ' + lang + ' ' + kind + ': ' + dropped + ' items dropped (no TMDB match)');
+    return resolved;
+  } catch (e) {
+    console.warn('[91Mobiles] ' + lang + ' ' + kind + ' fetch failed: ' + e.message);
+    return [];
+  }
+}
+
+async function fetchDay0Items(lang, kind) {
+  try { return await fetch91Mobiles(lang, kind); }
+  catch (e) { return []; }
+}
+
+// ── TMDB DISCOVER (fallback) ──────────────────────────────────────────────────
+async function discoverMovies(lang, lookbackDays, maxPages) {
+  maxPages = maxPages || 5;
+  const results = [];
+  const seenIds = new Set();
+  const watchLookback = Math.min(lookbackDays, 60);
+
+  const queries = [
+    // A: recently released (theatrical or direct-to-OTT) — original behaviour
+    '/discover/movie?with_original_language=' + lang +
+      '&watch_region=IN&with_watch_monetization_types=flatrate|free|ads' +
+      '&sort_by=primary_release_date.desc' +
+      '&primary_release_date.gte=' + daysAgo(lookbackDays) +
+      '&primary_release_date.lte=' + today(),
+    // B: became available on streaming in IN recently — catches movies that
+    // released in cinemas earlier but just hit OTT
+    '/discover/movie?with_original_language=' + lang +
+      '&watch_region=IN&with_watch_monetization_types=flatrate|free|ads' +
+      '&sort_by=primary_release_date.desc' +
+      '&with_watch_release_date.gte=' + daysAgo(watchLookback) +
+      '&with_watch_release_date.lte=' + today()
+  ];
+
+  for (let q = 0; q < queries.length; q++) {
+    const pages = q === 0 ? maxPages : Math.min(maxPages, 5);
+    for (let page = 1; page <= pages; page++) {
+      try {
+        const data = await tmdb(queries[q] + '&page=' + page);
+        if (!data.results || !data.results.length) break;
+        // Safety: if the watch-date filter is ignored by the API we'd get a flood
+        if (q === 1 && (data.total_results || 0) > 1500) {
+          console.warn('[Discover movies q2] filter looks unsupported (total=' + data.total_results + ') — skipping');
+          break;
+        }
+        let added = 0;
+        for (const r of data.results) {
+          if (seenIds.has(r.id)) continue;
+          const ok = r.original_language === lang ||
+            (r.original_language === 'en' && Array.isArray(r.origin_country) && r.origin_country.includes('IN'));
+          if (!ok) continue;
+          seenIds.add(r.id);
+          results.push(Object.assign({}, r, { detectedStreaming: q === 1 }));
+          added++;
+        }
+        if (page >= (data.total_pages || 1) || added === 0) break;
+      } catch (e) { console.warn('[Discover movies q' + (q + 1) + '] ' + e.message); break; }
+    }
+  }
+  return results;
+}
+
+async function discoverSeries(lang, maxPages) {
+  maxPages = maxPages || 5;
+  const results = [];
+  const seenIds = new Set();
+  const airLookback = RUN_IS_DEEP ? 60 : 30;
+
+  const queries = [
+    // A: recent premieres — original behaviour
+    '/discover/tv?with_original_language=' + lang +
+      '&watch_region=IN&with_watch_monetization_types=flatrate|free|ads' +
+      '&sort_by=first_air_date.desc',
+    // B: shows with episodes aired recently — catches NEW SEASONS of old shows
+    '/discover/tv?with_original_language=' + lang +
+      '&watch_region=IN&with_watch_monetization_types=flatrate|free|ads' +
+      '&sort_by=popularity.desc' +
+      '&air_date.gte=' + daysAgo(airLookback) +
+      '&air_date.lte=' + today()
+  ];
+
+  for (let q = 0; q < queries.length; q++) {
+    const pages = q === 0 ? maxPages : Math.min(maxPages, 5);
+    for (let page = 1; page <= pages; page++) {
+      try {
+        const data = await tmdb(queries[q] + '&page=' + page);
+        if (!data.results || !data.results.length) break;
+        if (q === 1 && (data.total_results || 0) > 1500) {
+          console.warn('[Discover series q2] filter looks unsupported (total=' + data.total_results + ') — skipping');
+          break;
+        }
+        let added = 0;
+        for (const r of data.results) {
+          if (seenIds.has(r.id)) continue;
+          if (r.original_language !== lang) continue;
+          seenIds.add(r.id);
+          results.push(Object.assign({}, r, { detectedStreaming: q === 1 }));
+          added++;
+        }
+        if (page >= (data.total_pages || 1) || added === 0) break;
+      } catch (e) { console.warn('[Discover series q' + (q + 1) + '] ' + e.message); break; }
+    }
+  }
+  return results;
+}
+
+// ── PROCESSORS ────────────────────────────────────────────────────────────────
+async function processMovie(item, lang, expectedLang) {
+  const cacheKey = lang + '_' + item.id;
+  const cached   = readCacheEntry(movieCache[cacheKey]);
+
+  const validDay0Platform = item.trustedPlatform ? cleanPlatformNames(item.trustedPlatform) : '';
+  const isDay0Confirmed = validDay0Platform.length > 0;
+
+  if (cached === 'skip' && !isDay0Confirmed) return null;
+  if (cached && cached !== 'retry' && cached !== 'skip' && !isDay0Confirmed) {
+    if (isUnusableEntry(cached.description)) { setSkip(movieCache, cacheKey); return null; }
+    return cached;
+  }
+
+  try {
+    const detail = await tmdb('/movie/' + item.id + '?language=en-US&append_to_response=watch/providers,external_ids');
+
+    let imdbId = detail.imdb_id;
+    if (!imdbId && detail.external_ids && detail.external_ids.imdb_id) imdbId = detail.external_ids.imdb_id;
+    if (!imdbId && OMDB_KEY) {
+      try {
+        const cleanTitle = (detail.title || item.title || '').replace(/[:\-]/g, ' ').replace(/\s+/g, ' ').trim();
+        const movieYear = item.year || (detail.release_date ? detail.release_date.slice(0, 4) : '');
+        const omdbRes = await fetchJson('https://www.omdbapi.com/?t=' + encodeURIComponent(cleanTitle) + '&y=' + movieYear + '&apikey=' + OMDB_KEY);
+        if (omdbRes && omdbRes.imdbID && omdbRes.imdbID.startsWith('tt')) imdbId = omdbRes.imdbID;
+      } catch (e) {}
+    }
+
+    if (!imdbId) { setRetry(movieCache, cacheKey); return null; }
+
+    const isIndianProduction = Array.isArray(detail.origin_country) && detail.origin_country.includes('IN');
+    const isLangMatch = detail.original_language === expectedLang || (detail.original_language === 'en' && isIndianProduction);
+    if (expectedLang && !isLangMatch) { setSkip(movieCache, cacheKey); return null; }
+
+    let platform = validDay0Platform;
+    if (!platform) {
+      const wp = (detail['watch/providers'] && detail['watch/providers'].results) || {};
+      const IN = wp.IN;
+      const all = IN ? [...(IN.flatrate || []), ...(IN.free || []), ...(IN.ads || [])] : [];
+      platform = cleanPlatformNames(all.map(p => p.provider_name).join(', '));
+    }
+
+    if (!platform) { setSkip(movieCache, cacheKey); return null; }
+
+    let ottDate, label;
+    if (item.arrivalDate)          { ottDate = item.arrivalDate;       label = '📅 OTT Release:'; }
+    else if (item.detectedStreaming) { ottDate = today();              label = '🆕 Streaming detected:'; }
+    else                           { ottDate = detail.release_date || ''; label = '📅 Released:'; }
+
+    const meta = buildMeta({
+      imdbId, type: 'movie',
+      title: detail.title || '',
+      platform,
+      releaseDate: ottDate,
+      releaseLabel: label,
+      overview: detail.overview || '',
+      rating: detail.vote_average,
+      posterPath: detail.poster_path,
+      backdropPath: detail.backdrop_path,
+      genres: (detail.genres || []).map(g => g.name),
+    });
+
+    movieCache[cacheKey] = meta;
+    cacheDirty = true;
+    return meta;
+  } catch (e) {
+    console.warn('[Movie ' + item.id + '] ' + e.message);
+    setRetry(movieCache, cacheKey);
+    return null;
+  }
+}
+
+async function processSeriesJW(item, lang) {
+  const cacheKey = lang + '_series_' + item.id;
+  const cached   = readCacheEntry(seriesCache[cacheKey]);
+
+  const validDay0Platform = item.trustedPlatform ? cleanPlatformNames(item.trustedPlatform) : '';
+  const isDay0Confirmed = validDay0Platform.length > 0;
+
+  if (cached === 'skip' && !isDay0Confirmed) return null;
+  if (cached && cached !== 'retry' && cached !== 'skip' && !isDay0Confirmed) return cached;
+
+  try {
+    let tmdbId = item.id;
+    let detail = null;
+
+    try {
+      detail = await tmdb('/tv/' + tmdbId + '?language=en-US&append_to_response=watch/providers,external_ids');
+    } catch (e) {
+      if (!String(e.message).includes('HTTP 404')) throw e;
+    }
+
+    if (!detail && item.title) {
+      try {
+        const data = await tmdb('/search/tv?query=' + encodeURIComponent(item.title) + '&language=en-US&page=1');
+        const results = data.results || [];
+        const tv = results.find(x => x.original_language === lang) ||
+                   results.find(x => normTitle(x.name) === normTitle(item.title)) ||
+                   results[0];
+        if (tv) {
+          tmdbId = tv.id;
+          detail = await tmdb('/tv/' + tmdbId + '?language=en-US&append_to_response=watch/providers,external_ids');
+        }
+      } catch (e) {}
+    }
+
+    if (!detail) { setRetry(seriesCache, cacheKey); return null; }
+
+    const isIndianProduction = Array.isArray(detail.origin_country) && detail.origin_country.includes('IN');
+    const isLangMatch = detail.original_language === lang || (detail.original_language === 'en' && isIndianProduction);
+    if (!isLangMatch) { setSkip(seriesCache, cacheKey); return null; }
+
+    let imdbId = (detail.external_ids && detail.external_ids.imdb_id) || null;
+    if (!imdbId) {
+      try { const ext = await tmdb('/tv/' + tmdbId + '/external_ids'); imdbId = ext.imdb_id || null; } catch (e) {}
+    }
+    if (!imdbId && OMDB_KEY) {
+      try {
+        const cleanTitle = (detail.name || item.title || '').replace(/[:\-]/g, ' ').replace(/\s+/g, ' ').trim();
+        const omdbRes = await fetchJson('https://www.omdbapi.com/?t=' + encodeURIComponent(cleanTitle) + '&apikey=' + OMDB_KEY);
+        if (omdbRes && omdbRes.imdbID && omdbRes.imdbID.startsWith('tt')) imdbId = omdbRes.imdbID;
+      } catch (e) {}
+    }
+
+    if (!imdbId) { setRetry(seriesCache, cacheKey); return null; }
+
+    const wp = (detail['watch/providers'] && detail['watch/providers'].results) || {};
+    const IN = wp.IN;
+    const all = IN ? [...(IN.flatrate || []), ...(IN.free || []), ...(IN.ads || [])] : [];
+    const platform = validDay0Platform || cleanPlatformNames(all.map(p => p.provider_name).join(', ')) || 'OTT / Streaming';
+
+    const latestAirDate = item.arrivalDate || detail.last_air_date || detail.first_air_date || today();
+    const label = item.arrivalDate ? '📅 OTT Release:' : '📅 Latest Episode:';
+
+    const meta = buildMeta({
+      imdbId, type: 'series',
+      title: detail.name || '',
+      platform,
+      releaseDate: latestAirDate,
+      releaseLabel: label,
+      overview: detail.overview || '',
+      rating: detail.vote_average,
+      posterPath: detail.poster_path,
+      backdropPath: detail.backdrop_path,
+      genres: (detail.genres || []).map(g => g.name),
+    });
+
+    seriesCache[cacheKey] = meta;
+    cacheDirty = true;
+    return meta;
+  } catch (e) {
+    console.warn('[Series ' + (item.id || '') + '] ' + e.message);
+    setRetry(seriesCache, cacheKey);
+    return null;
+  }
+}
+
+// ── ORCHESTRATORS ─────────────────────────────────────────────────────────────
+function applyDay0Update(existingMeta, day0Item, arrivalDate, cacheObj, cacheKey) {
+  const freshPlatform = cleanPlatformNames(day0Item.trustedPlatform);
+  let changed = false;
+
+  if (arrivalDate && arrivalDate > (existingMeta.releaseInfo || '')) {
+    existingMeta.releaseInfo = arrivalDate;
+    changed = true;
+  }
+  if (freshPlatform) {
+    const base = (existingMeta.description || '').replace(/📺\s*Streaming on:[^\n]*/g, '').trim();
+    const newDesc = (base + '\n\n📺 Streaming on: ' + freshPlatform).trim();
+    if (newDesc !== existingMeta.description) { existingMeta.description = newDesc; changed = true; }
+  }
+  if (changed) {
+    cacheObj[cacheKey] = existingMeta;
+    cacheDirty = true;
+    console.log('[Day-0 Update] 🔄 ' + existingMeta.name + ' → ' + existingMeta.releaseInfo + (freshPlatform ? ' on ' + freshPlatform : ''));
+  }
+}
+
+async function scrapeMovies(lang) {
+  const metas = [];
+  const processedImdbIds = new Set();
+
+  for (const [cacheKey, val] of Object.entries(movieCache)) {
+    if (!cacheKey.startsWith(lang + '_')) continue;
+    const entry = readCacheEntry(val);
+    if (entry && typeof entry === 'object' && entry.id && entry.id.startsWith('tt') &&
+        entry.type === 'movie' && !processedImdbIds.has(entry.id)) {
+      if (isUnusableEntry(entry.description)) { setSkip(movieCache, cacheKey); continue; }
+      metas.push(entry);
+      processedImdbIds.add(entry.id);
+    }
+  }
+
+  const day0Items = await fetchDay0Items(lang, 'MOVIE');
+  for (const day0Item of day0Items) {
+    const cacheKey = lang + '_' + day0Item.id;
+    const arrivalDate = day0Item.arrivalDate || today();
+
+    const existingIndex = metas.findIndex(m => {
+      if (movieCache[cacheKey] && movieCache[cacheKey].id === m.id) return true;
+      if (day0Item.imdbId && m.id === day0Item.imdbId) return true;
+      if (m.name && day0Item.title && normTitle(m.name) === normTitle(day0Item.title)) return true;
+      return false;
+    });
+
+    if (existingIndex !== -1) {
+      applyDay0Update(metas[existingIndex], day0Item, arrivalDate, movieCache, cacheKey);
+      continue;
+    }
+
+    const meta = await processMovie(day0Item, lang, lang);
+    if (meta && meta.id && !processedImdbIds.has(meta.id)) {
+      meta.releaseInfo = arrivalDate;
+      movieCache[cacheKey] = meta;
+      cacheDirty = true;
+      metas.push(meta);
+      processedImdbIds.add(meta.id);
+      console.log('[Day-0 Add] 🎬 ' + meta.name + ' added on ' + meta.releaseInfo + ' (' + meta.id + ')');
+    }
+  }
+
+  const isLeanCache = metas.length < 100;
+  const lookback = isLeanCache ? MOVIE_FIRST_RUN : (RUN_IS_DEEP ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK);
+  const discoverPages = isLeanCache ? 25 : (RUN_IS_DEEP ? 12 : 5);
+
+  const tmdbItems = await discoverMovies(lang, lookback, discoverPages);
+  let discoverAdds = 0;
+  for (const item of tmdbItems) {
+    const meta = await processMovie(item, lang, lang);
+    if (meta && meta.id && !processedImdbIds.has(meta.id)) {
+      metas.push(meta);
+      processedImdbIds.add(meta.id);
+      if (item.detectedStreaming) { discoverAdds++; console.log('[Discover Add] 🎬 ' + meta.name + ' now streaming (' + meta.id + ')'); }
+    }
+  }
+  if (discoverAdds) console.log('[Discover] ' + lang + ' movies: ' + discoverAdds + ' new streaming arrivals');
+
+  metas.sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''));
+  const finalResult = metas.slice(0, 120);
+  console.log('[Movies] ' + lang + ': ' + finalResult.length + ' in catalogue');
+  return finalResult;
+}
+
+async function scrapeSeries(lang) {
+  const metas = [];
+  const processedImdbIds = new Set();
+
+  for (const [cacheKey, val] of Object.entries(seriesCache)) {
+    if (!cacheKey.startsWith(lang + '_series_')) continue;
+    const entry = readCacheEntry(val);
+    if (entry && typeof entry === 'object' && entry.id && entry.id.startsWith('tt') &&
+        entry.type === 'series' && !processedImdbIds.has(entry.id)) {
+      metas.push(entry);
+      processedImdbIds.add(entry.id);
+    }
+  }
+
+  const day0Items = await fetchDay0Items(lang, 'SHOW');
+  for (const day0Item of day0Items) {
+    const cacheKey = lang + '_series_' + day0Item.id;
+    const arrivalDate = day0Item.arrivalDate || today();
+
+    const existingIndex = metas.findIndex(m => {
+      if (seriesCache[cacheKey] && seriesCache[cacheKey].id === m.id) return true;
+      if (day0Item.imdbId && m.id === day0Item.imdbId) return true;
+      if (m.name && day0Item.title && normTitle(m.name) === normTitle(day0Item.title)) return true;
+      return false;
+    });
+
+    if (existingIndex !== -1) {
+      applyDay0Update(metas[existingIndex], day0Item, arrivalDate, seriesCache, cacheKey);
+      continue;
+    }
+
+    const meta = await processSeriesJW(day0Item, lang);
+    if (meta && meta.id && !processedImdbIds.has(meta.id)) {
+      meta.releaseInfo = arrivalDate;
+      seriesCache[cacheKey] = meta;
+      cacheDirty = true;
+      metas.push(meta);
+      processedImdbIds.add(meta.id);
+      console.log('[Day-0 Add] 📺 ' + meta.name + ' added on ' + meta.releaseInfo + ' (' + meta.id + ')');
+    }
+  }
+
+  const isLeanSeries = metas.length < 20;
+  const seriesPages = isLeanSeries ? 10 : 4;
+  const tmdbSeries = await discoverSeries(lang, seriesPages);
+  let discoverAdds = 0;
+  for (const item of tmdbSeries) {
+    const meta = await processSeriesJW(item, lang);
+    if (meta && meta.id && !processedImdbIds.has(meta.id)) {
+      metas.push(meta);
+      processedImdbIds.add(meta.id);
+      if (item.detectedStreaming) { discoverAdds++; console.log('[Discover Add] 📺 ' + meta.name + ' new episodes (' + meta.id + ')'); }
+    }
+  }
+  if (discoverAdds) console.log('[Discover] ' + lang + ' series: ' + discoverAdds + ' new episode arrivals');
+
+  metas.sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''));
+  const finalResult = metas.slice(0, 80);
+  console.log('[Series] ' + lang + ': ' + finalResult.length + ' in catalogue');
+  return finalResult;
+}
+
+// ── PUBLIC API (unchanged interface) ──────────────────────────────────────────
+async function scrapeMalayalam(type) {
+  loadCache();
+  try {
+    const result = type === 'series' ? await scrapeSeries('ml') : await scrapeMovies('ml');
+    saveCache();
+    return result;
+  } catch (e) {
+    console.error('[scrapeMalayalam] ' + e.message);
+    saveCache(); return [];
+  }
+}
+
+async function scrapeTamil(type) {
+  loadCache();
+  try {
+    const result = type === 'series' ? await scrapeSeries('ta') : await scrapeMovies('ta');
+    saveCache();
+    return result;
+  } catch (e) {
+    console.error('[scrapeTamil] ' + e.message);
+    saveCache(); return [];
+  }
+}
+
+module.exports = { scrapeMalayalam, scrapeTamil, getHealthStatus };
