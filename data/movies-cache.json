@@ -236,8 +236,8 @@
       "id": "tt35668756",
       "type": "movie",
       "name": "Kattalan",
-      "releaseInfo": "2026-05-14",
-      "description": "Power-hungry forces clash in the Ivory cartel war-a fierce story of control, vengeance, and survival where compassion vanishes and only the ruthless endure.\n\n📺 Streaming on: Prime Video, ManoramaMAX\n📅 OTT Release: 2026-05-14\n⭐ Rating: 5.5/10",
+      "releaseInfo": "2026-09-18",
+      "description": "Power-hungry forces clash in the Ivory cartel war-a fierce story of control, vengeance, and survival where compassion vanishes and only the ruthless endure.\n\n\n📅 OTT Release: 2026-05-14\n⭐ Rating: 5.5/10\n\n📺 Streaming on: Prime Video, Sony Liv",
       "poster": "https://image.tmdb.org/t/p/w500/53FATyQirV8BuBcrsQMGPvGKgCu.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/5RkZOvu9FC0A8NypE2BL7oKNOTU.jpg",
       "genres": [
@@ -2316,8 +2316,8 @@
       "id": "tt43727339",
       "type": "movie",
       "name": "Photographer",
-      "releaseInfo": "2026-08-07",
-      "description": "Photographer follows Veera, a troubled and obsessive photographer determined to prove his worth in a world that has long dismissed him. Driven by ambition and haunted by a painful past, he ventures deep into Mathikettan Solai, a mysterious reserve forest, to capture a rare and elusive natural phenomenon that could change his life forever.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-08-07",
+      "releaseInfo": "2026-09-25",
+      "description": "Photographer follows Veera, a troubled and obsessive photographer determined to prove his worth in a world that has long dismissed him. Driven by ambition and haunted by a painful past, he ventures deep into Mathikettan Solai, a mysterious reserve forest, to capture a rare and elusive natural phenomenon that could change his life forever.\n\n\n📅 OTT Release: 2026-08-07\n\n📺 Streaming on: Prime Video",
       "poster": "https://image.tmdb.org/t/p/w500/2viJLcdWykkcagEfHpGZupbZiq4.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/lvz5TgLlSLEvN0tQHJrOJisyBF8.jpg",
       "genres": [
@@ -4681,7 +4681,7 @@
     },
     "ta_1618200": {
       "_status": "retry",
-      "_at": 1790981420096
+      "_at": 1790983517000
     },
     "ta_1766087": {
       "_status": "skip",
@@ -4723,6 +4723,74 @@
     "ta_1465943": {
       "_status": "skip",
       "_at": 1790981141605
+    },
+    "ml_1508168": {
+      "id": "tt37535100",
+      "type": "movie",
+      "name": "Bethlehem Kudumba Unit",
+      "releaseInfo": "2026-10-02",
+      "description": "Ashley's homecoming from abroad takes an emotional turn when a wedding next door stirs memories of her first love, Justin.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-10-02\n⭐ Rating: 8.7/10",
+      "poster": "https://image.tmdb.org/t/p/w500/uaSZiH6yoGaVJcqzKtrfSkqDuHX.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/84AWZojNIyMdp5Wf3ebRCKnnhvw.jpg",
+      "genres": [
+        "Romance",
+        "Comedy",
+        "Drama"
+      ]
+    },
+    "ml_1495207": {
+      "_status": "retry",
+      "_at": 1790983504404
+    },
+    "ta_1317872": {
+      "id": "tt28541577",
+      "type": "movie",
+      "name": "Sardar 2",
+      "releaseInfo": "2026-10-01",
+      "description": "When the mysterious Black Dagger threatens national security, Inspector Vijay embarks on his most dangerous mission yet. As the battle unfolds, the extraordinary origin of legendary spy Sardar is finally revealed, uncovering the sacrifices that forged a legend and the secrets that could shape the future.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-10-01\n⭐ Rating: 4.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/muGsRtsNrG1gnlF2fPYrBa4TGlr.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/i39M5xz57fEkPLtuiAXqWwMNMyN.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    "ta_1738076": {
+      "id": "tt32644729",
+      "type": "movie",
+      "name": "Andharan",
+      "releaseInfo": "2026-09-26",
+      "description": "Karthika's fiancés mysteriously die before marriage. Officer Chezhiyan investigates the deaths and discovers dark secrets from her past, revealing the hidden forces haunting her life as truth and fear collide.\n\n📺 Streaming on: Aha\n📅 OTT Release: 2026-09-26",
+      "poster": "https://image.tmdb.org/t/p/w500/pwyKYojrmnFOYDjaJnfGu4Hiv9j.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/kaTGifoQW0qpR2ryK9Yy0iGoQgF.jpg",
+      "genres": [
+        "Thriller"
+      ]
+    },
+    "ta_1655049": {
+      "id": "tt41101621",
+      "type": "movie",
+      "name": "Habeebi",
+      "releaseInfo": "2026-09-25",
+      "description": "Follows a boy and girl in a Muslim neighbourhood in southern Tamil Nadu whose romance divides their community.\n\n📺 Streaming on: Sony Liv\n📅 OTT Release: 2026-09-25",
+      "poster": "https://image.tmdb.org/t/p/w500/kHU73XK0DHhphgo7U6MUQz8ADYv.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/hdQRhWMUg6cKSWcTCCyqWXcv8Ly.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    "ta_1314279": {
+      "id": "tt33029123",
+      "type": "movie",
+      "name": "Hi!",
+      "releaseInfo": "2026-09-25",
+      "description": "Two individuals initially exchange a simple 'Hi,' but through a series of chance encounters, shared experiences, and deep conversations, they gradually develop a strong connection and eventually fall in love.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2026-09-25\n⭐ Rating: 4.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/9Vgmpa0tcCzkbXf9AY0zXrai1oi.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/30pNvXUYKA0nLBStE7QcR6cuVJl.jpg",
+      "genres": [
+        "Romance",
+        "Drama"
+      ]
     }
   }
 }

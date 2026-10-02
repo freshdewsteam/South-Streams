@@ -676,7 +676,7 @@
       "id": "tt44265707",
       "type": "series",
       "name": "Bigg Boss The Common Man",
-      "releaseInfo": "2026-08-24",
+      "releaseInfo": "2026-09-06",
       "description": "From ordinary lives to extraordinary drama. Aspiring contestants fight to earn a spot in the Bigg Boss house.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-08-24",
       "poster": "https://image.tmdb.org/t/p/w500/bQDWORa2JTBawIStjMLzOJIMcPN.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/hnzTQjhhEo67VHneHdHTQjTPzab.jpg",
@@ -2342,7 +2342,7 @@
     },
     "ml_series_337062": {
       "_status": "retry",
-      "_at": 1790981415529
+      "_at": 1790983506388
     },
     "ml_series_325854": {
       "id": "tt8286730",
@@ -2361,7 +2361,7 @@
       "type": "series",
       "name": "#Love",
       "releaseInfo": "2026-10-02",
-      "description": "The pragmatic creator of a dating app and her adventurous competitor test their theories about love in a 60-day challenge to find their ideal partner.\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-10-02",
+      "description": "The pragmatic creator of a dating app and her adventurous competitor test their theories about love in a 60-day challenge to find their ideal partner.\n\n\n📅 Latest Episode: 2026-10-02\n\n📺 Streaming on: Netflix",
       "poster": "https://image.tmdb.org/t/p/w500/cyJKP6Fsg8ds4O4g1Q1SCOKJQdn.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/xrm5XNKMuAnvnG9sokNYlaAng2G.jpg",
       "genres": [
@@ -2399,6 +2399,22 @@
       "background": "https://image.tmdb.org/t/p/w1280/wzHxE333DkZIlTLSuTgbqP23UP5.jpg",
       "genres": [
         "Reality"
+      ]
+    },
+    "ml_series_298957": {
+      "_status": "retry",
+      "_at": 1790983506333
+    },
+    "ta_series_53606": {
+      "id": "tt38674953",
+      "type": "series",
+      "name": "#Love",
+      "releaseInfo": "2026-10-02",
+      "description": "The pragmatic creator of a dating app and her adventurous competitor test their theories about love in a 60-day challenge to find their ideal partner.\n\n\n📅 Latest Episode: 2026-10-02\n\n📺 Streaming on: Netflix",
+      "poster": "https://image.tmdb.org/t/p/w500/cyJKP6Fsg8ds4O4g1Q1SCOKJQdn.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/xrm5XNKMuAnvnG9sokNYlaAng2G.jpg",
+      "genres": [
+        "Drama"
       ]
     }
   }

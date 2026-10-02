@@ -1,6 +1,20 @@
 {
   "malayalam-movies": [
     {
+      "id": "tt37535100",
+      "type": "movie",
+      "name": "Bethlehem Kudumba Unit",
+      "releaseInfo": "2026-10-02",
+      "description": "Ashley's homecoming from abroad takes an emotional turn when a wedding next door stirs memories of her first love, Justin.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-10-02\n⭐ Rating: 8.7/10",
+      "poster": "https://image.tmdb.org/t/p/w500/uaSZiH6yoGaVJcqzKtrfSkqDuHX.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/84AWZojNIyMdp5Wf3ebRCKnnhvw.jpg",
+      "genres": [
+        "Romance",
+        "Comedy",
+        "Drama"
+      ]
+    },
+    {
       "id": "tt37510017",
       "type": "movie",
       "name": "Thudakkam",
@@ -11,6 +25,19 @@
       "genres": [
         "Action",
         "Drama"
+      ]
+    },
+    {
+      "id": "tt35668756",
+      "type": "movie",
+      "name": "Kattalan",
+      "releaseInfo": "2026-09-18",
+      "description": "Power-hungry forces clash in the Ivory cartel war-a fierce story of control, vengeance, and survival where compassion vanishes and only the ruthless endure.\n\n\n📅 OTT Release: 2026-05-14\n⭐ Rating: 5.5/10\n\n📺 Streaming on: Prime Video, Sony Liv",
+      "poster": "https://image.tmdb.org/t/p/w500/53FATyQirV8BuBcrsQMGPvGKgCu.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/5RkZOvu9FC0A8NypE2BL7oKNOTU.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
       ]
     },
     {
@@ -248,19 +275,6 @@
       "genres": [
         "Comedy",
         "Drama"
-      ]
-    },
-    {
-      "id": "tt35668756",
-      "type": "movie",
-      "name": "Kattalan",
-      "releaseInfo": "2026-05-14",
-      "description": "Power-hungry forces clash in the Ivory cartel war-a fierce story of control, vengeance, and survival where compassion vanishes and only the ruthless endure.\n\n📺 Streaming on: Prime Video, ManoramaMAX\n📅 OTT Release: 2026-05-14\n⭐ Rating: 5.5/10",
-      "poster": "https://image.tmdb.org/t/p/w500/53FATyQirV8BuBcrsQMGPvGKgCu.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/5RkZOvu9FC0A8NypE2BL7oKNOTU.jpg",
-      "genres": [
-        "Action",
-        "Thriller"
       ]
     },
     {
@@ -1531,19 +1545,6 @@
         "Drama",
         "Comedy"
       ]
-    },
-    {
-      "id": "tt32919734",
-      "type": "movie",
-      "name": "Padakkalam",
-      "releaseInfo": "2025-05-08",
-      "description": "Four nerdy comic book enthusiasts find themselves in an unexpected adventure when their school's charming new professor turns their academic world upside down with supernatural events.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2025-05-08\n⭐ Rating: 7.3/10",
-      "poster": "https://image.tmdb.org/t/p/w500/9m4lvnqvwppA4BIoxqcWsWna5is.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/c8hXBIgdTwPtF3PhiJayD6YHqAk.jpg",
-      "genres": [
-        "Comedy",
-        "Fantasy"
-      ]
     }
   ],
   "malayalam-series": [
@@ -2170,6 +2171,70 @@
   ],
   "tamil-movies": [
     {
+      "id": "tt28541577",
+      "type": "movie",
+      "name": "Sardar 2",
+      "releaseInfo": "2026-10-01",
+      "description": "When the mysterious Black Dagger threatens national security, Inspector Vijay embarks on his most dangerous mission yet. As the battle unfolds, the extraordinary origin of legendary spy Sardar is finally revealed, uncovering the sacrifices that forged a legend and the secrets that could shape the future.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-10-01\n⭐ Rating: 4.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/muGsRtsNrG1gnlF2fPYrBa4TGlr.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/i39M5xz57fEkPLtuiAXqWwMNMyN.jpg",
+      "genres": [
+        "Action",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt32644729",
+      "type": "movie",
+      "name": "Andharan",
+      "releaseInfo": "2026-09-26",
+      "description": "Karthika's fiancés mysteriously die before marriage. Officer Chezhiyan investigates the deaths and discovers dark secrets from her past, revealing the hidden forces haunting her life as truth and fear collide.\n\n📺 Streaming on: Aha\n📅 OTT Release: 2026-09-26",
+      "poster": "https://image.tmdb.org/t/p/w500/pwyKYojrmnFOYDjaJnfGu4Hiv9j.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/kaTGifoQW0qpR2ryK9Yy0iGoQgF.jpg",
+      "genres": [
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt43727339",
+      "type": "movie",
+      "name": "Photographer",
+      "releaseInfo": "2026-09-25",
+      "description": "Photographer follows Veera, a troubled and obsessive photographer determined to prove his worth in a world that has long dismissed him. Driven by ambition and haunted by a painful past, he ventures deep into Mathikettan Solai, a mysterious reserve forest, to capture a rare and elusive natural phenomenon that could change his life forever.\n\n\n📅 OTT Release: 2026-08-07\n\n📺 Streaming on: Prime Video",
+      "poster": "https://image.tmdb.org/t/p/w500/2viJLcdWykkcagEfHpGZupbZiq4.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/lvz5TgLlSLEvN0tQHJrOJisyBF8.jpg",
+      "genres": [
+        "Fantasy",
+        "Mystery",
+        "Thriller"
+      ]
+    },
+    {
+      "id": "tt41101621",
+      "type": "movie",
+      "name": "Habeebi",
+      "releaseInfo": "2026-09-25",
+      "description": "Follows a boy and girl in a Muslim neighbourhood in southern Tamil Nadu whose romance divides their community.\n\n📺 Streaming on: Sony Liv\n📅 OTT Release: 2026-09-25",
+      "poster": "https://image.tmdb.org/t/p/w500/kHU73XK0DHhphgo7U6MUQz8ADYv.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/hdQRhWMUg6cKSWcTCCyqWXcv8Ly.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt33029123",
+      "type": "movie",
+      "name": "Hi!",
+      "releaseInfo": "2026-09-25",
+      "description": "Two individuals initially exchange a simple 'Hi,' but through a series of chance encounters, shared experiences, and deep conversations, they gradually develop a strong connection and eventually fall in love.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2026-09-25\n⭐ Rating: 4.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/9Vgmpa0tcCzkbXf9AY0zXrai1oi.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/30pNvXUYKA0nLBStE7QcR6cuVJl.jpg",
+      "genres": [
+        "Romance",
+        "Drama"
+      ]
+    },
+    {
       "id": "tt42262473",
       "type": "movie",
       "name": "Modha Rathri",
@@ -2296,20 +2361,6 @@
         "Romance",
         "Comedy",
         "Drama"
-      ]
-    },
-    {
-      "id": "tt43727339",
-      "type": "movie",
-      "name": "Photographer",
-      "releaseInfo": "2026-08-07",
-      "description": "Photographer follows Veera, a troubled and obsessive photographer determined to prove his worth in a world that has long dismissed him. Driven by ambition and haunted by a painful past, he ventures deep into Mathikettan Solai, a mysterious reserve forest, to capture a rare and elusive natural phenomenon that could change his life forever.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-08-07",
-      "poster": "https://image.tmdb.org/t/p/w500/2viJLcdWykkcagEfHpGZupbZiq4.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/lvz5TgLlSLEvN0tQHJrOJisyBF8.jpg",
-      "genres": [
-        "Fantasy",
-        "Mystery",
-        "Thriller"
       ]
     },
     {
@@ -3708,57 +3759,6 @@
         "Family",
         "Drama"
       ]
-    },
-    {
-      "id": "tt32864330",
-      "type": "movie",
-      "name": "Devil's Double Next Level",
-      "releaseInfo": "2025-05-16",
-      "description": "A well-known movie critic is invited by a strange person to watch a special horror film. But once the movie starts, he finds himself trapped inside it. The world keeps shifting timelines, endless day-to-night cycles, non-linear narration, and scary things from horror movies come to life. To escape, he must either stop reviewing movies forever or find a way to defeat the ghost that trapped him.\n\n📺 Streaming on: Prime Video, Zee5\n📅 OTT Release: 2025-05-16\n⭐ Rating: 6.4/10",
-      "poster": "https://image.tmdb.org/t/p/w500/jS8XroVkuvsdXcCNnWUnaxj9XNX.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/ijy6b2frS9rkWGF7UYGRfUPtvoo.jpg",
-      "genres": [
-        "Horror",
-        "Comedy"
-      ]
-    },
-    {
-      "id": "tt33240591",
-      "type": "movie",
-      "name": "Maaman",
-      "releaseInfo": "2025-05-16",
-      "description": "An uncle's deep connection with his nephew is broken, when their family experiences personal differences.\n\n📺 Streaming on: Prime Video, Zee5\n📅 OTT Release: 2025-05-16\n⭐ Rating: 6.4/10",
-      "poster": "https://image.tmdb.org/t/p/w500/a0BsRj9qQu8L2arBAHcbbfrVrB7.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/aSN6JVqci5QdzuUU5M8IJQ2RKG7.jpg",
-      "genres": [
-        "Family",
-        "Drama",
-        "Action"
-      ]
-    },
-    {
-      "id": "tt28679253",
-      "type": "movie",
-      "name": "Eleven",
-      "releaseInfo": "2025-05-16",
-      "description": "A series of murders targeting twins leads a detective down a dark path of revenge and childhood trauma.\n\n📺 Streaming on: Prime Video, JioHotstar, ManoramaMAX, Aha, Lionsgate Play\n📅 OTT Release: 2025-05-16\n⭐ Rating: 5.6/10",
-      "poster": "https://image.tmdb.org/t/p/w500/zrLStjPERNYWIESwlrfBPE3jsDb.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/vdw6dF4wnWnbph8WpFKyDXDHORj.jpg",
-      "genres": [
-        "Thriller"
-      ]
-    },
-    {
-      "id": "tt35939804",
-      "type": "movie",
-      "name": "Ambi",
-      "releaseInfo": "2025-05-09",
-      "description": "Mild-mannered electrician Sundharam is mistaken for a lucky superhero after staying at an MLA’s house. The MLA tries to marry him to his modern daughter, who initially resists but slowly falls for his kind nature. Amidst chaos, comedy, and a villain’s plot, love and truth triumph.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2025-05-09",
-      "poster": "https://image.tmdb.org/t/p/w500/nDcGdLMj8i9RJiImxZ617TgvIyr.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/glvdzqfwDwDh28yHqt5ZHQy3ohu.jpg",
-      "genres": [
-        "Comedy"
-      ]
     }
   ],
   "tamil-series": [
@@ -3767,7 +3767,7 @@
       "type": "series",
       "name": "#Love",
       "releaseInfo": "2026-10-02",
-      "description": "The pragmatic creator of a dating app and her adventurous competitor test their theories about love in a 60-day challenge to find their ideal partner.\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-10-02",
+      "description": "The pragmatic creator of a dating app and her adventurous competitor test their theories about love in a 60-day challenge to find their ideal partner.\n\n\n📅 Latest Episode: 2026-10-02\n\n📺 Streaming on: Netflix",
       "poster": "https://image.tmdb.org/t/p/w500/cyJKP6Fsg8ds4O4g1Q1SCOKJQdn.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/xrm5XNKMuAnvnG9sokNYlaAng2G.jpg",
       "genres": [
@@ -3803,6 +3803,18 @@
       "description": "Super Singer Junior is a reality TV show since February 2007 hosted by Vijay TV. It is a singing talent hunt for the children of age group 6–15. This is the junior version of the Super Singer show.\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-09-26",
       "poster": "https://image.tmdb.org/t/p/w500/qTU82fjeHqD7DnF82BdjNOo2VIn.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/mJEs144YThc7qXSlZy1uNdOJqAW.jpg",
+      "genres": [
+        "Reality"
+      ]
+    },
+    {
+      "id": "tt44265707",
+      "type": "series",
+      "name": "Bigg Boss The Common Man",
+      "releaseInfo": "2026-09-06",
+      "description": "From ordinary lives to extraordinary drama. Aspiring contestants fight to earn a spot in the Bigg Boss house.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-08-24",
+      "poster": "https://image.tmdb.org/t/p/w500/bQDWORa2JTBawIStjMLzOJIMcPN.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/hnzTQjhhEo67VHneHdHTQjTPzab.jpg",
       "genres": [
         "Reality"
       ]
@@ -3844,18 +3856,6 @@
       "genres": [
         "Drama",
         "Comedy"
-      ]
-    },
-    {
-      "id": "tt44265707",
-      "type": "series",
-      "name": "Bigg Boss The Common Man",
-      "releaseInfo": "2026-08-24",
-      "description": "From ordinary lives to extraordinary drama. Aspiring contestants fight to earn a spot in the Bigg Boss house.\n\n📺 Streaming on: JioHotstar\n📅 OTT Release: 2026-08-24",
-      "poster": "https://image.tmdb.org/t/p/w500/bQDWORa2JTBawIStjMLzOJIMcPN.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/hnzTQjhhEo67VHneHdHTQjTPzab.jpg",
-      "genres": [
-        "Reality"
       ]
     },
     {
@@ -4731,5 +4731,5 @@
       ]
     }
   ],
-  "builtAt": "2026-10-02T22:50:09.221Z"
+  "builtAt": "2026-10-02T23:25:00.459Z"
 }
