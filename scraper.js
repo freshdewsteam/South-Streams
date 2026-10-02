@@ -1,19 +1,20 @@
 /**
- * scraper.js — South Streams (v9)
+ * scraper.js — South Streams (v10)
  *
- * Day-0 authority : 91mobiles public pages (language page + all-languages page)
- *                   + AJAX pages (known to lag the website — kept as backup source)
+ * Day-0 authority : 91mobiles "filter" XHR (the endpoint the live webpage itself
+ *                   uses — type=filter, available:Stream,Rent,Buy, start=0),
+ *                   plus public pages and legacy loadmore AJAX as backups
  * Fallback        : TMDB Discover (recent releases for movies; premieres + airing for series)
  * Enrichment      : TMDB + OMDb
  *
- * v9: webpage sources fetched FIRST (fresh) with AJAX as backup; generic
- * all-languages pages (new-movies / new-web-series) added — the language
- * filter handles selection; certification suffixes like (UA-13+) stripped
- * from titles before TMDB matching; "(OTT)" card tag accepted as platform
- * signal when no logos are present.
+ * v10: primary source switched to the page's own filter XHR (proven fresh via
+ * user's DevTools capture); legacy loadmore AJAX demoted to backup; webpage
+ * fetch tries direct → Googlebot UA → ScraperAPI(Indian IP) when available.
+ * v9: certification suffixes stripped from titles; "(OTT)" card tag accepted
+ * as platform signal; all-languages pages parsed.
  * v7: ambiguity rejection (exact title or year match only).
- * v6: noPlatform items pass through to TMDB arbitration; series discovery
- * without provider requirement; all OTT platforms accepted.
+ * v6: noPlatform items pass to TMDB arbitration; series discovery without
+ * provider requirement; all OTT platforms accepted.
  */
 
 const https = require('https');
@@ -225,8 +226,8 @@ function isDeepSweepHour() {
 }
 const RUN_IS_DEEP = isDeepSweepHour();
 
-// v9: 91mobiles titles carry certification suffixes like "(UA-13+)" / "(U/A)" —
-// strip them before TMDB matching or exact-match resolution fails
+// Titles carry certification suffixes like "(UA-13+)" / "(U/A)" — strip before
+// TMDB matching or exact-match resolution fails
 function m91CleanTitle(t) {
   let s = String(t || '').trim();
   const before = s;
@@ -238,7 +239,7 @@ function m91CleanTitle(t) {
 function getTitleVariations(title) {
   const v = new Set();
   v.add(title);
-  v.add(title.replace(/\s*\([^)]*\)\s*$/, '').trim());          // strip any trailing parens
+  v.add(title.replace(/\s*\([^)]*\)\s*$/, '').trim());
   v.add(title.replace(/\b2\b/g, 'II'));
   v.add(title.replace(/\bII\b/g, '2'));
   v.add(title.replace(/[:\-].*$/, '').trim());
@@ -293,7 +294,6 @@ const M91_PAGES = {
   ml: { movie: 'new-malayalam-movies', series: 'new-malayalam-web-series' },
   ta: { movie: 'new-tamil-movies',     series: 'new-tamil-web-series' },
 };
-// v9: all-languages pages — freshest data on the site (proven by user's browser)
 const M91_GENERIC_WEB_SLUGS = { movie: 'new-movies', series: 'new-web-series' };
 const M91_LANG_LABEL  = { ml: 'malayalam', ta: 'tamil' };
 const M91_LANG_NATIVE = { ml: 'മലയാളം', ta: 'தமிழ்' };
@@ -361,7 +361,56 @@ function m91BuildAjaxUrl(slug, kind, lang, startOffset, cacheBust) {
   return M91_AJAX_URL + '?' + params.toString();
 }
 
+// v10: the endpoint the LIVE webpage itself calls (captured from DevTools):
+// type=filter, available:Stream,Rent,Buy, start=0, seoSlug=/entertainment/<page>
+// This is the fresh path; the legacy "loadmore" path is a stale layer.
+function m91BuildFilterUrl(lang, kind, startOffset) {
+  const isShow = kind === 'SHOW';
+  const genericSlug = isShow ? M91_GENERIC_WEB_SLUGS.series : M91_GENERIC_WEB_SLUGS.movie;
+  const available = isShow ? 'Stream,Rent' : 'Stream,Rent,Buy';
+  const params = new URLSearchParams({
+    qp: 'available:' + available + '~contentTypes:' + (isShow ? 'show' : 'movie') + '~languages:' + M91_LANG_ID[lang],
+    sortOrder: 'desc',
+    sortBy: 'ottReleaseDate',
+    start: String(startOffset),
+    seoSlug: '/entertainment/' + genericSlug,
+    pType: genericSlug,
+    dubbedVal: 'notDubbed',
+    type: 'filter'
+  });
+  params.set('_', String(Date.now()));
+  return M91_AJAX_URL + '?' + params.toString();
+}
+
 let scraperApiBroken = false;
+
+async function m91FetchFilter(lang, kind, startOffset) {
+  const target = m91BuildFilterUrl(lang, kind, startOffset);
+
+  if (SCRAPERAPI_KEY && !scraperApiBroken) {
+    try {
+      const wrapped = 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
+                      '&country_code=in&url=' + encodeURIComponent(target);
+      const body = m91UnwrapBody(await fetchUrl(wrapped, m91FetchHeaders()));
+      if (/<div\s+class="?pro_item/.test(body)) return body;
+    } catch (e) {
+      if (String(e.message).includes('403')) {
+        scraperApiBroken = true;
+        console.warn('[91Mobiles] ❌ ScraperAPI key REJECTED (HTTP 403) — continuing with direct fetch.');
+      }
+    }
+  }
+
+  try {
+    const body = m91UnwrapBody(await fetchUrl(target, m91FetchHeaders()));
+    if (/<div\s+class="?pro_item/.test(body)) return body;
+    console.warn('[91Mobiles] filter fetch: no items (lang=' + lang + ' kind=' + kind + ' start=' + startOffset + ', len=' + body.length + ')');
+    return body;
+  } catch (e) {
+    console.warn('[91Mobiles] filter fetch failed (lang=' + lang + ' start=' + startOffset + '): ' + e.message);
+    return '';
+  }
+}
 
 async function m91FetchAjax(slug, kind, lang, startOffset) {
   if (SCRAPERAPI_KEY && !scraperApiBroken) {
@@ -373,7 +422,6 @@ async function m91FetchAjax(slug, kind, lang, startOffset) {
     } catch (e) {
       if (String(e.message).includes('403')) {
         scraperApiBroken = true;
-        console.warn('[91Mobiles] ❌ ScraperAPI key REJECTED (HTTP 403) — continuing with direct fetch.');
       }
     }
   }
@@ -391,7 +439,7 @@ async function m91FetchAjax(slug, kind, lang, startOffset) {
   }
 }
 
-// v9: the public pages are the FRESHEST source (the AJAX index lags the site)
+// Public pages — try direct, then Googlebot UA, then ScraperAPI Indian IP
 async function m91FetchWebpage(slug) {
   const url = M91_BASE + slug;
 
@@ -405,7 +453,6 @@ async function m91FetchWebpage(slug) {
     } },
   ];
 
-  // Indian-IP fetch via ScraperAPI — the reliable path once the key is valid
   if (SCRAPERAPI_KEY && !scraperApiBroken) {
     attempts.push({
       label: 'scraperapi-in',
@@ -476,17 +523,14 @@ function m91ParsePage(html, langLabel, isShow, label) {
     if (!isReleased(date)) { stats.future++; continue; }
 
     const ageDays = (Date.now() - date.getTime()) / 86400000;
-    // Shows often display the SEASON-1 premiere date — a "new season/episode"
-    // item bypasses the age rule
     if (ageDays > lookback && !isNewSeason) {
       stats.old++;
       if (samples.old.length < 2) samples.old.push(title + ' [' + meta.slice(0, 80) + ']');
       continue;
     }
 
-    // Platforms: Where-To-Stream logos are the primary signal. v9: if there
-    // are no logos but the card carries 91mobiles' own "(OTT)" tag, that is
-    // accepted as an OTT confirmation ("OTT / Streaming").
+    // Platforms: Where-To-Stream logos are the primary signal; "(OTT)" tag
+    // accepted as OTT confirmation; empty → TMDB India providers arbitrate.
     const rawPlatforms = [];
     const wtsIdx = block.indexOf('Where To Stream');
     if (wtsIdx !== -1) {
@@ -504,7 +548,6 @@ function m91ParsePage(html, langLabel, isShow, label) {
     if (!finalPlatform) {
       stats.noPlatform++;
       if (samples.noPlatform.length < 2) samples.noPlatform.push(title + ' [' + meta.slice(0, 80) + ']');
-      // pass through — TMDB India watch-providers arbitrate later
     }
 
     stats.kept++;
@@ -536,18 +579,20 @@ async function fetch91Mobiles(lang, kind) {
   if (!slug) return [];
 
   try {
-    // v9: freshest first — language webpage, all-languages webpage, then the
-    // lagging AJAX pages as backup. Webpage dates win on duplicates.
-    const webLang    = await m91FetchWebpage(slug);
-    const webGeneric = await m91FetchWebpage(M91_GENERIC_WEB_SLUGS[isShow ? 'series' : 'movie']);
-    const ajaxP1     = await m91FetchAjax(slug, kind, lang, '1');
-    const ajaxP2     = await m91FetchAjax(slug, kind, lang, '21');
+    // v10 source priority: filter XHR (fresh, the page's own endpoint) →
+    // public webpages → legacy loadmore AJAX (stale layer, backup only)
+    const filterP1    = await m91FetchFilter(lang, kind, 0);
+    const filterP2    = await m91FetchFilter(lang, kind, 24);
+    const webLang     = await m91FetchWebpage(slug);
+    const webGeneric  = await m91FetchWebpage(M91_GENERIC_WEB_SLUGS[isShow ? 'series' : 'movie']);
+    const ajaxP1      = await m91FetchAjax(slug, kind, lang, '1');
 
     const sources = [
-      { label: lang + ' ' + kind + ' webpage',     html: webLang },
+      { label: lang + ' ' + kind + ' filter p1',  html: filterP1 },
+      { label: lang + ' ' + kind + ' filter p2',  html: filterP2 },
+      { label: lang + ' ' + kind + ' webpage',    html: webLang },
       { label: lang + ' ' + kind + ' webpage-all', html: webGeneric },
-      { label: lang + ' ' + kind + ' ajax p1',     html: ajaxP1 },
-      { label: lang + ' ' + kind + ' ajax p2',     html: ajaxP2 },
+      { label: lang + ' ' + kind + ' ajax p1',    html: ajaxP1 },
     ];
 
     const items = [];
@@ -562,7 +607,7 @@ async function fetch91Mobiles(lang, kind) {
       }
     }
 
-    console.log('[91Mobiles] ' + lang + ' ' + kind + ': ' + items.length + ' live OTT items total (4 sources)');
+    console.log('[91Mobiles] ' + lang + ' ' + kind + ': ' + items.length + ' live OTT items total (5 sources)');
 
     const resolved = [];
     const seenIds = new Set();
@@ -589,7 +634,6 @@ async function fetch91Mobiles(lang, kind) {
           if (!candidates.length) continue;
           hadCandidates = true;
 
-          // Ambiguity protection: accept ONLY exact title or year match
           const exactHit = candidates.find(c => normTitle(c.title || c.name) === normTitle(item.title));
           if (exactHit) { r = exactHit; break; }
 
@@ -1051,4 +1095,4 @@ async function scrapeTamil(type) {
 
 module.exports = { scrapeMalayalam, scrapeTamil, getHealthStatus };
 
-// ── END OF FILE — South Streams scraper v9 ──
+// ── END OF FILE — South Streams scraper v10 ──
