@@ -393,16 +393,42 @@ async function m91FetchAjax(slug, kind, lang, startOffset) {
 
 // v9: the public pages are the FRESHEST source (the AJAX index lags the site)
 async function m91FetchWebpage(slug) {
-  const url = M91_BASE + slug + '?_=' + Date.now();
-  try {
-    const body = await fetchUrl(url, m91PageHeaders());
-    if (/<div\s+class="?pro_item/.test(body)) return body;
-    console.warn('[91Mobiles] webpage: no pro_item blocks (' + slug + ', len=' + body.length + ') — page may be client-rendered');
-    return '';
-  } catch (e) {
-    console.warn('[91Mobiles] webpage fetch failed (' + slug + '): ' + e.message);
-    return '';
+  const url = M91_BASE + slug;
+
+  const attempts = [
+    { label: 'direct', target: url + '?_=' + Date.now(), hdr: m91PageHeaders() },
+    { label: 'googlebot', target: url + '?gr=' + Math.floor(Math.random() * 1e9), hdr: {
+        'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+        'Accept': 'text/html,*/*;q=0.8',
+        'Accept-Language': 'en-IN,en;q=0.9',
+        'Cache-Control': 'no-cache',
+    } },
+  ];
+
+  // Indian-IP fetch via ScraperAPI — the reliable path once the key is valid
+  if (SCRAPERAPI_KEY && !scraperApiBroken) {
+    attempts.push({
+      label: 'scraperapi-in',
+      target: 'https://api.scraperapi.com/?api_key=' + SCRAPERAPI_KEY +
+              '&country_code=in&url=' + encodeURIComponent(url + '?_=' + Date.now()),
+      hdr: m91PageHeaders(),
+    });
   }
+
+  for (const a of attempts) {
+    try {
+      const body = await fetchUrl(a.target, a.hdr);
+      if (/<div\s+class="?pro_item/.test(body)) {
+        if (a.label !== 'direct') console.log('[91Mobiles] webpage via ' + a.label + ': OK (' + slug + ')');
+        return body;
+      }
+      console.warn('[91Mobiles] webpage ' + a.label + ': no items (' + slug + ', len=' + body.length + ')');
+    } catch (e) {
+      console.warn('[91Mobiles] webpage ' + a.label + ' failed (' + slug + '): ' + e.message);
+    }
+  }
+  console.warn('[91Mobiles] webpage: all fetch strategies failed (' + slug + ')');
+  return '';
 }
 
 function m91ParsePage(html, langLabel, isShow, label) {
