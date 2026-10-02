@@ -1,18 +1,19 @@
 /**
- * scraper.js — South Streams (v8)
+ * scraper.js — South Streams (v9)
  *
- * Day-0 authority : 91mobiles (AJAX pages + public webpage merged; show pages known stale)
+ * Day-0 authority : 91mobiles public pages (language page + all-languages page)
+ *                   + AJAX pages (known to lag the website — kept as backup source)
  * Fallback        : TMDB Discover (recent releases for movies; premieres + airing for series)
  * Enrichment      : TMDB + OMDb
  *
- * v8: CDN cache-busting on all 91mobiles requests (US datacenter IPs were
- * receiving stale cached feeds); public webpage parsed as a third source and
- * merged; ambiguous-title skips now logged with titles.
- * v7: ambiguity rejection — TMDB candidates accepted only on exact title or
- * year match.
+ * v9: webpage sources fetched FIRST (fresh) with AJAX as backup; generic
+ * all-languages pages (new-movies / new-web-series) added — the language
+ * filter handles selection; certification suffixes like (UA-13+) stripped
+ * from titles before TMDB matching; "(OTT)" card tag accepted as platform
+ * signal when no logos are present.
+ * v7: ambiguity rejection (exact title or year match only).
  * v6: noPlatform items pass through to TMDB arbitration; series discovery
- * without provider requirement; all OTT platforms accepted; strict language
- * check; no year pinning; new-season date bypass; verbose diagnostics.
+ * without provider requirement; all OTT platforms accepted.
  */
 
 const https = require('https');
@@ -224,9 +225,20 @@ function isDeepSweepHour() {
 }
 const RUN_IS_DEEP = isDeepSweepHour();
 
+// v9: 91mobiles titles carry certification suffixes like "(UA-13+)" / "(U/A)" —
+// strip them before TMDB matching or exact-match resolution fails
+function m91CleanTitle(t) {
+  let s = String(t || '').trim();
+  const before = s;
+  s = s.replace(/\s*\(\s*(?:u\/a|ua|u|a|pg)\s*(?:[-–]?\s*\d+\+?)?\s*\)\s*$/i, '');
+  if (s === before) s = s.replace(/\s*\(\s*[^)]*\)\s*$/, '');
+  return s.trim() || String(t || '').trim();
+}
+
 function getTitleVariations(title) {
   const v = new Set();
   v.add(title);
+  v.add(title.replace(/\s*\([^)]*\)\s*$/, '').trim());          // strip any trailing parens
   v.add(title.replace(/\b2\b/g, 'II'));
   v.add(title.replace(/\bII\b/g, '2'));
   v.add(title.replace(/[:\-].*$/, '').trim());
@@ -273,6 +285,7 @@ function buildMeta(opts) {
 
 // ── 91MOBILES (DAY-0 AUTHORITY) ───────────────────────────────────────────────
 const M91_AJAX_URL = 'https://www.91mobiles.com/entertainment/web/list_ajax.php';
+const M91_BASE     = 'https://www.91mobiles.com/entertainment/';
 const M91_LANG_ID  = { ml: 28, ta: 63 };
 const M91_MOVIE_LOOKBACK_DAYS = 30;
 const M91_SHOW_LOOKBACK_DAYS  = 60;
@@ -280,6 +293,8 @@ const M91_PAGES = {
   ml: { movie: 'new-malayalam-movies', series: 'new-malayalam-web-series' },
   ta: { movie: 'new-tamil-movies',     series: 'new-tamil-web-series' },
 };
+// v9: all-languages pages — freshest data on the site (proven by user's browser)
+const M91_GENERIC_WEB_SLUGS = { movie: 'new-movies', series: 'new-web-series' };
 const M91_LANG_LABEL  = { ml: 'malayalam', ta: 'tamil' };
 const M91_LANG_NATIVE = { ml: 'മലയാളം', ta: 'தமிழ்' };
 
@@ -355,44 +370,34 @@ async function m91FetchAjax(slug, kind, lang, startOffset) {
                       '&country_code=in&url=' + encodeURIComponent(m91BuildAjaxUrl(slug, kind, lang, startOffset, true));
       const body = m91UnwrapBody(await fetchUrl(wrapped, m91FetchHeaders()));
       if (/<div\s+class="?pro_item/.test(body)) return body;
-      console.warn('[91Mobiles] scraperapi: no items (' + slug + ' start=' + startOffset + ', len=' + body.length + ')');
     } catch (e) {
       if (String(e.message).includes('403')) {
         scraperApiBroken = true;
         console.warn('[91Mobiles] ❌ ScraperAPI key REJECTED (HTTP 403) — continuing with direct fetch.');
-      } else {
-        console.warn('[91Mobiles] scraperapi failed (' + slug + '): ' + e.message);
       }
     }
   }
 
-  // v8: cache-busted URL first — the CDN was serving stale cached feeds to
-  // datacenter IPs. If the buster is rejected, retry the plain URL.
   try {
     const body = m91UnwrapBody(await fetchUrl(m91BuildAjaxUrl(slug, kind, lang, startOffset, true), m91FetchHeaders()));
     if (/<div\s+class="?pro_item/.test(body)) return body;
-  } catch (e) {
-    console.warn('[91Mobiles] busted fetch failed (' + slug + ' start=' + startOffset + '): ' + e.message);
-  }
+  } catch (e) {}
   try {
     const body = m91UnwrapBody(await fetchUrl(m91BuildAjaxUrl(slug, kind, lang, startOffset, false), m91FetchHeaders()));
-    if (startOffset === '1' && !/<div\s+class="?pro_item/.test(body)) {
-      console.warn('[91Mobiles] direct fetch: no items (' + slug + ', len=' + body.length + ')');
-    }
     return body;
   } catch (e) {
-    console.warn('[91Mobiles] direct fetch failed (' + slug + ' start=' + startOffset + '): ' + e.message);
+    console.warn('[91Mobiles] ajax fetch failed (' + slug + ' start=' + startOffset + '): ' + e.message);
     return '';
   }
 }
 
-// v8: the public webpage itself — may be fresher than the AJAX endpoint
+// v9: the public pages are the FRESHEST source (the AJAX index lags the site)
 async function m91FetchWebpage(slug) {
-  const url = 'https://www.91mobiles.com/entertainment/' + slug + '?_=' + Date.now();
+  const url = M91_BASE + slug + '?_=' + Date.now();
   try {
     const body = await fetchUrl(url, m91PageHeaders());
     if (/<div\s+class="?pro_item/.test(body)) return body;
-    console.warn('[91Mobiles] webpage: no pro_item blocks (' + slug + ', len=' + body.length + ')');
+    console.warn('[91Mobiles] webpage: no pro_item blocks (' + slug + ', len=' + body.length + ') — page may be client-rendered');
     return '';
   } catch (e) {
     console.warn('[91Mobiles] webpage fetch failed (' + slug + '): ' + e.message);
@@ -419,7 +424,7 @@ function m91ParsePage(html, langLabel, isShow, label) {
     let tMatch = block.match(/<a[^>]+title="([^"]+)"[^>]*class="txt-white/);
     if (!tMatch) tMatch = block.match(/<a[^>]+title="([^"]{2,150})"/);
     if (!tMatch) { stats.noTitle++; continue; }
-    const title = m91StripTags(tMatch[1]);
+    const title = m91CleanTitle(m91StripTags(tMatch[1]));
 
     let metaMatch = block.match(/<p class="d-in-block f-s-m">([^<]+)<\/p>/);
     if (!metaMatch) metaMatch = block.match(/<p[^>]*>([^<]*\d{1,2}\s+[A-Za-z]{3}\s+\d{4}[^<]*)<\/p>/);
@@ -427,8 +432,8 @@ function m91ParsePage(html, langLabel, isShow, label) {
     const meta = m91StripTags(metaMatch[1]);
     const metaLower = meta.toLowerCase();
 
-    // STRICT language check: 91mobiles pages mix languages, so the target
-    // language (English word or native script) MUST appear on the card.
+    // STRICT language check: pages mix languages, so the target language
+    // (English word or native script) MUST appear on the card.
     if (!metaLower.includes(langLabel) && !meta.includes(M91_LANG_NATIVE[langLabel])) {
       stats.lang++;
       if (samples.lang.length < 2) samples.lang.push(title + ' [' + meta.slice(0, 80) + ']');
@@ -446,15 +451,16 @@ function m91ParsePage(html, langLabel, isShow, label) {
 
     const ageDays = (Date.now() - date.getTime()) / 86400000;
     // Shows often display the SEASON-1 premiere date — a "new season/episode"
-    // item bypasses the age rule (it is on the "new" page for a reason)
+    // item bypasses the age rule
     if (ageDays > lookback && !isNewSeason) {
       stats.old++;
       if (samples.old.length < 2) samples.old.push(title + ' [' + meta.slice(0, 80) + ']');
       continue;
     }
 
-    // Platforms: Where-To-Stream logos are the primary signal; items without
-    // them pass through — TMDB India watch-providers arbitrate later.
+    // Platforms: Where-To-Stream logos are the primary signal. v9: if there
+    // are no logos but the card carries 91mobiles' own "(OTT)" tag, that is
+    // accepted as an OTT confirmation ("OTT / Streaming").
     const rawPlatforms = [];
     const wtsIdx = block.indexOf('Where To Stream');
     if (wtsIdx !== -1) {
@@ -466,10 +472,13 @@ function m91ParsePage(html, langLabel, isShow, label) {
       while ((pm = pRe2.exec(tail)) !== null) rawPlatforms.push(pm[1].trim());
     }
 
-    const finalPlatform = cleanPlatformNames(rawPlatforms.join(', '));
+    let finalPlatform = cleanPlatformNames(rawPlatforms.join(', '));
+    if (!finalPlatform && /\(OTT\)/i.test(meta)) finalPlatform = 'OTT / Streaming';
+
     if (!finalPlatform) {
       stats.noPlatform++;
       if (samples.noPlatform.length < 2) samples.noPlatform.push(title + ' [' + meta.slice(0, 80) + ']');
+      // pass through — TMDB India watch-providers arbitrate later
     }
 
     stats.kept++;
@@ -501,16 +510,18 @@ async function fetch91Mobiles(lang, kind) {
   if (!slug) return [];
 
   try {
-    // v8: three sources merged — AJAX page 1, AJAX page 2, and the public
-    // webpage. Deduplication is by normalized title + arrival date.
-    const ajaxP1 = await m91FetchAjax(slug, kind, lang, '1');
-    const ajaxP2 = await m91FetchAjax(slug, kind, lang, '21');
-    const webBody = await m91FetchWebpage(slug);
+    // v9: freshest first — language webpage, all-languages webpage, then the
+    // lagging AJAX pages as backup. Webpage dates win on duplicates.
+    const webLang    = await m91FetchWebpage(slug);
+    const webGeneric = await m91FetchWebpage(M91_GENERIC_WEB_SLUGS[isShow ? 'series' : 'movie']);
+    const ajaxP1     = await m91FetchAjax(slug, kind, lang, '1');
+    const ajaxP2     = await m91FetchAjax(slug, kind, lang, '21');
 
     const sources = [
-      { label: lang + ' ' + kind + ' ajax p1', html: ajaxP1 },
-      { label: lang + ' ' + kind + ' ajax p2', html: ajaxP2 },
-      { label: lang + ' ' + kind + ' webpage', html: webBody },
+      { label: lang + ' ' + kind + ' webpage',     html: webLang },
+      { label: lang + ' ' + kind + ' webpage-all', html: webGeneric },
+      { label: lang + ' ' + kind + ' ajax p1',     html: ajaxP1 },
+      { label: lang + ' ' + kind + ' ajax p2',     html: ajaxP2 },
     ];
 
     const items = [];
@@ -525,7 +536,7 @@ async function fetch91Mobiles(lang, kind) {
       }
     }
 
-    console.log('[91Mobiles] ' + lang + ' ' + kind + ': ' + items.length + ' live OTT items total (3 sources)');
+    console.log('[91Mobiles] ' + lang + ' ' + kind + ': ' + items.length + ' live OTT items total (4 sources)');
 
     const resolved = [];
     const seenIds = new Set();
@@ -540,7 +551,6 @@ async function fetch91Mobiles(lang, kind) {
 
       for (const v of getTitleVariations(item.title)) {
         try {
-          // No year filter in the query — year is used only as confirmation
           const data = await tmdb(endpoint + encodeURIComponent(v) + '&language=en-US&page=1');
           const results = data.results || [];
           if (!results.length) continue;
@@ -553,7 +563,7 @@ async function fetch91Mobiles(lang, kind) {
           if (!candidates.length) continue;
           hadCandidates = true;
 
-          // v7 ambiguity protection: accept ONLY exact title or year match
+          // Ambiguity protection: accept ONLY exact title or year match
           const exactHit = candidates.find(c => normTitle(c.title || c.name) === normTitle(item.title));
           if (exactHit) { r = exactHit; break; }
 
@@ -561,8 +571,6 @@ async function fetch91Mobiles(lang, kind) {
             const yearHit = candidates.find(c => String(c.release_date || c.first_air_date || '').slice(0, 4) === item.year);
             if (yearHit) { r = yearHit; break; }
           }
-          // Ambiguous: candidates exist but neither exact title nor year
-          // matched — try next variation; never guess blindly
         } catch (e) {}
       }
 
@@ -614,8 +622,6 @@ async function discoverMovies(lang, lookbackDays, maxPages) {
   const results = [];
   const seenIds = new Set();
 
-  // Recently released (theatrical or direct-to-OTT). The daily deep sweep
-  // (90-day window) covers cinema-first movies that hit OTT later.
   const query =
     '/discover/movie?with_original_language=' + lang +
     '&watch_region=IN&with_watch_monetization_types=flatrate|free|ads' +
@@ -649,15 +655,11 @@ async function discoverSeries(lang, maxPages, lookbackDays) {
   const results = [];
   const seenIds = new Set();
 
-  // NO streaming-provider requirement — TMDB's India provider data is spotty
-  // for regional shows and was hiding new releases entirely.
   const queries = [
-    // A: brand-new premieres in the window
     '/discover/tv?with_original_language=' + lang +
       '&sort_by=first_air_date.desc' +
       '&first_air_date.gte=' + daysAgo(lookbackDays) +
       '&first_air_date.lte=' + today(),
-    // B: currently-airing shows — catches NEW SEASONS of older shows
     '/discover/tv?with_original_language=' + lang +
       '&sort_by=popularity.desc' +
       '&air_date.gte=' + daysAgo(lookbackDays) +
@@ -781,8 +783,6 @@ async function processSeriesJW(item, lang) {
 
     if (!detail && item.title) {
       try {
-        // No year filter — new seasons of old shows must match.
-        // Exact-title match only — never guess from loose search results.
         const data = await tmdb('/search/tv?query=' + encodeURIComponent(item.title) + '&language=en-US&page=1');
         const results = data.results || [];
         const normQ = normTitle(item.title);
@@ -847,7 +847,6 @@ async function processSeriesJW(item, lang) {
 }
 
 // ── ORCHESTRATORS ─────────────────────────────────────────────────────────────
-// Fresh 91mobiles info always wins: replaces the Streaming-on line, advances date
 function applyDay0Update(existingMeta, day0Item, arrivalDate, cacheObj, cacheKey) {
   const freshPlatform = cleanPlatformNames(day0Item.trustedPlatform);
   let changed = false;
@@ -872,7 +871,6 @@ async function scrapeMovies(lang) {
   const metas = [];
   const processedImdbIds = new Set();
 
-  // STEP 0: seed from cache; purge entries with no usable OTT platform line
   for (const [cacheKey, val] of Object.entries(movieCache)) {
     if (!cacheKey.startsWith(lang + '_')) continue;
     const entry = readCacheEntry(val);
@@ -884,7 +882,6 @@ async function scrapeMovies(lang) {
     }
   }
 
-  // STEP 1: live Day-0 arrivals from 91mobiles
   const day0Items = await fetchDay0Items(lang, 'MOVIE');
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_' + day0Item.id;
@@ -913,7 +910,6 @@ async function scrapeMovies(lang) {
     }
   }
 
-  // STEP 2: TMDB Discover fallback
   const isLeanCache = metas.length < 100;
   const lookback = isLeanCache ? MOVIE_FIRST_RUN : (RUN_IS_DEEP ? MOVIE_DEEP_LOOKBACK : MOVIE_LOOKBACK);
   const discoverPages = isLeanCache ? 25 : (RUN_IS_DEEP ? 12 : 5);
@@ -1029,4 +1025,4 @@ async function scrapeTamil(type) {
 
 module.exports = { scrapeMalayalam, scrapeTamil, getHealthStatus };
 
-// ── END OF FILE — South Streams scraper v8 ──
+// ── END OF FILE — South Streams scraper v9 ──
