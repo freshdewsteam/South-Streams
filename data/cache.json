@@ -1599,6 +1599,18 @@
       ]
     },
     {
+      "id": "tt8286730",
+      "type": "series",
+      "name": "Pearle Maaney Show",
+      "releaseInfo": "2026-08-22",
+      "description": "The Pearle Maaney Show is a popular Malayalam-language celebrity talk show hosted by Indian actress and television presenter Pearle Maaney. The series features fun, casual interviews and engaging segments with various guest stars.\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-08-22\n⭐ Rating: 8.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/qMLAV2Mp3g2MuArxisFM4jzzCMv.jpg",
+      "genres": [
+        "Comedy",
+        "Talk"
+      ]
+    },
+    {
       "id": "tt32105473",
       "type": "series",
       "name": "Secret Stories: Roslin",
@@ -3752,6 +3764,51 @@
   ],
   "tamil-series": [
     {
+      "id": "tt38674953",
+      "type": "series",
+      "name": "#Love",
+      "releaseInfo": "2026-10-02",
+      "description": "The pragmatic creator of a dating app and her adventurous competitor test their theories about love in a 60-day challenge to find their ideal partner.\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-10-02",
+      "poster": "https://image.tmdb.org/t/p/w500/cyJKP6Fsg8ds4O4g1Q1SCOKJQdn.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/xrm5XNKMuAnvnG9sokNYlaAng2G.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
+      "id": "tt10340718",
+      "type": "series",
+      "name": "Tamizha Tamizha",
+      "releaseInfo": "2026-09-27",
+      "description": "Film director and actor Karu Pazhaniappan hosts debates on current affairs and topics which can bring about change in the society.\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-09-27",
+      "poster": "https://image.tmdb.org/t/p/w500/nPTBIzDyiRacWtkBlERyIhyY59r.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/rTRsmhE9TkT4Ku6TsDUNasUcLi1.jpg"
+    },
+    {
+      "id": "tt7084920",
+      "type": "series",
+      "name": "Bigg Boss",
+      "releaseInfo": "2026-09-27",
+      "description": "Many contestants live in a purpose-built house and are isolated from the rest of the world. Every week, housemates nominate two of their fellow housemates for eviction.\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-09-27\n⭐ Rating: 3.7/10",
+      "poster": "https://image.tmdb.org/t/p/w500/8O1LjYsGvLQY8XxajupuDwpaJa2.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/wzHxE333DkZIlTLSuTgbqP23UP5.jpg",
+      "genres": [
+        "Reality"
+      ]
+    },
+    {
+      "id": "tt10196054",
+      "type": "series",
+      "name": "Super Singer Junior",
+      "releaseInfo": "2026-09-26",
+      "description": "Super Singer Junior is a reality TV show since February 2007 hosted by Vijay TV. It is a singing talent hunt for the children of age group 6–15. This is the junior version of the Super Singer show.\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-09-26",
+      "poster": "https://image.tmdb.org/t/p/w500/qTU82fjeHqD7DnF82BdjNOo2VIn.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/mJEs144YThc7qXSlZy1uNdOJqAW.jpg",
+      "genres": [
+        "Reality"
+      ]
+    },
+    {
       "id": "tt44914967",
       "type": "series",
       "name": "The Court",
@@ -4673,48 +4730,7 @@
       "genres": [
         "Drama"
       ]
-    },
-    {
-      "id": "tt0312859",
-      "type": "series",
-      "name": "Kannathil Muthamittal",
-      "releaseInfo": "2022-04-11",
-      "description": "Adhira, a teenager, learns to believe in the value of relationships when she develops a special bond with Subathra, her stepmother.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-04-11",
-      "genres": [
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt2357208",
-      "type": "series",
-      "name": "Run Baby Run",
-      "releaseInfo": "2022-02-27",
-      "description": "Popular TV artists participate in tough tasks to test their mental and physical endurance within a given time.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-02-27"
-    },
-    {
-      "id": "tt17528060",
-      "type": "series",
-      "name": "Namma Madurai Sisters",
-      "releaseInfo": "2022-02-21",
-      "description": "Family business, sibling love, & bitter enemies collide.\n\n\n📅 OTT Release: 2022-02-21",
-      "genres": [
-        "Drama"
-      ]
-    },
-    {
-      "id": "tt15716624",
-      "type": "series",
-      "name": "Vilangu",
-      "releaseInfo": "2022-02-18",
-      "description": "Paridhi, a cop undergoing a stressful personal situation, must solve a mysterious murder case that has put the police department on its toes.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-02-18\n⭐ Rating: 8.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/p1VTdQ58aMEE8GkV9eBfu0ebnao.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/rs9JwF3OghxJ0VDAQXlMIsYZzRj.jpg",
-      "genres": [
-        "Crime",
-        "Drama",
-        "Mystery"
-      ]
     }
   ],
-  "builtAt": "2026-10-02T22:05:21.901Z"
+  "builtAt": "2026-10-02T22:18:36.875Z"
 }
