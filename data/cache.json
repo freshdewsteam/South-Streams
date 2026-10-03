@@ -119,6 +119,18 @@
       ]
     },
     {
+      "id": "tt36670542",
+      "type": "movie",
+      "name": "LURK",
+      "releaseInfo": "2026-07-24",
+      "description": "Man-animal conflict, exploring who the real predator is, man or animal, with inspiration from real incidents and forest life.\n\n📺 Streaming on: Amazon Prime Video, Amazon Prime Video with Ads\n📅 Released: 2026-07-24",
+      "poster": "https://image.tmdb.org/t/p/w500/a8YUKtD4zNRGY5OpZVg1M2gLlMW.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/9rF3CfdH7tXyeaiWp5POgfOpctU.jpg",
+      "genres": [
+        "Thriller"
+      ]
+    },
+    {
       "id": "tt39910244",
       "type": "movie",
       "name": "Achyuta Avataaram",
@@ -1531,20 +1543,6 @@
       "genres": [
         "Romance"
       ]
-    },
-    {
-      "id": "tt34757142",
-      "type": "movie",
-      "name": "Sarkeet",
-      "releaseInfo": "2025-05-08",
-      "description": "In a distant land, Balu and Stephy struggle to balance work, parenting their spirited son with ADHD, and holding their relationship together. When a worn-out stranger enters their lives, a fleeting connection sparks unexpected change in just one day.\n\n📺 Streaming on: Prime Video, ManoramaMAX\n📅 OTT Release: 2025-05-08\n⭐ Rating: 5.8/10",
-      "poster": "https://image.tmdb.org/t/p/w500/yruMwNKwObVwS8vbE3N6hriAdYB.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/uwc0OA7T34ooE62Q23tOUaQUmwT.jpg",
-      "genres": [
-        "Family",
-        "Drama",
-        "Comedy"
-      ]
     }
   ],
   "malayalam-series": [
@@ -1599,6 +1597,14 @@
       ]
     },
     {
+      "id": "tt43695670",
+      "type": "series",
+      "name": "Kerala Underground",
+      "releaseInfo": "2026-08-28",
+      "description": "Kerala Underground is a first-of-its-kind Malayalam hip-hop reality series that explores the voices, stories, and culture shaping Kerala's rapidly growing rap movement.\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-08-28",
+      "poster": "https://image.tmdb.org/t/p/w500/riUSvenRSoqlva4PgidMXZZqIsl.jpg"
+    },
+    {
       "id": "tt8286730",
       "type": "series",
       "name": "Pearle Maaney Show",
@@ -1609,6 +1615,15 @@
         "Comedy",
         "Talk"
       ]
+    },
+    {
+      "id": "tt0355410",
+      "type": "series",
+      "name": "Ee Puzhayum Kadannu",
+      "releaseInfo": "2026-08-14",
+      "description": "Tragedy befalls a happy meddle-Class family after their father Aravindan's sudden demise. Now his daughters must find hope while overcoming the conflicts in life\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-08-14\n⭐ Rating: 6.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/fFuCiMnu4WDNLycxabw3XY4KOpk.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1n6T6lhtXYgSAIT53ZlMw53XrR2.jpg"
     },
     {
       "id": "tt32105473",
@@ -3859,6 +3874,19 @@
       ]
     },
     {
+      "id": "tt4239728",
+      "type": "series",
+      "name": "Second Love",
+      "releaseInfo": "2026-08-15",
+      "description": "12 singles in their 30s who have ended prior relationships move into a villa to find love and give it another chance.\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-08-15",
+      "poster": "https://image.tmdb.org/t/p/w500/sWpsHljdyG9Edr1T48FlO8grY6m.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/yHTHfNhQp9BcLVRUg7JGgiBI996.jpg",
+      "genres": [
+        "Reality",
+        "Talk"
+      ]
+    },
+    {
       "id": "tt21908550",
       "type": "series",
       "name": "Vadhandhi",
@@ -4719,17 +4747,7 @@
       "genres": [
         "Drama"
       ]
-    },
-    {
-      "id": "tt19512360",
-      "type": "series",
-      "name": "Thavamai Thavamirundhu",
-      "releaseInfo": "2022-04-18",
-      "description": "Abandoned by their grown-up children, Markandeyan and Seetha leave the house to start life afresh.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-04-18",
-      "genres": [
-        "Drama"
-      ]
     }
   ],
-  "builtAt": "2026-10-03T14:39:27.399Z"
+  "builtAt": "2026-10-03T18:38:37.002Z"
 }

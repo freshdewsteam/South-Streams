@@ -2342,7 +2342,7 @@
     },
     "ml_series_337062": {
       "_status": "retry",
-      "_at": 1791038372995
+      "_at": 1791052726472
     },
     "ml_series_325854": {
       "id": "tt8286730",
@@ -2403,7 +2403,7 @@
     },
     "ml_series_298957": {
       "_status": "retry",
-      "_at": 1791038372790
+      "_at": 1791052726237
     },
     "ta_series_53606": {
       "id": "tt38674953",
@@ -2415,6 +2415,40 @@
       "background": "https://image.tmdb.org/t/p/w1280/xrm5XNKMuAnvnG9sokNYlaAng2G.jpg",
       "genres": [
         "Drama"
+      ]
+    },
+    "ml_series_332989": {
+      "id": "tt43695670",
+      "type": "series",
+      "name": "Kerala Underground",
+      "releaseInfo": "2026-08-28",
+      "description": "Kerala Underground is a first-of-its-kind Malayalam hip-hop reality series that explores the voices, stories, and culture shaping Kerala's rapidly growing rap movement.\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-08-28",
+      "poster": "https://image.tmdb.org/t/p/w500/riUSvenRSoqlva4PgidMXZZqIsl.jpg"
+    },
+    "ml_series_331247": {
+      "_status": "retry",
+      "_at": 1791052726744
+    },
+    "ml_series_313313": {
+      "id": "tt0355410",
+      "type": "series",
+      "name": "Ee Puzhayum Kadannu",
+      "releaseInfo": "2026-08-14",
+      "description": "Tragedy befalls a happy meddle-Class family after their father Aravindan's sudden demise. Now his daughters must find hope while overcoming the conflicts in life\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-08-14\n⭐ Rating: 6.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/fFuCiMnu4WDNLycxabw3XY4KOpk.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/1n6T6lhtXYgSAIT53ZlMw53XrR2.jpg"
+    },
+    "ta_series_328630": {
+      "id": "tt4239728",
+      "type": "series",
+      "name": "Second Love",
+      "releaseInfo": "2026-08-15",
+      "description": "12 singles in their 30s who have ended prior relationships move into a villa to find love and give it another chance.\n\n📺 Streaming on: OTT / Streaming\n📅 Latest Episode: 2026-08-15",
+      "poster": "https://image.tmdb.org/t/p/w500/sWpsHljdyG9Edr1T48FlO8grY6m.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/yHTHfNhQp9BcLVRUg7JGgiBI996.jpg",
+      "genres": [
+        "Reality",
+        "Talk"
       ]
     }
   }
