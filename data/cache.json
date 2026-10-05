@@ -144,6 +144,19 @@
       ]
     },
     {
+      "id": "tt11724682",
+      "type": "movie",
+      "name": "Antappante Athbudha Pravarthikal",
+      "releaseInfo": "2026-07-17",
+      "description": "Antappan is a man with an extraordinary belief: he is convinced that he is Jesus Christ, returned to Earth with a mission that only he fully understands. His family, neighbors, and the wider community see his words and behavior as signs of mental illness, but Antappan refuses to accept their judgment. To him, every rejection is a test of faith, and every person in pain is someone he has been sent to help.\n\n📺 Streaming on: ManoramaMAX Amazon Channel\n📅 Released: 2026-07-17",
+      "poster": "https://image.tmdb.org/t/p/w500/oFtEJsUMPP8sqN90LF6REv7nMyM.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/pV9psQW829OzCq4idQzmxzAs3jJ.jpg",
+      "genres": [
+        "Comedy",
+        "Fantasy"
+      ]
+    },
+    {
       "id": "tt43082675",
       "type": "movie",
       "name": "Oru Vadakkan Velicham - A Northern Light",
@@ -1531,17 +1544,6 @@
         "Family",
         "Comedy",
         "Drama"
-      ]
-    },
-    {
-      "id": "tt34870373",
-      "type": "movie",
-      "name": "Shanthamee Raathriyil",
-      "releaseInfo": "2025-05-09",
-      "description": "Two love stories, decades apart, unfold by two iconic bridges—one in the misty hills of Munnar in 1970, the other beneath the bustling skyline of London in 2024. As hearts meet near the Hanging Bridge and the London Bridge, fate weaves an unexpected connection between the past and present, revealing that love, no matter the era, always finds a way across time.\n\n📺 Streaming on: Prime Video, ManoramaMAX\n📅 OTT Release: 2025-05-09\n⭐ Rating: 4.0/10",
-      "poster": "https://image.tmdb.org/t/p/w500/nQlAHQcyJA0bAcsKPd8J0G4LjxO.jpg",
-      "genres": [
-        "Romance"
       ]
     }
   ],
@@ -4749,5 +4751,5 @@
       ]
     }
   ],
-  "builtAt": "2026-10-05T05:22:58.282Z"
+  "builtAt": "2026-10-05T19:12:04.172Z"
 }
