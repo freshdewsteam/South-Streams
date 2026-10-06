@@ -2264,7 +2264,7 @@
       "type": "movie",
       "name": "Magudam",
       "releaseInfo": "2026-09-11",
-      "description": "Peaceful medical representative and shipping harbor worker Linga's life changes because of betrayal and conflict in a coastal community.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-09-11",
+      "description": "Peaceful medical representative and shipping harbor worker Linga's life changes because of betrayal and conflict in a coastal community.\n\n\n📅 OTT Release: 2026-09-11\n\n📺 Streaming on: Prime Video",
       "poster": "https://image.tmdb.org/t/p/w500/oM0daQezJfdK8ADtwi1SMCy1BJA.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/p5LmNUM4T9xLqbeu7nBY47VUh3W.jpg",
       "genres": [
@@ -4681,7 +4681,7 @@
     },
     "ta_1618200": {
       "_status": "retry",
-      "_at": 1791266774490
+      "_at": 1791304761344
     },
     "ta_1766087": {
       "_status": "skip",
@@ -4740,7 +4740,7 @@
     },
     "ml_1495207": {
       "_status": "retry",
-      "_at": 1791266766760
+      "_at": 1791304752839
     },
     "ta_1317872": {
       "id": "tt28541577",
@@ -4824,14 +4824,18 @@
       "id": "tt11724682",
       "type": "movie",
       "name": "Antappante Athbudha Pravarthikal",
-      "releaseInfo": "2026-07-17",
-      "description": "Antappan is a man with an extraordinary belief: he is convinced that he is Jesus Christ, returned to Earth with a mission that only he fully understands. His family, neighbors, and the wider community see his words and behavior as signs of mental illness, but Antappan refuses to accept their judgment. To him, every rejection is a test of faith, and every person in pain is someone he has been sent to help.\n\n📺 Streaming on: ManoramaMAX Amazon Channel\n📅 Released: 2026-07-17",
+      "releaseInfo": "2026-10-02",
+      "description": "Antappan is a man with an extraordinary belief: he is convinced that he is Jesus Christ, returned to Earth with a mission that only he fully understands. His family, neighbors, and the wider community see his words and behavior as signs of mental illness, but Antappan refuses to accept their judgment. To him, every rejection is a test of faith, and every person in pain is someone he has been sent to help.\n\n\n📅 Released: 2026-07-17\n\n📺 Streaming on: ManoramaMax",
       "poster": "https://image.tmdb.org/t/p/w500/oFtEJsUMPP8sqN90LF6REv7nMyM.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/pV9psQW829OzCq4idQzmxzAs3jJ.jpg",
       "genres": [
         "Comedy",
         "Fantasy"
       ]
+    },
+    "ta_1563192": {
+      "_status": "skip",
+      "_at": 1791304761186
     }
   }
 }
