@@ -4681,7 +4681,7 @@
     },
     "ta_1618200": {
       "_status": "retry",
-      "_at": 1791351698562
+      "_at": 1791393804750
     },
     "ta_1766087": {
       "_status": "skip",
@@ -4740,7 +4740,7 @@
     },
     "ml_1495207": {
       "_status": "retry",
-      "_at": 1791351689573
+      "_at": 1791393796748
     },
     "ta_1317872": {
       "id": "tt28541577",
@@ -4836,6 +4836,18 @@
     "ta_1563192": {
       "_status": "skip",
       "_at": 1791304761186
+    },
+    "ta_1724704": {
+      "id": "tt39052798",
+      "type": "movie",
+      "name": "Promise",
+      "releaseInfo": "2026-10-05",
+      "description": "Mithran's quiet, unwavering devotion to Lakshmi survives family opposition and social pressure - and finally leads them to the altar. But marriage brings burdens neither anticipated. Unfulfilled promises and unspoken failures slowly erode their bond, until a single broken vow spirals into a chain of events neither can control. Consumed by guilt and the fear of losing everything he fought for, Mithran is pushed to a breaking point - and the promise that follows will change both their lives forever.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-10-05",
+      "poster": "https://image.tmdb.org/t/p/w500/a9HQrvrcPIghm0cvf1q5KLaxfvw.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/3R3PDK7m2J4UjDMySuQ1CnnqqGo.jpg",
+      "genres": [
+        "Drama"
+      ]
     }
   }
 }

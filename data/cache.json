@@ -2188,6 +2188,18 @@
   ],
   "tamil-movies": [
     {
+      "id": "tt39052798",
+      "type": "movie",
+      "name": "Promise",
+      "releaseInfo": "2026-10-05",
+      "description": "Mithran's quiet, unwavering devotion to Lakshmi survives family opposition and social pressure - and finally leads them to the altar. But marriage brings burdens neither anticipated. Unfulfilled promises and unspoken failures slowly erode their bond, until a single broken vow spirals into a chain of events neither can control. Consumed by guilt and the fear of losing everything he fought for, Mithran is pushed to a breaking point - and the promise that follows will change both their lives forever.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-10-05",
+      "poster": "https://image.tmdb.org/t/p/w500/a9HQrvrcPIghm0cvf1q5KLaxfvw.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/3R3PDK7m2J4UjDMySuQ1CnnqqGo.jpg",
+      "genres": [
+        "Drama"
+      ]
+    },
+    {
       "id": "tt28541577",
       "type": "movie",
       "name": "Sardar 2",
@@ -3762,20 +3774,6 @@
         "Comedy",
         "Action"
       ]
-    },
-    {
-      "id": "tt32474216",
-      "type": "movie",
-      "name": "Jora Kaiya Thattunga",
-      "releaseInfo": "2025-05-16",
-      "description": "A solitary magician in rural South India battles social resistance while pursuing his deceased father's aspirations, until hardship sparks his metamorphosis into a resilient force ready to overcome.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2025-05-16",
-      "poster": "https://image.tmdb.org/t/p/w500/kom0PpAofXsyGzsuL76XApU8Dtr.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/tFX0b8zZ93SbSBgkLcKbdOtgkJN.jpg",
-      "genres": [
-        "Thriller",
-        "Family",
-        "Drama"
-      ]
     }
   ],
   "tamil-series": [
@@ -4751,5 +4749,5 @@
       ]
     }
   ],
-  "builtAt": "2026-10-07T05:41:25.383Z"
+  "builtAt": "2026-10-07T17:23:11.658Z"
 }
