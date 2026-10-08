@@ -4681,7 +4681,7 @@
     },
     "ta_1618200": {
       "_status": "retry",
-      "_at": 1791438611578
+      "_at": 1791480034957
     },
     "ta_1766087": {
       "_status": "skip",
@@ -4725,7 +4725,7 @@
       "type": "movie",
       "name": "Mandaadi",
       "releaseInfo": "2026-10-08",
-      "description": "A fishing captain applies his maritime knowledge in a traditional boat race along Tamil Nadu's coast during a festival, leading a six-person team against other crews.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-10-08\n⭐ Rating: 8.0/10",
+      "description": "A fishing captain applies his maritime knowledge in a traditional boat race along Tamil Nadu's coast during a festival, leading a six-person team against other crews.\n\n\n📅 OTT Release: 2026-10-08\n⭐ Rating: 8.0/10\n\n📺 Streaming on: Netflix",
       "poster": "https://image.tmdb.org/t/p/w500/cDFW9BI1PSqrBWu8W0ZoeUQivEM.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/dJ4sqrmX2KviF8HBKlLrDedUhnh.jpg",
       "genres": [
@@ -4749,7 +4749,7 @@
     },
     "ml_1495207": {
       "_status": "retry",
-      "_at": 1791438599195
+      "_at": 1791480026729
     },
     "ta_1317872": {
       "id": "tt28541577",
