@@ -2188,6 +2188,19 @@
   ],
   "tamil-movies": [
     {
+      "id": "tt36596965",
+      "type": "movie",
+      "name": "Mandaadi",
+      "releaseInfo": "2026-10-08",
+      "description": "A fishing captain applies his maritime knowledge in a traditional boat race along Tamil Nadu's coast during a festival, leading a six-person team against other crews.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-10-08\n⭐ Rating: 8.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/cDFW9BI1PSqrBWu8W0ZoeUQivEM.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/dJ4sqrmX2KviF8HBKlLrDedUhnh.jpg",
+      "genres": [
+        "Action",
+        "Drama"
+      ]
+    },
+    {
       "id": "tt39052798",
       "type": "movie",
       "name": "Promise",
@@ -3760,20 +3773,6 @@
         "Comedy",
         "Horror"
       ]
-    },
-    {
-      "id": "tt27802912",
-      "type": "movie",
-      "name": "Ace",
-      "releaseInfo": "2025-05-23",
-      "description": "Kannan,  with a past comes to Malaysia to turn over a new leaf. But when he realises that the girl he loves needs money to get out of a difficult situation, he commits a robbery that makes him the target of a fearsome gangster and the girl’s stepfather, an immoral cop.\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2025-05-23\n⭐ Rating: 5.2/10",
-      "poster": "https://image.tmdb.org/t/p/w500/8N9ET0MxfaYi1R2a8my0x3JCAxW.jpg",
-      "background": "https://image.tmdb.org/t/p/w1280/7h62JtLPbyAqvPggtVjahPLUjG6.jpg",
-      "genres": [
-        "Crime",
-        "Comedy",
-        "Action"
-      ]
     }
   ],
   "tamil-series": [
@@ -4749,5 +4748,5 @@
       ]
     }
   ],
-  "builtAt": "2026-10-07T22:59:56.903Z"
+  "builtAt": "2026-10-08T05:49:55.074Z"
 }
