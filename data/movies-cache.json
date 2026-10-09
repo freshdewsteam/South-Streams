@@ -4664,8 +4664,18 @@
       "_at": 1790977936391
     },
     "ml_1544847": {
-      "_status": "skip",
-      "_at": 1790979518519
+      "id": "tt38265603",
+      "type": "movie",
+      "name": "Pradhama Drishtya Kuttakkar",
+      "releaseInfo": "2026-10-09",
+      "description": "Follows a woman constable who joins the police force through appointment after the death of her husband.\n\n📺 Streaming on: Netflix\n📅 OTT Release: 2026-10-09\n⭐ Rating: 6.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/zcxFgdE2aHOQq3tlKDDn6RYdVWr.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/bgneM7nHQVl8SxbL5FkupFLJ1Fd.jpg",
+      "genres": [
+        "Crime",
+        "Drama",
+        "Thriller"
+      ]
     },
     "ml_1513475": {
       "_status": "skip",
@@ -4681,7 +4691,7 @@
     },
     "ta_1618200": {
       "_status": "retry",
-      "_at": 1791501308997
+      "_at": 1791525294984
     },
     "ta_1766087": {
       "_status": "skip",
@@ -4696,8 +4706,17 @@
       "_at": 1790979522255
     },
     "ta_1603779": {
-      "_status": "skip",
-      "_at": 1790979522289
+      "id": "tt38126135",
+      "type": "movie",
+      "name": "Paris Cafe",
+      "releaseInfo": "2026-10-09",
+      "description": "Olivizhiyaal, from the u.s., dreams of introducing her soulmate kavinSamson, a phd scholar, to the two people she admires most — her parents inIndia. She wants to share a happy news to them. But her smile fades when she learns that her parents, dr. Gautam raja, aSurgeon, and thara, an architect, a fiery social activist, have separated. A buried secret. A shattered trust. A photograph in a paris café that brings thePast crashing back. What did dr. Gautam do? Why did thara, a woman of unshakable ideals, walk away? As oli and kavin dive into the mystery, they uncover a hidden sin, a cry forJustice, and a chance for redemption. A family broken by truth... A daughter determined to heal it. In the end, will forgiveness light the way?\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2026-10-09",
+      "poster": "https://image.tmdb.org/t/p/w500/5rPqzWDqEFjcLGJ5Rvt8SbV3BRv.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/tS7tSdyGsa5RusEpK0gqPALJp2X.jpg",
+      "genres": [
+        "Drama",
+        "Romance"
+      ]
     },
     "ta_1686999": {
       "_status": "skip",
@@ -4749,7 +4768,7 @@
     },
     "ml_1495207": {
       "_status": "retry",
-      "_at": 1791501297990
+      "_at": 1791525285462
     },
     "ta_1317872": {
       "id": "tt28541577",

@@ -2342,7 +2342,7 @@
     },
     "ml_series_337062": {
       "_status": "retry",
-      "_at": 1791501302927
+      "_at": 1791525289645
     },
     "ml_series_325854": {
       "id": "tt8286730",
@@ -2403,7 +2403,7 @@
     },
     "ml_series_298957": {
       "_status": "retry",
-      "_at": 1791501302663
+      "_at": 1791525289333
     },
     "ta_series_53606": {
       "id": "tt38674953",
@@ -2453,7 +2453,7 @@
     },
     "ta_series_337265": {
       "_status": "retry",
-      "_at": 1791501313787
+      "_at": 1791525306061
     },
     "ta_series_337324": {
       "_status": "skip",
@@ -2461,7 +2461,7 @@
     },
     "ta_series_337401": {
       "_status": "retry",
-      "_at": 1791501313538
+      "_at": 1791525297765
     },
     "ml_series_337443": {
       "_status": "skip",
@@ -2470,6 +2470,19 @@
     "ml_series_337440": {
       "_status": "skip",
       "_at": 1791227532740
+    },
+    "ml_series_255613": {
+      "id": "tt0120663",
+      "type": "series",
+      "name": "Eyes",
+      "releaseInfo": "2026-10-09",
+      "description": "Tina Sebastian, a police officer investigates disturbing cases involving women. As the investigation progresses, mental health professionals join forces with the police to understand the psychology of stalkers, identify warning signs and prevent situations from escalating.\n\n📺 Streaming on: Sony Liv\n📅 OTT Release: 2026-10-09\n⭐ Rating: 10.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/oHhLK5Dxi1Jpe4weMF9iuRp5cHL.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/9jwfNI5P95kadt3HNQxIbftSg4N.jpg"
+    },
+    "ta_series_337682": {
+      "_status": "retry",
+      "_at": 1791525297484
     }
   }
 }
