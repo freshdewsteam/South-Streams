@@ -30,7 +30,9 @@ const IMG            = 'https://image.tmdb.org/t/p/';
 const MOVIE_CACHE_FILE  = path.join(__dirname, 'data', 'movies-cache.json');
 const SERIES_CACHE_FILE = path.join(__dirname, 'data', 'series-cache.json');
 
-const MOVIE_LOOKBACK      = 30;
+// Theatrical→OTT windows are 4–8 weeks, so a 30-day window misses most
+// theatrical films (e.g. Khalifa: theatres 20 Aug, OTT 9 Oct = 50 days).
+const MOVIE_LOOKBACK      = 75;
 const MOVIE_DEEP_LOOKBACK = 90;
 const MOVIE_FIRST_RUN     = 730;
 const SKIP_TTL            = 14 * 24 * 60 * 60 * 1000;
@@ -221,8 +223,10 @@ function daysAgo(n) { const d = new Date(); d.setDate(d.getDate() - n); return d
 function today()    { return new Date().toISOString().slice(0, 10); }
 
 function isDeepSweepHour() {
+  // The 18:01 UTC cron is often delayed by GitHub (runs seen at 22:33, 23:15),
+  // so accept any run from 18:00 UTC to midnight as the deep sweep.
   const h = new Date().getUTCHours();
-  return h >= 18 && h < 20;
+  return h >= 18;
 }
 const RUN_IS_DEEP = isDeepSweepHour();
 
@@ -246,6 +250,10 @@ function getTitleVariations(title) {
   v.add(title.replace(/[^a-zA-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim());
   v.add(title.replace(/\s*\(\d{4}\)\s*$/, '').trim());
   v.add(title.replace(/^(the|a|an)\s+/i, '').trim());
+  // 91mobiles adds franchise suffixes TMDB doesn't use, e.g. "Khalifa Part 1"
+  // (TMDB: "Khalifa"). The year check in fetch91Mobiles still guards the match.
+  const noPart = title.replace(/\s*[:\-–]?\s*\b(part|chapter|vol\.?|volume|ch\.?)\s*(\d+|[ivx]+|one|two|three)\b.*$/i, '').trim();
+  if (noPart && noPart !== title) v.add(noPart);
   return Array.from(v).filter(x => x && x.length >= 1);
 }
 
@@ -807,8 +815,8 @@ async function processMovie(item, lang, expectedLang) {
       try {
         const cleanTitle = (detail.title || item.title || '').replace(/[:\-]/g, ' ').replace(/\s+/g, ' ').trim();
         const movieYear = item.year || (detail.release_date ? detail.release_date.slice(0, 4) : '');
-        const omdbRes = await fetchJson('https://www.omdbapi.com/?t=' + encodeURIComponent(cleanTitle) + '&y=' + movieYear + '&apikey=' + OMDB_KEY);
-        if (omdbRes && omdbRes.imdbID && omdbRes.imdbID.startsWith('tt')) imdbId = omdbRes.imdbID;
+        const omdbRes = await fetchJson('https://www.omdbapi.com/?t=' + encodeURIComponent(cleanTitle) + '&type=movie&y=' + movieYear + '&apikey=' + OMDB_KEY);
+        if (omdbOk(omdbRes, 'movie', detail.title || item.title)) imdbId = omdbRes.imdbID;
       } catch (e) {}
     }
 
@@ -826,7 +834,8 @@ async function processMovie(item, lang, expectedLang) {
       platform = cleanPlatformNames(all.map(p => p.provider_name).join(', '));
     }
 
-    if (!platform) { setSkip(movieCache, cacheKey); return null; }
+    // TMDB provider data lags JustWatch by a day or two — retry, don't skip for 14 days
+    if (!platform) { setRetry(movieCache, cacheKey); return null; }
 
     const ottDate = item.arrivalDate || detail.release_date || '';
     const label = item.arrivalDate ? '📅 OTT Release:' : '📅 Released:';
@@ -901,8 +910,10 @@ async function processSeriesJW(item, lang) {
     if (!imdbId && OMDB_KEY) {
       try {
         const cleanTitle = (detail.name || item.title || '').replace(/[:\-]/g, ' ').replace(/\s+/g, ' ').trim();
-        const omdbRes = await fetchJson('https://www.omdbapi.com/?t=' + encodeURIComponent(cleanTitle) + '&apikey=' + OMDB_KEY);
-        if (omdbRes && omdbRes.imdbID && omdbRes.imdbID.startsWith('tt')) imdbId = omdbRes.imdbID;
+        // type=series + year: a bare "?t=Eyes" returned Eyes Wide Shut (tt0120663)
+        const firstYear = (detail.first_air_date || '').slice(0, 4);
+        const omdbRes = await fetchJson('https://www.omdbapi.com/?t=' + encodeURIComponent(cleanTitle) + '&type=series' + (firstYear ? '&y=' + firstYear : '') + '&apikey=' + OMDB_KEY);
+        if (omdbOk(omdbRes, 'series', detail.name || item.title)) imdbId = omdbRes.imdbID;
       } catch (e) {}
     }
 
@@ -937,6 +948,115 @@ async function processSeriesJW(item, lang) {
     setRetry(seriesCache, cacheKey);
     return null;
   }
+}
+
+// ── OMDb GUARD ────────────────────────────────────────────────────────────────
+// Accept an OMDb title match only if the type is right and the title really
+// matches — otherwise short titles grab famous unrelated IMDb IDs.
+function omdbOk(res, type, title) {
+  if (!res || res.Response === 'False' || !res.imdbID || !res.imdbID.startsWith('tt')) return false;
+  if (res.Type && res.Type !== type) return false;
+  const a = normTitle(res.Title), b = normTitle(title);
+  return !!a && !!b && (a === b || a.startsWith(b) || b.startsWith(a));
+}
+
+// ── EPISODES (series meta needs `videos`, or Stremio shows no episodes) ──────
+// Cached per TMDB id under 'eps_<id>' in series-cache.json. Also self-heals
+// bad IMDb IDs: TMDB's own imdb_id wins; an OMDb-sourced ID that OMDb says is
+// not a series (e.g. a movie) is dropped.
+const EPS_TTL_ACTIVE = 4 * 3600 * 1000;
+const EPS_TTL_ENDED  = 7 * 86400 * 1000;
+
+async function loadEpisodes(meta, tmdbId) {
+  const key = 'eps_' + tmdbId;
+  const c = seriesCache[key];
+  if (c && c._at && c.forId === meta.id) {
+    const ttl = (c.status === 'Ended' || c.status === 'Canceled') ? EPS_TTL_ENDED : EPS_TTL_ACTIVE;
+    if (Date.now() - c._at < ttl) return c;
+  }
+
+  try {
+    const detail = await tmdb('/tv/' + tmdbId + '?language=en-US&append_to_response=external_ids');
+    const tmdbImdb = (detail.external_ids && detail.external_ids.imdb_id) || null;
+
+    let imdbId = meta.id;
+    if (tmdbImdb && tmdbImdb !== meta.id) {
+      console.log('[Episodes] 🔧 ' + meta.name + ': IMDb ' + meta.id + ' → ' + tmdbImdb + ' (TMDB)');
+      imdbId = tmdbImdb;
+    } else if (!tmdbImdb && OMDB_KEY) {
+      try {
+        const o = await fetchJson('https://www.omdbapi.com/?i=' + meta.id + '&apikey=' + OMDB_KEY);
+        if (o && (o.Response === 'False' || (o.Type && o.Type !== 'series'))) {
+          console.log('[Episodes] ❌ ' + meta.name + ': ' + meta.id + ' is "' + (o.Title || '?') + '" (' + (o.Type || 'invalid') + ') — dropping');
+          imdbId = null;
+        }
+      } catch (e) { /* network blip — keep current ID */ }
+    }
+
+    const todayStr = today();
+    const fallbackDate = (meta.releaseInfo || todayStr) + 'T00:00:00.000Z';
+    const videos = [];
+
+    if (imdbId) {
+      for (const s of (detail.seasons || [])) {
+        if (!s || !s.season_number) continue; // skip specials (season 0)
+        let eps = [];
+        try {
+          const sd = await tmdb('/tv/' + tmdbId + '/season/' + s.season_number + '?language=en-US');
+          eps = sd.episodes || [];
+        } catch (e) {}
+
+        if (eps.length) {
+          for (const ep of eps) {
+            if (ep.air_date && ep.air_date > todayStr) continue; // not out yet
+            videos.push({
+              season: s.season_number,
+              episode: ep.episode_number,
+              title: ep.name || ('Episode ' + ep.episode_number),
+              released: ep.air_date ? ep.air_date + 'T00:00:00.000Z' : fallbackDate,
+              overview: ep.overview || undefined,
+              thumbnail: ep.still_path ? IMG + 'w300' + ep.still_path : undefined,
+            });
+          }
+        } else if (s.episode_count > 0 && (!s.air_date || s.air_date <= todayStr)) {
+          // Brand-new OTT drops: TMDB often has the count but no episode rows yet
+          for (let n = 1; n <= s.episode_count; n++) {
+            videos.push({ season: s.season_number, episode: n, title: 'Episode ' + n,
+              released: s.air_date ? s.air_date + 'T00:00:00.000Z' : fallbackDate });
+          }
+        }
+      }
+    }
+
+    const entry = { _at: Date.now(), forId: meta.id, status: detail.status || '', imdbId, videos };
+    seriesCache[key] = entry;
+    cacheDirty = true;
+    return entry;
+  } catch (e) {
+    console.warn('[Episodes] ' + meta.name + ': ' + e.message);
+    return c || null; // use stale data rather than nothing
+  }
+}
+
+// Returns a COPY of meta with videos (cache entries stay lean), or null if the
+// IMDb ID turned out to be wrong.
+async function withEpisodes(meta, tmdbId, cacheKey) {
+  if (!tmdbId) return meta;
+  const eps = await loadEpisodes(meta, tmdbId);
+  if (!eps) return meta;
+  if (!eps.imdbId) { setRetry(seriesCache, cacheKey); return null; }
+  if (eps.imdbId !== meta.id) {
+    meta.id = eps.imdbId; // fix the cached entry too
+    seriesCache[cacheKey] = meta;
+    cacheDirty = true;
+  }
+  const out = Object.assign({}, meta);
+  out.videos = (eps.videos || []).map(v => {
+    const o = Object.assign({ id: out.id + ':' + v.season + ':' + v.episode }, v);
+    Object.keys(o).forEach(k => o[k] === undefined && delete o[k]);
+    return o;
+  });
+  return out;
 }
 
 // ── ORCHESTRATORS ─────────────────────────────────────────────────────────────
@@ -1028,6 +1148,7 @@ async function scrapeMovies(lang) {
 async function scrapeSeries(lang) {
   const metas = [];
   const processedImdbIds = new Set();
+  const keyOf = new Map(); // meta.id → series cache key (holds the TMDB id)
 
   for (const [cacheKey, val] of Object.entries(seriesCache)) {
     if (!cacheKey.startsWith(lang + '_series_')) continue;
@@ -1036,6 +1157,7 @@ async function scrapeSeries(lang) {
         entry.type === 'series' && !processedImdbIds.has(entry.id)) {
       metas.push(entry);
       processedImdbIds.add(entry.id);
+      keyOf.set(entry.id, cacheKey);
     }
   }
 
@@ -1063,6 +1185,7 @@ async function scrapeSeries(lang) {
       cacheDirty = true;
       metas.push(meta);
       processedImdbIds.add(meta.id);
+      keyOf.set(meta.id, cacheKey);
       console.log('[Day-0 Add] 📺 ' + meta.name + ' added on ' + meta.releaseInfo + ' (' + meta.id + ')');
     }
   }
@@ -1079,6 +1202,7 @@ async function scrapeSeries(lang) {
     if (meta && meta.id && !processedImdbIds.has(meta.id)) {
       metas.push(meta);
       processedImdbIds.add(meta.id);
+      keyOf.set(meta.id, lang + '_series_' + item.id);
       discoverAdds++;
       console.log('[Discover Add] 📺 ' + meta.name + ' (' + meta.releaseInfo + ')');
     }
@@ -1086,7 +1210,17 @@ async function scrapeSeries(lang) {
   if (discoverAdds) console.log('[Discover] ' + lang + ' series: ' + discoverAdds + ' new additions');
 
   metas.sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''));
-  const finalResult = metas.slice(0, 80);
+  // Attach episode lists (and drop/fix entries whose IMDb ID proved wrong)
+  const finalResult = [];
+  const finalIds = new Set();
+  for (const m of metas.slice(0, 80)) {
+    const cacheKey = keyOf.get(m.id);
+    const tmdbId = cacheKey ? cacheKey.slice((lang + '_series_').length) : null;
+    const full = await withEpisodes(m, tmdbId, cacheKey);
+    if (!full || finalIds.has(full.id)) continue;
+    finalIds.add(full.id);
+    finalResult.push(full);
+  }
   console.log('[Series] ' + lang + ': ' + finalResult.length + ' in catalogue');
   return finalResult;
 }

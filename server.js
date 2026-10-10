@@ -208,7 +208,10 @@ const server = http.createServer((req, res) => {
     ];
     const found = allItems.find(item => item.id === id) || null;
 
-    if (!found) {
+    // A series meta with no episode list shows an empty page in Stremio —
+    // treat it as not found so other meta addons (Cinemeta) can answer.
+    const noEpisodes = found && found.type === 'series' && !(Array.isArray(found.videos) && found.videos.length);
+    if (!found || noEpisodes) {
       res.writeHead(404, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ meta: null }));
       return;
@@ -260,7 +263,8 @@ const server = http.createServer((req, res) => {
       skip = parseInt(skipMatch[1], 10) || 0;
     }
 
-    const catalogData = items.slice(skip, skip + 100);
+    // Episode lists are only needed on the meta page — keep catalog responses lean
+    const catalogData = items.slice(skip, skip + 100).map(({ videos, ...rest }) => rest);
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
