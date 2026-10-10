@@ -19,7 +19,7 @@
       "type": "movie",
       "name": "Khalifa: The Ruler",
       "releaseInfo": "2026-10-09",
-      "description": "Aamir Ali, a notorious gold smuggling kingpin who inherited his multi-million dollar criminal enterprise from a lineage of gangsters, is drawn into a web of vengeance, legacy and power.\n\n📺 Streaming on: Prime Video, ManoramaMax\n📅 OTT Release: 2026-10-09\n⭐ Rating: 4.8/10",
+      "description": "Aamir Ali, a notorious gold smuggling kingpin who inherited his multi-million dollar criminal enterprise from a lineage of gangsters, is drawn into a web of vengeance, legacy and power.\n\n\n📅 OTT Release: 2026-10-09\n⭐ Rating: 4.8/10\n\n📺 Streaming on: Prime Video, ManoramaMax",
       "poster": "https://image.tmdb.org/t/p/w500/2M089vSkfLuYV5Ao8urY2bRFKB3.jpg",
       "background": "https://image.tmdb.org/t/p/w1280/6Jz7rnnZrSkgs9ySWUxewpcxr7Q.jpg",
       "genres": [
@@ -63592,7 +63592,614 @@
           "thumbnail": "https://image.tmdb.org/t/p/w300/5ge7jRiQK1gypHZtb4Wge7izju.jpg"
         }
       ]
+    },
+    {
+      "id": "tt19512360",
+      "type": "series",
+      "name": "Thavamai Thavamirundhu",
+      "releaseInfo": "2022-04-18",
+      "description": "Abandoned by their grown-up children, Markandeyan and Seetha leave the house to start life afresh.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-04-18",
+      "genres": [
+        "Drama"
+      ],
+      "videos": [
+        {
+          "id": "tt19512360:1:1",
+          "season": 1,
+          "episode": 1,
+          "title": "Episode 1 : Markandeyan Surprises Seetha",
+          "released": "2022-04-18T00:00:00.000Z",
+          "overview": "Raja refuses when Meghala tells him to live separately. Seetha scolds Malar when she spots her talking to Pandi. Seetha assumes that Markandeyan has forgotten her birthday, but later gets a surprise."
+        }
+      ]
+    },
+    {
+      "id": "tt17528060",
+      "type": "series",
+      "name": "Namma Madurai Sisters",
+      "releaseInfo": "2022-02-21",
+      "description": "Family business, sibling love, & bitter enemies collide.\n\n\n📅 OTT Release: 2022-02-21",
+      "genres": [
+        "Drama"
+      ],
+      "videos": [
+        {
+          "id": "tt17528060:1:1",
+          "season": 1,
+          "episode": 1,
+          "title": "The kabaddi match",
+          "released": "2022-02-21T00:00:00.000Z",
+          "overview": "Kabaddi rivalry heats up between the Madurai sisters and the Manikkam clan. Will Indrani, Maagala, Bhuvana and Kaviya emerge victorious?"
+        }
+      ]
+    },
+    {
+      "id": "tt15716624",
+      "type": "series",
+      "name": "Vilangu",
+      "releaseInfo": "2022-02-18",
+      "description": "Paridhi, a cop undergoing a stressful personal situation, must solve a mysterious murder case that has put the police department on its toes.\n\n📺 Streaming on: Zee5\n📅 OTT Release: 2022-02-18\n⭐ Rating: 8.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/p1VTdQ58aMEE8GkV9eBfu0ebnao.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/rs9JwF3OghxJ0VDAQXlMIsYZzRj.jpg",
+      "genres": [
+        "Crime",
+        "Drama",
+        "Mystery"
+      ],
+      "videos": [
+        {
+          "id": "tt15716624:1:1",
+          "season": 1,
+          "episode": 1,
+          "title": "Section 174",
+          "released": "2022-02-18T00:00:00.000Z",
+          "overview": "Sub-inspector Paridhi is supposed to be on leave. But circumstances lead him to take charge of routine cases at the Vembur police station, and soon an unexpected call makes the routine in the station go for a toss.",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/blZGNUAvJzVVpc2MI2PRyo0c8i.jpg"
+        },
+        {
+          "id": "tt15716624:1:2",
+          "season": 1,
+          "episode": 2,
+          "title": "The Torch",
+          "released": "2022-02-18T00:00:00.000Z",
+          "overview": "Paridhi is in a race against time to find the criminal and solve the case. But when he finds himself at a crossroad as a personal emergency demands his time and attention, Karappu has the answers.",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/hdS0ozmDdE7A11ndiJklUgszulO.jpg"
+        },
+        {
+          "id": "tt15716624:1:3",
+          "season": 1,
+          "episode": 3,
+          "title": "The Hunt Widens",
+          "released": "2022-02-18T00:00:00.000Z",
+          "overview": "The uprooted evidence further complicates the case, and while the investigation gains pace, the new leads only create more complexities. Paridhi and the team form many theories, but an unexpected situation awaits them.",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/j5FNuwklD1PSqNYli27KFsMTGl1.jpg"
+        },
+        {
+          "id": "tt15716624:1:4",
+          "season": 1,
+          "episode": 4,
+          "title": "Handcuffed",
+          "released": "2022-02-18T00:00:00.000Z",
+          "overview": "Paridhi’s unexpected finding solidifies the case and reaffirms that they are on the right track. Paridhi believes he has found the culprit, but the suspect brings to light what Paridhi has overlooked.",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/c6Bfuy2AJsIMhAmT2f0ML43folY.jpg"
+        },
+        {
+          "id": "tt15716624:1:5",
+          "season": 1,
+          "episode": 5,
+          "title": "An Unconventional Interrogation",
+          "released": "2022-02-18T00:00:00.000Z",
+          "overview": "Paridhi is sure he has found the right man and handcuffs him. But the lack of evidence threatens to derail his efforts. Desperate to save himself, Paridhi takes the unconventional route.",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/l2gymGM3fQ39U5fFliKGHLrNO7R.jpg"
+        },
+        {
+          "id": "tt15716624:1:6",
+          "season": 1,
+          "episode": 6,
+          "title": "The Ordeal",
+          "released": "2022-02-18T00:00:00.000Z",
+          "overview": "Paridhi is very close to solving the case, but his unconventional approach puts him into trouble. With his investigation losing pace and time running out, can Paridhi find a way out?",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/3fKYV3bkPWiKLo5SVgiJ9JONQ4F.jpg"
+        },
+        {
+          "id": "tt15716624:1:7",
+          "season": 1,
+          "episode": 7,
+          "title": "The Last Piece of the Puzzle",
+          "released": "2022-02-18T00:00:00.000Z",
+          "overview": "Paridhi has managed to solve the challenges that popped up during the investigation, but he still needs to find answers to the first question that launched the case. Can he find this last piece of information that can make his world normal again?",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/dssbnP8kfvZKMy5nniFEnejazy1.jpg"
+        }
+      ]
+    },
+    {
+      "id": "tt15163764",
+      "type": "series",
+      "name": "Akash Vaani",
+      "releaseInfo": "2022-02-11",
+      "description": "A recently divorced couple has to pretend to be happily married during a college reunion with their close friends.\n\n📺 Streaming on: Aha\n📅 OTT Release: 2022-02-11\n⭐ Rating: 9.5/10",
+      "poster": "https://image.tmdb.org/t/p/w500/kiO8D4zFVTSpVHUFrVgBesU8MJP.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/3XiJvXAn1k4OGE5A52ky9fXUU93.jpg",
+      "genres": [
+        "Comedy",
+        "Family"
+      ],
+      "videos": [
+        {
+          "id": "tt15163764:1:1",
+          "season": 1,
+          "episode": 1,
+          "title": "Best Laid Plans",
+          "released": "2022-02-11T00:00:00.000Z",
+          "overview": "Seeking inspiration for her novel, an aspiring writer Teena traces back to the celebrated love story of her college classmates Akash and Vaani. This leads to the re-union of their college batch after a decade.​",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/zV6mvY9sM8gAHF9riMzEwXZkoUB.jpg"
+        },
+        {
+          "id": "tt15163764:1:2",
+          "season": 1,
+          "episode": 2,
+          "title": "Where Are You Now?",
+          "released": "2022-02-11T00:00:00.000Z",
+          "overview": "Sharath and Teena try to look for leads to connect with Akash and Vaani. The batch arrives at the re-union. Akash and Vaani face an unexpected surprise.​",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/sAHLFYSqeMW9bipx7932Ceva2LH.jpg"
+        },
+        {
+          "id": "tt15163764:1:3",
+          "season": 1,
+          "episode": 3,
+          "title": "Something Fishy",
+          "released": "2022-02-11T00:00:00.000Z",
+          "overview": "Akash and Vaani try to lie low during the re-union dinner but a nosy Sharath won't leave them alone. In the past, Akash expresses his love through a grand gesture. ​",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/my7O8Pj2g0RQqgVgzcbgal527v4.jpg"
+        },
+        {
+          "id": "tt15163764:1:4",
+          "season": 1,
+          "episode": 4,
+          "title": "Storm In A Teacup",
+          "released": "2022-02-11T00:00:00.000Z",
+          "overview": "In the past, Akash and Vaani get married and face issues as a newly married couple. The friends come to terms with a shocking revelation at the re-union.​",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/4taPQ0PT3IlV5XqXPDEiM9c2aw9.jpg"
+        },
+        {
+          "id": "tt15163764:1:5",
+          "season": 1,
+          "episode": 5,
+          "title": "Bite The Bullet",
+          "released": "2022-02-11T00:00:00.000Z",
+          "overview": "Problems between Akash and Vaani peak. In the past the college gang deals with the loss of a loved one. A drunk conversation lands Dileep in an awkward situation with Akash.​",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/2jorxRMuQ4xdx4Ol6uVnrJWllNz.jpg"
+        },
+        {
+          "id": "tt15163764:1:6",
+          "season": 1,
+          "episode": 6,
+          "title": "The Courage of Our Hearts",
+          "released": "2022-02-11T00:00:00.000Z",
+          "overview": "Akash and Vaani come together to help Anu re-unite with her husband. The friends look for an opportunity to make things happen. Akash opens up for the first time.​",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/lGpyo7iKCgljxVBnj8Zarpqg7Cp.jpg"
+        },
+        {
+          "id": "tt15163764:1:7",
+          "season": 1,
+          "episode": 7,
+          "title": "Through Thick And Thin",
+          "released": "2022-02-11T00:00:00.000Z",
+          "overview": "Vaani re-lives the promises she and Akash made with each other. Akash goes missing leading to a frantic search by the friends.​",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/mBvRE49JozZUpVHoetfkaDEkBgd.jpg"
+        }
+      ]
+    },
+    {
+      "id": "tt15509558",
+      "type": "series",
+      "name": "Putham Pudhu Kaalai Vidiyaadhaa",
+      "releaseInfo": "2022-01-14",
+      "description": "This is a Tamil anthology series comprising five episodes. All five tales hark back to themes of love, hope and togetherness in trying times\n\n📺 Streaming on: Prime Video\n📅 OTT Release: 2022-01-14\n⭐ Rating: 5.0/10",
+      "poster": "https://image.tmdb.org/t/p/w500/v98aXekm5eBp8aLkyQVWOf6GXbX.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/wMGGzSfzNiYKKcOTuQmrzw4Xqio.jpg",
+      "genres": [
+        "Drama"
+      ],
+      "videos": [
+        {
+          "id": "tt15509558:1:1",
+          "season": 1,
+          "episode": 1,
+          "title": "Mugakavasa Mutham",
+          "released": "2022-01-14T00:00:00.000Z",
+          "overview": "Police constables Murugan and Kuyili undertake an adventure to reunite two lovers. Not only does it serve as a welcome diversion from their mundane lockdown duties, it also gives Murugan an opportunity to pursue his own love interest.",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/yfCofCSdhNmwUOYVqfamkzYhcrd.jpg"
+        },
+        {
+          "id": "tt15509558:1:2",
+          "season": 1,
+          "episode": 2,
+          "title": "Loners",
+          "released": "2022-01-14T00:00:00.000Z",
+          "overview": "After going through a break up in the pandemic Nalla serendipitously meets Dheeran on a virtual wedding get together. What follows is a series of meaningful conversations that enables them to develop a bond virtually and be alone together",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/hhnBjzXI0abt9lVyIy4fSKS5YaV.jpg"
+        },
+        {
+          "id": "tt15509558:1:3",
+          "season": 1,
+          "episode": 3,
+          "title": "Mouname Paarvayaai",
+          "released": "2022-01-14T00:00:00.000Z",
+          "overview": "Yashoda and Murali haven’t spoken in years despite living in the same house, in the shadow of their long-forgotten love. When Yashoda begins to show symptoms of the virus, the couple is forced to confront their distance and navigate complex emotions.",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/LGPHZByexmhIkkgbj2UKWLPbmk.jpg"
+        },
+        {
+          "id": "tt15509558:1:4",
+          "season": 1,
+          "episode": 4,
+          "title": "The Mask",
+          "released": "2022-01-14T00:00:00.000Z",
+          "overview": "Arjun, a quintessential work-from-home IT professional, struggles to tell his overbearing parents about his secret relationship. An out-of-the-blue rendezvous with an old school friend, Velu, alters the course of both their lives and inspires self-acceptance like never before.",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/am6tNgLjBllb5wM6CfaUb1kPQHb.jpg"
+        },
+        {
+          "id": "tt15509558:1:5",
+          "season": 1,
+          "episode": 5,
+          "title": "Nizhal Tharum Idham",
+          "released": "2022-01-14T00:00:00.000Z",
+          "overview": "When she receives news of her father's death, 30-year-old Shobi, a dispassionate woman battling her own existential crisis, travels to her hometown Pondicherry; where she discovers what it means to feel alive again, through the redemptive power of the acceptance of grief.",
+          "thumbnail": "https://image.tmdb.org/t/p/w300/hwUrskn26L3c4BnvXEns2C07ojB.jpg"
+        }
+      ]
+    },
+    {
+      "id": "tt17493622",
+      "type": "series",
+      "name": "Muthazhagu",
+      "releaseInfo": "2022-01-03",
+      "description": "When village head Pechiammal stops dauntless Muthazhagu's marriage twice, she is forced to marry her sophisticated son. Will this odd couple stay together?\n\n\n📅 OTT Release: 2022-01-03",
+      "poster": "https://image.tmdb.org/t/p/w500/2sIbVj9GDeJUOm5xy6XuphOp4cJ.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/2lax4OVRtDXFlXn6MvuocFeOrsG.jpg",
+      "genres": [
+        "Soap",
+        "Drama"
+      ],
+      "videos": [
+        {
+          "id": "tt17493622:1:1",
+          "season": 1,
+          "episode": 1,
+          "title": "Muthazhagu, the Brave Girl",
+          "released": "2021-11-15T00:00:00.000Z",
+          "overview": "Meet the strong and courageous girl Muthazhagu living with her aunt. Elsewhere, the village head Pechiammal is a humble person. Will these two cross paths?"
+        },
+        {
+          "id": "tt17493622:1:2",
+          "season": 1,
+          "episode": 2,
+          "title": "Pechiammal Remembers Boominathan",
+          "released": "2021-11-16T00:00:00.000Z",
+          "overview": "Pechiammal reminisces about her son Boominathan. Elsewhere, Boominathan talks about his family over a project meeting."
+        },
+        {
+          "id": "tt17493622:1:3",
+          "season": 1,
+          "episode": 3,
+          "title": "Muthazhagu Steals the Show",
+          "released": "2021-11-17T00:00:00.000Z",
+          "overview": "Boominathan refuses to attend the pooja function. Elsewhere, Muthazhagu kick starts the festival as per her aunt's wish."
+        },
+        {
+          "id": "tt17493622:1:4",
+          "season": 1,
+          "episode": 4,
+          "title": "Is Daya in Trouble?",
+          "released": "2021-11-18T00:00:00.000Z",
+          "overview": "Pechiyamma gets impressed when Bhoominathan agrees to visit her uninvited. Later, she attends a crucial complaint against Daya."
+        },
+        {
+          "id": "tt17493622:1:5",
+          "season": 1,
+          "episode": 5,
+          "title": "Pechiyamma's Clever Move",
+          "released": "2021-11-19T00:00:00.000Z",
+          "overview": "Pechiyamma skillfully wrecks Daya's vicious plans to exploit Rajamanikyam. Elsewhere, Bhoominathan prepares to meet his family."
+        },
+        {
+          "id": "tt17493622:1:6",
+          "season": 1,
+          "episode": 6,
+          "title": "Daya Confronts Thilaga",
+          "released": "2021-11-20T00:00:00.000Z",
+          "overview": "Mallika brings a marriage alliance for Muthazhagu. However, Daya catches Thilaga bad-mouthing the latter to prevent the alliance from going any further."
+        },
+        {
+          "id": "tt17493622:1:7",
+          "season": 1,
+          "episode": 7,
+          "title": "Boominathan Encounters Muthazhagu",
+          "released": "2021-11-22T00:00:00.000Z",
+          "overview": "Pechiammal and Pandiammal agree to Boominathan's marriage alliance. Later, Boominathan has a dramatic clash with Muthazhagu."
+        },
+        {
+          "id": "tt17493622:1:8",
+          "season": 1,
+          "episode": 8,
+          "title": "Pechiyamma Takes a Stand",
+          "released": "2021-11-23T00:00:00.000Z",
+          "overview": "Pechiyamma gets upset when Bhoominathan fails to reach the temple in time. Downhearted, she decides to continue the function without him."
+        },
+        {
+          "id": "tt17493622:1:9",
+          "season": 1,
+          "episode": 9,
+          "title": "Pechiammal Feels Troubled",
+          "released": "2021-11-24T00:00:00.000Z",
+          "overview": "The family is overwhelmed by Boominathan's presence. Later, Pandiammal confronts Pecchiammal about Boominathan's marriage."
+        },
+        {
+          "id": "tt17493622:1:10",
+          "season": 1,
+          "episode": 10,
+          "title": "Pechiammal Faces Muthazhagu",
+          "released": "2021-11-25T00:00:00.000Z",
+          "overview": "A wicked plan is up against Pechiammal. Later, Muthazhagu intervenes and faces Pechiammal."
+        },
+        {
+          "id": "tt17493622:1:11",
+          "season": 1,
+          "episode": 11,
+          "title": "Thilaga Is Concerned",
+          "released": "2021-11-26T00:00:00.000Z",
+          "overview": "Thilaga gets worried over Muthazhagu's encounter with Pechiammal. Later, Pandiammal calls an astrologer to check the match for Boominathan."
+        },
+        {
+          "id": "tt17493622:1:12",
+          "season": 1,
+          "episode": 12,
+          "title": "Thilaga Convinces Muthazhagu",
+          "released": "2021-11-27T00:00:00.000Z",
+          "overview": "Muthazhagu and Boominathan have a hilarious encounter at the fields. Later, Thilaga talks to Muthazhagu about a marriage match."
+        },
+        {
+          "id": "tt17493622:1:13",
+          "season": 1,
+          "episode": 13,
+          "title": "Senbagam Tries to Open Up",
+          "released": "2021-11-29T00:00:00.000Z",
+          "overview": "Muthazhagu accepts the prospective groom's past and gives a nod to the alliance. Elsewhere, Senbagam tries to express her feelings to Bhoominathan."
+        },
+        {
+          "id": "tt17493622:1:14",
+          "season": 1,
+          "episode": 14,
+          "title": "Boominathan's Resolution",
+          "released": "2021-11-30T00:00:00.000Z",
+          "overview": "Oblivious to Daya's devious plan, Thilaga demands money from him for Muthazhagu's wedding. Boominathan, on the other hand, opposes the marriage."
+        },
+        {
+          "id": "tt17493622:1:15",
+          "season": 1,
+          "episode": 15,
+          "title": "Thilaga Invites Pechiammal",
+          "released": "2021-12-01T00:00:00.000Z",
+          "overview": "Thilaga informs Pechiammal about Muthazhagu's marriage alliance. On the other hand, Muthazhagu picks up a fight with Bhoominathan."
+        },
+        {
+          "id": "tt17493622:1:16",
+          "season": 1,
+          "episode": 16,
+          "title": "Pechiammal to Rescue Muthazhagu?",
+          "released": "2021-12-02T00:00:00.000Z",
+          "overview": "Pechiammal gets information about the registration of Muthazhagu's property. Later, she tries to unveil the fraud of Muthazhagu's marriage."
+        },
+        {
+          "id": "tt17493622:1:17",
+          "season": 1,
+          "episode": 17,
+          "title": "Boominathan Is Concerned",
+          "released": "2021-12-03T00:00:00.000Z",
+          "overview": "Pechiammal and Boominathan look for a match for Muthazhagu. Later, Muthazhagu lashes out at Boominathan."
+        },
+        {
+          "id": "tt17493622:1:18",
+          "season": 1,
+          "episode": 18,
+          "title": "Kaliyan Makes a Wish",
+          "released": "2021-12-04T00:00:00.000Z",
+          "overview": "Kaliyan opens up to Pechiammal about his desire to marry Muthazhagu. Later, she meets Muthazhagu to convince her for the same."
+        },
+        {
+          "id": "tt17493622:1:19",
+          "season": 1,
+          "episode": 19,
+          "title": "Thilaga, Framed for Theft",
+          "released": "2021-12-06T00:00:00.000Z",
+          "overview": "Muthazhagu gets shocked when Thilaga gets questioned about stealing. Later, she confronts Daya about the same."
+        },
+        {
+          "id": "tt17493622:1:20",
+          "season": 1,
+          "episode": 20,
+          "title": "Muthazhagu, Kaliyan to Tie Knot?",
+          "released": "2021-12-07T00:00:00.000Z",
+          "overview": "Muthazhagu succumbs to her family's pressure to marry Kaliyan. Later, he visits her with some beautiful gifts."
+        },
+        {
+          "id": "tt17493622:1:21",
+          "season": 1,
+          "episode": 21,
+          "title": "Veeramuthu's Narrow Escape",
+          "released": "2021-12-08T00:00:00.000Z",
+          "overview": "Veeramuthu escapes from the money lenders by being in disguise. On the other hand, Muthazhagu, Bhoominathan head to Madurai."
+        },
+        {
+          "id": "tt17493622:1:22",
+          "season": 1,
+          "episode": 22,
+          "title": "Muthazhagu Feels Uneasy",
+          "released": "2021-12-09T00:00:00.000Z",
+          "overview": "Thilaga gets upset with Muthazhagu. Later, Boominathan escorts Muthazhagu for the marriage shopping with Pechiammal."
+        },
+        {
+          "id": "tt17493622:1:23",
+          "season": 1,
+          "episode": 23,
+          "title": "A New Experience for Muthazhagu",
+          "released": "2021-12-10T00:00:00.000Z",
+          "overview": "Muthazhagu goes to a restaurant with Bhoominathan and Pechiammal. Later, Kaliyan assures Pechiammal about taking good care of Muthazhagu."
+        },
+        {
+          "id": "tt17493622:1:24",
+          "season": 1,
+          "episode": 24,
+          "title": "Muthazhagu Avoids Kaliyan",
+          "released": "2021-12-11T00:00:00.000Z",
+          "overview": "Shanmugham lashes out at Daya for not trying hard enough to get bail for him. Elsewhere, Muthazhagu acts cold towards Kaliyan."
+        },
+        {
+          "id": "tt17493622:1:25",
+          "season": 1,
+          "episode": 25,
+          "title": "Pechiammal Feels Insecure",
+          "released": "2021-12-13T00:00:00.000Z",
+          "overview": "Pechiammal gets paranoid about Boominathan's encounter with Daya. Elsewhere, Thigala gets emotional about Muthazhagu's marriage."
+        },
+        {
+          "id": "tt17493622:1:26",
+          "season": 1,
+          "episode": 26,
+          "title": "Misfortune to Strike Again?",
+          "released": "2021-12-14T00:00:00.000Z",
+          "overview": "Boominathan prepares to leave for Bangalore. Elsewhere, Thilaga gets worried when Kaalayan becomes unreachable before the wedding."
+        },
+        {
+          "id": "tt17493622:1:27",
+          "season": 1,
+          "episode": 27,
+          "title": "A Shocker for Pechiammal",
+          "released": "2021-12-15T00:00:00.000Z",
+          "overview": "Pechiammal learns the truth about Kaliyan and decides to halt Muthazhagu's wedding with him. Will she be successful in doing so?"
+        },
+        {
+          "id": "tt17493622:1:28",
+          "season": 1,
+          "episode": 28,
+          "title": "Pechiammal Feels Responsible",
+          "released": "2021-12-16T00:00:00.000Z",
+          "overview": "Muthazhagu's wedding gets wrecked when Pechiammal reveals the truth. Later, she is held accountable for Muthazhagu's misfortune."
+        },
+        {
+          "id": "tt17493622:1:29",
+          "season": 1,
+          "episode": 29,
+          "title": "A Marriage of Convenience?",
+          "released": "2021-12-17T00:00:00.000Z",
+          "overview": "Pechiammal gets heavily criticised for Muthazhagu's failed marriage. Later, Muthazhagu and Boominathan feel helpless about Pechiammal's impulsive decision."
+        },
+        {
+          "id": "tt17493622:1:30",
+          "season": 1,
+          "episode": 30,
+          "title": "Veeramuthu Loses His Calm",
+          "released": "2021-12-18T00:00:00.000Z",
+          "overview": "Veeramuthu lashes out at Pechiammal for taking a unilateral decision. Afterwards, Muthazhagu feels responsible for the ongoing situation."
+        },
+        {
+          "id": "tt17493622:1:31",
+          "season": 1,
+          "episode": 31,
+          "title": "Pechiammal Gets Disappointed",
+          "released": "2021-12-20T00:00:00.000Z",
+          "overview": "Pechiammal gets stunned by Muthazhagu's stand against a marriage custom. Later, the family becomes uncomfortable with Muthazhagu's behaviour."
+        },
+        {
+          "id": "tt17493622:1:32",
+          "season": 1,
+          "episode": 32,
+          "title": "Daya Makes a Fuss",
+          "released": "2021-12-21T00:00:00.000Z",
+          "overview": "Boominathan and Muthazhagu follow marriage customs and traditions. Later, Daya creates havoc at Pechiammal's house."
+        },
+        {
+          "id": "tt17493622:1:33",
+          "season": 1,
+          "episode": 33,
+          "title": "Daya's Corrupt Motives",
+          "released": "2021-12-22T00:00:00.000Z",
+          "overview": "Daya approaches Malaisaamy with hidden intentions. Later, Thilaga and Malaisaamy feel uneasy about visiting Muthazhagu."
+        },
+        {
+          "id": "tt17493622:1:34",
+          "season": 1,
+          "episode": 34,
+          "title": "Thilaga Makes a Fuss",
+          "released": "2021-12-23T00:00:00.000Z",
+          "overview": "Boominathan feels reluctant to follow the customs and traditions. However, Thilaga gets bitter about this and confronts Pechiammal about the marriage."
+        },
+        {
+          "id": "tt17493622:1:35",
+          "season": 1,
+          "episode": 35,
+          "title": "Muthazhagu's Confession",
+          "released": "2021-12-24T00:00:00.000Z",
+          "overview": "Muthuzhagu opens up to Boominathan. Afterwards, she tries to familiarise herself with the new beginning."
+        },
+        {
+          "id": "tt17493622:1:36",
+          "season": 1,
+          "episode": 36,
+          "title": "Meenatchi Earns Love",
+          "released": "2021-12-25T00:00:00.000Z",
+          "overview": "Muthazhagu plays a trick on Boominathan. While she tries to attain the love of everyone at home, they all reject her."
+        },
+        {
+          "id": "tt17493622:1:37",
+          "season": 1,
+          "episode": 37,
+          "title": "Pechiammal Is Concerned",
+          "released": "2021-12-27T00:00:00.000Z",
+          "overview": "Pechiammal calls an astrologer to check Boominathan and Muthazhuga's compatibility chart. Meanwhile, Daya meets Kaliyan with ulterior motives."
+        },
+        {
+          "id": "tt17493622:1:38",
+          "season": 1,
+          "episode": 38,
+          "title": "Muthazhagu Builds Up Intimacy",
+          "released": "2021-12-28T00:00:00.000Z",
+          "overview": "Muthazhagu relives the past and tries to get closer to Karthik. Meanwhile, Pechiammal is worried about their horoscope match."
+        },
+        {
+          "id": "tt17493622:1:39",
+          "season": 1,
+          "episode": 39,
+          "title": "Muthazhagu Leaves the House",
+          "released": "2021-12-29T00:00:00.000Z",
+          "overview": "Muthazhagu leaves the house without saying anything. Meanwhile, Pandiammal targets Pechiammal."
+        },
+        {
+          "id": "tt17493622:1:40",
+          "season": 1,
+          "episode": 40,
+          "title": "Muthazhagu Does the Pooja",
+          "released": "2021-12-30T00:00:00.000Z",
+          "overview": "Boominathan brings Muthazhagu home. Later, she clears the air with Pechiammal and completes the pooja."
+        },
+        {
+          "id": "tt17493622:1:41",
+          "season": 1,
+          "episode": 41,
+          "title": "Pandiammal's Cruel Comments",
+          "released": "2021-12-31T00:00:00.000Z",
+          "overview": "Pandiammal and Veeramuthu make it difficult for Muthazhagu in the house. However, Muthazhagu feels denigrated by the harsh remarks."
+        },
+        {
+          "id": "tt17493622:1:42",
+          "season": 1,
+          "episode": 42,
+          "title": "Malaisaamy Feels Resentful",
+          "released": "2022-01-03T00:00:00.000Z",
+          "overview": "The family makes preparations for Boominathan and Muthazhagu's first night. Meanwhile, Malaisaamy feels underprivileged to fulfill his fatherly duties."
+        }
+      ]
     }
   ],
-  "builtAt": "2026-10-10T21:16:05.491Z"
+  "builtAt": "2026-10-10T21:31:34.779Z"
 }
