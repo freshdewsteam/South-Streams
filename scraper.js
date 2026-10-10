@@ -986,7 +986,11 @@ async function loadEpisodes(meta, tmdbId) {
     } else if (!tmdbImdb && OMDB_KEY) {
       try {
         const o = await fetchJson('https://www.omdbapi.com/?i=' + meta.id + '&apikey=' + OMDB_KEY);
-        if (o && (o.Response === 'False' || (o.Type && o.Type !== 'series'))) {
+        // Only drop on a definite verdict. "Request limit reached!" / "Invalid API key!"
+        // also come back as Response:False and must NOT drop a good series.
+        const badId = o && o.Response === 'False' && /incorrect imdb id/i.test(o.Error || '');
+        const wrongType = o && o.Response === 'True' && o.Type && o.Type !== 'series';
+        if (badId || wrongType) {
           console.log('[Episodes] ❌ ' + meta.name + ': ' + meta.id + ' is "' + (o.Title || '?') + '" (' + (o.Type || 'invalid') + ') — dropping');
           imdbId = null;
         }
