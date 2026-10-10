@@ -50,9 +50,12 @@ const SERIES_MAX_AGE_DAYS = 730;  // ~24 months
 // Cinemeta (Stremio's IMDb-based metadata) — preferred source for episode
 // lists and extra details (cast, runtime, trailers). TMDB is the fallback.
 const CINEMETA_URL         = 'https://v3-cinemeta.strem.io/meta/';
-const CINEMETA_TTL_MOVIE   = 7 * 86400 * 1000;
-const CINEMETA_TTL_SERIES  = 6 * 3600 * 1000;
-const CINEMETA_TTL_MISSING = 12 * 3600 * 1000;
+// Movie details (cast, runtime, trailers) barely change; IMDb rating drifts slowly.
+const CINEMETA_TTL_MOVIE   = 45 * 86400 * 1000;
+// Series Cinemeta data follows the show's episode timer (see episodeTtl).
+const CINEMETA_TTL_SERIES  = 4 * 3600 * 1000;
+// Not on Cinemeta yet — new titles usually get indexed within a day.
+const CINEMETA_TTL_MISSING = 24 * 3600 * 1000;
 
 function cutoffDate(days) {
   const d = new Date(); d.setDate(d.getDate() - days); return d.toISOString().slice(0, 10);
@@ -1130,13 +1133,15 @@ function slimCinemeta(m, type) {
   return out;
 }
 
-async function cinemeta(type, imdbId) {
+async function cinemeta(type, imdbId, ttlOverride) {
   if (!imdbId || !String(imdbId).startsWith('tt')) return null;
   const store = type === 'series' ? seriesCache : movieCache;
   const key = 'cm_' + imdbId;
   const c = store[key];
   if (c && c._at) {
-    const ttl = c.meta ? (type === 'series' ? CINEMETA_TTL_SERIES : CINEMETA_TTL_MOVIE) : CINEMETA_TTL_MISSING;
+    const ttl = c.meta
+      ? (ttlOverride != null ? ttlOverride : (type === 'series' ? CINEMETA_TTL_SERIES : CINEMETA_TTL_MOVIE))
+      : CINEMETA_TTL_MISSING;
     if (Date.now() - c._at < ttl) return c.meta || null;
   }
   try {
@@ -1184,18 +1189,27 @@ function mergeEpisodes(cmVideos, tmdbVideos) {
 // Cached per TMDB id under 'eps_<id>' in series-cache.json. Also self-heals
 // bad IMDb IDs: TMDB's own imdb_id wins; an OMDb-sourced ID that OMDb says is
 // not a series (e.g. a movie) is dropped. An overrides.json IMDb ID is locked.
-const EPS_TTL_ACTIVE = 4 * 3600 * 1000;
-const EPS_TTL_STALE  = 3 * 86400 * 1000;
-const EPS_TTL_ENDED  = 7 * 86400 * 1000;
+// How often a series' episode list is re-checked, by how active the show is:
+const EPS_TTL_RECENT = 4 * 3600 * 1000;    // episode in the last 14 days (or brand new)
+const EPS_TTL_QUIET  = 24 * 3600 * 1000;   // no episode for 2+ weeks
+const EPS_TTL_STALE  = 14 * 86400 * 1000;  // no episode within the catalogue age window
+const EPS_TTL_ENDED  = 30 * 86400 * 1000;  // TMDB says Ended/Canceled
+const EPS_RECENT_DAYS = 14;
+
+function episodeTtl(entry) {
+  if (!entry) return EPS_TTL_RECENT;
+  if (entry.status === 'Ended' || entry.status === 'Canceled') return EPS_TTL_ENDED;
+  if (!entry.lastEp) return EPS_TTL_RECENT;
+  if (entry.lastEp < cutoffDate(SERIES_MAX_AGE_DAYS)) return EPS_TTL_STALE;
+  if (entry.lastEp < cutoffDate(EPS_RECENT_DAYS)) return EPS_TTL_QUIET;
+  return EPS_TTL_RECENT;
+}
 
 async function loadEpisodes(meta, tmdbId, locked) {
   const key = 'eps_' + (tmdbId || meta.id);
   const c = seriesCache[key];
   if (c && c._at && c.forId === meta.id && c.source) {
-    const ended = c.status === 'Ended' || c.status === 'Canceled';
-    const stale = c.lastEp && c.lastEp < cutoffDate(SERIES_MAX_AGE_DAYS);
-    const ttl = ended ? EPS_TTL_ENDED : (stale ? EPS_TTL_STALE : EPS_TTL_ACTIVE);
-    if (Date.now() - c._at < ttl) return c;
+    if (Date.now() - c._at < episodeTtl(c)) return c;
   }
 
   try {
@@ -1259,7 +1273,7 @@ async function loadEpisodes(meta, tmdbId, locked) {
 
     let videos = [], source = 'none';
     if (imdbId) {
-      const cm = await cinemeta('series', imdbId);
+      const cm = await cinemeta('series', imdbId, 3600 * 1000);
       const nowIso = new Date().toISOString();
       const cmVideos = ((cm && cm.videos) || [])
         .filter(v => !v.released || v.released <= nowIso)
@@ -1294,7 +1308,7 @@ async function withEpisodes(meta, tmdbId, cacheKey, lang) {
     if (cacheKey) seriesCache[cacheKey] = meta;
     cacheDirty = true;
   }
-  const out = applyCinemetaExtras(Object.assign({}, meta), await cinemeta('series', meta.id));
+  const out = applyCinemetaExtras(Object.assign({}, meta), await cinemeta('series', meta.id, episodeTtl(eps)));
   out.videos = (eps.videos || []).map(v => {
     const o = Object.assign({ id: out.id + ':' + v.season + ':' + v.episode }, v);
     Object.keys(o).forEach(k => o[k] === undefined && delete o[k]);
