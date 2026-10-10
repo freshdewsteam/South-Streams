@@ -263,8 +263,14 @@ const server = http.createServer((req, res) => {
       skip = parseInt(skipMatch[1], 10) || 0;
     }
 
-    // Episode lists are only needed on the meta page — keep catalog responses lean
-    const catalogData = items.slice(skip, skip + 100).map(({ videos, ...rest }) => rest);
+    // Episodes, cast, trailers etc. are only needed on the meta page — catalog
+    // responses carry just the preview fields Stremio shows on the home row
+    const PREVIEW = ['id', 'type', 'name', 'poster', 'posterShape', 'background', 'logo', 'genres', 'releaseInfo', 'description', 'imdbRating', 'runtime'];
+    const catalogData = items.slice(skip, skip + 100).map(m => {
+      const o = {};
+      for (const k of PREVIEW) if (m[k] !== undefined) o[k] = m[k];
+      return o;
+    });
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({

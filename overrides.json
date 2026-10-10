@@ -1,0 +1,22 @@
+{
+  "_help": [
+    "Manual fixes for South Streams. Edit on GitHub; the next cache run applies them.",
+    "Each entry in 'titles' can use these fields (all optional except what the job needs):",
+    "  title    : the title exactly as 91mobiles shows it (rating tags like (UA-16+) don't matter)",
+    "  type     : 'movie' or 'series'",
+    "  tmdb     : TMDB ID (number from themoviedb.org/movie/<id> or /tv/<id>)",
+    "  imdb     : IMDb ID (tt1234567) - beats any automatic lookup",
+    "  ottDate  : OTT release date YYYY-MM-DD - beats 91mobiles and TMDB",
+    "  platform : e.g. 'Prime Video, ManoramaMAX'",
+    "  lang     : 'ml' or 'ta' - set this (with type + tmdb or imdb) to ADD a title 91mobiles doesn't list",
+    "  hide     : true - remove a title from the catalogue (match by imdb, or by title)",
+    "Copy a block from _examples into titles. Titles that fail to match are listed in data/unmatched.json."
+  ],
+  "_examples": [
+    { "title": "Khalifa Part 1", "type": "movie", "tmdb": 123456 },
+    { "title": "Eyes", "type": "series", "imdb": "tt48461761" },
+    { "type": "movie", "lang": "ml", "imdb": "tt22797990", "ottDate": "2026-10-09", "platform": "Prime Video" },
+    { "type": "series", "imdb": "tt0120663", "hide": true }
+  ],
+  "titles": []
+}
