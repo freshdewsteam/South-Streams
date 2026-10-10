@@ -2,7 +2,7 @@
   "id": "com.freshdewsteam.southstreams",
   "name": "South Streams",
   "description": "South Streams brings you the latest Malayalam and Tamil OTT movies and web series. Automatically updated with new releases every day.",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "resources": [
     "catalog",
     "meta"
@@ -19,10 +19,30 @@
       "extra": [
         {
           "name": "genre",
-          "options": ["Action", "Adventure", "Comedy", "Crime", "Drama", "Family", "Fantasy", "Horror", "Mystery", "Romance", "Science Fiction", "Thriller"],
+          "options": [
+            "Action",
+            "Adventure",
+            "Comedy",
+            "Crime",
+            "Drama",
+            "Family",
+            "Fantasy",
+            "Horror",
+            "Mystery",
+            "Romance",
+            "Science Fiction",
+            "Thriller"
+          ],
           "isRequired": false
         },
-        { "name": "skip", "isRequired": false }
+        {
+          "name": "skip",
+          "isRequired": false
+        },
+        {
+          "name": "search",
+          "isRequired": false
+        }
       ]
     },
     {
@@ -32,10 +52,26 @@
       "extra": [
         {
           "name": "genre",
-          "options": ["Action & Adventure", "Comedy", "Crime", "Documentary", "Drama", "Family", "Mystery", "Reality"],
+          "options": [
+            "Action & Adventure",
+            "Comedy",
+            "Crime",
+            "Documentary",
+            "Drama",
+            "Family",
+            "Mystery",
+            "Reality"
+          ],
           "isRequired": false
         },
-        { "name": "skip", "isRequired": false }
+        {
+          "name": "skip",
+          "isRequired": false
+        },
+        {
+          "name": "search",
+          "isRequired": false
+        }
       ]
     },
     {
@@ -45,10 +81,33 @@
       "extra": [
         {
           "name": "genre",
-          "options": ["Action", "Adventure", "Comedy", "Crime", "Drama", "Family", "Fantasy", "History", "Horror", "Music", "Mystery", "Romance", "Science Fiction", "Thriller", "War"],
+          "options": [
+            "Action",
+            "Adventure",
+            "Comedy",
+            "Crime",
+            "Drama",
+            "Family",
+            "Fantasy",
+            "History",
+            "Horror",
+            "Music",
+            "Mystery",
+            "Romance",
+            "Science Fiction",
+            "Thriller",
+            "War"
+          ],
           "isRequired": false
         },
-        { "name": "skip", "isRequired": false }
+        {
+          "name": "skip",
+          "isRequired": false
+        },
+        {
+          "name": "search",
+          "isRequired": false
+        }
       ]
     },
     {
@@ -58,10 +117,25 @@
       "extra": [
         {
           "name": "genre",
-          "options": ["Action & Adventure", "Comedy", "Crime", "Drama", "Family", "Mystery", "Romance"],
+          "options": [
+            "Action & Adventure",
+            "Comedy",
+            "Crime",
+            "Drama",
+            "Family",
+            "Mystery",
+            "Romance"
+          ],
           "isRequired": false
         },
-        { "name": "skip", "isRequired": false }
+        {
+          "name": "skip",
+          "isRequired": false
+        },
+        {
+          "name": "search",
+          "isRequired": false
+        }
       ]
     }
   ],

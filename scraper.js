@@ -297,6 +297,7 @@ function today()    { return new Date().toISOString().slice(0, 10); }
 function isDeepSweepHour() {
   // The 18:01 UTC cron is often delayed by GitHub (runs seen at 22:33, 23:15),
   // so accept any run from 18:00 UTC to midnight as the deep sweep.
+  if (process.env.DEEP_SWEEP === '1') return true; // manual "deep" run
   const h = new Date().getUTCHours();
   return h >= 18;
 }

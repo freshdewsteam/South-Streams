@@ -1,11 +1,19 @@
 name: Update Cache
 
 on:
+  # PRIMARY trigger: an outside scheduler (cron-job.org) calls workflow_dispatch
+  # on time — see README "Reliable schedule". GitHub's own cron below is only a
+  # BACKUP: GitHub often runs it hours late, so a scheduled run is skipped when
+  # a build already happened in the last 2.5 hours.
   schedule:
-    # 00:01, 05:01, 10:01, 15:01, 18:01 UTC
-    # 18:01 UTC = deep sweep just before midnight IST (matches scraper.js deep-sweep window)
+    # 00:01, 05:01, 10:01, 15:01, 18:01 UTC (18:01 UTC = deep sweep before midnight IST)
     - cron: "1 0,5,10,15,18 * * *"
-  workflow_dispatch:   # allows manual trigger from the Actions tab
+  workflow_dispatch:
+    inputs:
+      deep:
+        description: "Force a deep sweep (wider lookback)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -24,25 +32,58 @@ jobs:
       # NOTE: no npm install step — this project has zero dependencies
       # (scraper.js / server.js use only Node built-ins: https, zlib, fs, path)
 
+      # Generated data lives on the `cache` branch (one commit, no history), so
+      # main never grows from cache refreshes. Restore it as the starting point.
+      - name: Restore cache from the cache branch
+        run: |
+          mkdir -p data
+          if git fetch --depth=1 origin cache 2>/dev/null; then
+            git archive FETCH_HEAD data | tar -x
+            echo "Restored: $(ls data | tr '\n' ' ')"
+          else
+            echo "::warning::No cache branch found — this run starts from scratch (slow first build)"
+          fi
+
+      - name: Skip backup run if a recent build exists
+        id: gate
+        if: github.event_name == 'schedule'
+        run: |
+          node -e "
+            let age = Infinity;
+            try { age = (Date.now() - new Date(require('./data/cache.json').builtAt)) / 60000; } catch (e) {}
+            const skip = age < 150;
+            console.log('Last build ' + (isFinite(age) ? Math.round(age) + ' min ago' : 'unknown') + (skip ? ' — skipping backup run' : ' — running'));
+            require('fs').appendFileSync(process.env.GITHUB_OUTPUT, 'skip=' + skip + '\n');
+          "
+
       - name: Build catalog cache
+        if: steps.gate.outputs.skip != 'true'
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
-          GOOGLE_SHEET_URL: ${{ secrets.GOOGLE_SHEET_URL }}
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          MON_API_KEY: ${{ secrets.MON_API_KEY }}
           SCRAPERAPI_KEY: ${{ secrets.SCRAPERAPI_KEY }}
           ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
+          DEEP_SWEEP: ${{ inputs.deep && '1' || '' }}
         run: npm run build
 
-      - name: Commit updated cache
+      # Replace the cache branch with ONE fresh commit (force push) — the branch
+      # never accumulates history, so the repo size stays flat.
+      - name: Publish cache branch
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          set -e
+          OUT=$(mktemp -d)
+          mkdir -p "$OUT/data"
+          cp data/*.json "$OUT/data/"
+          git show HEAD:.github/cache-branch-README.md > "$OUT/README.md" 2>/dev/null || echo "Generated cache — do not edit." > "$OUT/README.md"
+          cd "$OUT"
+          git init -q -b cache
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/
-          if git diff --staged --quiet; then
-            echo "No cache changes to commit"
-          else
-            git commit -m "chore: refresh OTT catalog cache [skip ci]"
-            git push
-          fi
+          git add -A
+          git commit -q -m "cache: $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:cache
+          echo "✅ Published cache branch"

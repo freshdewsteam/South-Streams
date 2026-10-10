@@ -7,7 +7,12 @@ const fs    = require('fs');
 const path  = require('path');
 
 const PORT = process.env.PORT || 3000;
-const RAW_CACHE_URL = 'https://raw.githubusercontent.com/freshdewsteam/South-Streams/main/data/cache.json';
+// Generated data lives on the `cache` branch (rewritten each build, no history).
+// The old main-branch path is kept as a fallback during the switch-over.
+const RAW_CACHE_URLS = [
+  'https://raw.githubusercontent.com/freshdewsteam/South-Streams/cache/data/cache.json',
+  'https://raw.githubusercontent.com/freshdewsteam/South-Streams/main/data/cache.json',
+];
 
 // Helper to read local JSON file
 function readJsonFile(filePath) {
@@ -52,20 +57,35 @@ function fetchRemoteJson(url) {
   });
 }
 
+let hasSynced = false;
+
 async function syncCacheFromGitHub() {
-  try {
-    const freshData = await fetchRemoteJson(RAW_CACHE_URL + '?t=' + Date.now());
-    if (freshData && freshData['malayalam-movies']) {
-      memoryCache = freshData;
-      console.log('[Cache Sync] ✅ In-memory cache updated from GitHub Raw (' + (freshData.builtAt || 'latest') + ')');
+  for (const url of RAW_CACHE_URLS) {
+    try {
+      const freshData = await fetchRemoteJson(url + '?t=' + Date.now());
+      if (freshData && freshData['malayalam-movies']) {
+        // Never replace newer data with older (e.g. the stale fallback path)
+        const cur = memoryCache && memoryCache.builtAt;
+        if (cur && freshData.builtAt && freshData.builtAt < cur) continue;
+        memoryCache = freshData;
+        hasSynced = true;
+        console.log('[Cache Sync] ✅ In-memory cache updated (' + (freshData.builtAt || 'latest') + ')');
+        return;
+      }
+    } catch (e) {
+      console.warn('[Cache Sync] ⚠️ ' + url.split('/').slice(-3, -2)[0] + ' branch: ' + e.message);
     }
-  } catch (e) {
-    console.warn('[Cache Sync] ⚠️ GitHub Raw sync failed (' + e.message + ') — serving current memory cache');
   }
+  console.warn('[Cache Sync] ⚠️ All sources failed — serving current memory cache');
 }
 
-// Initial sync on boot, then repeat every 30 minutes
+// Sync on boot; retry every minute until the first success (a fresh server has
+// no local data), then every 30 minutes.
 syncCacheFromGitHub();
+const bootRetry = setInterval(() => {
+  if (hasSynced) return clearInterval(bootRetry);
+  syncCacheFromGitHub();
+}, 60 * 1000);
 setInterval(syncCacheFromGitHub, 30 * 60 * 1000);
 
 const server = http.createServer((req, res) => {
@@ -233,6 +253,7 @@ const server = http.createServer((req, res) => {
   // - /catalog/{type}/{catalogId}/genre={genreName}.json
   // - /catalog/{type}/{catalogId}/skip={skipCount}.json
   // - /catalog/{type}/{catalogId}/genre={genreName}&skip={skipCount}.json
+  // - /catalog/{type}/{catalogId}/search={query}.json
   if (url.startsWith('/catalog/')) {
     const parts = url.split('/');
     const catalogId = parts[3] ? parts[3].replace('.json', '') : '';
@@ -245,23 +266,45 @@ const server = http.createServer((req, res) => {
 
     let items = memoryCache[catalogId];
 
-    // Check for genre parameter either in path or query string
-    let requestedGenre = null;
-    const genreMatch = req.url.match(/genre=([^&/.]+)/);
-    if (genreMatch) {
-      requestedGenre = decodeURIComponent(genreMatch[1]).trim();
+    // Stremio "extra" filters: /catalog/{type}/{id}/genre=X&search=Y&skip=N.json
+    // (values are URL-encoded; may contain dots, e.g. "S.W.A.T.")
+    const extras = {};
+    if (parts[4]) {
+      const raw = parts.slice(4).join('/').replace(/\.json$/, '');
+      for (const pair of raw.split('&')) {
+        const eq = pair.indexOf('=');
+        if (eq < 1) continue;
+        try { extras[pair.slice(0, eq)] = decodeURIComponent(pair.slice(eq + 1)).trim(); }
+        catch (e) { extras[pair.slice(0, eq)] = pair.slice(eq + 1).trim(); }
+      }
     }
 
-    if (requestedGenre) {
-      items = items.filter(item => Array.isArray(item.genres) && item.genres.includes(requestedGenre));
+    if (extras.genre) {
+      items = items.filter(item => Array.isArray(item.genres) && item.genres.includes(extras.genre));
     }
 
-    // Pagination check
-    let skip = 0;
-    const skipMatch = req.url.match(/skip=([0-9]+)/);
-    if (skipMatch) {
-      skip = parseInt(skipMatch[1], 10) || 0;
+    // Search: every word of the query must appear in the title (case, accents
+    // and punctuation ignored); best matches first.
+    if (extras.search) {
+      const norm = (t) => String(t || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase().replace(/[^a-z0-9\u0d00-\u0d7f\u0b80-\u0bff]+/g, ' ').trim();
+      const q = norm(extras.search);
+      const qWords = q.split(' ').filter(Boolean);
+      const qJoined = q.replace(/ /g, '');
+      const scored = [];
+      for (const item of items) {
+        const n = norm(item.name);
+        const joined = n.replace(/ /g, '');
+        const hit = qWords.length && (qWords.every(w => n.includes(w)) || (qJoined.length >= 3 && joined.includes(qJoined)));
+        if (!hit) continue;
+        const score = n === q ? 0 : (n.startsWith(q) || joined.startsWith(qJoined)) ? 1 : 2;
+        scored.push({ item, score });
+      }
+      scored.sort((a, b) => a.score - b.score);
+      items = scored.map(x => x.item);
     }
+
+    const skip = parseInt(extras.skip, 10) || 0;
 
     // Episodes, cast, trailers etc. are only needed on the meta page — catalog
     // responses carry just the preview fields Stremio shows on the home row

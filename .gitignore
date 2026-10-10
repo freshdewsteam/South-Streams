@@ -1,0 +1,3 @@
+node_modules/
+# Generated data is published to the `cache` branch, not committed to main
+data/
