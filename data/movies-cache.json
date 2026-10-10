@@ -4691,7 +4691,7 @@
     },
     "ta_1618200": {
       "_status": "retry",
-      "_at": 1791647399837
+      "_at": 1791667029170
     },
     "ta_1766087": {
       "_status": "skip",
@@ -4896,6 +4896,19 @@
     "ta_1538457": {
       "_status": "skip",
       "_at": 1791489187991
+    },
+    "ml_1036081": {
+      "id": "tt22797990",
+      "type": "movie",
+      "name": "Khalifa: The Ruler",
+      "releaseInfo": "2026-10-09",
+      "description": "Aamir Ali, a notorious gold smuggling kingpin who inherited his multi-million dollar criminal enterprise from a lineage of gangsters, is drawn into a web of vengeance, legacy and power.\n\n📺 Streaming on: Prime Video, ManoramaMax\n📅 OTT Release: 2026-10-09\n⭐ Rating: 4.8/10",
+      "poster": "https://image.tmdb.org/t/p/w500/2M089vSkfLuYV5Ao8urY2bRFKB3.jpg",
+      "background": "https://image.tmdb.org/t/p/w1280/6Jz7rnnZrSkgs9ySWUxewpcxr7Q.jpg",
+      "genres": [
+        "Crime",
+        "Action"
+      ]
     }
   }
 }
