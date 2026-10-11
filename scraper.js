@@ -1115,7 +1115,7 @@ const CM_EXTRA_FIELDS = ['runtime', 'links', 'imdbRating', 'trailers', 'trailerS
 
 function slimCinemeta(m, type) {
   const out = {};
-  for (const f of CM_EXTRA_FIELDS.concat(['poster', 'background'])) if (m[f] != null && m[f] !== '') out[f] = m[f];
+  for (const f of CM_EXTRA_FIELDS.concat(['poster', 'background', 'country'])) if (m[f] != null && m[f] !== '') out[f] = m[f];
   if (Array.isArray(out.links)) {
     out.links = out.links.filter(l => l && /^(Cast|Directors|Writers|imdb)$/i.test(l.category || '')).slice(0, 15);
   }
@@ -1196,6 +1196,8 @@ const EPS_TTL_QUIET  = 24 * 3600 * 1000;   // no episode for 2+ weeks
 const EPS_TTL_STALE  = 14 * 86400 * 1000;  // no episode within the catalogue age window
 const EPS_TTL_ENDED  = 30 * 86400 * 1000;  // TMDB says Ended/Canceled
 const EPS_RECENT_DAYS = 14;
+// Bump to force every series' episode list (and ID check) to be redone once
+const EPS_VERSION = 2;
 
 function episodeTtl(entry) {
   if (!entry) return EPS_TTL_RECENT;
@@ -1209,7 +1211,7 @@ function episodeTtl(entry) {
 async function loadEpisodes(meta, tmdbId, locked) {
   const key = 'eps_' + (tmdbId || meta.id);
   const c = seriesCache[key];
-  if (c && c._at && c.forId === meta.id && c.source) {
+  if (c && c._at && c.forId === meta.id && c.source && c.v === EPS_VERSION) {
     if (Date.now() - c._at < episodeTtl(c)) return c;
   }
 
@@ -1219,11 +1221,13 @@ async function loadEpisodes(meta, tmdbId, locked) {
     let imdbId = meta.id;
     let status = '';
     const tmdbVideos = [];
+    let unverified = false; // IMDb ID didn't come from TMDB itself (OMDb/guess)
 
     if (tmdbId) {
       const detail = await tmdb('/tv/' + tmdbId + '?language=en-US&append_to_response=external_ids');
       status = detail.status || '';
       const tmdbImdb = (detail.external_ids && detail.external_ids.imdb_id) || null;
+      unverified = !locked && !tmdbImdb;
 
       if (!locked && tmdbImdb && tmdbImdb !== meta.id) {
         console.log('[Episodes] 🔧 ' + meta.name + ': IMDb ' + meta.id + ' → ' + tmdbImdb + ' (TMDB)');
@@ -1235,7 +1239,9 @@ async function loadEpisodes(meta, tmdbId, locked) {
           // also come back as Response:False and must NOT drop a good series.
           const badId = o && o.Response === 'False' && /incorrect imdb id/i.test(o.Error || '');
           const wrongType = o && o.Response === 'True' && o.Type && o.Type !== 'series';
-          if (badId || wrongType) {
+          // Same name, different show (e.g. Austrian "Dancing Stars" vs the Malayalam one)
+          const wrongCountry = o && o.Response === 'True' && o.Country && o.Country !== 'N/A' && !/india/i.test(o.Country);
+          if (badId || wrongType || wrongCountry) {
             console.log('[Episodes] ❌ ' + meta.name + ': ' + meta.id + ' is "' + (o.Title || '?') + '" (' + (o.Type || 'invalid') + ') — dropping');
             imdbId = null;
           }
@@ -1275,6 +1281,16 @@ async function loadEpisodes(meta, tmdbId, locked) {
     let videos = [], source = 'none';
     if (imdbId) {
       const cm = await cinemeta('series', imdbId, 3600 * 1000);
+      // Unverified ID that IMDb says is from another country → same name, wrong show.
+      // (Country, not year: TMDB sometimes lists a new season as a new show,
+      // so a long-running franchise's IMDb ID legitimately starts years earlier.)
+      if (unverified && cm && cm.country && !/india/i.test(String(cm.country))) {
+        console.log('[Episodes] ❌ ' + meta.name + ': ' + imdbId + ' is from ' + cm.country + ', not India — dropping');
+        imdbId = null;
+      }
+    }
+    if (imdbId) {
+      const cm = await cinemeta('series', imdbId, 3600 * 1000);
       const nowIso = new Date().toISOString();
       const cmVideos = ((cm && cm.videos) || [])
         .filter(v => !v.released || v.released <= nowIso)
@@ -1283,7 +1299,7 @@ async function loadEpisodes(meta, tmdbId, locked) {
     }
 
     const lastEp = videos.reduce((m, v) => (v.released && v.released.slice(0, 10) > m ? v.released.slice(0, 10) : m), '');
-    const entry = { _at: Date.now(), forId: meta.id, status, imdbId, source, lastEp, videos };
+    const entry = { _at: Date.now(), v: EPS_VERSION, forId: meta.id, status, imdbId, source, lastEp, videos };
     seriesCache[key] = entry;
     cacheDirty = true;
     return entry;
