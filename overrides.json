@@ -13,10 +13,35 @@
     "Copy a block from _examples into titles. Titles that fail to match are listed in data/unmatched.json."
   ],
   "_examples": [
-    { "title": "Khalifa Part 1", "type": "movie", "tmdb": 123456 },
-    { "title": "Eyes", "type": "series", "imdb": "tt48461761" },
-    { "type": "movie", "lang": "ml", "imdb": "tt22797990", "ottDate": "2026-10-09", "platform": "Prime Video" },
-    { "type": "series", "imdb": "tt0120663", "hide": true }
+    {
+      "title": "Khalifa Part 1",
+      "type": "movie",
+      "tmdb": 123456
+    },
+    {
+      "title": "Eyes",
+      "type": "series",
+      "imdb": "tt48461761"
+    },
+    {
+      "type": "movie",
+      "lang": "ml",
+      "imdb": "tt22797990",
+      "ottDate": "2026-10-09",
+      "platform": "Prime Video"
+    },
+    {
+      "type": "series",
+      "imdb": "tt0120663",
+      "hide": true
+    }
   ],
-  "titles": []
+  "titles": [
+    {
+      "title": "Panthadikkaam",
+      "type": "series",
+      "tmdb": 337062,
+      "imdb": "tt47657304"
+    }
+  ]
 }
