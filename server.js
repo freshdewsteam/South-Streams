@@ -80,13 +80,13 @@ async function syncCacheFromGitHub() {
 }
 
 // Sync on boot; retry every minute until the first success (a fresh server has
-// no local data), then every 30 minutes.
+// no local data), then every 10 minutes.
 syncCacheFromGitHub();
 const bootRetry = setInterval(() => {
   if (hasSynced) return clearInterval(bootRetry);
   syncCacheFromGitHub();
 }, 60 * 1000);
-setInterval(syncCacheFromGitHub, 30 * 60 * 1000);
+setInterval(syncCacheFromGitHub, 10 * 60 * 1000);
 
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
