@@ -1312,7 +1312,17 @@ async function loadEpisodes(meta, tmdbId, locked) {
 // Returns a COPY of meta with videos + Cinemeta extras (cache entries stay
 // lean), or null if the IMDb ID turned out to be wrong.
 async function withEpisodes(meta, tmdbId, cacheKey, lang) {
-  const locked = !!(overrideByImdb(meta.id, 'series') || (tmdbId && overrideByTmdb(tmdbId, 'series')));
+  // An overrides.json IMDb ID for this TMDB show replaces whatever is cached
+  const ovr = tmdbId ? overrideByTmdb(tmdbId, 'series') : null;
+  if (ovr && ovr.imdb && ovr.imdb !== meta.id) {
+    console.log('[Override] 📌 ' + meta.name + ': IMDb ' + meta.id + ' → ' + ovr.imdb);
+    meta.id = ovr.imdb;
+    if (cacheKey && seriesCache[cacheKey] && seriesCache[cacheKey].id) {
+      seriesCache[cacheKey] = Object.assign({}, seriesCache[cacheKey], { id: ovr.imdb });
+      cacheDirty = true;
+    }
+  }
+  const locked = !!(ovr || overrideByImdb(meta.id, 'series'));
   const eps = await loadEpisodes(meta, tmdbId, locked);
   if (!eps) return Object.assign({}, meta);
   if (!eps.imdbId) {
@@ -1414,6 +1424,8 @@ async function finalizeList(metas, lang, type, limit, maxAgeDays, enrich) {
     seen.add(full.id);
     out.push(full);
   }
+  // Enrichment can correct a date, so re-sort the final list
+  out.sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''));
   if (trimmed || hidden) console.log('[Finalize] ' + lang + ' ' + type + ': ' + trimmed + ' trimmed (older than ' + cutoff + '), ' + hidden + ' hidden by overrides');
   return out;
 }
@@ -1560,7 +1572,23 @@ async function scrapeSeries(lang) {
   const finalResult = await finalizeList(metas, lang, 'series', 80, SERIES_MAX_AGE_DAYS, async (m) => {
     const cacheKey = keyOf.get(m.id);
     const tmdbId = cacheKey ? cacheKey.slice((lang + '_series_').length) : null;
-    return withEpisodes(m, tmdbId, cacheKey, lang);
+    const full = await withEpisodes(m, tmdbId, cacheKey, lang);
+    // Entries restored from the pre-19-Sep snapshot can carry a bogus "added"
+    // date; never let one sit later than its newest episode.
+    if (full && full._restored) {
+      delete full._restored;
+      if (full._lastEp && (full.releaseInfo || '') > full._lastEp) {
+        full.releaseInfo = full._lastEp;
+        setOttDateLine(full, full._lastEp);
+      }
+      if (cacheKey && seriesCache[cacheKey] && seriesCache[cacheKey].id === full.id) {
+        const fixed = Object.assign({}, seriesCache[cacheKey], { releaseInfo: full.releaseInfo, description: full.description });
+        delete fixed._restored;
+        seriesCache[cacheKey] = fixed;
+        cacheDirty = true;
+      }
+    }
+    return full;
   });
   console.log('[Series] ' + lang + ': ' + finalResult.length + ' in catalogue');
   return finalResult;
