@@ -7,6 +7,20 @@ const fs    = require('fs');
 const path  = require('path');
 
 const PORT = process.env.PORT || 3000;
+
+// Short codes used in configured install links
+const CATALOG_CODES = {
+  mm: 'malayalam-movies',
+  ms: 'malayalam-series',
+  tm: 'tamil-movies',
+  ts: 'tamil-series',
+};
+const CATALOG_LABELS = {
+  mm: '🎬 Malayalam Movies',
+  ms: '📺 Malayalam Series',
+  tm: '🎬 Tamil Movies',
+  ts: '📺 Tamil Series',
+};
 // Generated data lives on the `cache` branch (rewritten each build, no history).
 // The old main-branch path is kept as a fallback during the switch-over.
 const RAW_CACHE_URLS = [
@@ -99,10 +113,22 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  const url = req.url.split('?')[0];
+  // ── Per-user catalogue choice, carried in the install link ──
+  // e.g. /mm,ts/manifest.json → Malayalam Movies + Tamil Series only.
+  // Plain links (no code) keep all four catalogues, so old installs still work.
+  let url = req.url.split('?')[0];
+  let selected = null; // null = all catalogues
+  const cfgMatch = url.match(/^\/([a-z]{2}(?:,[a-z]{2})*)(\/.*)?$/);
+  if (cfgMatch) {
+    const codes = cfgMatch[1].split(',');
+    if (codes.every(c => CATALOG_CODES[c])) {
+      selected = [...new Set(codes)];
+      url = cfgMatch[2] || '/';
+    }
+  }
 
   // ── Root Landing Page ──
-  if (url === '/') {
+  if (url === '/' || url === '/configure') {
     const manifestPath = path.join(__dirname, 'manifest.json');
     if (!fs.existsSync(manifestPath)) {
       res.writeHead(404);
@@ -150,6 +176,16 @@ const server = http.createServer((req, res) => {
     .card .ico { font-size:1.5rem; }
     .card h3 { font-size:1rem; margin:6px 0 2px; }
     .card .num { font-size:1.2rem; font-weight:800; color:#4fd1c5; }
+    .config { margin:28px auto 0; max-width:520px; background:#111926; border:1px solid #1e2c3d; border-radius:14px; padding:16px 18px; text-align:left; }
+    .config-title { font-weight:700; margin-bottom:10px; text-align:center; }
+    .picks { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:8px; }
+    .pick { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid #263444; border-radius:10px; cursor:pointer; user-select:none; }
+    .pick input { width:18px; height:18px; accent-color:#14b8a6; }
+    .pick:has(input:checked) { border-color:#14b8a6; background:#0f2229; }
+    .btn.disabled { opacity:.4; pointer-events:none; }
+    .hint { color:#7a8ea3; font-size:.85rem; margin-top:12px; }
+    .hint code { color:#c9d6e2; background:#111926; padding:2px 6px; border-radius:6px; word-break:break-all; }
+    .hint button { background:#16202b; color:#c9d6e2; border:1px solid #263444; border-radius:6px; padding:2px 10px; cursor:pointer; font:inherit; }
     footer { border-top:1px solid #1a2433; margin-top:40px; padding:28px 0; text-align:center; color:#7a8ea3; font-size:.85rem; }
   </style>
 </head>
@@ -159,10 +195,19 @@ const server = http.createServer((req, res) => {
       <span class="badge">⚡ AUTO-SYNCED STREAMING CATALOG</span>
       <h1>🌊 ${manifest.name}</h1>
       <p class="tagline">New Malayalam & Tamil OTT films and series detected the day they drop.</p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="stremio://${host}/manifest.json">📦 Install in Stremio</a>
-        <a class="btn btn-ghost" href="https://${host}/manifest.json">🔧 Manual / Nuvio install</a>
+      <div class="config" id="configure">
+        <p class="config-title">Choose your catalogues</p>
+        <div class="picks">
+          ${Object.keys(CATALOG_CODES).map(code => `
+          <label class="pick"><input type="checkbox" value="${code}" ${!selected || selected.includes(code) ? 'checked' : ''}><span>${CATALOG_LABELS[code]}</span></label>`).join('')}
+        </div>
       </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" id="install" href="stremio://${host}/manifest.json">📦 Install in Stremio</a>
+        <a class="btn btn-ghost" id="manual" href="https://${host}/manifest.json">🔧 Manual / Nuvio install</a>
+      </div>
+      <p class="hint" id="hint">Already installed? Re-install with your new choice — Stremio replaces the old one.</p>
+      <p class="hint" id="link-text"><code id="link">https://${host}/manifest.json</code> <button type="button" id="copy">Copy</button></p>
       <div class="stats">
         <div class="stat"><b>${total}</b><span>Titles tracked</span></div>
         <div class="stat"><b>${counts.mm + counts.tm}</b><span>Movies</span></div>
@@ -183,6 +228,34 @@ const server = http.createServer((req, res) => {
   <footer>
     <div class="wrap"><p>South Streams • Metadata discovery addon for Stremio</p></div>
   </footer>
+  <script>
+    (function () {
+      var host = ${JSON.stringify(host)};
+      var boxes = Array.prototype.slice.call(document.querySelectorAll('.pick input'));
+      var install = document.getElementById('install');
+      var manual = document.getElementById('manual');
+      var link = document.getElementById('link');
+      function update() {
+        var codes = boxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; });
+        // All four ticked → plain link (same as before configuration existed)
+        var path = (codes.length === boxes.length ? '' : '/' + codes.join(',')) + '/manifest.json';
+        install.href = 'stremio://' + host + path;
+        manual.href = 'https://' + host + path;
+        link.textContent = 'https://' + host + path;
+        var none = codes.length === 0;
+        install.classList.toggle('disabled', none);
+        manual.classList.toggle('disabled', none);
+        if (none) link.textContent = 'Pick at least one catalogue';
+      }
+      boxes.forEach(function (b) { b.addEventListener('change', update); });
+      document.getElementById('copy').addEventListener('click', function () {
+        if (navigator.clipboard) navigator.clipboard.writeText(link.textContent);
+        this.textContent = 'Copied';
+        var btn = this; setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+      update();
+    })();
+  </script>
 </body>
 </html>`);
     return;
@@ -206,8 +279,15 @@ const server = http.createServer((req, res) => {
   if (url === '/manifest.json') {
     const manifestPath = path.join(__dirname, 'manifest.json');
     if (fs.existsSync(manifestPath)) {
+      const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+      if (selected) {
+        const ids = selected.map(c => CATALOG_CODES[c]);
+        manifest.catalogs = manifest.catalogs.filter(c => ids.includes(c.id));
+      }
+      // Shows a "Configure" button in Stremio that opens /configure
+      manifest.behaviorHints = Object.assign({}, manifest.behaviorHints, { configurable: true, configurationRequired: false });
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      fs.createReadStream(manifestPath).pipe(res);
+      res.end(JSON.stringify(manifest));
     } else {
       res.writeHead(404);
       res.end('Manifest not found');
@@ -258,7 +338,7 @@ const server = http.createServer((req, res) => {
     const parts = url.split('/');
     const catalogId = parts[3] ? parts[3].replace('.json', '') : '';
 
-    if (!memoryCache[catalogId]) {
+    if (!memoryCache[catalogId] || (selected && !selected.some(c => CATALOG_CODES[c] === catalogId))) {
       res.writeHead(404, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ metas: [] }));
       return;
