@@ -293,6 +293,13 @@ function isReleased(dateStr) {
 
 function daysAgo(n) { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); }
 function today()    { return new Date().toISOString().slice(0, 10); }
+// Date in India (UTC+5:30), offset by n days — OTT releases follow IST
+function istDate(n) { return new Date(Date.now() + 5.5 * 3600000 + (n || 0) * 86400000).toISOString().slice(0, 10); }
+
+// "Streaming soon": OTT titles landing within this many days (IST) are shown
+// at the top of the catalogue, without a date (dates often slip).
+const SOON_DAYS = 2;
+const SOON_MAX  = 8; // cap per catalogue so "available now" stays visible
 
 function isDeepSweepHour() {
   // The 18:01 UTC cron is often delayed by GitHub (runs seen at 22:33, 23:15),
@@ -627,7 +634,11 @@ function m91ParsePage(html, langLabel, isShow, label) {
     if (!dateMatch) { stats.noDate++; continue; }
     const date = parseAnyDate(dateMatch[0]);
     if (!date) { stats.noDate++; continue; }
-    if (!isReleased(date)) { stats.future++; continue; }
+    const dateStr = date.toISOString().slice(0, 10);
+    // Already out in India counts as released even if UTC hasn't caught up
+    const released = isReleased(date) || dateStr <= istDate(0);
+    const upcoming = !released && dateStr <= istDate(SOON_DAYS);
+    if (!released && !upcoming) { stats.future++; continue; }
 
     const ageDays = (Date.now() - date.getTime()) / 86400000;
     if (ageDays > lookback && !isNewSeason) {
@@ -655,15 +666,19 @@ function m91ParsePage(html, langLabel, isShow, label) {
       if (samples.noPlatform.length < 2) samples.noPlatform.push(title + ' [' + meta.slice(0, 80) + ']');
     }
 
+    // Upcoming titles only count if 91mobiles says they're coming to OTT
+    if (upcoming && !finalPlatform) { stats.future++; continue; }
+
     stats.kept++;
     if (keptSamples.length < 2) keptSamples.push(title + ' [' + meta.slice(0, 80) + ']');
     items.push({
       title,
       date,
-      arrivalDate: (isNewSeason && ageDays > lookback) ? today() : date.toISOString().slice(0, 10),
+      arrivalDate: (isNewSeason && ageDays > lookback) ? today() : dateStr,
       year: dateMatch[3],
       platform: finalPlatform,
       isNewSeason,
+      upcoming,
     });
   }
 
@@ -783,11 +798,12 @@ async function fetch91Mobiles(lang, kind) {
           year: item.year,
           isNewSeason: item.isNewSeason,
           trustedPlatform: item.platform,
+          upcoming: !!item.upcoming,
         });
       }
       // Only report titles 91mobiles says are on OTT (cinema-only cards are noise)
       if (!r) {
-        if (item.platform) noteUnmatched(lang, ovrType(kind), item.title,
+        if (item.platform && !item.upcoming) noteUnmatched(lang, ovrType(kind), item.title,
           hadCandidates ? 'ambiguous TMDB match (title/year didn\'t line up)' : 'no TMDB search result',
           { ottDate: item.arrivalDate, year: item.year, platform: item.platform, source: '91mobiles' });
         if (hadCandidates) {
@@ -993,8 +1009,7 @@ async function processMovie(item, lang, expectedLang) {
       genres: (detail.genres || []).map(g => g.name),
     });
 
-    movieCache[cacheKey] = meta;
-    cacheDirty = true;
+    if (!item.upcoming) { movieCache[cacheKey] = meta; cacheDirty = true; }
     return meta;
   } catch (e) {
     lastFailReason = 'TMDB error: ' + e.message;
@@ -1086,8 +1101,7 @@ async function processSeriesJW(item, lang) {
       genres: (detail.genres || []).map(g => g.name),
     });
 
-    seriesCache[cacheKey] = meta;
-    cacheDirty = true;
+    if (!item.upcoming) { seriesCache[cacheKey] = meta; cacheDirty = true; }
     return meta;
   } catch (e) {
     lastFailReason = 'TMDB error: ' + e.message;
@@ -1380,6 +1394,40 @@ function applyDay0Update(existingMeta, day0Item, arrivalDate, cacheObj, cacheKey
   }
 }
 
+// ── STREAMING SOON ─────────────────────────────────────────────────────────
+// Turn a freshly built meta into a "Streaming soon" entry: no date anywhere,
+// platform kept. Never written to the caches, so a postponed title simply
+// drops out and a released one is added normally on its day.
+function makeSoon(meta, soonDate, platform) {
+  const m = Object.assign({}, meta);
+  const plat = cleanPlatformNames(platform);
+  const where = plat && !/^ott\s*\/\s*streaming$/i.test(plat) ? ' on ' + plat : '';
+  const base = (m.description || '')
+    .split('\n').filter(l => !/^\s*(📅|📺|⭐)/.test(l)).join('\n').trim();
+  m.description = (base + '\n\n🔜 Streaming soon' + where).trim();
+  m.releaseInfo = 'Streaming soon';
+  m._soon = soonDate;      // for ordering only — stripped before publishing
+  m._streamingSoon = true; // tells the build to draw the poster banner
+  return m;
+}
+
+// Put "Streaming soon" titles on top (soonest first, capped), skipping any
+// that are already listed or hidden by overrides.
+async function withSoon(soon, finalResult, type) {
+  const ids = new Set(finalResult.map(m => m.id));
+  const picked = [];
+  for (const m of soon.sort((a, b) => (a._soon || '').localeCompare(b._soon || ''))) {
+    if (picked.length >= SOON_MAX) break;
+    if (ids.has(m.id) || isHidden(m)) continue;
+    ids.add(m.id);
+    const out = type === 'movie' ? applyCinemetaExtras(m, await cinemeta('movie', m.id)) : m;
+    delete out._soon;
+    picked.push(out);
+  }
+  if (picked.length) console.log('[Soon] ' + type + ': ' + picked.map(m => m.name).join(', '));
+  return picked.concat(finalResult);
+}
+
 // Shared last step for both catalogues: overrides (hide / OTT date / platform),
 // age trimming, enrichment (Cinemeta extras, episodes) and the size cap.
 // Works on copies, so the cache files stay lean.
@@ -1446,6 +1494,7 @@ async function scrapeMovies(lang) {
   }
 
   const day0Items = await fetchDay0Items(lang, 'MOVIE');
+  const soon = [];
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_' + day0Item.id;
     const arrivalDate = day0Item.arrivalDate || (day0Item.fromOverride ? null : today());
@@ -1456,6 +1505,13 @@ async function scrapeMovies(lang) {
       if (m.name && day0Item.title && normTitle(m.name) === normTitle(day0Item.title)) return true;
       return false;
     });
+
+    if (day0Item.upcoming) {
+      if (existingIndex !== -1) continue; // already listed — leave it alone
+      const m = await processMovie(day0Item, lang, lang);
+      if (m && m.id && !processedImdbIds.has(m.id)) soon.push(makeSoon(m, day0Item.arrivalDate, day0Item.trustedPlatform));
+      continue;
+    }
 
     if (existingIndex !== -1) {
       applyDay0Update(metas[existingIndex], day0Item, arrivalDate, movieCache, cacheKey);
@@ -1494,8 +1550,9 @@ async function scrapeMovies(lang) {
   }
   if (discoverAdds) console.log('[Discover] ' + lang + ' movies: ' + discoverAdds + ' new additions');
 
-  const finalResult = await finalizeList(metas, lang, 'movie', 120, MOVIE_MAX_AGE_DAYS,
+  const released = await finalizeList(metas, lang, 'movie', 120, MOVIE_MAX_AGE_DAYS,
     async (m) => applyCinemetaExtras(m, await cinemeta('movie', m.id)));
+  const finalResult = await withSoon(soon, released, 'movie');
   console.log('[Movies] ' + lang + ': ' + finalResult.length + ' in catalogue');
   return finalResult;
 }
@@ -1517,6 +1574,7 @@ async function scrapeSeries(lang) {
   }
 
   const day0Items = await fetchDay0Items(lang, 'SHOW');
+  const soon = [];
   for (const day0Item of day0Items) {
     const cacheKey = lang + '_series_' + day0Item.id;
     const arrivalDate = day0Item.arrivalDate || (day0Item.fromOverride ? null : today());
@@ -1527,6 +1585,13 @@ async function scrapeSeries(lang) {
       if (m.name && day0Item.title && normTitle(m.name) === normTitle(day0Item.title)) return true;
       return false;
     });
+
+    if (day0Item.upcoming) {
+      if (existingIndex !== -1) continue; // already listed (e.g. new season) — leave it alone
+      const m = await processSeriesJW(day0Item, lang);
+      if (m && m.id && !processedImdbIds.has(m.id)) soon.push(makeSoon(m, day0Item.arrivalDate, day0Item.trustedPlatform));
+      continue;
+    }
 
     if (existingIndex !== -1) {
       applyDay0Update(metas[existingIndex], day0Item, arrivalDate, seriesCache, cacheKey);
@@ -1569,7 +1634,7 @@ async function scrapeSeries(lang) {
   if (discoverAdds) console.log('[Discover] ' + lang + ' series: ' + discoverAdds + ' new additions');
 
   metas.sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''));
-  const finalResult = await finalizeList(metas, lang, 'series', 80, SERIES_MAX_AGE_DAYS, async (m) => {
+  const released = await finalizeList(metas, lang, 'series', 80, SERIES_MAX_AGE_DAYS, async (m) => {
     const cacheKey = keyOf.get(m.id);
     const tmdbId = cacheKey ? cacheKey.slice((lang + '_series_').length) : null;
     const full = await withEpisodes(m, tmdbId, cacheKey, lang);
@@ -1590,6 +1655,7 @@ async function scrapeSeries(lang) {
     }
     return full;
   });
+  const finalResult = await withSoon(soon, released, 'series');
   console.log('[Series] ' + lang + ': ' + finalResult.length + ' in catalogue');
   return finalResult;
 }

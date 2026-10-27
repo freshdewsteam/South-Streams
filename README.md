@@ -61,6 +61,9 @@ http://mollywood-addon.onrender.com/manifest.json
 1. Check [`data/unmatched.json` on the cache branch](https://github.com/freshdewsteam/South-Streams/blob/cache/data/unmatched.json) — it lists every title that couldn't be added, with the reason.
 2. Fix it in [`overrides.json`](overrides.json) (pin a TMDB/IMDb ID, set an OTT date, add or hide a title). The next build applies it.
 
+**Streaming soon**
+OTT titles 91mobiles lists for the next 2 days (India time) appear at the top of their catalogue with a "STREAMING SOON" poster tab and no date. They're never saved as released, so a postponed title just drops out, and a released one is added normally on its day. Posters are drawn during the GitHub build (`scripts/tag-posters.js`) and published on the `cache` branch.
+
 **Reliable schedule (cron-job.org)**
 GitHub's built-in cron often runs hours late, so builds are triggered on time from [cron-job.org](https://cron-job.org) (free). GitHub's cron stays as a backup and skips itself if a build ran in the last 2.5 hours.
 1. GitHub → Settings → Developer settings → Fine-grained tokens → **Generate new token**. Repository access: *only South-Streams*. Permissions: **Actions → Read and write**. Copy the token.

@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const { scrapeMalayalam, scrapeTamil, getUnmatched } = require('../scraper.js');
+const { tagPosters } = require('./tag-posters.js');
 
 // Posts to a Discord-style webhook (WEBHOOK_URL secret). Optional.
 function postWebhook(text) {
@@ -117,6 +118,13 @@ async function buildCache() {
   if (total < 20) {
     console.error('❌ FATAL: only ' + total + ' items total — refusing to publish. Last good cache.json untouched.');
     process.exit(1);
+  }
+
+  // "Streaming soon" titles get a tagged poster (never blocks publishing)
+  try { await tagPosters(result); }
+  catch (e) {
+    console.warn('⚠️ Poster tagging failed: ' + e.message);
+    for (const k of KEYS) for (const m of result[k]) delete m._streamingSoon;
   }
 
   const dataDir = path.dirname(cachePath);

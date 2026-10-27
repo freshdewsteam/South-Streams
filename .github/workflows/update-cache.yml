@@ -29,8 +29,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # NOTE: no npm install step — this project has zero dependencies
-      # (scraper.js / server.js use only Node built-ins: https, zlib, fs, path)
+      # NOTE: the app itself has zero dependencies (scraper.js / server.js use
+      # only Node built-ins). The one install below (sharp) is build-only, for
+      # drawing "STREAMING SOON" posters.
 
       # Generated data lives on the `cache` branch (one commit, no history), so
       # main never grows from cache refreshes. Restore it as the starting point.
@@ -56,6 +57,13 @@ jobs:
             require('fs').appendFileSync(process.env.GITHUB_OUTPUT, 'skip=' + skip + '\n');
           "
 
+      # Image library for "STREAMING SOON" posters — build-only, never on Render.
+      # If it fails to install, titles simply keep their normal posters.
+      - name: Install poster tool
+        if: steps.gate.outputs.skip != 'true'
+        continue-on-error: true
+        run: npm install --no-save --no-package-lock --no-audit --no-fund sharp@0.33.5
+
       - name: Build catalog cache
         if: steps.gate.outputs.skip != 'true'
         env:
@@ -78,6 +86,7 @@ jobs:
           OUT=$(mktemp -d)
           mkdir -p "$OUT/data"
           cp data/*.json "$OUT/data/"
+          if [ -d data/posters ]; then cp -r data/posters "$OUT/data/"; fi
           git show HEAD:.github/cache-branch-README.md > "$OUT/README.md" 2>/dev/null || echo "Generated cache — do not edit." > "$OUT/README.md"
           cd "$OUT"
           git init -q -b cache
