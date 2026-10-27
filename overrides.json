@@ -60,6 +60,49 @@
       "type": "series",
       "tmdb": 296253,
       "imdb": "tt37539312"
+    },
+    {
+      "title": "Avaraachan & Sons",
+      "type": "movie",
+      "lang": "ml",
+      "tmdb": 1290035,
+      "ottDate": "2026-10-30",
+      "platform": "Netflix"
+    },
+    {
+      "title": "Baththa",
+      "type": "movie",
+      "lang": "ta",
+      "tmdb": 1515692,
+      "imdb": "tt32012509",
+      "ottDate": "2026-10-29",
+      "platform": "Netflix"
+    },
+    {
+      "title": "Sigma",
+      "type": "movie",
+      "lang": "ta",
+      "tmdb": 1395215,
+      "imdb": "tt39239754",
+      "ottDate": "2026-10-30",
+      "platform": "Netflix"
+    },
+    {
+      "title": "Immortal",
+      "type": "movie",
+      "lang": "ta",
+      "tmdb": 1505305,
+      "imdb": "tt36931126",
+      "ottDate": "2026-10-30",
+      "platform": "Netflix"
+    },
+    {
+      "title": "Akka",
+      "type": "series",
+      "lang": "ta",
+      "imdb": "tt29625288",
+      "ottDate": "2026-10-30",
+      "platform": "Netflix"
     }
   ]
 }

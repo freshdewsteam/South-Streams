@@ -906,7 +906,16 @@ async function fetchDay0Items(lang, kind) {
     items.push({ id: tmdbId, arrivalDate: o.ottDate || null, title: o.title || '', imdbId: o.imdb || null,
       year: null, isNewSeason: false, trustedPlatform: o.platform || '', fromOverride: true });
   }
-  return items;
+
+  // Future OTT dates (from 91mobiles or overrides.json): within the window
+  // they show as "Streaming soon"; further out they wait until it's time.
+  const soonLimit = istDate(SOON_DAYS), todayIN = istDate(0);
+  return items.filter(i => {
+    if (!i.arrivalDate || i.arrivalDate <= todayIN) { i.upcoming = false; return true; }
+    if (i.arrivalDate > soonLimit) return false;
+    i.upcoming = true;
+    return true;
+  });
 }
 
 // ── TMDB DISCOVER (fallback) ──────────────────────────────────────────────────
@@ -1501,7 +1510,8 @@ async function finalizeList(metas, lang, type, limit, maxAgeDays, enrich) {
       return m;
     }
     const c = Object.assign({}, m);
-    if (o.ottDate) { c.releaseInfo = o.ottDate; setOttDateLine(c, o.ottDate); }
+    // A future override date never becomes a listed release date
+    if (o.ottDate && o.ottDate <= istDate(0)) { c.releaseInfo = o.ottDate; setOttDateLine(c, o.ottDate); }
     if (o.platform) {
       const base = (c.description || '').replace(/📺\s*Streaming on:[^\n]*/g, '').trim();
       c.description = (base + '\n\n📺 Streaming on: ' + o.platform).trim();
