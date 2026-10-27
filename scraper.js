@@ -1028,6 +1028,34 @@ async function metaFromImdb(item, type, cacheKey) {
       }
     } catch (e) {}
   }
+  // Last resort: the title's own IMDb page (its og: tags carry poster + blurb)
+  if (!poster || !overview || !name) {
+    try {
+      const html = await fetchUrl('https://www.imdb.com/title/' + imdbId + '/', {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-GB,en;q=0.9',
+      });
+      const og = (prop) => {
+        const m = html.match(new RegExp('<meta[^>]+property="og:' + prop + '"[^>]+content="([^"]+)"', 'i')) ||
+                  html.match(new RegExp('<meta[^>]+content="([^"]+)"[^>]+property="og:' + prop + '"', 'i'));
+        return m ? m[1].replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'") : '';
+      };
+      const img = og('image');
+      // IMDb's generic share image isn't a poster
+      if (!poster && img && /m\.media-amazon\.com\/images\/M\//.test(img)) poster = img;
+      if (!overview) {
+        const d = og('description');
+        if (d && !/^IMDb is the world/i.test(d)) overview = d;
+      }
+      if (!name) name = og('title').replace(/\s*\(.*$/, '').replace(/\s*[-|]\s*IMDb.*$/i, '').trim();
+    } catch (e) {}
+  }
+
+  // A poster set by hand in overrides.json always wins
+  const ovrPoster = (overrideByImdb(imdbId, type) || {}).poster;
+  if (ovrPoster) poster = ovrPoster;
+
   name = name || item.title;
   if (!name) { lastFailReason = 'IMDb ID has no details on Cinemeta/OMDb yet'; return null; }
 

@@ -9,6 +9,7 @@
     "  ottDate  : OTT release date YYYY-MM-DD - beats 91mobiles and TMDB",
     "  platform : e.g. 'Prime Video, ManoramaMAX'",
     "  lang     : 'ml' or 'ta' - set this (with type + tmdb or imdb) to ADD a title 91mobiles doesn't list",
+    "  poster   : poster image link - used for titles that only have an IMDb ID",
     "  hide     : true - remove a title from the catalogue (match by imdb, or by title)",
     "Copy a block from _examples into titles. Titles that fail to match are listed in data/unmatched.json."
   ],
