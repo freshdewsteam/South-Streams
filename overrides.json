@@ -103,6 +103,29 @@
       "imdb": "tt29625288",
       "ottDate": "2026-10-30",
       "platform": "Netflix"
+    },
+    {
+      "title": "Love Always",
+      "type": "series",
+      "lang": "ta",
+      "imdb": "tt47743462",
+      "ottDate": "2026-10-30",
+      "platform": "JioHotstar"
+    },
+    {
+      "title": "Aaru Aanugal",
+      "type": "movie",
+      "lang": "ml",
+      "imdb": "tt41935268",
+      "ottDate": "2026-10-23",
+      "platform": "ManoramaMax"
+    },
+    {
+      "title": "Celebrity Master Chef - Tamil",
+      "type": "series",
+      "lang": "ta",
+      "tmdb": 338683,
+      "imdb": "tt49767049"
     }
   ]
 }

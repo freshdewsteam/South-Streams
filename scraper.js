@@ -901,10 +901,13 @@ async function fetchDay0Items(lang, kind) {
         if (hit[0]) tmdbId = hit[0].id;
       } catch (e) {}
     }
-    if (!tmdbId) { noteUnmatched(lang, type, o.title || o.imdb, 'override IMDb ID not found on TMDB yet', { source: 'overrides.json' }); continue; }
-    if (items.some(i => String(i.id) === String(tmdbId))) continue;
-    items.push({ id: tmdbId, arrivalDate: o.ottDate || null, title: o.title || '', imdbId: o.imdb || null,
-      year: null, isNewSeason: false, trustedPlatform: o.platform || '', fromOverride: true });
+    // Not on TMDB yet → build it from its IMDb ID (Cinemeta / OMDb) instead
+    const imdbOnly = !tmdbId && !!o.imdb;
+    if (!tmdbId && !imdbOnly) continue;
+    const id = imdbOnly ? 'imdb_' + o.imdb : tmdbId;
+    if (items.some(i => String(i.id) === String(id))) continue;
+    items.push({ id, arrivalDate: o.ottDate || null, title: o.title || '', imdbId: o.imdb || null,
+      year: null, isNewSeason: false, trustedPlatform: o.platform || '', fromOverride: true, imdbOnly });
   }
 
   // Future OTT dates (from 91mobiles or overrides.json): within the window
@@ -993,6 +996,55 @@ async function discoverSeries(lang, maxPages, lookbackDays) {
   return results;
 }
 
+// Titles pinned in overrides.json by IMDb ID only (not on TMDB yet): details
+// from Cinemeta, then OMDb; poster from Stremio's metahub as a last resort.
+async function metaFromImdb(item, type, cacheKey) {
+  const store = type === 'series' ? seriesCache : movieCache;
+  lastFailReason = '';
+  const cached = readCacheEntry(store[cacheKey]);
+  if (cached && cached.id && !item.upcoming) return cached;
+
+  const imdbId = item.imdbId;
+  let name = '', overview = '', poster = '', background = '', genres = [], rating = null;
+  try {
+    const d = await fetchJson(CINEMETA_URL + type + '/' + imdbId + '.json');
+    const m = d && d.meta;
+    if (m) {
+      name = m.name || ''; overview = m.description || '';
+      poster = m.poster || ''; background = m.background || '';
+      genres = Array.isArray(m.genres) ? m.genres : [];
+      rating = m.imdbRating ? Number(m.imdbRating) : null;
+    }
+  } catch (e) {}
+  if ((!name || !poster || !overview) && OMDB_KEY) {
+    try {
+      const o = await fetchJson('https://www.omdbapi.com/?i=' + imdbId + '&apikey=' + OMDB_KEY);
+      if (o && o.Response === 'True') {
+        name = name || o.Title || '';
+        overview = overview || (o.Plot && o.Plot !== 'N/A' ? o.Plot : '');
+        poster = poster || (o.Poster && o.Poster !== 'N/A' ? o.Poster : '');
+        if (!genres.length && o.Genre && o.Genre !== 'N/A') genres = o.Genre.split(',').map(g => g.trim());
+        if (rating == null && o.imdbRating && o.imdbRating !== 'N/A') rating = Number(o.imdbRating);
+      }
+    } catch (e) {}
+  }
+  name = name || item.title;
+  if (!name) { lastFailReason = 'IMDb ID has no details on Cinemeta/OMDb yet'; return null; }
+
+  const meta = buildMeta({
+    imdbId, type, title: name,
+    platform: item.trustedPlatform || 'OTT / Streaming',
+    releaseDate: item.arrivalDate || '',
+    releaseLabel: '📅 OTT Release:',
+    overview, rating, genres,
+    posterUrl: poster || ('https://images.metahub.space/poster/medium/' + imdbId + '/img'),
+    backdropUrl: background || undefined,
+  });
+  if (!item.upcoming) { store[cacheKey] = meta; cacheDirty = true; }
+  console.log('[IMDb-only] ' + (item.upcoming ? '🔜 ' : '➕ ') + name + ' (' + imdbId + ')');
+  return meta;
+}
+
 // TMDB release_dates type 4 = Digital (OTT) release, for India
 function tmdbDigitalDateIN(detail) {
   const rd = detail && detail.release_dates && detail.release_dates.results;
@@ -1005,6 +1057,7 @@ function tmdbDigitalDateIN(detail) {
 
 // ── PROCESSORS ────────────────────────────────────────────────────────────────
 async function processMovie(item, lang, expectedLang) {
+  if (item.imdbOnly) return metaFromImdb(item, 'movie', lang + '_' + item.id);
   const cacheKey = lang + '_' + item.id;
   const cached   = readCacheEntry(movieCache[cacheKey]);
 
@@ -1082,6 +1135,7 @@ async function processMovie(item, lang, expectedLang) {
 }
 
 async function processSeriesJW(item, lang) {
+  if (item.imdbOnly) return metaFromImdb(item, 'series', lang + '_series_' + item.id);
   const cacheKey = lang + '_series_' + item.id;
   const cached   = readCacheEntry(seriesCache[cacheKey]);
 
@@ -1287,7 +1341,8 @@ function episodeTtl(entry) {
 async function loadEpisodes(meta, tmdbId, locked) {
   const key = 'eps_' + (tmdbId || meta.id);
   const c = seriesCache[key];
-  if (c && c._at && c.forId === meta.id && c.source && c.v === EPS_VERSION) {
+  // A locked (overrides.json) ID is never judged by an old "wrong ID" verdict
+  if (c && c._at && c.forId === meta.id && c.source && c.v === EPS_VERSION && !(locked && !c.imdbId)) {
     if (Date.now() - c._at < episodeTtl(c)) return c;
   }
 
@@ -1699,7 +1754,8 @@ async function scrapeSeries(lang) {
   metas.sort((a, b) => (b.releaseInfo || '').localeCompare(a.releaseInfo || ''));
   const released = await finalizeList(metas, lang, 'series', 80, SERIES_MAX_AGE_DAYS, async (m) => {
     const cacheKey = keyOf.get(m.id);
-    const tmdbId = cacheKey ? cacheKey.slice((lang + '_series_').length) : null;
+    const rawId = cacheKey ? cacheKey.slice((lang + '_series_').length) : null;
+    const tmdbId = rawId && /^\d+$/.test(rawId) ? rawId : null; // IMDb-only → episodes from Cinemeta
     const full = await withEpisodes(m, tmdbId, cacheKey, lang);
     // Entries restored from the pre-19-Sep snapshot can carry a bogus "added"
     // date; never let one sit later than its newest episode.
