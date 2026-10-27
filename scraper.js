@@ -339,6 +339,16 @@ function getTitleVariations(title) {
 
 function normTitle(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
 
+// Spelling-tolerant key for Malayalam/Tamil romanisation: "Adinasham" and
+// "Adinaasam" both become "adinasam" (drop 'h', collapse doubled letters).
+function phonKey(s) { return normTitle(s).replace(/h/g, '').replace(/(.)\1+/g, '$1'); }
+
+// 91mobiles names new seasons "Show : Season 2" / "Show S2" — match the show
+function stripSeason(t) {
+  const m = String(t || '').match(/^(.*?)\s*[:\-–(]?\s*\b(?:season|s)\s*0*(\d{1,2})\)?\s*$/i);
+  return m && m[1].trim().length >= 2 ? { title: m[1].trim(), season: +m[2] } : { title: String(t || '').trim(), season: 0 };
+}
+
 function buildMeta(opts) {
   const imdbId = opts.imdbId, type = opts.type, title = opts.title;
   const releaseDate = opts.releaseDate, releaseLabel = opts.releaseLabel;
@@ -634,7 +644,8 @@ function m91ParsePage(html, langLabel, isShow, label) {
     if (!dateMatch) { stats.noDate++; continue; }
     const date = parseAnyDate(dateMatch[0]);
     if (!date) { stats.noDate++; continue; }
-    const dateStr = date.toISOString().slice(0, 10);
+    // Built from the date's own parts so the server's time zone can't shift it
+    const dateStr = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
     // Already out in India counts as released even if UTC hasn't caught up
     const released = isReleased(date) || dateStr <= istDate(0);
     const upcoming = !released && dateStr <= istDate(SOON_DAYS);
@@ -764,6 +775,15 @@ async function fetch91Mobiles(lang, kind) {
         continue;
       }
 
+      // Series: "Show : Season 2" is matched as "Show" (and counts as a new season)
+      if (isShow) {
+        const st = stripSeason(item.title);
+        if (st.season) {
+          item.title = st.title;
+          if (st.season >= 2) item.isNewSeason = true;
+        }
+      }
+
       for (const v of getTitleVariations(item.title)) {
         try {
           const data = await tmdb(endpoint + encodeURIComponent(v) + '&language=en-US&page=1');
@@ -786,6 +806,39 @@ async function fetch91Mobiles(lang, kind) {
             if (yearHit) { r = yearHit; break; }
           }
         } catch (e) {}
+      }
+
+      // Fallback for different romanisations: search each long word, accept
+      // only a single same-language result whose whole title matches by
+      // spelling-tolerant key and whose year is plausible.
+      if (!r) {
+        const key = phonKey(item.title);
+        const words = [...new Set(item.title.split(/[^A-Za-z0-9]+/).filter(w => w.length >= 4))]
+          .sort((a, b) => b.length - a.length).slice(0, 3);
+        const found = new Map();
+        if (key.length >= 6) {
+          for (const w of words) {
+            try {
+              const data = await tmdb(endpoint + encodeURIComponent(w) + '&language=en-US&page=1');
+              for (const c of (data.results || [])) {
+                if (c.original_language !== lang) continue;
+                const names = [c.title, c.name, c.original_title, c.original_name].filter(Boolean);
+                if (!names.some(n => phonKey(n) === key)) continue;
+                const cy = +String(c.release_date || c.first_air_date || '').slice(0, 4);
+                const oy = +item.year;
+                // Films reach OTT 0–2 years after release; a show can be any age
+                const yearOk = !cy || !oy || (isShow ? cy <= oy : (cy <= oy && cy >= oy - 2));
+                if (yearOk) found.set(c.id, c);
+              }
+            } catch (e) {}
+          }
+        }
+        if (found.size === 1) {
+          r = [...found.values()][0];
+          console.log('[91Mobiles] 🔤 "' + item.title + '" matched by spelling → "' + (r.title || r.name) + '" (TMDB ' + r.id + ')');
+        } else if (found.size > 1) {
+          hadCandidates = true; // two lookalikes — don't guess
+        }
       }
 
       if (r && !seenIds.has(r.id)) {
