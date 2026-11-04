@@ -127,6 +127,14 @@
       "lang": "ta",
       "tmdb": 338683,
       "imdb": "tt49767049"
+    },
+    {
+      "title": "I'm Game",
+      "type": "movie",
+      "lang": "ml",
+      "imdb": "tt34284946",
+      "ottDate": "2026-11-06",
+      "platform": "JioHotstar"
     }
   ]
 }
