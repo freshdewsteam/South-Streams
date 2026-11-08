@@ -135,6 +135,14 @@
       "imdb": "tt34284946",
       "ottDate": "2026-11-06",
       "platform": "JioHotstar"
+    },
+    {
+      "title": "Ottam Thullal",
+      "type": "movie",
+      "lang": "ml",
+      "imdb": "tt36821438",
+      "ottDate": "2026-11-06",
+      "platform": "ManoramaMAX"
     }
   ]
 }
