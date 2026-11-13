@@ -301,6 +301,16 @@ function istDate(n) { return new Date(Date.now() + 5.5 * 3600000 + (n || 0) * 86
 const SOON_DAYS = 2;
 const SOON_MAX  = 8; // cap per catalogue so "available now" stays visible
 
+// A film found ONLY via TMDB Discover (no 91mobiles / overrides confirmation)
+// that released this recently, with no TMDB India digital date, is almost
+// always still in cinemas — TMDB's provider list is often pre-filled.
+// (Bouma, 12 Nov 2026: theatrical, but TMDB listed Prime Video/Zee5.)
+const THEATRICAL_GUARD_DAYS = 21;
+function tooFreshForOtt(releaseDate) {
+  if (!releaseDate) return false;
+  return releaseDate > cutoffDate(THEATRICAL_GUARD_DAYS);
+}
+
 function isDeepSweepHour() {
   // The 18:01 UTC cron is often delayed by GitHub (runs seen at 22:33, 23:15),
   // so accept any run from 18:00 UTC to midnight as the deep sweep.
@@ -1136,6 +1146,11 @@ async function processMovie(item, lang, expectedLang) {
 
     // OTT date priority: override → 91mobiles → TMDB India digital release → TMDB release
     const digitalIN = tmdbDigitalDateIN(detail);
+    const confirmedOtt = !!(validDay0Platform || item.fromOverride || item.arrivalDate || (ovr && (ovr.ottDate || ovr.platform)));
+    if (!confirmedOtt && !digitalIN && tooFreshForOtt(detail.release_date)) {
+      lastFailReason = 'released ' + detail.release_date + ' — likely still in cinemas (no OTT confirmation)';
+      setRetry(movieCache, cacheKey); return null;
+    }
     const ottDate = (ovr && ovr.ottDate) || item.arrivalDate || digitalIN || detail.release_date || '';
     const label = ((ovr && ovr.ottDate) || item.arrivalDate || digitalIN) ? '📅 OTT Release:' : '📅 Released:';
 
@@ -1634,6 +1649,12 @@ async function scrapeMovies(lang) {
     if (entry && typeof entry === 'object' && entry.id && entry.id.startsWith('tt') &&
         entry.type === 'movie' && !processedImdbIds.has(entry.id)) {
       if (isUnusableEntry(entry.description)) { setSkip(movieCache, cacheKey); continue; }
+      // Saved from TMDB Discover with its cinema date ("Released:"), too recent to be on OTT
+      const ovrM = overrideByImdb(entry.id, 'movie');
+      if (!ovrM && /📅 Released:/.test(entry.description || '') && tooFreshForOtt(entry.releaseInfo)) {
+        console.log('[Guard] 🎟️ ' + entry.name + ' (' + entry.releaseInfo + ') looks theatrical — held back until OTT is confirmed');
+        setRetry(movieCache, cacheKey); continue;
+      }
       metas.push(entry);
       processedImdbIds.add(entry.id);
     }
