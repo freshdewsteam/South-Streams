@@ -160,6 +160,11 @@
       "imdb": "tt41944351",
       "ottDate": "2026-11-13",
       "platform": "Amazon Prime Video, Simply South"
+    },
+    {
+      "title": "Thee Kural",
+      "type": "series",
+      "hide": true
     }
   ]
 }
