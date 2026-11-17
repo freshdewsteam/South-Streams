@@ -143,6 +143,14 @@
       "imdb": "tt36821438",
       "ottDate": "2026-11-06",
       "platform": "ManoramaMAX"
+    },
+    {
+      "title": "Anbil Avan",
+      "type": "movie",
+      "lang": "ta",
+      "imdb": "tt35682855",
+      "ottDate": "2026-11-20",
+      "platform": "SonyLIV"
     }
   ]
 }
