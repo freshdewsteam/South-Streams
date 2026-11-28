@@ -5,6 +5,7 @@ const http  = require('http');
 const https = require('https');
 const fs    = require('fs');
 const path  = require('path');
+const { renderLanding } = require('./landing');
 
 const PORT = process.env.PORT || 3000;
 
@@ -135,129 +136,10 @@ const server = http.createServer((req, res) => {
       res.end('Manifest not found');
       return;
     }
-
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    const counts = {
-      mm: (memoryCache['malayalam-movies'] || []).length,
-      ms: (memoryCache['malayalam-series'] || []).length,
-      tm: (memoryCache['tamil-movies'] || []).length,
-      ts: (memoryCache['tamil-series'] || []).length,
-    };
-    const total = counts.mm + counts.ms + counts.tm + counts.ts;
     const host = req.headers.host || 'localhost:' + PORT;
-
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${manifest.name} — New Malayalam & Tamil OTT releases, daily</title>
-  <meta name="description" content="${manifest.description}">
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family: system-ui, -apple-system, sans-serif; background:#0a0e14; color:#e6edf3; line-height:1.6; }
-    .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; }
-    a { color:#4fd1c5; }
-    .hero { text-align:center; padding: 70px 0 40px; background: radial-gradient(ellipse at top, #0f2733 0%, #0a0e14 70%); }
-    .badge { display:inline-block; background:#132a33; color:#4fd1c5; border:1px solid #1e4a52; padding:5px 14px; border-radius:20px; font-size:.8rem; font-weight:600; margin-bottom:18px; }
-    h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); background: linear-gradient(90deg,#4fd1c5,#63b3ed); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .tagline { font-size:1.1rem; color:#9fb3c8; max-width:540px; margin:12px auto 6px; }
-    .cta-row { margin-top:28px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
-    .btn { display:inline-block; padding:12px 28px; border-radius:10px; font-size:1rem; font-weight:700; text-decoration:none; }
-    .btn-primary { background: linear-gradient(90deg,#14b8a6,#3b82f6); color:#fff; }
-    .btn-ghost { background:#16202b; color:#c9d6e2; border:1px solid #263444; }
-    .stats { display:flex; gap:24px; justify-content:center; margin-top:32px; flex-wrap:wrap; }
-    .stat b { display:block; font-size:1.4rem; color:#4fd1c5; }
-    .stat span { font-size:.75rem; color:#7a8ea3; text-transform:uppercase; letter-spacing:1px; }
-    section { padding: 36px 0; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
-    .card { background:#111926; border:1px solid #1e2c3d; border-radius:12px; padding:18px; }
-    .card .ico { font-size:1.5rem; }
-    .card h3 { font-size:1rem; margin:6px 0 2px; }
-    .card .num { font-size:1.2rem; font-weight:800; color:#4fd1c5; }
-    .config { margin:28px auto 0; max-width:520px; background:#111926; border:1px solid #1e2c3d; border-radius:14px; padding:16px 18px; text-align:left; }
-    .config-title { font-weight:700; margin-bottom:10px; text-align:center; }
-    .picks { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:8px; }
-    .pick { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid #263444; border-radius:10px; cursor:pointer; user-select:none; }
-    .pick input { width:18px; height:18px; accent-color:#14b8a6; }
-    .pick:has(input:checked) { border-color:#14b8a6; background:#0f2229; }
-    .btn.disabled { opacity:.4; pointer-events:none; }
-    .hint { color:#7a8ea3; font-size:.85rem; margin-top:12px; }
-    .hint code { color:#c9d6e2; background:#111926; padding:2px 6px; border-radius:6px; word-break:break-all; }
-    .hint button { background:#16202b; color:#c9d6e2; border:1px solid #263444; border-radius:6px; padding:2px 10px; cursor:pointer; font:inherit; }
-    footer { border-top:1px solid #1a2433; margin-top:40px; padding:28px 0; text-align:center; color:#7a8ea3; font-size:.85rem; }
-  </style>
-</head>
-<body>
-  <div class="hero">
-    <div class="wrap">
-      <span class="badge">⚡ AUTO-SYNCED STREAMING CATALOG</span>
-      <h1>🌊 ${manifest.name}</h1>
-      <p class="tagline">New Malayalam & Tamil OTT films and series detected the day they drop.</p>
-      <div class="config" id="configure">
-        <p class="config-title">Choose your catalogues</p>
-        <div class="picks">
-          ${Object.keys(CATALOG_CODES).map(code => `
-          <label class="pick"><input type="checkbox" value="${code}" ${!selected || selected.includes(code) ? 'checked' : ''}><span>${CATALOG_LABELS[code]}</span></label>`).join('')}
-        </div>
-      </div>
-      <div class="cta-row">
-        <a class="btn btn-primary" id="install" href="stremio://${host}/manifest.json">📦 Install in Stremio</a>
-        <a class="btn btn-ghost" id="manual" href="https://${host}/manifest.json">🔧 Manual / Nuvio install</a>
-      </div>
-      <p class="hint" id="hint">Already installed? Re-install with your new choice — Stremio replaces the old one.</p>
-      <p class="hint" id="link-text"><code id="link">https://${host}/manifest.json</code> <button type="button" id="copy">Copy</button></p>
-      <div class="stats">
-        <div class="stat"><b>${total}</b><span>Titles tracked</span></div>
-        <div class="stat"><b>${counts.mm + counts.tm}</b><span>Movies</span></div>
-        <div class="stat"><b>${counts.ms + counts.ts}</b><span>Series</span></div>
-      </div>
-    </div>
-  </div>
-  <section>
-    <div class="wrap">
-      <div class="grid">
-        <div class="card"><div class="ico">🎬</div><h3>Malayalam Movies</h3><p class="num">${counts.mm}</p></div>
-        <div class="card"><div class="ico">📺</div><h3>Malayalam Series</h3><p class="num">${counts.ms}</p></div>
-        <div class="card"><div class="ico">🎬</div><h3>Tamil Movies</h3><p class="num">${counts.tm}</p></div>
-        <div class="card"><div class="ico">📺</div><h3>Tamil Series</h3><p class="num">${counts.ts}</p></div>
-      </div>
-    </div>
-  </section>
-  <footer>
-    <div class="wrap"><p>South Streams • Metadata discovery addon for Stremio</p></div>
-  </footer>
-  <script>
-    (function () {
-      var host = ${JSON.stringify(host)};
-      var boxes = Array.prototype.slice.call(document.querySelectorAll('.pick input'));
-      var install = document.getElementById('install');
-      var manual = document.getElementById('manual');
-      var link = document.getElementById('link');
-      function update() {
-        var codes = boxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; });
-        // All four ticked → plain link (same as before configuration existed)
-        var path = (codes.length === boxes.length ? '' : '/' + codes.join(',')) + '/manifest.json';
-        install.href = 'stremio://' + host + path;
-        manual.href = 'https://' + host + path;
-        link.textContent = 'https://' + host + path;
-        var none = codes.length === 0;
-        install.classList.toggle('disabled', none);
-        manual.classList.toggle('disabled', none);
-        if (none) link.textContent = 'Pick at least one catalogue';
-      }
-      boxes.forEach(function (b) { b.addEventListener('change', update); });
-      document.getElementById('copy').addEventListener('click', function () {
-        if (navigator.clipboard) navigator.clipboard.writeText(link.textContent);
-        this.textContent = 'Copied';
-        var btn = this; setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
-      });
-      update();
-    })();
-  </script>
-</body>
-</html>`);
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=300' });
+    res.end(renderLanding({ manifest, cache: memoryCache, host, selected }));
     return;
   }
 
